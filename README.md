@@ -1,5 +1,5 @@
 # jORLib
-Java OR Tools
+Java OR Library
 
 Released: April, 2015</p>
 

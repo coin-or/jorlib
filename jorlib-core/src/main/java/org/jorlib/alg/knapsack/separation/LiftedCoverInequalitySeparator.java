@@ -77,7 +77,6 @@ public class LiftedCoverInequalitySeparator {
 	private boolean coverInequalityExists; //Indicates whether a cover inequality exists. If \sum_i a_i \leq b, then no cover exists and hence no inequality can be generated.
 	
 	//Minimal cover
-	private double minimalCoverLHS=0; //THIS VAR IS NOT SET Evaluation of the left hand side of the equality
 	private int minimalCoverRHS; //Right hand side of the minimal cover inequality
 	private boolean[] minimalCover; //Boolean array indicating whether a variable is in the minimal cover 
 	private Set<Integer> minimalCoverSet; //Set containing the variables which are part of the minimal cover
@@ -389,91 +388,4 @@ public class LiftedCoverInequalitySeparator {
 		return liftedCoverIsViolated;
 	}
 	
-	/*public static void main(String[] args){
-		LiftedCoverInequalitySeparator separator= new LiftedCoverInequalitySeparator();
-		
-		//Example 1 - Violated cover: x1+x7<=1, minimalCoverValue: 0.29
-		double[] variableValues1={0.71, 0, 0.35, 1, 1, 0, 1, 1, 0};
-		int[] knapsackCoefficients1={774, 76, 22, 42, 21, 760, 818, 62, 785};
-		int b1=1500;
-		
-		separator.separateMinimalCover(variableValues1.length, knapsackCoefficients1, b1, variableValues1);
-		System.out.println("Example 1:");
-		System.out.println("Cover: "+Arrays.toString(separator.getMinimalCoverMask()));
-		System.out.println("isViolated: "+separator.isMinimalCoverViolated()+"\n");
-		
-		
-		//Example 2 - Violated cover: x3+x7<=1, minimalCoverValue: 0.65
-		double[] variableValues2={0.71, 0, 0.35, 1, 1, 0, 1, 1, 0};
-		int[] knapsackCoefficients2={67, 27, 794, 53, 234, 32, 797, 97, 435};
-		int b2=1500;
-		
-		separator.separateMinimalCover(variableValues2.length, knapsackCoefficients2, b2, variableValues2);
-		System.out.println("Example 2:");
-		System.out.println("Cover: "+Arrays.toString(separator.getMinimalCoverMask()));
-		System.out.println("isViolated: "+separator.isMinimalCoverViolated()+"\n");
-		
-		
-		//Example 3 - Violated cover: x3+x4+x5<=2, minimalCoverValue: 7/53=0.13207547169
-		double[] variableValues3={0, 0, 1, 1, 46.0/53};
-		int[] knapsackCoefficients3={47, 45, 79, 53, 53};
-		int b3=178;
-		
-		separator.separateMinimalCover(variableValues3.length, knapsackCoefficients3, b3, variableValues3);
-		System.out.println("Example 3:");
-		System.out.println("Cover: "+Arrays.toString(separator.getMinimalCoverMask()));
-		System.out.println("isViolated: "+separator.isMinimalCoverViolated()+"\n");
-		
-		
-		//Example 4 - minimal cover: x3+x4+x5<=2, minimalCoverValue: 1, NO violation
-		double[] variableValues4={.5, .5, 1, .5, .5};
-		int[] knapsackCoefficients4={47, 45, 79, 53, 53};
-		int b4=178;
-		
-		separator.separateMinimalCover(variableValues4.length, knapsackCoefficients4, b4, variableValues4);
-		System.out.println("Example 4:");
-		System.out.println("Cover: "+Arrays.toString(separator.getMinimalCoverMask()));
-		System.out.println("isViolated: "+separator.isMinimalCoverViolated()+"\n");
-		
-		
-		//Example 5 - violated minimal cover: x1+x7<=1, violated lifted cover: x1+x6+x7+x9<=1
-		double[] variableValues5={0.71, 0, 0.35, 1, 1, 0, 1, 1, 0};
-		int[] knapsackCoefficients5={774, 76, 22, 42, 21, 760, 818, 62, 785};
-		int b5=1500;
-		
-		separator.separateLiftedCover(variableValues5.length, knapsackCoefficients5, b5, variableValues5);
-		System.out.println("Example 5:");
-		System.out.println("Minimal Cover: "+Arrays.toString(separator.getMinimalCoverMask()));
-		System.out.println("minimal cover isViolated: "+separator.isMinimalCoverViolated()+"\n");
-		System.out.println("Lifted Cover: "+Arrays.toString(separator.getLiftedCoverCoefficients())+" RHS: "+separator.getLiftedCoverRHS());
-		System.out.println("lifted cover isViolated: "+separator.liftedCoverIsViolated+"\n");
-		
-		
-		//Example 6 - minimal cover: x3+x4+x5<=2 (NOT violated), violated lifted cover: x1+2x3+x4+x5<=3
-		double[] variableValues6={.5, .5, 1, .5, .5};
-		int[] knapsackCoefficients6={47, 45, 79, 53, 53};
-		int b6=178; //178
-		
-		separator.separateLiftedCover(variableValues6.length, knapsackCoefficients6, b6, variableValues6);
-		System.out.println("Example 6:");
-		System.out.println("Minimal Cover: "+Arrays.toString(separator.getMinimalCoverMask()));
-		System.out.println("minimal cover isViolated: "+separator.isMinimalCoverViolated()+"\n");
-		System.out.println("Lifted Cover: "+Arrays.toString(separator.getLiftedCoverCoefficients())+" RHS: "+separator.getLiftedCoverRHS());
-		System.out.println("lifted cover isViolated: "+separator.liftedCoverIsViolated+"\n");
-	}*/
-	
-	public static void main(String[] args){
-		KnapsackAlgorithm knapsackAlgorithm=new BinaryKnapsack();
-		LiftedCoverInequalitySeparator separator= new LiftedCoverInequalitySeparator(knapsackAlgorithm);
-		double[] variableValues6={0.8333333333333334, 0.8333333333333333};
-		int[] knapsackCoefficients6={3,3};
-		int b6=5;
-		
-		separator.separateLiftedCover(variableValues6.length, knapsackCoefficients6, b6, variableValues6, true);
-		System.out.println("Example 6:");
-		System.out.println("Minimal Cover: "+Arrays.toString(separator.getMinimalCoverMask()));
-		System.out.println("minimal cover isViolated: "+separator.isMinimalCoverViolated()+"\n");
-		System.out.println("Lifted Cover: "+Arrays.toString(separator.getLiftedCoverCoefficients())+" RHS: "+separator.getLiftedCoverRHS());
-		System.out.println("lifted cover isViolated: "+separator.liftedCoverIsViolated+"\n");
-	}
 }
