@@ -24,10 +24,10 @@
  * -------
  *
  */
-package org.jorlib.demo.alg;
+package org.jorlib.demo.alg.knapsack;
 
-import org.jorlib.alg.Knapsack;
-import org.jorlib.alg.Knapsack.KnapsackResult;
+import org.jorlib.alg.knapsack.Knapsack;
+import org.jorlib.alg.knapsack.Knapsack.KnapsackResult;
 
 /**
  * Simple class which solves a Knapsack problem

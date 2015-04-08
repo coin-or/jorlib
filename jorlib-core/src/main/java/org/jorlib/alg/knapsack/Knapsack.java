@@ -24,7 +24,7 @@
  * -------
  *
  */
-package org.jorlib.alg;
+package org.jorlib.alg.knapsack;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -256,31 +256,5 @@ public class Knapsack{
 		}
 	
 	}
-	
-	public static void main(String[] args){
-		/**
-		 * Knapsacksize: 2000
-		 *   item    profit  weight  take
-		 * 1       874     580     true
-		 *  2       620     1616    false
-		 *  3       345     1906    false
-		 *  4       369     1942    false
-		 *  5       360     50      true
-		 *  6       470     294     true
-		 */
-		
-//		double[] itemValues={300, 60, 90, 100, 240};
-//		int[] itemWeights={50, 10, 20, 40, 30};
-//		int maxKnapsackWeight=60;
-		//Correct solution: value 390, items: [false, true, true, false, true]
-		
-		double[] itemValues={15,10,9,5};
-		int[] itemWeights={1,5,3,4};
-		int maxKnapsackWeight=8;
-		//Correct solution: value 29, items: [true, false, true, true]
-		
-		KnapsackResult solution=runKnapsack(itemValues.length, maxKnapsackWeight, itemValues, itemWeights);
-		System.out.println("Knapsack solution: "+solution);
-	}	
 }
 
