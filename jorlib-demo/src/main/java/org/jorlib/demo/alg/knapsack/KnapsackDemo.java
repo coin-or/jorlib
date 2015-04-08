@@ -26,8 +26,9 @@
  */
 package org.jorlib.demo.alg.knapsack;
 
-import org.jorlib.alg.knapsack.Knapsack;
-import org.jorlib.alg.knapsack.Knapsack.KnapsackResult;
+import java.util.Arrays;
+
+import org.jorlib.alg.knapsack.BinaryKnapsack;
 
 /**
  * Simple class which solves a Knapsack problem
@@ -44,8 +45,12 @@ public final class KnapsackDemo {
 		int[] itemWeights={1,5,3,4};
 		int maxKnapsackWeight=8;
 		
-		KnapsackResult solution=Knapsack.runKnapsack(itemValues.length, maxKnapsackWeight, itemValues, itemWeights);
-		System.out.println("Knapsack solution: "+solution);
+		BinaryKnapsack knapsack=new BinaryKnapsack();
+		knapsack.solveKnapsackProblem(itemValues.length, maxKnapsackWeight, itemValues, itemWeights);
+		System.out.println("Knapsack solution: ");
+		System.out.println("\t value: "+knapsack.getKnapsackValue());
+		System.out.println("\t weight: "+knapsack.getKnapsackWeight());
+		System.out.println("\t item selected: "+Arrays.toString(knapsack.getKnapsackItems()));
 	}
 
 }

@@ -26,11 +26,9 @@
  */
 package org.jorlib.alg.knapsack;
 
-import org.jorlib.alg.knapsack.Knapsack;
-import org.jorlib.alg.knapsack.Knapsack.KnapsackResult;
-import org.junit.Assert;
-
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 /**
  * Test class for knapsack implementation
@@ -45,10 +43,11 @@ public class KnapsackTest extends TestCase {
 		int[] itemWeights={1,5,3,4};
 		int maxKnapsackWeight=8;
 		
-		KnapsackResult solution=Knapsack.runKnapsack(itemValues.length, maxKnapsackWeight, itemValues, itemWeights);
-		assertEquals(8, solution.weight);
-		assertEquals(29, solution.value, 0.000001);
-		Assert.assertArrayEquals(new boolean[]{true, false, true, true}, solution.selectedItems);
+		BinaryKnapsack knapsack=new BinaryKnapsack();
+		knapsack.solveKnapsackProblem(itemValues.length, maxKnapsackWeight, itemValues, itemWeights);
+		assertEquals(8, knapsack.getKnapsackWeight());
+		assertEquals(29, knapsack.getKnapsackValue(), 0.000001);
+		Assert.assertArrayEquals(new boolean[]{true, false, true, true}, knapsack.getKnapsackItems());
 	}
 	
 	public void testKnapsack2(){
@@ -56,9 +55,10 @@ public class KnapsackTest extends TestCase {
 		int[] itemWeights={50, 10, 20, 40, 30};
 		int maxKnapsackWeight=60;
 		
-		KnapsackResult solution=Knapsack.runKnapsack(itemValues.length, maxKnapsackWeight, itemValues, itemWeights);
-		assertEquals(60, solution.weight);
-		assertEquals(390, solution.value, 0.000001);
-		Assert.assertArrayEquals(new boolean[]{false, true, true, false, true}, solution.selectedItems);
+		BinaryKnapsack knapsack=new BinaryKnapsack();
+		knapsack.solveKnapsackProblem(itemValues.length, maxKnapsackWeight, itemValues, itemWeights);
+		assertEquals(60, knapsack.getKnapsackWeight());
+		assertEquals(390, knapsack.getKnapsackValue(), 0.000001);
+		Assert.assertArrayEquals(new boolean[]{false, true, true, false, true}, knapsack.getKnapsackItems());
 	}
 }

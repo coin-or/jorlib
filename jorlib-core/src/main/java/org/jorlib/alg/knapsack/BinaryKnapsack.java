@@ -53,18 +53,25 @@ import java.util.Queue;
  * @author Joris Kinable
  * @since April 8, 2015
  */
-public class Knapsack{
+public class BinaryKnapsack implements KnapsackAlgorithm{
+	
+	//Define the knapsack parameters
+	private int nrItems; //number of items in the knapsack
+	private int maxKnapsackWeight; //max allowed wait of the knapsack
+	private double[] itemValues; //Values of the knapsack items
+	private int[] itemWeights; //Weights of the knapsack items
+	
+	//Solution
+	private double knapsackValue=0;
+	private int knapsackWeight=0;
+	private boolean[] knapsackItems;
 	
 	/**
 	 * Calculates a greedy solution for the knapsack problem. This solution is a valid lower bound and is used for pruning.
-	 * @param nrItems Maximum number of items in the knapsack
 	 * @param itemOrder Order in which the items are considered by the greedy algorithm. The items are sorted ascending, based on their value/weight ratio
-	 * @param maxKnapsackWeight Max size of knapsack
-	 * @param itemValues
-	 * @param itemWeights
 	 * @return
 	 */
-	private static KnapsackResult getGreedyKnapsackSolution(int nrItems, Integer[] itemOrder, int maxKnapsackWeight, double[] itemValues, int[] itemWeights){
+	private void getGreedyKnapsackSolution(Integer[] itemOrder){
 		double value=0;
 		int remainingWeight=maxKnapsackWeight;
 		boolean[] selectedItems=new boolean[nrItems];
@@ -76,20 +83,11 @@ public class Knapsack{
 				selectedItems[itemOrder[i]]=true;
 			}
 		}
-		return new KnapsackResult(selectedItems, maxKnapsackWeight-remainingWeight, value);
+		this.knapsackValue=value;
+		this.knapsackWeight=maxKnapsackWeight-remainingWeight;
+		this.knapsackItems=selectedItems;
 	}
 	
-	/**
-	 * Sort the times in ascending order, based on their value/weigth ratio
-	 */
-	private static void sortItems(int nrItems, Integer[] itemOrder, double[] itemValues, int[] itemWeights){
-		Arrays.sort(itemOrder, new Comparator<Integer>() {
-			@Override
-			public int compare(Integer item1, Integer item2) {
-				return -1*Double.compare(itemValues[item1]/itemWeights[item1], itemValues[item2]/itemWeights[item2]);
-			}
-		});
-	}
 	
 	/**
 	 * Solve the knapsack problem.
@@ -97,36 +95,42 @@ public class Knapsack{
 	 * @param maxKnapsackWeight max size/weight of the knapsack
 	 * @param itemValues
 	 * @param itemWeights
-	 * @return
+	 * @return The value of the knapsack solution
 	 */
-	public static KnapsackResult runKnapsack(int nrItems, int maxKnapsackWeight, double[] itemValues, int[] itemWeights){
+	public double solveKnapsackProblem(int nrItems, int maxKnapsackWeight, double[] itemValues, int[] itemWeights){
+		//Initialize
+		this.nrItems=nrItems;
+		this.maxKnapsackWeight=maxKnapsackWeight;
+		this.itemValues=itemValues;
+		this.itemWeights=itemWeights;
+		
+		this.knapsackValue=0;
+		this.knapsackWeight=0;
+		
 		Queue<KnapsackNode> queue=new PriorityQueue<KnapsackNode>();
 		
 		//Define the order in which items will be processed. The items are sorted based on their value/weight ratio, thereby considering proportionally more valuable items first.
 		Integer[] itemOrder=new Integer[nrItems];
 		for(int i=0; i<nrItems; i++) itemOrder[i]=i;
-		sortItems(nrItems, itemOrder, itemValues, itemWeights);
+		//Sort the times in ascending order, based on their value/weigth ratio
+		Arrays.sort(itemOrder, new Comparator<Integer>() {
+			@Override
+			public int compare(Integer item1, Integer item2) {
+				return -1*Double.compare(itemValues[item1]/itemWeights[item1], itemValues[item2]/itemWeights[item2]);
+			}
+		});
 		
-		//TEMP
-//		double[] ratios=new double[nrItems];
-//		for(int i=0; i<nrItems; i++){
-//			ratios[i]=itemValues[itemOrder[i]]/itemWeights[itemOrder[i]];
-//		}
-//		System.out.println("Order: "+Arrays.toString(itemOrder));
-//		System.out.println("Ratios: "+Arrays.toString(ratios));
-		//END TEMP
 		
 		//Create initial node
 		KnapsackNode kn=new KnapsackNode(nrItems);
-		kn.bound=calcBound(nrItems, itemOrder, itemValues, itemWeights, kn.level+1, maxKnapsackWeight-kn.weight, kn.value);
+		kn.bound=calcBound(itemOrder, kn.level+1, maxKnapsackWeight-kn.weight, kn.value);
 		queue.add(kn);
 		
 		//Get initial greedy solution
-		KnapsackResult greedySolution=getGreedyKnapsackSolution(nrItems, itemOrder, maxKnapsackWeight, itemValues, itemWeights);
-//		System.out.println("Init sol: "+greedySolution);
+		this.getGreedyKnapsackSolution(itemOrder);
 		
 		//Maintain a reference to the best node
-		double bestValue=greedySolution.value;
+		double bestValue=this.knapsackValue;
 		KnapsackNode bestNode=null;
 		
 		while(!queue.isEmpty()){
@@ -138,33 +142,35 @@ public class Knapsack{
 				if(kn.weight+itemWeights[itemToAdd]<=maxKnapsackWeight && itemValues[itemToAdd]>0){ //Check whether we can add the next item and whether its value is positive
 					KnapsackNode knCopy=kn.copy();
 					knCopy.addItem(itemToAdd, itemWeights[itemToAdd], itemValues[itemToAdd]);
-					knCopy.bound=calcBound(nrItems, itemOrder, itemValues, itemWeights, knCopy.level+1, maxKnapsackWeight-knCopy.weight, knCopy.value);
+					knCopy.bound=calcBound(itemOrder, knCopy.level+1, maxKnapsackWeight-knCopy.weight, knCopy.value);
 					
 					if(knCopy.value>bestValue){
 						bestValue=knCopy.value;
-						//this.selectedItems=knCopy.additionalStudents;
 						bestNode=knCopy;
 					}
 					queue.add(knCopy);
 				}
 				//Dont use item[kn.level]
-				kn.bound=calcBound(nrItems, itemOrder, itemValues, itemWeights, kn.level+1, maxKnapsackWeight-kn.weight, kn.value);
+				kn.bound=calcBound(itemOrder, kn.level+1, maxKnapsackWeight-kn.weight, kn.value);
 				queue.add(kn);
 			}
 		}
 		
-		if(bestNode==null) //Greedy solution was the best
-			return greedySolution;
-		else{
-			return new KnapsackResult(bestNode.selectedItems, bestNode.weight, bestNode.value);
+		//Update the results based on the best solution found
+		if(bestNode!=null){ 
+			this.knapsackValue=bestNode.value;
+			this.knapsackWeight=bestNode.weight;
+			this.knapsackItems=bestNode.selectedItems;
 		}
+		
+		return this.knapsackValue;
 	}
 	
 	/**
 	 * Calculate a bound on the best solution attainable for a given partial solution. 
-	 * @return
+	 * @return bound on the best value attainable  by the partially filled knapsack
 	 */
-	private static double calcBound(int nrItems, Integer[] itemOrder, double[] itemValues, int[] itemWeights, int level, int remainingSize, double value){
+	private double calcBound(Integer[] itemOrder, int level, int remainingSize, double value){
 		double bound=value;
 		while(level<nrItems && remainingSize-itemWeights[itemOrder[level]]>=0){
 			remainingSize-=itemWeights[itemOrder[level]];
@@ -178,23 +184,22 @@ public class Knapsack{
 	}
 	
 	/**
-	 * Simple class which reflects the solution of a knapsack problem
-	 *
+	 * @return Get the value of the knapsack
 	 */
-	public static final class KnapsackResult{
-		public final boolean[] selectedItems; //Selected items
-		public final int weight;
-		public final double value;
-	
-		public KnapsackResult(boolean[] selectedItems, int weight, double value){
-			this.selectedItems=selectedItems;
-			this.weight=weight;
-			this.value=value;
-		}
-		public String toString(){
-			String s="value: "+value+" weight: "+weight+"\nitems: "+Arrays.toString(selectedItems);
-			return s;
-		}
+	public double getKnapsackValue(){
+		return knapsackValue;
+	}
+	/**
+	 * @return Get the total weight of the knapsack
+	 */
+	public int getKnapsackWeight(){
+		return knapsackWeight;
+	}
+	/**
+	 * @return Get the items in the knapsack
+	 */
+	public boolean[] getKnapsackItems(){
+		return knapsackItems;
 	}
 	
 	/**
@@ -203,7 +208,7 @@ public class Knapsack{
 	 * @author jkinable
 	 *
 	 */
-	private static final class KnapsackNode implements Comparable<KnapsackNode>{
+	private final class KnapsackNode implements Comparable<KnapsackNode>{
 		public final int nrItems; //Max number of items in the problem
 		public final boolean[] selectedItems; //Selected items
 		public int level; //Depth of the knapsack node in the search tree; Each level of the search tree corresponds with a single item.
@@ -254,7 +259,6 @@ public class Knapsack{
 		public String toString(){
 			return "Level: "+level+" bound: "+bound+" value: "+value+" weight: "+weight+" items: "+Arrays.toString(selectedItems)+" \n";
 		}
-	
 	}
 }
 
