@@ -31,6 +31,12 @@ import org.jorlib.alg.knapsack.separation.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
 
+/**
+ * A TestSuite for all tests in this package.
+ *
+ * @author Joris Kinable
+ * @since April 8, 2015
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 	KnapsackTest.class,
