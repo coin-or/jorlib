@@ -214,7 +214,6 @@ public class LiftedCoverInequalitySeparator {
 		Lk.removeAll(C2); //Ignore all variables in set C2
 		NminLk.addAll(minimalCoverSet);
 		
-		int iteration=1;
 		while(!Lk.isEmpty()){
 			//Compute betas
 			int[] betas=new int[Lk.size()];
@@ -254,7 +253,6 @@ public class LiftedCoverInequalitySeparator {
 			Lk.remove(jstar); //Remove j* from Lk
 			NminLk.add(jstar);
 			
-			iteration++;
 		}
 		//Lk should be empty here. Test whether \sum_j\in N \alpha_j variableValues[j] > |C| -1, if so, we found a violated inequality \sum_j\in N \alpha_j variableValues[j] <= |C| -1
 		liftedCoverRHS=minimalCoverRHS;

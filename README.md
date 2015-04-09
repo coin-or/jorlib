@@ -12,7 +12,7 @@ Please address all contributions, suggestions, and inquiries to the current proj
 
 ## Introduction ##
 
-jORLib is a Java class library that provides implementations for Operations Research problems. The code requires JDK 1.8 or later, and is released under the terms of GPLv3. 
+jORLib is a Java class library that provides implementations for Operations Research problems. The code requires JDK 1.8 or later, and is released under the terms of GPLv3. Many of the implementations are derived from journal papers/books and include frequently reoccuring problems such as separation algorithms to solve knapsack, TSP, packing problems, separation algorithms for valid inequalities, etc.
 
 A copy of the [GPLv3](LICENSE) is included in the download.
 

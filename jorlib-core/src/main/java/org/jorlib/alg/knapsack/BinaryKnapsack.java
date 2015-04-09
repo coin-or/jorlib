@@ -32,14 +32,14 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 /**
- * Branch and bound implementation of knapsack. 
+ * Memory efficient Branch and bound implementation of knapsack. 
  * 
  * Solves the problem:
  * max \sum_i c_i x_i
  * s.t. \sum_i a_i x_i <= b
  * x_i binary
  * 
- * The implementation is space efficient: it does not rely on large matrices.
+ * The implementation is memory efficient: it does not rely on large matrices.
  * The knapsack problem is solved as a binary tree problem. Each level of the tree corresponds to a specific item. Each time we branch on a particular node, two child-nodes 
  * are created, reflecting whether the item at the level of the child nodes is selected, or not. As a result, at most 2^n nodes, where n is the number of items, are created.
  * In practice, the number of generated nodes is significantly smaller, as the number of items one can choose depends on the knapsack weight. Furthermore, the search tree is pruned using
