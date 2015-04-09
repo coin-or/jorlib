@@ -34,6 +34,7 @@ Will be included later....
 
 - jORLib requires JDK 1.8 or later to build.
 - [JUnit](http://www.junit.org) is a unit testing framework. You need JUnit only if you want to run the unit tests.  JUnit is licensed under the terms of the IBM Common Public License.  The JUnit tests included with jORLib have been created using JUnit `4.12`.
+- [jGraphT](http://jgrapht.org/) is a free Java graph library that provides mathematical graph-theory objects and algorithms and supports various types of graphs. jGraphT is required to model several problems, such as the TSP network for the subtour elimination algorithm. jGraphT version 0.9.0 is used in jORLib. 
 
 
 ## Online Resources ##
