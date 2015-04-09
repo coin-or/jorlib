@@ -28,6 +28,7 @@ package org.jorlib.alg;
 
 import org.jorlib.alg.knapsack.*;
 import org.jorlib.alg.knapsack.separation.*;
+import org.jorlib.alg.packing.circlePacking.SmallestEnclosingCircleCalculatorTest;
 import org.junit.runner.*;
 import org.junit.runners.*;
 
@@ -40,7 +41,8 @@ import org.junit.runners.*;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 	KnapsackTest.class,
-	LiftedCoverInequalitySeparatorTest.class
+	LiftedCoverInequalitySeparatorTest.class,
+	SmallestEnclosingCircleCalculatorTest.class
 })
 
 public class AllAlgTest {

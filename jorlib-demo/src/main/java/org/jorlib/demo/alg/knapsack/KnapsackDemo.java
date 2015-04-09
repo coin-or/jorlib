@@ -41,10 +41,12 @@ public final class KnapsackDemo {
 	
 	public static void main(String[] args){
 		
+		//Define the knapsack problem...
 		double[] itemValues={15,10,9,5};
 		int[] itemWeights={1,5,3,4};
 		int maxKnapsackWeight=8;
 		
+		//... and solve it:
 		BinaryKnapsack knapsack=new BinaryKnapsack();
 		knapsack.solveKnapsackProblem(itemValues.length, maxKnapsackWeight, itemValues, itemWeights);
 		System.out.println("Knapsack solution: ");

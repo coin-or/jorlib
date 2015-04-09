@@ -39,12 +39,17 @@ import org.jorlib.alg.packing.circlePacking.util.MathUtil;
 
 /**
  * For a given set of circles C, this class calculates the smallest enclosing circle which encloses all the circles in set C. The 
- * circles in C can have varying radii.
+ * circles in C can have varying radii. To emphasize, this class does *NOT* perform circle packing. It merely computes the smallest enclosing
+ * circle around a set of circles which have already been fixed.
  * 
  * The implementation of this class is based on: 
  * "A randomized incremental algorithm" in:
  * Xu, S. Freund, R.M. Sun, J. Solution methodologies for the Smallest Enclosing Circle Problem.
  * Computational Optimization and Applications, volumne 25, issue 1-3, pp283-292, 2003
+ * 
+ * Calculating the exact size of the smallest enclosing circle can be computationally expensive. This class also offers an approximation of
+ * this value. The approximated radius is guaranteed to be larger or equal to the exact radius. The tighter the circles are packed, the more
+ * accurate the approximation becomes.
  * 
  * Examples for circle packing are given here:
  * 		http://mathworld.wolfram.com/CirclePacking.html
@@ -55,7 +60,7 @@ import org.jorlib.alg.packing.circlePacking.util.MathUtil;
  * best results with their Quadratic programming approach, but we obtained better results with their 'Randomized incremental algorithm'.
  * Further experimenting may be required to determine the fastest method.
  * 
- * To limit errors caused by rounding issues, this class uses BigDecimals for added precision.
+ * To limit the impact caused by rounding issues, this class uses BigDecimals for added precision.
  * 
  * @author Joris Kinable
  * @since April 8, 2015
@@ -76,18 +81,66 @@ public class SmallestEnclosingCircleCalculator {
 	private BigDecimal[] yCors; //yCors of circles
 	private BigDecimal[] radii; //radii of circles
 	
-	private BigDecimal R=BigDecimal.ZERO;
-	private BigDecimal x=BigDecimal.ZERO;
-	private BigDecimal y=BigDecimal.ZERO;
+	private BigDecimal R=BigDecimal.ZERO; //Radix of enclosing circle
+	private BigDecimal x=BigDecimal.ZERO; //x-cor of the center of the enclosing circle
+	private BigDecimal y=BigDecimal.ZERO; //y-cor of the center of the enclosing circle
+	
+	
+	/**
+	 * Given a set of circles identified by their x-coordinates, y-coordinates and radii, this method *approximates*
+	 * the smallest enclosing circle which encloses all the circles provided. The circles may overlap and can be of
+	 * any size. The approximation is calculated as follows. Let N be the number of circles, x_i, y_i, r_i resp the x coordinate,
+	 * y coordinate, and radius of circles i.
+	 * 
+	 * xAVG=\frac{\sum_i x_i}{N}
+	 * yAVG=\frac{\sum_i y_i}{N}
+	 * 
+	 * R=max_i \sqrt((xAVG-x_i)^2+(yAVG-y_i)^2)+r_i
+	 * 
+	 * The container will have its center at (xAVG,yAVG) and has radius R. The denser the packing of the circles, the more accurate
+	 * the approximation of the container will be. This method is computationally cheap, fast and accurate. The approximated radius
+	 * is guaranteed to be larger or equal to the exact radius.
+	 * 
+	 * @param xCors x-coordinates of the circles to be enclosed (can be positive and negative values)
+	 * @param yCors y-coordinates of the circles to be enclosed (can be positive and negative values)
+	 * @param radii radii of the circles to be enclosed (must be strictly positive, circles can be of any size)
+	 */
+	public void calculateApproximateContainer(double[] xCors, double[] yCors, double[] radii) {
+		double maxR=Double.MIN_VALUE;
+		int nrCircles=xCors.length;
+		
+		double xAVG = 0;
+		double yAVG = 0;
+		
+		for (int i = 0; i < nrCircles; i++) {
+			xAVG+=xCors[i];
+			yAVG+=yCors[i];
+		}
+		xAVG/=nrCircles;
+		yAVG/=nrCircles;
+		
+		for (int i = 0; i < nrCircles; i++) {
+			double xi=xCors[i];
+			double yi=yCors[i];
+			double ri=radii[i];
+			double dist = Math.sqrt(Math.pow(xAVG-xi, 2) + Math.pow(yAVG-yi, 2))+ri;
+			if (dist>maxR) maxR=dist;
+		}
+		
+		this.R=BigDecimal.valueOf(maxR);
+		this.x=BigDecimal.valueOf(xAVG);
+		this.y=BigDecimal.valueOf(yAVG);
+	}
 	
 	/**
 	 * Given a set of circles identified by their x-coordinates, y-coordinates and radii, this method calculates
-	 * the smallest enclosing circle which encloses all the circles provided
-	 * @param xCors x-coordinates of the circles to be enclosed
-	 * @param yCors y-coordinates of the circles to be enclosed
-	 * @param radii radii of the circles to be enclosed
+	 * the smallest enclosing circle which encloses all the circles provided. The circles may overlap and can be of
+	 * any size.
+	 * @param xCors x-coordinates of the circles to be enclosed (can be positive and negative values)
+	 * @param yCors y-coordinates of the circles to be enclosed (can be positive and negative values)
+	 * @param radii radii of the circles to be enclosed (must be strictly positive, circles can be of any size)
 	 */
-	public void calcContainer(double[] xCors, double[] yCors, double[] radii){
+	public void calcExactContainer(double[] xCors, double[] yCors, double[] radii){
 		this.xCors=MathUtil.doubleToBigDecimalArray(xCors);
 		this.yCors=MathUtil.doubleToBigDecimalArray(yCors);
 		this.radii=MathUtil.doubleToBigDecimalArray(radii);
@@ -512,39 +565,4 @@ public class SmallestEnclosingCircleCalculator {
 		}
 	}
 	
-	public static void main(String[] args){
-		/*BigDecimal[] xCors={BigDecimal.valueOf(235.31177327845475),BigDecimal.valueOf(235.31116315821924)};
-		BigDecimal[] yCors={BigDecimal.valueOf(206.11430328078205),BigDecimal.valueOf(38.673739813401546)};
-		BigDecimal[] radii={BigDecimal.valueOf(22),BigDecimal.valueOf(26)};*/
-		
-		/*BigDecimal[] xCors={BigDecimal.valueOf(214.72478255293208),BigDecimal.valueOf(214.10291280864197)};
-		BigDecimal[] yCors={BigDecimal.valueOf(252.1598389138573),BigDecimal.valueOf(16.91795331862308)};
-		BigDecimal[] radii={BigDecimal.valueOf(22),BigDecimal.valueOf(26)};*/
-		
-		/*BigDecimal[] xCors={BigDecimal.valueOf(0),BigDecimal.valueOf(50),BigDecimal.valueOf(25)};
-		BigDecimal[] yCors={BigDecimal.valueOf(0),BigDecimal.valueOf(1),BigDecimal.valueOf(45)};
-		BigDecimal[] radii={BigDecimal.valueOf(10),BigDecimal.valueOf(10),BigDecimal.valueOf(10)};*/
-		
-		/*BigDecimal[] xCors={BigDecimal.valueOf(111.4861111111111),BigDecimal.valueOf(111.62415102121659)};
-		BigDecimal[] yCors={BigDecimal.valueOf(255.9937021940048),BigDecimal.valueOf(12.026623483284673)};
-		BigDecimal[] radii={BigDecimal.valueOf(22),BigDecimal.valueOf(26)};*/
-		
-//			double[] xCors={243.82647433216889,260.63325958092827,214.72478255293208};
-//			double[] yCors={209.06585400196616,159.85679010513834,252.1598389138573};
-//			double[] radii={30,22,22};
-		
-//			double[] xCors={-1,1,0,0};
-//			double[] yCors={0,0,-1.4966629547095767,1.6155494421403511};
-//			double[] radii={1,1,.8,.9};
-		double[] xCors={-1,1,-0.8,0.9};
-		double[] yCors={0,0,-1.8,-1.9};
-		double[] radii={1,1,.8,.9};
-		
-		SmallestEnclosingCircleCalculator cpe=new SmallestEnclosingCircleCalculator();
-		cpe.calcContainer(xCors, yCors, radii);
-		System.out.println("test");
-		cpe.calcContainer(xCors, yCors, radii);
-		System.out.println("Container size: "+cpe.getRadius());
-		System.out.println("Container pos: "+Arrays.toString(cpe.getContainerPosition()));
-	}
 }
