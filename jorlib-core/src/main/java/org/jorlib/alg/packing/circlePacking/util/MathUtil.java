@@ -43,9 +43,8 @@ public class MathUtil {
 	/**
 	 * Returns the correctly rounded square root of a positive BigDecimal. 
 	 * Source (publicly available): http://iteror.org/big/Retro/blog/sec/archive20070915_295396.html
-	 * NOTE: this method is writtend by Frans Lelieveld, 28 September 2007.
-	 * NO CONTACT information for the author of this method could be found. It is unclear whether we are allowed to
-	 * use this code in this library. Please advise.
+	 * NOTE: this method is written by Frans Lelieveld, 28 September 2007. Permission has been granted by Frans
+	 * Lelieveld to use this method in jORLib.
 	 * 
 	 * The algorithm for taking the square root of a BigDecimal is most
 	 * critical for the speed of your application. This method performs the fast

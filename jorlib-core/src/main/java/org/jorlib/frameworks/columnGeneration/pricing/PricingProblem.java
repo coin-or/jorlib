@@ -14,48 +14,66 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
  * @author jkinable
  *
  */
-public abstract class PricingProblem<T, U extends Column> {
+public class PricingProblem<T, U extends Column<T,U>> {
 
 	protected final T modelData;
+	
+	public final String name;
 	//Set of columns active for this pricing problem
 	protected final Set<U> activeColumns;
 	//List of new columns generated for this pricing problem
-	protected final List<U> newColumns;
+//	protected final List<U> newColumns;
 	
 	//Information coming from the master problem
-	protected double[] modifiedCosts;
-	protected double dualConstant;
+	public double[] modifiedCosts;
+	public double dualConstant;
 		
-	public PricingProblem(T modelData){
+	public PricingProblem(T modelData, String name){
 		this.modelData=modelData;
+		this.name=name;
 		activeColumns=new LinkedHashSet<>();
-		newColumns=new ArrayList<>();
+//		newColumns=new ArrayList<>();
 	}
 	
-	public void setDualConstant(double dualConstant){
-		this.dualConstant=dualConstant;
+	public void initPricingProblem(double[] modifiedCosts){
+		this.initPricingProblem(modifiedCosts,0);
 	}
-	public void setModifiedCosts(double[] modifiedCosts){
+	public void initPricingProblem(double[] modifiedCosts, double dualConstant){
 		this.modifiedCosts=modifiedCosts;
+		this.dualConstant=dualConstant;
+//		newColumns.clear();
 	}
 	
 	public int getNrColumns(){
 		return activeColumns.size();
 	}
 	
-	protected boolean removeColumn(U column){
+	public boolean removeColumn(U column){
 		return activeColumns.remove(column);
 	}
 	
-	protected void addNewColumns(List<U> newColumns){
-		for(U column : newColumns){
-			if(activeColumns.contains(column))
-				throw new RuntimeException("Duplicate column has been generated for pricing problem: "+this.toString()+"! This column already exists and by definition should not have negative reduced cost: "+column);
-			else
-				activeColumns.add(column);
-		}
-		this.newColumns.addAll(newColumns);
+	public void addColumn(U column){
+		if(activeColumns.contains(column))
+			throw new RuntimeException("Duplicate column has been generated for pricing problem: "+this.toString()+"! This column already exists and by definition should not have negative reduced cost: "+column);
+		else
+			activeColumns.add(column);
 	}
+	
+//	protected void addNewColumns(List<U> newColumns){
+//		for(U column : newColumns){
+//			if(activeColumns.contains(column))
+//				throw new RuntimeException("Duplicate column has been generated for pricing problem: "+this.toString()+"! This column already exists and by definition should not have negative reduced cost: "+column);
+//			else
+//				activeColumns.add(column);
+//		}
+//		this.newColumns.addAll(newColumns);
+//	}
+	
+//	public List<U> getNewColumns(){
+//		return newColumns;
+//	}
 
-	public abstract String toString();
+	public String toString(){
+		return name;
+	}
 }

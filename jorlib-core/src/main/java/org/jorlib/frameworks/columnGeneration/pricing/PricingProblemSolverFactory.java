@@ -9,7 +9,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
  * @author jkinable
  *
  */
-public final class  PricingProblemSolverFactory<T,U extends Column, V extends PricingProblem<T, U>> {
+public final class  PricingProblemSolverFactory<T,U extends Column<T,U>, V extends PricingProblem<T, U>> {
 	
 	private final Class<? extends PricingProblemSolver<T, U, V>> solverClass;
 	private final String solverName;

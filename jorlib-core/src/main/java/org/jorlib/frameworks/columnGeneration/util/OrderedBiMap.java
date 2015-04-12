@@ -99,7 +99,6 @@ public class OrderedBiMap<K,V> extends AbstractMap<K, V>{
 	 * @param an array which will contain the keys
 	 * @return keys array
 	 */
-	@SuppressWarnings("unchecked")
 	public K[] getKeysAsArray(K[] a){
 		return keys.toArray(a);
 	}
@@ -109,7 +108,6 @@ public class OrderedBiMap<K,V> extends AbstractMap<K, V>{
 	 * @param an array which will contain the values
 	 * @return value array
 	 */
-	@SuppressWarnings("unchecked")
 	public V[] getValuesAsArray(V[] a){
 		return values.toArray(a);
 	}

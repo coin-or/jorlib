@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author jkinable
  */
-public class ColGen<T, U extends Column, V extends PricingProblem<T, U>> {
+public class ColGen<T, U extends Column<T,U>, V extends PricingProblem<T, U>> {
 	
 	final Logger logger = LoggerFactory.getLogger(ColGen.class);
 	static final Configuration config=Configuration.getConfiguration();
@@ -46,9 +46,7 @@ public class ColGen<T, U extends Column, V extends PricingProblem<T, U>> {
 	//Pricing algorithms, see Constants defition
 //	private final PricingSolvers[] pricingAlgorithms;
 	//Manages parallel execution of pricing problems
-	private final PricingProblemManager<U> pricingProblemManager;
-	//Generate cuts for the master problem
-	private final CutHandler cutHandler;
+	private final PricingProblemManager<T,U, V> pricingProblemManager;
 	
 	private double objective; //Objective value of column generation procedure
 	private int upperBound=Integer.MAX_VALUE; //Colgen is terminated if objective exceeds upperBound. Upperbound is set equal to the best incumbent integer solution
@@ -63,14 +61,13 @@ public class ColGen<T, U extends Column, V extends PricingProblem<T, U>> {
 					Master<T,V,U> master, 
 					List<V> pricingProblems,
 					List<Class<PricingProblemSolver<T, U, V>>> solvers,
-					double objectiveInitSolution,
 					List<U> initSolution,
 					int upperBound){
 		this.dataModel=dataModel;
 		this.master=master;
 		this.pricingProblems=pricingProblems;
-		master.setInitialSolution(initSolution);
-		this.objective=objectiveInitSolution;
+		this.solvers=solvers;
+		master.addColumns(initSolution);
 		this.upperBound=upperBound;
 		
 		//Generate the pricing problem instances
@@ -82,10 +79,7 @@ public class ColGen<T, U extends Column, V extends PricingProblem<T, U>> {
 			}
 		}
 		
-		pricingProblemManager=new PricingProblemManager<U>(pricingProblems, pricingProblemBunddles);
-		
-		//Define the Cut handler
-		cutHandler=new CutHandler();
+		pricingProblemManager=new PricingProblemManager<T,U, V>(pricingProblems, pricingProblemBunddles);
 	}
 	
 	
@@ -111,10 +105,10 @@ public class ColGen<T, U extends Column, V extends PricingProblem<T, U>> {
 		
 		runtime=System.currentTimeMillis();
 		if(config.EXPORT_MODEL) master.exportModel("0");
-		List<U> newColumns=new ArrayList<U>();
 //			List<List<ExamSchedule>> newColumns=new ArrayList<List<ExamSchedule>>();
 //			for(int i=0; i<geoxam.exams.size(); i++)
 //				newColumns.add(new ArrayList<ExamSchedule>());
+		List<U> newColumns=new ArrayList<>();
 		boolean foundNewColumns=false;
 		boolean hasNewCuts=false;
 		do{
@@ -146,26 +140,26 @@ public class ColGen<T, U extends Column, V extends PricingProblem<T, U>> {
 			//Get new columns
 			logger.info("### PRICING ################################");
 			foundNewColumns=false;
-			newColumns.clear();
 			
 			time=System.currentTimeMillis();
 			
 			//Update data in pricing problems
 			for(V pricingProblem : pricingProblems){
-				double[] modifiedCosts=master.getReducedCostVector(pricingProblem);
-				double dualConstant=master.getDualConstant(pricingProblem);
-				pricingProblem.setDualConstant(dualConstant);
-				pricingProblem.setModifiedCosts(modifiedCosts);
+//				double[] modifiedCosts=master.getReducedCostVector(pricingProblem);
+//				double dualConstant=master.getDualConstant(pricingProblem);
+//				pricingProblem.initPricingProblem(modifiedCosts, dualConstant);
+				master.initializePricingProblem(pricingProblem);
 			}
 			
 			//Solve pricing problems in the order of the pricing algorithms
 			for(int solver=0; solver<solvers.size(); solver++){
-				newColumns.addAll(pricingProblemManager.solvePricingProblems(solver));
+				newColumns=pricingProblemManager.solvePricingProblems(solver);
+				foundNewColumns=newColumns.isEmpty();
 				
 				
 				
 				//Calculate lower bound when the pricing problems are solved using an exact algorithm
-				if(solver==solvers.size()-1){
+				/*if(solver==solvers.size()-1){
 					//Check whether all pricing problems are feasible. If not, no feasible solution exists to the pricing problem, probably caused because of branching decisions. Then we quit.
 					boolean pricingProblemIsFeasible=true;
 					for(PricingProblem pp : pricingProblems.get(pa)){
@@ -182,21 +176,22 @@ public class ColGen<T, U extends Column, V extends PricingProblem<T, U>> {
 						break;
 					}
 //						System.out.println("Updated lower bound! LB: "+lowerBound+" obj: "+objective);
-				}
+				}*/
 				//Stop when we found new columns
-				if(!newColumns.isEmpty()){
-					foundNewColumns=true;
+				if(foundNewColumns){
 					break;
 				}
 			}
-			nrGeneratedColumns+=newColumns.size();
+			
 			
 			pricingSolveTime+=(System.currentTimeMillis()-time);
-			for(Column es : newColumns){
-				logger.debug("e:{} - {}",es.e.name,es);
-				master.addColumn(es.e, es);
+			nrGeneratedColumns+=newColumns.size();
+			for(U column : newColumns){
+				master.addColumn(column);
+				column.associatedPricingProblem.addColumn(column);
 			}
-			if(config.EXPORT_MODEL) master.exportModel(master.getIterationCount());
+			
+			if(config.EXPORT_MODEL) master.exportModel(""+master.getIterationCount());
 			
 			if(System.currentTimeMillis() >= timeLimit){
 				//this.closeMaster();
@@ -228,7 +223,7 @@ public class ColGen<T, U extends Column, V extends PricingProblem<T, U>> {
 	 * The parameter specifies which Pricing Problem should be used to obtain Upper bound information from.
 	 * Returns the best lower bound for the currenst master
 	 */
-	private double calculateLowerBound(PricingSolvers pa){
+	/*private double calculateLowerBound(PricingSolvers pa){
 		double newLowerBound=0;
 		double[] upperBoundsOnPricing=pricingProblemManager.getBoundsOnPricingProblems(pa); //Calculate all bounds through parallel execution
 		
@@ -242,7 +237,7 @@ public class ColGen<T, U extends Column, V extends PricingProblem<T, U>> {
 		newLowerBound += master.getLowerBoundComponent();
 		this.lowerBound=Math.max(this.lowerBound, newLowerBound);
 		return lowerBound;
-	}
+	}*/
 	
 	public double getObjective(){
 		return objective;
@@ -269,7 +264,7 @@ public class ColGen<T, U extends Column, V extends PricingProblem<T, U>> {
 //		return master.getNrRestartsMaster();
 //	}
 	
-	public <U extends Column> List<U> getSolution(){
+	public List<U> getSolution(){
 		return master.getSolution();
 	}
 	public List<Inequality> getCuts(){
@@ -296,6 +291,5 @@ public class ColGen<T, U extends Column, V extends PricingProblem<T, U>> {
 	public void close(){
 		master.close();
 		pricingProblemManager.close();
-		if(cutHandler != null) cutHandler.close();
 	}
 }

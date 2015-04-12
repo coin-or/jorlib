@@ -8,11 +8,13 @@ import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblem;
+import org.jorlib.frameworks.columnGeneration.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class Master<T, V extends PricingProblem<T>, U extends Column> {
+public abstract class Master<T, V extends PricingProblem<T, U>, U extends Column<T,U>> {
 	protected final Logger logger = LoggerFactory.getLogger(Master.class);
+	protected final Configuration config=Configuration.getConfiguration();
 
 	//Data object describing the problem at hand
 	protected final T modelData;
@@ -21,6 +23,10 @@ public abstract class Master<T, V extends PricingProblem<T>, U extends Column> {
 	//Handle to a cutHandler which performs separation
 	protected CutHandler cutHandler;
 	
+	public Master(T modelData){
+		this.modelData=modelData;
+		cutHandler=new CutHandler();
+	}
 	public Master(T modelData, CutHandler cutHandler){
 		this.modelData=modelData;
 		this.cutHandler=cutHandler;
@@ -40,15 +46,16 @@ public abstract class Master<T, V extends PricingProblem<T>, U extends Column> {
 	 * Solve the master problem
 	 * @param timeLimit
 	 * @return Returns true if successfull (and optimal)
+	 * @throws TimeLimitExceededException 
 	 */
-	protected abstract boolean solveMasterProblem(long timeLimit);
+	protected abstract boolean solveMasterProblem(long timeLimit) throws TimeLimitExceededException;
 	
 	/**
 	 * Get the reduced cost information required for a particular pricingProblem. The pricing problem often looks like:
 	 * a_1x_1+a_2x_2+...+a_nx_n <= b, where a_i are dual variables, and b some constant. this method retuns the a_i values.
 	 * @return reduced cost information
 	 */
-	public abstract double[] getReducedCostVector(V pricingProblem);
+//	public abstract double[] getReducedCostVector(V pricingProblem);
 
 	/**
 	 * Get the reduced cost information required for a particular pricingProblem. The pricing problem often looks like:
@@ -56,7 +63,8 @@ public abstract class Master<T, V extends PricingProblem<T>, U extends Column> {
 	 * @param pricingProblem
 	 * @return Returns the dual constant
 	 */
-	public abstract double getDualConstant(V pricingProblem);
+//	public abstract double getDualConstant(V pricingProblem);
+	public abstract void initializePricingProblem(V pricingProblem);
 	
 	/**
 	 * Returns the objective value of the current master problem.
@@ -64,12 +72,6 @@ public abstract class Master<T, V extends PricingProblem<T>, U extends Column> {
 	public double getObjective(){
 		return masterData.objectiveValue;
 	}
-	
-	/**
-	 * @param pricingProblem
-	 * @return Returns how many patters have been generated for a particular pricing problem
-	 */
-	public abstract int getPatternCount(V pricingProblem);
 	
 	/**
 	 * @return Returns the number of times the master problem has been solved
@@ -128,10 +130,10 @@ public abstract class Master<T, V extends PricingProblem<T>, U extends Column> {
 
 	/**
 	 * Add a initial solution (list of columns)
-	 * @param initSolution
+	 * @param columns
 	 */
-	public void setInitialSolution(List<U> initSolution){
-		for(U column : initSolution){
+	public void addColumns(List<U> columns){
+		for(U column : columns){
 			this.addColumn(column);
 		}
 	}	
@@ -169,6 +171,11 @@ public abstract class Master<T, V extends PricingProblem<T>, U extends Column> {
 	public void exportModel(String name){
 		throw new UnsupportedOperationException("Not implemented");
 	}
+	
+	/**
+	 * Give a textual representation of the solution
+	 */
+	public abstract void printSolution();
 	
 	/**
 	 * Close the master problem

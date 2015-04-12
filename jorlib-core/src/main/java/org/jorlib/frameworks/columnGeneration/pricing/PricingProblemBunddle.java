@@ -11,7 +11,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
  * @author jkinable
  *
  */
-public final class PricingProblemBunddle<T, U extends Column, V extends PricingProblem<T, U>> {
+public final class PricingProblemBunddle<T, U extends Column<T,U>, V extends PricingProblem<T, U>> {
 	public final Class<? extends PricingProblemSolver<T, U, V>> pricingSolver;
 	public final List<PricingProblemSolver<T, U, V>> solverInstances;
 	

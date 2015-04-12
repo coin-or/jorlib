@@ -2,16 +2,18 @@ package org.jorlib.demo.frameworks.columnGeneration.example1.cg;
 
 import java.util.Arrays;
 
+import org.jorlib.demo.frameworks.columnGeneration.example1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
+import org.jorlib.frameworks.columnGeneration.pricing.PricingProblem;
 
-public class CuttingPattern extends Column {
+public class CuttingPattern extends Column<CuttingStock, CuttingPattern> {
 
 	//Denotes the number of times each final is cut out of the raw. 
-	public final int[] pattern;
+	public final int[] yieldVector;
 	
-	public CuttingPattern(String creator, boolean isArtificial, int[] pattern) {
-		super(creator, isArtificial);
-		this.pattern=pattern;
+	public CuttingPattern(String creator, boolean isArtificial, int[] pattern, CuttingStockPricingProblem pricingProblem) {
+		super(creator, isArtificial, pricingProblem);
+		this.yieldVector=pattern;
 	}
 
 	@Override
@@ -21,17 +23,17 @@ public class CuttingPattern extends Column {
 		if(!(o instanceof CuttingPattern))
 			return false;
 		CuttingPattern other=(CuttingPattern) o;
-		return Arrays.equals(this.pattern, other.pattern);
+		return Arrays.equals(this.yieldVector, other.yieldVector);
 	}
 
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(pattern);
+		return Arrays.hashCode(yieldVector);
 	}
 
 	@Override
 	public String toString() {
-		String s="Cutting pattern: "+Arrays.toString(pattern);
+		String s="Value: "+this.value+" Cutting pattern: "+Arrays.toString(yieldVector)+" creator: "+this.creator;
 		return s;
 	}
 
