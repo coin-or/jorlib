@@ -28,8 +28,6 @@ public class CuttingStockSolver {
 		MasterImpl master=new MasterImpl(modelData);
 		//Create the pricing problem
 		CuttingStockPricingProblem pricingProblem=new CuttingStockPricingProblem(modelData, "cuttingStockPricing");
-		List<CuttingStockPricingProblem> pricingProblems=new ArrayList<>();
-		pricingProblems.add(pricingProblem);
 		//Define which solvers to use
 		List<Class<? extends PricingProblemSolver<CuttingStock, CuttingPattern, CuttingStockPricingProblem>>> solvers=Arrays.asList(ExactPricingProblemSolver.class);
 		//Define an upper bound (stronger is better). In this case we simply sum the demands, i.e. cut each final from its own raw (Rather poor initial solution). 
@@ -37,7 +35,7 @@ public class CuttingStockSolver {
 		//Create a set of initial columns.
 		List<CuttingPattern> initSolution=this.getInitialSolution(pricingProblem);
 		//Create a column generation instance
-		ColGen<CuttingStock, CuttingPattern, CuttingStockPricingProblem> cg=new ColGen<CuttingStock, CuttingPattern, CuttingStockPricingProblem>(modelData, master, pricingProblems, solvers, initSolution, upperBound);
+		ColGen<CuttingStock, CuttingPattern, CuttingStockPricingProblem> cg=new ColGen<CuttingStock, CuttingPattern, CuttingStockPricingProblem>(modelData, master, pricingProblem, solvers, initSolution, upperBound);
 		
 		//Solve the problem through column generation
 		try {

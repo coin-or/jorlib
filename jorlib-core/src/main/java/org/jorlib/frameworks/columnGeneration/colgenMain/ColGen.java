@@ -34,27 +34,33 @@ public class ColGen<T, U extends Column<T,U>, V extends PricingProblem<T, U>> {
 	static final Configuration config=Configuration.getConfiguration();
 
 	private final T dataModel;
+	
+	//Define the master problem
 	private final Master<T, V, U> master;
-	//Maintain the individual pricing problems for each pricing algorithm
-//	private final EnumMap<PricingSolvers, List<PricingProblem>> pricingProblems;
-	
+	//Define the pricing problems
 	private final List<V> pricingProblems;
+	//Maintain the classes which can be used to solve the pricing problems
 	private final List<Class<? extends PricingProblemSolver<T, U, V>>> solvers;
+	//For each solver, we maintain an instance for each pricing problem. This gives a |solvers|x|pricingProblems| array
 	private final List<PricingProblemBunddle<T, U, V>> pricingProblemBunddles;
-	
-	
-	//Pricing algorithms, see Constants defition
-//	private final PricingSolvers[] pricingAlgorithms;
 	//Manages parallel execution of pricing problems
 	private final PricingProblemManager<T,U, V> pricingProblemManager;
 	
-	private double objective; //Objective value of column generation procedure
-	private int upperBound=Integer.MAX_VALUE; //Colgen is terminated if objective exceeds upperBound. Upperbound is set equal to the best incumbent integer solution
-	private double lowerBound=0; //Lower bound on the objective. If lowerbound > upperBound, this node can be pruned.
+	//Objective value of column generation procedure
+	private double objective; 
+	//Colgen is terminated if objective exceeds upperBound. Upperbound is set equal to the best incumbent integer solution
+	private int upperBound=Integer.MAX_VALUE;
+	//Lower bound on the objective. If lowerbound > upperBound, this node can be pruned.
+	private double lowerBound=0;
+	//Total runtime of column generation solve procedure
 	private long runtime;
+	//Total number of iterations.
 	private int nrOfIterations=0;
-	private long masterSolveTime=0; //Total time used to solve the master problem;
-	private long pricingSolveTime=0; //Total time spend solving pricing problems
+	//Total time spent on solving the master problem
+	private long masterSolveTime=0;
+	//Total time spent on solving the pricing problem
+	private long pricingSolveTime=0;
+	//Total number of columns generated and added to the master problem
 	private int nrGeneratedColumns=0;
 	
 	public ColGen(T dataModel, 
@@ -79,6 +85,15 @@ public class ColGen<T, U extends Column<T,U>, V extends PricingProblem<T, U>> {
 		}
 		
 		pricingProblemManager=new PricingProblemManager<T,U, V>(pricingProblems, pricingProblemBunddles);
+	}
+	
+	public ColGen(T dataModel, 
+			Master<T,V,U> master, 
+			V pricingProblem,
+			List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
+			List<U> initSolution,
+			int upperBound){
+		this(dataModel, master, Arrays.asList(pricingProblem), solvers, initSolution, upperBound);
 	}
 	
 	

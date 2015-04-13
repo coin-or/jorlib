@@ -4,7 +4,8 @@ import java.util.Properties;
 
 /**
  * Singleton class providing configuration data
- * @author jkinable
+ * @author Joris Kinable
+ * @version 13-4-2015
  *
  */
 public class Configuration {
@@ -52,6 +53,7 @@ public class Configuration {
 	}
 	
 	/**
+	 * Read properties from a file
 	 * @param Properties file containing the configuration.
 	 */
 	public static void readFromFile(Properties properties){
@@ -83,19 +85,3 @@ public class Configuration {
 	public final boolean WRITE_STATS; 
 	
 }
-
-
-/**
- * File file = new File("test.properties");
-			FileInputStream fileInput = new FileInputStream(file);
-			Properties properties = new Properties();
-			properties.load(fileInput);
-			fileInput.close();
-
-			Enumeration enuKeys = properties.keys();
-			while (enuKeys.hasMoreElements()) {
-				String key = (String) enuKeys.nextElement();
-				String value = properties.getProperty(key);
-				System.out.println(key + ": " + value);
-			}
-			*/
