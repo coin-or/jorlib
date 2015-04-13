@@ -123,29 +123,33 @@ public class MasterImpl extends Master<TSP, MatchingGroup, Matching> {
 	@Override
 	public void addColumn(Matching column) {
 		Color matchingColor= column.associatedPricingProblem.color;
-		//Register column with objective
-		IloColumn iloColumn=master.column(obj,1);
-		//Register column with exactlyOneRedMatching/exactlyOneBlueMatching constr
-		if(matchingColor==Color.RED){
-			iloColumn=iloColumn.and(master.column(exactlyOneRedMatchingConstr, 1));
-		}else{
-			iloColumn=iloColumn.and(master.column(exactlyOneBlueMatchingConstr, 1));
-		}
-		//Register column with edgeOnlyUsedOnce constraints
-		for(int i=0; i<modelData.N-1; i++){
-			for(int j=i+1; j<modelData.N; j++){
-				if(column.succ[i]==j){
-					Edge edge=new Edge(i, j);
-					iloColumn=iloColumn.and(master.column(edgeOnlyUsedOnceConstr.get(edge), 1));
+		try{
+			//Register column with objective
+			IloColumn iloColumn=master.column(obj,1);
+			//Register column with exactlyOneRedMatching/exactlyOneBlueMatching constr
+			if(matchingColor==Color.RED){
+				iloColumn=iloColumn.and(master.column(exactlyOneRedMatchingConstr, 1));
+			}else{
+				iloColumn=iloColumn.and(master.column(exactlyOneBlueMatchingConstr, 1));
+			}
+			//Register column with edgeOnlyUsedOnce constraints
+			for(int i=0; i<modelData.N-1; i++){
+				for(int j=i+1; j<modelData.N; j++){
+					if(column.succ[i]==j){
+						Edge edge=new Edge(i, j);
+						iloColumn=iloColumn.and(master.column(edgeOnlyUsedOnceConstr.get(edge), 1));
+					}
 				}
 			}
+			//Register column with subtour elimination constraints
+			
+			//Create the variable and store it
+			IloNumVar var=master.numVar(iloColumn, 0, Double.MAX_VALUE, "z_"+matchingColor.name()+"_"+column.associatedPricingProblem.getNrColumns());
+			master.add(var);
+			matchingVars.put(column, var);
+		} catch (IloException e) {
+			e.printStackTrace();
 		}
-		//Register column with subtour elimination constraints
-		
-		//Create the variable and store it
-		IloNumVar var=master.numVar(iloColumn, 0, Double.MAX_VALUE, "z_"+matchingColor.name()+"_"+column.associatedPricingProblem.getNrColumns());
-		master.add(var);
-		matchingVars.put(column, var);
 	}
 
 	@Override

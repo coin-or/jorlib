@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author jkinable
  */
-public class ColGen<T, U extends Column<T,U>, V extends PricingProblem<T, U>> {
+public class ColGen<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>> {
 	
 	final Logger logger = LoggerFactory.getLogger(ColGen.class);
 	static final Configuration config=Configuration.getConfiguration();

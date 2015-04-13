@@ -12,7 +12,7 @@ import org.jorlib.frameworks.columnGeneration.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class Master<T, V extends PricingProblem<T, U>, U extends Column<T,U>> {
+public abstract class Master<T, V extends PricingProblem<T,U,V>, U extends Column<T,U,V>> {
 	protected final Logger logger = LoggerFactory.getLogger(Master.class);
 	protected final Configuration config=Configuration.getConfiguration();
 

@@ -12,7 +12,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
  * @author Joris Kinable
  * @version 13-4-2015
  */
-public class CuttingPattern extends Column<CuttingStock, CuttingPattern> {
+public class CuttingPattern extends Column<CuttingStock, CuttingPattern, CuttingStockPricingProblem> {
 
 	//Denotes the number of times each final is cut out of the raw. 
 	public final int[] yieldVector;

@@ -1,9 +1,6 @@
 package org.jorlib.frameworks.columnGeneration.pricing;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
@@ -14,7 +11,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
  * @author jkinable
  *
  */
-public class PricingProblem<T, U extends Column<T,U>> {
+public class PricingProblem<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>> {
 
 	protected final T modelData;
 	

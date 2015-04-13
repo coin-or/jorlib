@@ -8,16 +8,9 @@ import org.jorlib.demo.frameworks.columnGeneration.example2.model.TSP;
 import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblem;
 
-public class Matching extends Column<TSP, Matching> {
+public class Matching extends Column<TSP, Matching, MatchingGroup> {
 
-	//Edges in the matching
-	public final Set<Edge> edges;
-	//successor array. succ[2]=4 and succ[4]=2 models that edge (2,4) is contained in the matching.
-	public final int[] succ;
-	//Weighted cost of the matching
-	public final int cost;
-		
-	public Matching(String creator, boolean isArtificial,	PricingProblem<TSP, Matching> associatedPricingProblem,
+	public Matching(String creator, boolean isArtificial,	MatchingGroup associatedPricingProblem,
 			Set<Edge> edges,
 			int[] succ,
 			int cost) {
@@ -26,6 +19,14 @@ public class Matching extends Column<TSP, Matching> {
 		this.succ=succ;
 		this.cost=cost;
 	}
+
+	//Edges in the matching
+	public final Set<Edge> edges;
+	//successor array. succ[2]=4 and succ[4]=2 models that edge (2,4) is contained in the matching.
+	public final int[] succ;
+	//Weighted cost of the matching
+	public final int cost;
+		
 
 	@Override
 	public boolean equals(Object o) {
