@@ -61,7 +61,6 @@ public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem,
 			}
 			logger.debug("Finished solving master");
 		} catch (IloException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 			

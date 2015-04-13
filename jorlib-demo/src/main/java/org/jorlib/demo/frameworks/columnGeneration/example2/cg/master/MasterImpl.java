@@ -14,7 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jorlib.demo.frameworks.columnGeneration.example1.cg.CuttingPattern;
 import org.jorlib.demo.frameworks.columnGeneration.example2.cg.Matching;
 import org.jorlib.demo.frameworks.columnGeneration.example2.cg.MatchingGroup;
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.Color;
@@ -42,14 +41,51 @@ public class MasterImpl extends Master<TSP, MatchingGroup, Matching> {
 
 	@Override
 	protected boolean solveMasterProblem(long timeLimit)	throws TimeLimitExceededException {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			//Set time limit
+			double timeRemaining=Math.max(1,(timeLimit-System.currentTimeMillis())/1000.0);
+			master.setParam(IloCplex.DoubleParam.TiLim, timeRemaining); //set time limit in seconds
+			//Potentially export the model
+			if(config.EXPORT_MODEL) master.exportModel(config.EXPORT_MASTER_DIR+"master_"+this.getIterationCount()+".lp");
+			
+			//Solve the model
+			if(!master.solve() || master.getStatus()!=IloCplex.Status.Optimal){
+				if(master.getCplexStatus()==IloCplex.CplexStatus.AbortTimeLim) //Aborted due to time limit
+					throw new TimeLimitExceededException();
+				else
+					throw new RuntimeException("Master problem solve failed! Status: "+master.getStatus());
+			}else{
+				masterData.objectiveValue=master.getObjValue();
+			}
+			logger.debug("Finished solving master");
+		} catch (IloException e) {
+			e.printStackTrace();
+		}
+		return true;
 	}
 
 	@Override
 	public void initializePricingProblem(MatchingGroup pricingProblem) {
-		// TODO Auto-generated method stub
-		
+		try {
+			double[] modifiedCosts=new double[matchingVars.size()];
+			int index=0;
+			for(int i=0; i<modelData.N-1; i++){
+				for(int j=i+1; j<modelData.N; j++){
+					Edge edge=new Edge(i, j);
+					modifiedCosts[index]=master.getDual(edgeOnlyUsedOnceConstr.get(edge))-modelData.distanceMatrix[i][j];
+					index++;
+				}
+			}
+			double dualConstant;
+			if(pricingProblem.color==Color.RED)
+				dualConstant=-master.getDual(exactlyOneRedMatchingConstr);
+			else
+				dualConstant=-master.getDual(exactlyOneBlueMatchingConstr);
+			
+			pricingProblem.initPricingProblem(modifiedCosts, dualConstant);
+		} catch (IloException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -90,7 +126,7 @@ public class MasterImpl extends Master<TSP, MatchingGroup, Matching> {
 		//Register column with objective
 		IloColumn iloColumn=master.column(obj,1);
 		//Register column with exactlyOneRedMatching/exactlyOneBlueMatching constr
-		if(column.associatedPricingProblem.color=Color.RED){
+		if(matchingColor==Color.RED){
 			iloColumn=iloColumn.and(master.column(exactlyOneRedMatchingConstr, 1));
 		}else{
 			iloColumn=iloColumn.and(master.column(exactlyOneBlueMatchingConstr, 1));

@@ -118,6 +118,7 @@ public abstract class Master<T, V extends PricingProblem<T, U>, U extends Column
 	public List<Inequality> getCuts(){
 		return cutHandler.getCuts();
 	}
+	
 	/**
 	 * Build the master problem
 	 */
