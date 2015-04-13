@@ -18,21 +18,28 @@ import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
 /**
- * Implementation of Master class
- * @author jkinable
+ * Implementation of the Master problem for the Cutting Stock problem
+ * The Master problem is an LP which is being handled by Cplex
+ * 
+ * @author Joris Kinable
+ * @version 13-4-2015
  *
  */
 public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem, CuttingPattern> {
 
-	IloCplex master;
+	IloCplex master; //Cplex instance
 	private IloObjective obj; //Objective function
 	private IloRange[] satisfyDemandConstr; //Constraint
 	public OrderedBiMap<CuttingPattern, IloNumVar> cuttingPatternVars; //Variables
 	
 	public MasterImpl(CuttingStock modelData) {
 		super(modelData);
+		this.buildModel();
 	}
 
+	/**
+	 * Solve the master problem and return whether it was solved to optimality
+	 */
 	@Override
 	protected boolean solveMasterProblem(long timeLimit) throws TimeLimitExceededException {
 		try {
@@ -40,7 +47,10 @@ public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem,
 			double timeRemaining=Math.max(1,(timeLimit-System.currentTimeMillis())/1000.0);
 			logger.debug("Setting time limit to: {}",timeRemaining);
 			master.setParam(IloCplex.DoubleParam.TiLim, timeRemaining); //set time limit in seconds
+			//Potentially export the model
+			if(config.EXPORT_MODEL) master.exportModel(config.EXPORT_MASTER_DIR+"master_"+this.getIterationCount()+".lp");
 			
+			//Solve the model
 			if(!master.solve() || master.getStatus()!=IloCplex.Status.Optimal){
 				if(master.getCplexStatus()==IloCplex.CplexStatus.AbortTimeLim) //Aborted due to time limit
 					throw new TimeLimitExceededException();
@@ -49,6 +59,7 @@ public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem,
 			}else{
 				masterData.objectiveValue=master.getObjValue();
 			}
+			logger.debug("Finished solving master");
 		} catch (IloException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -57,6 +68,9 @@ public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem,
 		return true;
 	}
 
+	/**
+	 * Store the dual information required by the pricing problems into the pricing problem object
+	 */
 	@Override
 	public void initializePricingProblem(CuttingStockPricingProblem pricingProblem){
 		try {
@@ -69,10 +83,13 @@ public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem,
 		}
 	}
 
+	/**
+	 * Build the master problem
+	 */
 	@Override
 	protected void buildModel() {
 		try {
-			master=new IloCplex();
+			master=new IloCplex(); //Create cplex instance
 			master.setOut(null); //Disable cplex output
 			master.setParam(IloCplex.IntParam.Threads,config.MAXTHREADS); //Set number of threads that may be used by the master
 			
@@ -93,6 +110,9 @@ public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem,
 		
 	}
 
+	/**
+	 * Function which adds a new column to the master problem
+	 */
 	@Override
 	public void addColumn(CuttingPattern column) {
 		try {
@@ -113,6 +133,9 @@ public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem,
 		}
 	}
 
+	/**
+	 * Return the solution, i.e. columns with non-zero values in the master problem
+	 */
 	@Override
 	public List<CuttingPattern> getSolution() {
 		List<CuttingPattern> solution=new ArrayList<>();
@@ -121,6 +144,7 @@ public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem,
 			IloNumVar[] vars=cuttingPatternVars.getValuesAsArray(new IloNumVar[cuttingPatternVars.size()]);
 			double[] values=master.getValues(vars);
 			
+			//Iterate over each column and add it to the solution if it has a non-zero value
 			for(int i=0; i<cuttingPatterns.length; i++){
 				cuttingPatterns[i].value=values[i];
 				if(values[i]>=config.PRECISION){
@@ -135,16 +159,34 @@ public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem,
 		return solution;
 	}
 
+	/**
+	 * Close the master problem
+	 */
 	@Override
 	public void close() {
 		master.end();
 	}
 
+	/**
+	 * Print the solution if desired
+	 */
 	@Override
 	public void printSolution() {
 		System.out.println("Master solution:");
 		for(CuttingPattern cp : this.getSolution())
 			System.out.println(cp);
+	}
+	
+	/**
+	 * Export the model to a file
+	 */
+	@Override
+	public void exportModel(String fileName){
+		try {
+			master.exportModel(config.EXPORT_MASTER_DIR+fileName);
+		} catch (IloException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

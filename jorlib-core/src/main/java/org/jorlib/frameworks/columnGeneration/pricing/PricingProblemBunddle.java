@@ -17,7 +17,7 @@ public final class PricingProblemBunddle<T, U extends Column<T,U>, V extends Pri
 	
 	public PricingProblemBunddle(Class<? extends PricingProblemSolver<T, U, V>> pricingSolver, 
 									List<V> pricingProblems, 
-									PricingProblemSolverFactory<T, U, V> solverFactory){
+									DefaultPricingProblemSolverFactory<T, U, V> solverFactory){
 		this.pricingSolver=pricingSolver;
 		//Create the solver instances
 		solverInstances=new ArrayList<>(pricingProblems.size());

@@ -13,19 +13,27 @@ import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.CplexUtil;
 
+/**
+ * This class provides a solver for the cutting stock pricing problem.
+ * The pricing problem is a simple knapsack problem. Here we solve this problem through a simple MIP implementation.
+ * 
+ * @author Joris Kinable
+ * @version 13-4-2015
+ */
 public class ExactPricingProblemSolver extends PricingProblemSolver<CuttingStock, CuttingPattern, CuttingStockPricingProblem> {
 
 	private IloCplex cplex; //Cplex instance.
 	private IloObjective obj; //Objective function
-	private IloIntVar[] vars;
+	private IloIntVar[] vars; //Problem variables
 	
-	public ExactPricingProblemSolver(CuttingStock dataModel, 
-			CuttingStockPricingProblem pricingProblem) {
+	public ExactPricingProblemSolver(CuttingStock dataModel,String name, CuttingStockPricingProblem pricingProblem) {
 		super(dataModel, "ExactSolver", pricingProblem);
 		this.buildModel();
 	}
 
-	
+	/**
+	 * Build the MIP model
+	 */
 	private void buildModel(){
 		try {
 			cplex=new IloCplex();
@@ -54,10 +62,11 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<CuttingStock
 	protected List<CuttingPattern> generateNewColumns() throws TimeLimitExceededException {
 		List<CuttingPattern> newPatterns=new ArrayList<CuttingPattern>();
 		try {
+			//Compute how much time we may take to solve the pricing problem
 			double timeRemaining=Math.max(1,(timeLimit-System.currentTimeMillis())/1000.0);
-			logger.debug("Setting time limit to: {}",timeRemaining);
 			cplex.setParam(IloCplex.DoubleParam.TiLim, timeRemaining); //set time limit in seconds
 			
+			//Solve the problem and check the solution status
 			if(!cplex.solve() || cplex.getStatus()!=IloCplex.Status.Optimal){
 				if(cplex.getCplexStatus()==IloCplex.CplexStatus.AbortTimeLim){ //Aborted due to time limit
 					throw new TimeLimitExceededException();
@@ -71,7 +80,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<CuttingStock
 				this.pricingProblemInfeasible=false;
 				this.objective=cplex.getObjValue();
 				
-				if(objective >= 1+config.PRECISION){ //Generate new column
+				if(objective >= 1+config.PRECISION){ //Generate new column if it has negative reduced cost
 					double[] values=cplex.getValues(vars);
 					int[] pattern=new int[dataModel.nrFinals];
 					for(int i=0; i<dataModel.nrFinals; i++)
@@ -89,6 +98,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<CuttingStock
 
 	@Override
 	protected void setObjective() {
+		//Update the objective function with the new dual values
 		try {
 			cplex.setLinearCoefs(obj, pricingProblem.modifiedCosts, vars);
 		} catch (IloException e) {

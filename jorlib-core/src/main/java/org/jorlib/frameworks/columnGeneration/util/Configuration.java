@@ -22,7 +22,8 @@ public class Configuration {
 		
 		//CG & Branch-and-price params
 		CUTSENABLED = true;
-		EXPORT_MODEL=false;
+		EXPORT_MODEL=true;
+		EXPORT_MASTER_DIR="./output/masterLP/";
 		WRITE_STATS = false;
 	}
 	/**
@@ -37,6 +38,7 @@ public class Configuration {
 		//CG & Branch-and-price params
 		CUTSENABLED=Boolean.valueOf(properties.getProperty("CUTSENABLED"));
 		EXPORT_MODEL=Boolean.valueOf(properties.getProperty("EXPORT_MODEL"));
+		EXPORT_MASTER_DIR=properties.getProperty("EXPORT_MODEL_DIR");
 		WRITE_STATS=Boolean.valueOf(properties.getProperty("WRITE_STATS"));
 	}
 	
@@ -75,8 +77,11 @@ public class Configuration {
 	public final boolean CUTSENABLED; 
 	//Define whether master problem should be written to .lp file
 	public final  boolean EXPORT_MODEL; 
+	//Define export directory for master models
+	public final String EXPORT_MASTER_DIR;
 	//Define whether statistics should be written to output file
 	public final boolean WRITE_STATS; 
+	
 }
 
 

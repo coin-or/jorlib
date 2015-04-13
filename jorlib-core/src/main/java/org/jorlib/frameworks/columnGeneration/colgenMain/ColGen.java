@@ -14,7 +14,7 @@ import org.jorlib.frameworks.columnGeneration.pricing.PricingProblem;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemBunddle;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemManager;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolverFactory;
+import org.jorlib.frameworks.columnGeneration.pricing.DefaultPricingProblemSolverFactory;
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ public class ColGen<T, U extends Column<T,U>, V extends PricingProblem<T, U>> {
 //	private final EnumMap<PricingSolvers, List<PricingProblem>> pricingProblems;
 	
 	private final List<V> pricingProblems;
-	private final List<Class<PricingProblemSolver<T, U, V>>> solvers;
+	private final List<Class<? extends PricingProblemSolver<T, U, V>>> solvers;
 	private final List<PricingProblemBunddle<T, U, V>> pricingProblemBunddles;
 	
 	
@@ -60,23 +60,22 @@ public class ColGen<T, U extends Column<T,U>, V extends PricingProblem<T, U>> {
 	public ColGen(T dataModel, 
 					Master<T,V,U> master, 
 					List<V> pricingProblems,
-					List<Class<PricingProblemSolver<T, U, V>>> solvers,
+					List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
 					List<U> initSolution,
 					int upperBound){
 		this.dataModel=dataModel;
 		this.master=master;
 		this.pricingProblems=pricingProblems;
-		this.solvers=solvers;
+		this.solvers=solvers;//solvers;
 		master.addColumns(initSolution);
 		this.upperBound=upperBound;
 		
 		//Generate the pricing problem instances
 		pricingProblemBunddles=new ArrayList<>();
-		for(Class<PricingProblemSolver<T, U, V>> solverClass : solvers){
-			PricingProblemSolverFactory<T, U, V> factory=new PricingProblemSolverFactory<T, U, V>(solverClass, solverClass.getName(), dataModel);
-			for(PricingProblem<T, U> pricingProblem : pricingProblems){
-				PricingProblemBunddle<T, U, V> bunddle=new PricingProblemBunddle<>(solverClass, pricingProblems, factory);
-			}
+		for(Class<? extends PricingProblemSolver<T, U, V>> solverClass : solvers){
+			DefaultPricingProblemSolverFactory<T, U, V> factory=new DefaultPricingProblemSolverFactory<T, U, V>(solverClass, solverClass.getName(), dataModel);
+			PricingProblemBunddle<T, U, V> bunddle=new PricingProblemBunddle<>(solverClass, pricingProblems, factory);
+			pricingProblemBunddles.add(bunddle);
 		}
 		
 		pricingProblemManager=new PricingProblemManager<T,U, V>(pricingProblems, pricingProblemBunddles);
@@ -104,7 +103,7 @@ public class ColGen<T, U extends Column<T,U>, V extends PricingProblem<T, U>> {
 		pricingProblemManager.setTimeLimit(timeLimit);
 		
 		runtime=System.currentTimeMillis();
-		if(config.EXPORT_MODEL) master.exportModel("0");
+//		if(config.EXPORT_MODEL) master.exportModel("master0.lp");
 //			List<List<ExamSchedule>> newColumns=new ArrayList<List<ExamSchedule>>();
 //			for(int i=0; i<geoxam.exams.size(); i++)
 //				newColumns.add(new ArrayList<ExamSchedule>());
@@ -154,7 +153,7 @@ public class ColGen<T, U extends Column<T,U>, V extends PricingProblem<T, U>> {
 			//Solve pricing problems in the order of the pricing algorithms
 			for(int solver=0; solver<solvers.size(); solver++){
 				newColumns=pricingProblemManager.solvePricingProblems(solver);
-				foundNewColumns=newColumns.isEmpty();
+				foundNewColumns=!newColumns.isEmpty();
 				
 				
 				
@@ -189,9 +188,10 @@ public class ColGen<T, U extends Column<T,U>, V extends PricingProblem<T, U>> {
 			for(U column : newColumns){
 				master.addColumn(column);
 				column.associatedPricingProblem.addColumn(column);
+				logger.debug("Adding columns. Found new columns: {}",foundNewColumns);
 			}
 			
-			if(config.EXPORT_MODEL) master.exportModel(""+master.getIterationCount());
+//			if(config.EXPORT_MODEL) master.exportModel(""+master.getIterationCount());
 			
 			if(System.currentTimeMillis() >= timeLimit){
 				//this.closeMaster();
@@ -208,7 +208,7 @@ public class ColGen<T, U extends Column<T,U>, V extends PricingProblem<T, U>> {
 			}
 			
 		}while(foundNewColumns || hasNewCuts);// || !master.isConclusive());
-		if(config.EXPORT_MODEL) master.exportModel(""+master.getIterationCount());
+//		if(config.EXPORT_MODEL) master.exportModel(""+master.getIterationCount());
 		nrOfIterations=master.getIterationCount();
 		runtime=System.currentTimeMillis()-runtime;
 		

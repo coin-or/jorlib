@@ -25,9 +25,10 @@ public abstract class Master<T, V extends PricingProblem<T, U>, U extends Column
 	
 	public Master(T modelData){
 		this.modelData=modelData;
+		this.masterData=new MasterData();
 		cutHandler=new CutHandler();
 	}
-	public Master(T modelData, CutHandler cutHandler){
+	public Master(T modelData, MasterData masterData, CutHandler cutHandler){
 		this.modelData=modelData;
 		this.cutHandler=cutHandler;
 	}

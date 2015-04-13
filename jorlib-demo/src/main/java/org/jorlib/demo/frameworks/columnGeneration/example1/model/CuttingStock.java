@@ -2,7 +2,9 @@ package org.jorlib.demo.frameworks.columnGeneration.example1.model;
 
 /**
  * Define a Cutting Stock problem
- * @author jkinable
+ * 
+ * @author Joris Kinable
+ * @version 13-4-2015
  *
  */
 public class CuttingStock {

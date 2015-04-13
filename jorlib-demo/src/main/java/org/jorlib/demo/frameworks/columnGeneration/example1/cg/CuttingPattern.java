@@ -4,8 +4,14 @@ import java.util.Arrays;
 
 import org.jorlib.demo.frameworks.columnGeneration.example1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblem;
 
+/**
+ * Implementation of a column in the cutting stock problem.
+ * A column is a pattern defining how to cut a specific raw.
+ * 
+ * @author Joris Kinable
+ * @version 13-4-2015
+ */
 public class CuttingPattern extends Column<CuttingStock, CuttingPattern> {
 
 	//Denotes the number of times each final is cut out of the raw. 
