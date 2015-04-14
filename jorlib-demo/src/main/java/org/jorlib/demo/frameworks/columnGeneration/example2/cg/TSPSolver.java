@@ -13,6 +13,7 @@ import org.jorlib.demo.frameworks.columnGeneration.example2.model.Edge;
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.MatchingColor;
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.TSP;
 import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
+import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
 
@@ -62,6 +63,13 @@ public class TSPSolver {
 		//Create a column generation instance
 		ColGen<TSP, Matching, PricingProblemByColor> cg= new ColGen<TSP, Matching, PricingProblemByColor>(tsp, master, pricingProblems, solvers, initSolution, upperBound);
 		
+		//Solve the problem through column generation
+		try {
+			cg.solve(System.currentTimeMillis()+10000L);
+		} catch (TimeLimitExceededException e) {
+			e.printStackTrace();
+		}
+		
 		//Print solution:
 		List<Matching> solution=cg.getSolution();
 		System.out.println("CG terminated with objective: "+cg.getObjective());
@@ -83,7 +91,9 @@ public class TSPSolver {
 		List<Set<Edge>> matchings=new ArrayList<>();
 		matchings.add(new LinkedHashSet<>());
 		matchings.add(new LinkedHashSet<>());
-		int[][] succ=new int[2][tsp.N/2];
+		int[][] succ=new int[2][tsp.N];
+		Arrays.fill(succ[0], -1);
+		Arrays.fill(succ[1], -1);
 		int[] cost=new int[2];
 		
 		int t=0;
@@ -101,12 +111,15 @@ public class TSPSolver {
 		Matching column2=new Matching("init", false, pricingProblems.get(1), matchings.get(1), succ[1], cost[1]);
 		initSolution.add(column1);
 		initSolution.add(column2);
+		System.out.println("Init solution: ");
+		System.out.println(initSolution);
 		return initSolution;
 	}
 	
 	public static void main(String[] args){
-		int N=4;
-		int[][] distanceMatrix=null;
+		//Burma 14 - Optimal tour: 3323
+		int N=14;
+		int[][] distanceMatrix={{0, 153, 510, 706, 966, 581, 455, 70, 160, 372, 157, 567, 342, 398}, {153, 0, 422, 664, 997, 598, 507, 197, 311, 479, 310, 581, 417, 376}, {510, 422, 0, 289, 744, 390, 437, 491, 645, 880, 618, 374, 455, 211}, {706, 664, 289, 0, 491, 265, 410, 664, 804, 1070, 768, 259, 499, 310}, {966, 997, 744, 491, 0, 400, 514, 902, 990, 1261, 947, 418, 635, 636}, {581, 598, 390, 265, 400, 0, 168, 522, 634, 910, 593, 19, 284, 239}, {455, 507, 437, 410, 514, 168, 0, 389, 482, 757, 439, 163, 124, 232}, {70, 197, 491, 664, 902, 522, 389, 0, 154, 406, 133, 508, 273, 355}, {160, 311, 645, 804, 990, 634, 482, 154, 0, 276, 43, 623, 358, 498}, {372, 479, 880, 1070, 1261, 910, 757, 406, 276, 0, 318, 898, 633, 761}, {157, 310, 618, 768, 947, 593, 439, 133, 43, 318, 0, 582, 315, 464}, {567, 581, 374, 259, 418, 19, 163, 508, 623, 898, 582, 0, 275, 221}, {342, 417, 455, 499, 635, 284, 124, 273, 358, 633, 315, 275, 0, 247}, {398, 376, 211, 310, 636, 239, 232, 355, 498, 761, 464, 221, 247, 0}};
 		TSP tsp=new TSP(N, distanceMatrix);
 		new TSPSolver(tsp);
 	}

@@ -56,7 +56,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>>
 	//Total runtime of column generation solve procedure
 	private long runtime;
 	//Total number of iterations.
-	private int nrOfIterations=0;
+	private int nrOfColGenIterations=0;
 	//Total time spent on solving the master problem
 	private long masterSolveTime=0;
 	//Total time spent on solving the pricing problem
@@ -127,7 +127,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>>
 		boolean foundNewColumns=false;
 		boolean hasNewCuts=false;
 		do{
-			nrOfIterations++;
+			nrOfColGenIterations++;
 			hasNewCuts=false;
 			//Solve the master
 			logger.info("### MASTER "+master.getIterationCount()+" ################################");
@@ -143,7 +143,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>>
 				//Check whether there are cuts. Otherwise potentially an infeasible integer solution (e.g. TSP solution with subtours) might be returned.
 				if(config.CUTSENABLED && master.hasNewCuts()){  
 					hasNewCuts=true;
-					nrOfIterations--;
+					nrOfColGenIterations--;
 					logger.debug("Colgen quick return canceled: found valid inequalities. Repeating solve");
 					continue;
 				}else
@@ -225,12 +225,11 @@ public class ColGen<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>>
 			
 		}while(foundNewColumns || hasNewCuts);// || !master.isConclusive());
 //		if(config.EXPORT_MODEL) master.exportModel(""+master.getIterationCount());
-		nrOfIterations=master.getIterationCount();
 		runtime=System.currentTimeMillis()-runtime;
 		
 		logger.debug("Finished colGen loop");
 		logger.debug("Objective: {}",objective);
-		logger.debug("Number of iterations: {}",nrOfIterations);
+		logger.debug("Number of iterations: {}",nrOfColGenIterations);
 	}
 	
 	/**
@@ -262,7 +261,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>>
 		return lowerBound;
 	}
 	public int getNumberOfIterations(){
-		return nrOfIterations;
+		return nrOfColGenIterations;
 	}
 	public long getRuntime(){
 		return runtime;

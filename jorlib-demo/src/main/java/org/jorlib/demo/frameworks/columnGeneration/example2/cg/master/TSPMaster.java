@@ -65,7 +65,7 @@ public class TSPMaster extends Master<TSP, PricingProblemByColor, Matching, TSPM
 	@Override
 	public void initializePricingProblem(PricingProblemByColor pricingProblem) {
 		try {
-			double[] modifiedCosts=new double[masterData.matchingVars.size()];
+			double[] modifiedCosts=new double[modelData.N*(modelData.N-1)/2]; //Modified cost for every edge
 			int index=0;
 			for(int i=0; i<modelData.N-1; i++){
 				for(int j=i+1; j<modelData.N; j++){
@@ -111,7 +111,7 @@ public class TSPMaster extends Master<TSP, PricingProblemByColor, Matching, TSPM
 			for(int i=0; i<modelData.N-1; i++){
 				for(int j=i+1; j<modelData.N; j++){
 					Edge edge=new Edge(i, j);
-					IloRange constr=cplex.addRange(1, 1, "edgeOnlyUsedOnce_"+i+"_"+j);
+					IloRange constr=cplex.addRange(0, 1, "edgeOnlyUsedOnce_"+i+"_"+j);
 					edgeOnlyUsedOnceConstr.put(edge,  constr);
 				}
 			}
@@ -132,7 +132,7 @@ public class TSPMaster extends Master<TSP, PricingProblemByColor, Matching, TSPM
 		MatchingColor matchingColor= column.associatedPricingProblem.color;
 		try{
 			//Register column with objective
-			IloColumn iloColumn=masterData.cplex.column(obj,1);
+			IloColumn iloColumn=masterData.cplex.column(obj,column.cost);
 			//Register column with exactlyOneRedMatching/exactlyOneBlueMatching constr
 			if(matchingColor==MatchingColor.RED){
 				iloColumn=iloColumn.and(masterData.cplex.column(exactlyOneRedMatchingConstr, 1));

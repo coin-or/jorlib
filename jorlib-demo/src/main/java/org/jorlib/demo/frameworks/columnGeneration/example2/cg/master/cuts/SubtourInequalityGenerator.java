@@ -110,7 +110,7 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 	 * Simple factory class which produces integers as vertices
 	 */
 	private class IntegerVertexFactory implements VertexFactory<Integer>{
-		private int counter=-1;
+		private int counter=0;
 		@Override
 		public Integer createVertex() {
 			return new Integer(counter++);

@@ -31,4 +31,9 @@ public class Edge {
 	public int hashCode(){
 		return i+j;
 	}
+	
+	@Override
+	public String toString(){
+		return "("+i+","+j+")";
+	}
 }

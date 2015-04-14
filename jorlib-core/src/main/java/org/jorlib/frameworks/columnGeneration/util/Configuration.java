@@ -23,7 +23,7 @@ public class Configuration {
 		
 		//CG & Branch-and-price params
 		CUTSENABLED = true;
-		EXPORT_MODEL=false;
+		EXPORT_MODEL=true;
 		EXPORT_MASTER_DIR="./output/masterLP/";
 		WRITE_STATS = false;
 	}

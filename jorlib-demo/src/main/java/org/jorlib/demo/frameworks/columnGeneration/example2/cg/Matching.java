@@ -45,7 +45,7 @@ public class Matching extends Column<TSP, Matching, PricingProblemByColor> {
 
 	@Override
 	public String toString() {
-		String s="Value: "+this.value+" cost: "+this.cost+" edges: "+Arrays.toString(succ);
+		String s="Value: "+this.value+" cost: "+this.cost+" suc: "+Arrays.toString(succ)+" edges: "+edges;
 		return s;
 	}
 

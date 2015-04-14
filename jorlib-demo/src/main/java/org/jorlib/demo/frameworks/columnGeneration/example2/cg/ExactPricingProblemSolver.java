@@ -73,6 +73,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 	protected List<Matching> generateNewColumns()throws TimeLimitExceededException {
 		List<Matching> newPatterns=new ArrayList<Matching>();
 		try {
+			cplex.exportModel("./output/pricingLP/pricing.lp");
 			//Compute how much time we may take to solve the pricing problem
 			double timeRemaining=Math.max(1,(timeLimit-System.currentTimeMillis())/1000.0);
 			cplex.setParam(IloCplex.DoubleParam.TiLim, timeRemaining); //set time limit in seconds

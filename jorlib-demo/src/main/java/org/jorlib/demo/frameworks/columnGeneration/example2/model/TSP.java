@@ -14,4 +14,15 @@ public class TSP {
 		this.N=N;
 		this.distanceMatrix=distanceMatrix;
 	}
+	
+	public TSP(){
+		//Optimal tour: 229
+		this.N=6;
+		this.distanceMatrix=new int[][]{{0, 36, 32, 54, 20, 40},
+											{36, 0, 22, 58, 54, 67},
+											{32, 22, 0, 36, 42, 71},
+											{54, 58, 36, 0, 50, 92},
+											{20, 54, 42, 50, 0, 45},
+											{40, 67, 71, 92, 45, 0}};
+	}
 }
