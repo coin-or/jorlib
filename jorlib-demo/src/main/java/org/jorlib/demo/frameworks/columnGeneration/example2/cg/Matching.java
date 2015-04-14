@@ -8,9 +8,9 @@ import org.jorlib.demo.frameworks.columnGeneration.example2.model.TSP;
 import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblem;
 
-public class Matching extends Column<TSP, Matching, MatchingGroup> {
+public class Matching extends Column<TSP, Matching, PricingProblemByColor> {
 
-	public Matching(String creator, boolean isArtificial,	MatchingGroup associatedPricingProblem,
+	public Matching(String creator, boolean isArtificial,	PricingProblemByColor associatedPricingProblem,
 			Set<Edge> edges,
 			int[] succ,
 			int cost) {

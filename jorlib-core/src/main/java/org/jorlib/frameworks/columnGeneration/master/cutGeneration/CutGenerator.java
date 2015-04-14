@@ -4,23 +4,20 @@ import java.util.List;
 
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
-import org.jorlib.frameworks.columnGeneration.master.cuts.InequalityType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 
-public abstract class CutGenerator<T> {
+public abstract class CutGenerator<T, W extends MasterData> {
 
 	protected final Logger logger = LoggerFactory.getLogger(CutGenerator.class);
 	
 	protected final T modelData;
-	protected MasterData masterData;
-	public final InequalityType inequalityType; //The type of cuts this generator produces.
+	protected W masterData;
 	
-	public CutGenerator(T modelData, InequalityType inequalityType){
+	public CutGenerator(T modelData){
 		this.modelData=modelData;
-		this.inequalityType=inequalityType;
 	}
 	
 	/**
@@ -42,7 +39,7 @@ public abstract class CutGenerator<T> {
 	 * Set the data class containing all the data from the master problem
 	 * @param masterData
 	 */
-	public void setMasterData(MasterData masterData){
+	public void setMasterData(W masterData){
 		this.masterData=masterData;
 	}
 	

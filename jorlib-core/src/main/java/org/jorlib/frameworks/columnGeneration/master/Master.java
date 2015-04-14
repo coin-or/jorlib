@@ -12,25 +12,30 @@ import org.jorlib.frameworks.columnGeneration.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class Master<T, V extends PricingProblem<T,U,V>, U extends Column<T,U,V>> {
+public abstract class Master<T, V extends PricingProblem<T,U,V>, U extends Column<T,U,V>, W extends MasterData> {
 	protected final Logger logger = LoggerFactory.getLogger(Master.class);
 	protected final Configuration config=Configuration.getConfiguration();
 
 	//Data object describing the problem at hand
 	protected final T modelData;
 	//Data object containing information for the master problem
-	protected MasterData masterData;
+	protected final W masterData;
 	//Handle to a cutHandler which performs separation
-	protected CutHandler cutHandler;
+	protected CutHandler<T,W> cutHandler;
 	
 	public Master(T modelData){
 		this.modelData=modelData;
-		this.masterData=new MasterData();
-		cutHandler=new CutHandler();
+		//this.masterData=new MasterData();
+//		this.masterData=masterData;
+		masterData=this.buildModel();
+		cutHandler=new CutHandler<T,W>();
+		cutHandler.setMasterData(masterData);
 	}
-	public Master(T modelData, MasterData masterData, CutHandler cutHandler){
+	public Master(T modelData, CutHandler<T,W> cutHandler){
 		this.modelData=modelData;
 		this.cutHandler=cutHandler;
+		masterData=this.buildModel();
+		cutHandler.setMasterData(masterData);
 	}
 	
 	/**
@@ -122,7 +127,7 @@ public abstract class Master<T, V extends PricingProblem<T,U,V>, U extends Colum
 	/**
 	 * Build the master problem
 	 */
-	protected abstract void buildModel();
+	protected abstract W buildModel();
 	
 	/**
 	 * Add a column to the model

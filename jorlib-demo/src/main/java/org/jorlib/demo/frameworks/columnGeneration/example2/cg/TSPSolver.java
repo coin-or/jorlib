@@ -1,14 +1,20 @@
 package org.jorlib.demo.frameworks.columnGeneration.example2.cg;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jorlib.demo.frameworks.columnGeneration.example1.cg.CuttingPattern;
-import org.jorlib.demo.frameworks.columnGeneration.example1.cg.CuttingStockPricingProblem;
+import org.jorlib.demo.frameworks.columnGeneration.example2.cg.master.TSPMaster;
+import org.jorlib.demo.frameworks.columnGeneration.example2.cg.master.TSPMasterData;
+import org.jorlib.demo.frameworks.columnGeneration.example2.cg.master.cuts.SubtourInequalityGenerator;
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.Edge;
+import org.jorlib.demo.frameworks.columnGeneration.example2.model.MatchingColor;
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.TSP;
+import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
+import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
 
 /**
  * A column generation solution to the Traveling Salesman Problem.
@@ -31,6 +37,39 @@ public class TSPSolver {
 	
 	public TSPSolver(TSP tsp){
 		this.tsp=tsp;
+		//Create a cutHandler, then create a Subtour Inequality Generator and add it to the handler 
+		CutHandler<TSP, TSPMasterData> cutHandler=new CutHandler<>();
+		SubtourInequalityGenerator cutGen=new SubtourInequalityGenerator(tsp);
+		cutHandler.addCutGenerator(cutGen);
+		
+		//Create the master problem
+		TSPMaster master=new TSPMaster(tsp, cutHandler);
+		
+		//Create the two pricing problems
+		List<PricingProblemByColor> pricingProblems=new ArrayList<>();
+		pricingProblems.add(new PricingProblemByColor(tsp, "redPricing", MatchingColor.RED));
+		pricingProblems.add(new PricingProblemByColor(tsp, "bluePricing", MatchingColor.BLUE));
+		
+		//Define which solvers to use
+		List<Class<? extends PricingProblemSolver<TSP, Matching, PricingProblemByColor>>> solvers=Arrays.asList(ExactPricingProblemSolver.class);
+		
+		//Define an upper bound (stronger is better). 
+		int upperBound=Integer.MAX_VALUE;
+		
+		//Create a set of initial columns.
+		List<Matching> initSolution=this.getInitialSolution(pricingProblems);
+		
+		//Create a column generation instance
+		ColGen<TSP, Matching, PricingProblemByColor> cg= new ColGen<TSP, Matching, PricingProblemByColor>(tsp, master, pricingProblems, solvers, initSolution, upperBound);
+		
+		//Print solution:
+		List<Matching> solution=cg.getSolution();
+		System.out.println("CG terminated with objective: "+cg.getObjective());
+		System.out.println("Number of iterations: "+cg.getNumberOfIterations());
+		System.out.println("Time spent on master: "+cg.getMasterSolveTime()+" time spent on pricing: "+cg.getPricingSolveTime());
+		System.out.println("Columns (only non-zero columns are returned):");
+		for(Matching column : solution)
+			System.out.println(column);
 	}
 	
 	/**
@@ -39,7 +78,7 @@ public class TSPSolver {
 	 * @param pricingProblem
 	 * @return Initial solution
 	 */
-	private List<Matching> getInitialSolution(List<MatchingGroup> pricingProblems){
+	private List<Matching> getInitialSolution(List<PricingProblemByColor> pricingProblems){
 		List<Matching> initSolution=new ArrayList<Matching>();
 		List<Set<Edge>> matchings=new ArrayList<>();
 		matchings.add(new LinkedHashSet<>());

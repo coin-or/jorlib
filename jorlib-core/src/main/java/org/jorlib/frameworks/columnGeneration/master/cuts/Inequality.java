@@ -1,10 +1,13 @@
 package org.jorlib.frameworks.columnGeneration.master.cuts;
 
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutGenerator;
+
 public abstract class Inequality {
-	public final InequalityType type;
 	
-	public Inequality(InequalityType type){
-		this.type=type;
+	public final CutGenerator maintainingGenerator;
+	
+	public Inequality(CutGenerator maintainingGenerator){
+		this.maintainingGenerator=maintainingGenerator;
 	}
 	
 	@Override

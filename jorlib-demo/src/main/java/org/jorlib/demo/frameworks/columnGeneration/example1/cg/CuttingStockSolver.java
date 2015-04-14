@@ -8,8 +8,6 @@ import java.util.stream.IntStream;
 import org.jorlib.demo.frameworks.columnGeneration.example1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
-import org.jorlib.frameworks.columnGeneration.master.Master;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblem;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
 
 /**

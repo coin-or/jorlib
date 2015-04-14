@@ -14,6 +14,7 @@ import java.util.List;
 import org.jorlib.demo.frameworks.columnGeneration.example1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.Master;
+import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
@@ -25,7 +26,7 @@ import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
  * @version 13-4-2015
  *
  */
-public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem, CuttingPattern> {
+public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem, CuttingPattern,MasterData> {
 
 	IloCplex master; //Cplex instance
 	private IloObjective obj; //Objective function
@@ -34,7 +35,6 @@ public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem,
 	
 	public MasterImpl(CuttingStock modelData) {
 		super(modelData);
-		this.buildModel();
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem,
 	 * Build the master problem
 	 */
 	@Override
-	protected void buildModel() {
+	protected MasterData buildModel() {
 		try {
 			master=new IloCplex(); //Create cplex instance
 			master.setOut(null); //Disable cplex output
@@ -107,6 +107,9 @@ public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem,
 		}
 		logger.info("Finished building master");
 		
+		//Return a new data object which will hold data from the Master Problem. Since we are not working with cuts in this example,
+		//we can simply return the default.
+		return new MasterData();
 	}
 
 	/**

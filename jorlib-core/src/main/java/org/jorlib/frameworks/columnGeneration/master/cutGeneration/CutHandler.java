@@ -3,11 +3,13 @@ package org.jorlib.frameworks.columnGeneration.master.cutGeneration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
-import org.jorlib.frameworks.columnGeneration.master.cuts.InequalityType;
 
 
 /**
@@ -15,13 +17,16 @@ import org.jorlib.frameworks.columnGeneration.master.cuts.InequalityType;
  * @author jkinable
  *
  */
-public class CutHandler{
+public class CutHandler<T,W extends MasterData>{
 
 	
-	private EnumMap<InequalityType, CutGenerator> cutGenerators;
+	//private EnumMap<InequalityType, CutGenerator> cutGenerators;
+//	private Map<CutGenerator, >
+	private Set<CutGenerator<T,W>> cutGenerators;
 	
 	public CutHandler(){
-		cutGenerators=new EnumMap<InequalityType, CutGenerator>(InequalityType.class);
+//		cutGenerators=new EnumMap<InequalityType, CutGenerator>(InequalityType.class);
+		cutGenerators=new LinkedHashSet<CutGenerator<T,W>>();
 	}
 	
 	
@@ -29,8 +34,9 @@ public class CutHandler{
 	 * Supply the data class containing the data required by the cutGenerators.
 	 * @param masterData
 	 */
-	public <V extends MasterData>void setMasterData(V masterData){
-		for(CutGenerator cg : cutGenerators.values()){
+	public void setMasterData(W masterData){
+//		for(CutGenerator cg : cutGenerators.values()){
+		for(CutGenerator<T,W> cg : cutGenerators){
 			cg.setMasterData(masterData);
 		}
 	}
@@ -39,8 +45,9 @@ public class CutHandler{
 	 * Add a new cutGenerator
 	 * @param cutGenerator
 	 */
-	public void addCutGenerator(CutGenerator cutGenerator){
-		cutGenerators.put(cutGenerator.inequalityType, cutGenerator);
+	public void addCutGenerator(CutGenerator<T,W> cutGenerator){
+//		cutGenerators.put(cutGenerator.inequalityType, cutGenerator);
+		cutGenerators.add(cutGenerator);
 	}
 	
 	
@@ -50,7 +57,8 @@ public class CutHandler{
 	 */
 	public boolean generateCuts(){
 		boolean foundCut=false;
-		for(CutGenerator cutGen: cutGenerators.values()){
+		//for(CutGenerator cutGen: cutGenerators.values()){
+		for(CutGenerator<T,W> cutGen: cutGenerators){
 			foundCut |= cutGen.generateInqualities();
 			if(foundCut)
 				break;
@@ -66,7 +74,11 @@ public class CutHandler{
 	public void addCuts(Collection<Inequality> cuts){
 		System.out.println("Cuthandler: Added initial cuts: "+cuts.size());
 		for(Inequality cut : cuts){
-			cutGenerators.get(cut.type).addCut(cut);
+			//cutGenerators.get(cut.type).addCut(cut);
+			if(!this.cutGenerators.contains(cut.maintainingGenerator))
+				throw new RuntimeException("Attempt to add cut failed. CutGenerator for this type of cuts is not registered with the cut handler!");
+			else
+				cut.maintainingGenerator.addCut(cut);
 		}
 	}
 	
@@ -75,7 +87,8 @@ public class CutHandler{
 	 */
 	public List<Inequality> getCuts(){
 		List<Inequality> cuts=new ArrayList<Inequality>();
-		for(CutGenerator cutGen : cutGenerators.values())
+		//for(CutGenerator cutGen : cutGenerators.values())
+		for(CutGenerator<T,W> cutGen : cutGenerators)
 			cuts.addAll(cutGen.getCuts());
 		return cuts;
 	}
@@ -84,7 +97,8 @@ public class CutHandler{
 	 * Close the Cut Generators
 	 */
 	public void close(){
-		for(CutGenerator cutGen : cutGenerators.values()){
+//		for(CutGenerator cutGen : cutGenerators.values()){
+		for(CutGenerator<T,W> cutGen : cutGenerators){
 			cutGen.close();
 		}
 	}

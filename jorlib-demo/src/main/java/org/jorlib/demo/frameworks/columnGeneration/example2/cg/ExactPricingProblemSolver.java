@@ -19,13 +19,13 @@ import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.CplexUtil;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
-public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matching, MatchingGroup> {
+public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matching, PricingProblemByColor> {
 
 	private IloCplex cplex; //Cplex instance.
 	private IloObjective obj; //Objective function
 	public OrderedBiMap<Edge, IloIntVar> vars; //Variables
 	
-	public ExactPricingProblemSolver(TSP dataModel, String name, MatchingGroup pricingProblem) {
+	public ExactPricingProblemSolver(TSP dataModel, String name, PricingProblemByColor pricingProblem) {
 		super(dataModel, "ExactMatchingCalculator", pricingProblem);
 		this.buildModel();
 	}

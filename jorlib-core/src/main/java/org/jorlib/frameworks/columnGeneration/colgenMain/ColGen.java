@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.Master;
+import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblem;
@@ -36,7 +37,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>>
 	private final T dataModel;
 	
 	//Define the master problem
-	private final Master<T, V, U> master;
+	private final Master<T, V, U, ? extends MasterData> master;
 	//Define the pricing problems
 	private final List<V> pricingProblems;
 	//Maintain the classes which can be used to solve the pricing problems
@@ -64,7 +65,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>>
 	private int nrGeneratedColumns=0;
 	
 	public ColGen(T dataModel, 
-					Master<T,V,U> master, 
+					Master<T,V,U, ? extends MasterData> master, 
 					List<V> pricingProblems,
 					List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
 					List<U> initSolution,
@@ -88,7 +89,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>>
 	}
 	
 	public ColGen(T dataModel, 
-			Master<T,V,U> master, 
+			Master<T,V,U,? extends MasterData> master, 
 			V pricingProblem,
 			List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
 			List<U> initSolution,
