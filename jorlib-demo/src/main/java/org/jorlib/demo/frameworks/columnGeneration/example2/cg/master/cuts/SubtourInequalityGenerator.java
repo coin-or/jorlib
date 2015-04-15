@@ -21,6 +21,7 @@ import org.jorlib.alg.tsp.separation.SubtourSeparator;
 import org.jorlib.demo.frameworks.columnGeneration.example2.cg.Matching;
 import org.jorlib.demo.frameworks.columnGeneration.example2.cg.master.TSPMasterData;
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.Edge;
+import org.jorlib.demo.frameworks.columnGeneration.example2.model.MatchingColor;
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.TSP;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutGenerator;
 import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
@@ -71,16 +72,18 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 		try {
 			IloLinearNumExpr expr=masterData.cplex.linearNumExpr();
 			//Register the columns with this constraint.
-			for(Matching matching: masterData.matchingVars.keyList()){
-				//Test how many edges in the matching enter/leave the cutSet (edges with exactly one endpoint in the cutSet)
-				int crossings=0;
-				for(Edge edge: matching.edges){
-					if(subtourInequality.cutSet.contains(edge.i) ^ subtourInequality.cutSet.contains(edge.j))
-						crossings++;
-				}
-				if(crossings>0){
-					IloNumVar var=masterData.matchingVars.get(matching);
-					expr.addTerm(crossings, var);
+			for(MatchingColor color : MatchingColor.values()){
+				for(Matching matching: masterData.matchingVars.get(color).keyList()){
+					//Test how many edges in the matching enter/leave the cutSet (edges with exactly one endpoint in the cutSet)
+					int crossings=0;
+					for(Edge edge: matching.edges){
+						if(subtourInequality.cutSet.contains(edge.i) ^ subtourInequality.cutSet.contains(edge.j))
+							crossings++;
+					}
+					if(crossings>0){
+						IloNumVar var=masterData.matchingVars.get(color).get(matching);
+						expr.addTerm(crossings, var);
+					}
 				}
 			}
 			IloRange subtourConstraint = masterData.cplex.addGe(expr, 2, "subtour");

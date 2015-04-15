@@ -22,7 +22,7 @@ import org.jorlib.frameworks.columnGeneration.util.Configuration;
  * @author jkinable
  *
  */
-public class PricingProblemManager<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>> {
+public class PricingProblemManager<T, U extends Column<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
 	
 	private static final Configuration config=Configuration.getConfiguration();
 	

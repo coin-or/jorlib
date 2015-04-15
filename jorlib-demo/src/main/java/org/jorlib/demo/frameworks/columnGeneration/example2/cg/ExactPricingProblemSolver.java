@@ -8,6 +8,7 @@ import ilog.concert.IloObjective;
 import ilog.cplex.IloCplex;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -92,13 +93,14 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 				this.pricingProblemInfeasible=false;
 				this.objective=cplex.getObjValue();
 				
-				if(objective >= 1+config.PRECISION){ //Generate new column if it has negative reduced cost
+				if(objective >= -pricingProblem.dualConstant+config.PRECISION){ //Generate new column if it has negative reduced cost
 					Edge[] edges=vars.getKeysAsArray(new Edge[vars.size()]);
 					IloIntVar[] edgeVarsArray=vars.getValuesAsArray(new IloIntVar[vars.size()]);
 					double[] values=cplex.getValues(edgeVarsArray);
 					
 					Set<Edge> matching=new LinkedHashSet<>();
 					int[] succ=new int[dataModel.N];
+//					Arrays.fill(succ, -1);
 					int cost=0;
 					for(int k=0; k<vars.size(); k++){
 						if(CplexUtil.doubleToBoolean(values[k])){
@@ -111,6 +113,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 						}
 					}
 					Matching column=new Matching("exactPricing", false, pricingProblem, matching, succ, cost);
+					logger.debug("Generated new column for pricing: {}:\n{}",pricingProblem.color.name(),column);
 					newPatterns.add(column);
 				}
 			}

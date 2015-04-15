@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.jorlib.demo.frameworks.columnGeneration.example1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
-import org.jorlib.frameworks.columnGeneration.master.Master;
+import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
@@ -26,14 +26,14 @@ import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
  * @version 13-4-2015
  *
  */
-public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem, CuttingPattern,MasterData> {
+public class Master extends AbstractMaster<CuttingStock, PricingProblem, CuttingPattern,MasterData> {
 
 	IloCplex master; //Cplex instance
 	private IloObjective obj; //Objective function
 	private IloRange[] satisfyDemandConstr; //Constraint
 	public OrderedBiMap<CuttingPattern, IloNumVar> cuttingPatternVars; //Variables
 	
-	public MasterImpl(CuttingStock modelData) {
+	public Master(CuttingStock modelData) {
 		super(modelData);
 	}
 
@@ -71,7 +71,7 @@ public class MasterImpl extends Master<CuttingStock, CuttingStockPricingProblem,
 	 * Store the dual information required by the pricing problems into the pricing problem object
 	 */
 	@Override
-	public void initializePricingProblem(CuttingStockPricingProblem pricingProblem){
+	public void initializePricingProblem(PricingProblem pricingProblem){
 		try {
 			double[] duals=master.getDuals(satisfyDemandConstr);
 			pricingProblem.initPricingProblem(duals);

@@ -6,7 +6,7 @@ import java.util.Set;
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.Edge;
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.TSP;
 import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblem;
+import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 
 public class Matching extends Column<TSP, Matching, PricingProblemByColor> {
 
@@ -45,7 +45,7 @@ public class Matching extends Column<TSP, Matching, PricingProblemByColor> {
 
 	@Override
 	public String toString() {
-		String s="Value: "+this.value+" cost: "+this.cost+" suc: "+Arrays.toString(succ)+" edges: "+edges;
+		String s="Value: "+this.value+" cost: "+this.cost+" succ: "+Arrays.toString(succ)+" edges: "+edges;
 		return s;
 	}
 

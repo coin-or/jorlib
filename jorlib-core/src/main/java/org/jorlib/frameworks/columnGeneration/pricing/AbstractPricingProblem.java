@@ -11,7 +11,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
  * @author jkinable
  *
  */
-public class PricingProblem<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>> {
+public abstract class AbstractPricingProblem<T, U extends Column<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
 
 	protected final T modelData;
 	
@@ -25,7 +25,7 @@ public class PricingProblem<T, U extends Column<T,U,V>, V extends PricingProblem
 	public double[] modifiedCosts;
 	public double dualConstant;
 		
-	public PricingProblem(T modelData, String name){
+	public AbstractPricingProblem(T modelData, String name){
 		this.modelData=modelData;
 		this.name=name;
 		activeColumns=new LinkedHashSet<>();

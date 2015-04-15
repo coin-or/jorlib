@@ -1,7 +1,7 @@
 package org.jorlib.demo.frameworks.columnGeneration.example1.cg;
 
 import org.jorlib.demo.frameworks.columnGeneration.example1.model.CuttingStock;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblem;
+import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 
 /**
  * Definition of the pricing problem. Since there's only 1 pricing problem in the cutting stock,
@@ -10,9 +10,9 @@ import org.jorlib.frameworks.columnGeneration.pricing.PricingProblem;
  * @author Joris Kinable
  * @version 13-4-2015
  */
-public class CuttingStockPricingProblem extends PricingProblem<CuttingStock, CuttingPattern, CuttingStockPricingProblem> {
+public class PricingProblem extends AbstractPricingProblem<CuttingStock, CuttingPattern, PricingProblem> {
 
-	public CuttingStockPricingProblem(CuttingStock modelData, String name) {
+	public PricingProblem(CuttingStock modelData, String name) {
 		super(modelData, name);
 	}
 

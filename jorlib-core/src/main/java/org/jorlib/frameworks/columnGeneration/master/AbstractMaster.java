@@ -7,13 +7,13 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblem;
+import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class Master<T, V extends PricingProblem<T,U,V>, U extends Column<T,U,V>, W extends MasterData> {
-	protected final Logger logger = LoggerFactory.getLogger(Master.class);
+public abstract class AbstractMaster<T, V extends AbstractPricingProblem<T,U,V>, U extends Column<T,U,V>, W extends MasterData> {
+	protected final Logger logger = LoggerFactory.getLogger(AbstractMaster.class);
 	protected final Configuration config=Configuration.getConfiguration();
 
 	//Data object describing the problem at hand
@@ -23,7 +23,7 @@ public abstract class Master<T, V extends PricingProblem<T,U,V>, U extends Colum
 	//Handle to a cutHandler which performs separation
 	protected CutHandler<T,W> cutHandler;
 	
-	public Master(T modelData){
+	public AbstractMaster(T modelData){
 		this.modelData=modelData;
 		//this.masterData=new MasterData();
 //		this.masterData=masterData;
@@ -31,7 +31,7 @@ public abstract class Master<T, V extends PricingProblem<T,U,V>, U extends Colum
 		cutHandler=new CutHandler<T,W>();
 		cutHandler.setMasterData(masterData);
 	}
-	public Master(T modelData, CutHandler<T,W> cutHandler){
+	public AbstractMaster(T modelData, CutHandler<T,W> cutHandler){
 		this.modelData=modelData;
 		this.cutHandler=cutHandler;
 		masterData=this.buildModel();

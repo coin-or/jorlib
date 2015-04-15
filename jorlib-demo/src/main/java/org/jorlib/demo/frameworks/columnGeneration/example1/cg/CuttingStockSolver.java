@@ -23,17 +23,17 @@ public class CuttingStockSolver {
 	public CuttingStockSolver(CuttingStock modelData){
 		this.modelData=modelData;
 		//Create the master problem
-		MasterImpl master=new MasterImpl(modelData);
+		Master master=new Master(modelData);
 		//Create the pricing problem
-		CuttingStockPricingProblem pricingProblem=new CuttingStockPricingProblem(modelData, "cuttingStockPricing");
+		PricingProblem pricingProblem=new PricingProblem(modelData, "cuttingStockPricing");
 		//Define which solvers to use
-		List<Class<? extends PricingProblemSolver<CuttingStock, CuttingPattern, CuttingStockPricingProblem>>> solvers=Arrays.asList(ExactPricingProblemSolver.class);
+		List<Class<? extends PricingProblemSolver<CuttingStock, CuttingPattern, PricingProblem>>> solvers=Arrays.asList(ExactPricingProblemSolver.class);
 		//Define an upper bound (stronger is better). In this case we simply sum the demands, i.e. cut each final from its own raw (Rather poor initial solution). 
 		int upperBound=IntStream.of(modelData.demandForFinals).sum();
 		//Create a set of initial columns.
 		List<CuttingPattern> initSolution=this.getInitialSolution(pricingProblem);
 		//Create a column generation instance
-		ColGen<CuttingStock, CuttingPattern, CuttingStockPricingProblem> cg=new ColGen<CuttingStock, CuttingPattern, CuttingStockPricingProblem>(modelData, master, pricingProblem, solvers, initSolution, upperBound);
+		ColGen<CuttingStock, CuttingPattern, PricingProblem> cg=new ColGen<CuttingStock, CuttingPattern, PricingProblem>(modelData, master, pricingProblem, solvers, initSolution, upperBound);
 		
 		//Solve the problem through column generation
 		try {
@@ -49,6 +49,9 @@ public class CuttingStockSolver {
 		System.out.println("Columns (only non-zero columns are returned):");
 		for(CuttingPattern column : solution)
 			System.out.println(column);
+		
+		//Clean up:
+		cg.close(); //This closes both the master and pricing problems
 	}
 	
 	/**
@@ -57,7 +60,7 @@ public class CuttingStockSolver {
 	 * @param pricingProblem
 	 * @return Initial solution
 	 */
-	private List<CuttingPattern> getInitialSolution(CuttingStockPricingProblem pricingProblem){
+	private List<CuttingPattern> getInitialSolution(PricingProblem pricingProblem){
 		List<CuttingPattern> initSolution=new ArrayList<CuttingPattern>();
 		for(int i=0; i<modelData.nrFinals; i++){
 			int[] pattern=new int[modelData.nrFinals];

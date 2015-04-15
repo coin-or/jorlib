@@ -20,13 +20,13 @@ import org.jorlib.frameworks.columnGeneration.util.CplexUtil;
  * @author Joris Kinable
  * @version 13-4-2015
  */
-public class ExactPricingProblemSolver extends PricingProblemSolver<CuttingStock, CuttingPattern, CuttingStockPricingProblem> {
+public class ExactPricingProblemSolver extends PricingProblemSolver<CuttingStock, CuttingPattern, PricingProblem> {
 
 	private IloCplex cplex; //Cplex instance.
 	private IloObjective obj; //Objective function
 	private IloIntVar[] vars; //Problem variables
 	
-	public ExactPricingProblemSolver(CuttingStock dataModel,String name, CuttingStockPricingProblem pricingProblem) {
+	public ExactPricingProblemSolver(CuttingStock dataModel,String name, PricingProblem pricingProblem) {
 		super(dataModel, "ExactSolver", pricingProblem);
 		this.buildModel();
 	}

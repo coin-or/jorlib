@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * @author jkinable
  *
  */
-public abstract class PricingProblemSolver<T,U extends Column<T,U,V>, V extends PricingProblem<T,U,V>> implements Callable<Void>{
+public abstract class PricingProblemSolver<T,U extends Column<T,U,V>, V extends AbstractPricingProblem<T,U,V>> implements Callable<Void>{
 	
 	protected final Logger logger = LoggerFactory.getLogger(PricingProblemSolver.class);
 	protected final Configuration config=Configuration.getConfiguration();

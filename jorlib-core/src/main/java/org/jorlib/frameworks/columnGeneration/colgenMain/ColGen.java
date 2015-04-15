@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
-import org.jorlib.frameworks.columnGeneration.master.Master;
+import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblem;
+import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemBunddle;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemManager;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author jkinable
  */
-public class ColGen<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>> {
+public class ColGen<T, U extends Column<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
 	
 	final Logger logger = LoggerFactory.getLogger(ColGen.class);
 	static final Configuration config=Configuration.getConfiguration();
@@ -37,7 +37,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>>
 	private final T dataModel;
 	
 	//Define the master problem
-	private final Master<T, V, U, ? extends MasterData> master;
+	private final AbstractMaster<T, V, U, ? extends MasterData> master;
 	//Define the pricing problems
 	private final List<V> pricingProblems;
 	//Maintain the classes which can be used to solve the pricing problems
@@ -65,7 +65,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>>
 	private int nrGeneratedColumns=0;
 	
 	public ColGen(T dataModel, 
-					Master<T,V,U, ? extends MasterData> master, 
+					AbstractMaster<T,V,U, ? extends MasterData> master, 
 					List<V> pricingProblems,
 					List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
 					List<U> initSolution,
@@ -89,7 +89,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>>
 	}
 	
 	public ColGen(T dataModel, 
-			Master<T,V,U,? extends MasterData> master, 
+			AbstractMaster<T,V,U,? extends MasterData> master, 
 			V pricingProblem,
 			List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
 			List<U> initSolution,
@@ -201,10 +201,13 @@ public class ColGen<T, U extends Column<T,U,V>, V extends PricingProblem<T,U,V>>
 			
 			pricingSolveTime+=(System.currentTimeMillis()-time);
 			nrGeneratedColumns+=newColumns.size();
-			for(U column : newColumns){
-				master.addColumn(column);
-				column.associatedPricingProblem.addColumn(column);
-				logger.debug("Adding columns. Found new columns: {}",foundNewColumns);
+			logger.debug("CG Adding columns. Found new columns: {}",foundNewColumns);
+			if(foundNewColumns){
+				for(U column : newColumns){
+					master.addColumn(column);
+					column.associatedPricingProblem.addColumn(column);
+					
+				}
 			}
 			
 //			if(config.EXPORT_MODEL) master.exportModel(""+master.getIterationCount());

@@ -12,12 +12,12 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
  * @author Joris Kinable
  * @version 13-4-2015
  */
-public class CuttingPattern extends Column<CuttingStock, CuttingPattern, CuttingStockPricingProblem> {
+public class CuttingPattern extends Column<CuttingStock, CuttingPattern, PricingProblem> {
 
 	//Denotes the number of times each final is cut out of the raw. 
 	public final int[] yieldVector;
 	
-	public CuttingPattern(String creator, boolean isArtificial, int[] pattern, CuttingStockPricingProblem pricingProblem) {
+	public CuttingPattern(String creator, boolean isArtificial, int[] pattern, PricingProblem pricingProblem) {
 		super(creator, isArtificial, pricingProblem);
 		this.yieldVector=pattern;
 	}

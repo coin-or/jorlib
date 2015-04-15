@@ -1,5 +1,6 @@
 package org.jorlib.demo.frameworks.columnGeneration.example2.cg.master;
 
+import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import ilog.cplex.IloCplex;
 
 import org.jorlib.demo.frameworks.columnGeneration.example2.cg.Matching;
 import org.jorlib.demo.frameworks.columnGeneration.example2.cg.master.cuts.SubtourInequality;
+import org.jorlib.demo.frameworks.columnGeneration.example2.model.MatchingColor;
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
@@ -17,7 +19,9 @@ public class TSPMasterData extends MasterData{
 	//Cplex instance
 	public final IloCplex cplex;
 	//Variables
-	public final OrderedBiMap<Matching, IloNumVar> matchingVars; 
+	//public final OrderedBiMap<Matching, IloNumVar> matchingVars;
+	//Maintain a separate storage of columns for each pricing problem
+	public final EnumMap<MatchingColor, OrderedBiMap<Matching, IloNumVar>> matchingVars;
 	//Subtour inequalities
 	public final Map<SubtourInequality, IloRange> subtourInequalities;
 	
@@ -25,7 +29,7 @@ public class TSPMasterData extends MasterData{
 	protected double[][] edgeValues;
 	
 	public TSPMasterData(IloCplex cplex,
-							OrderedBiMap<Matching, IloNumVar> matchingVars){
+							EnumMap<MatchingColor, OrderedBiMap<Matching, IloNumVar>> matchingVars){
 		this.cplex=cplex;
 		this.matchingVars=matchingVars;
 		subtourInequalities=new LinkedHashMap<SubtourInequality, IloRange>();

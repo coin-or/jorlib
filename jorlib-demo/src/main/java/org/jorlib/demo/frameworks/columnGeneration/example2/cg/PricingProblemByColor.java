@@ -2,9 +2,9 @@ package org.jorlib.demo.frameworks.columnGeneration.example2.cg;
 
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.MatchingColor;
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.TSP;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblem;
+import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 
-public class PricingProblemByColor extends PricingProblem<TSP, Matching, PricingProblemByColor> {
+public class PricingProblemByColor extends AbstractPricingProblem<TSP, Matching, PricingProblemByColor> {
 	
 	//Color of the matching group. Can be either Red or Blue
 	public final MatchingColor color;
