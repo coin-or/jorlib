@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * SubtourInequality.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.demo.frameworks.columnGeneration.example2.cg.master.cuts;
 
 import java.util.Set;
@@ -5,6 +31,12 @@ import java.util.Set;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutGenerator;
 import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
 
+/**
+ * 
+ * @author Joris Kinable
+ * @version 13-4-2015
+ *
+ */
 public class SubtourInequality extends Inequality{
 
 	public final Set<Integer> cutSet;

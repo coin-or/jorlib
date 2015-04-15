@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * ColGen.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.frameworks.columnGeneration.colgenMain;
 
 import java.util.ArrayList;
@@ -27,9 +53,10 @@ import org.slf4j.LoggerFactory;
  * U is reserved for columns
  * T is reserved for the model
  * 
- * @author jkinable
+ * @author Joris Kinable
+ * @version 13-4-2015
  */
-public class ColGen<T, U extends Column<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
+public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
 	
 	final Logger logger = LoggerFactory.getLogger(ColGen.class);
 	static final Configuration config=Configuration.getConfiguration();
@@ -53,10 +80,10 @@ public class ColGen<T, U extends Column<T,U,V>, V extends AbstractPricingProblem
 	private int upperBound=Integer.MAX_VALUE;
 	//Lower bound on the objective. If lowerbound > upperBound, this node can be pruned.
 	private double lowerBound=0;
-	//Total runtime of column generation solve procedure
-	private long runtime;
 	//Total number of iterations.
 	private int nrOfColGenIterations=0;
+	//Total time spent on solving column generation problem
+	private long colGenSolveTime;
 	//Total time spent on solving the master problem
 	private long masterSolveTime=0;
 	//Total time spent on solving the pricing problem
@@ -80,7 +107,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends AbstractPricingProblem
 		//Generate the pricing problem instances
 		pricingProblemBunddles=new ArrayList<>();
 		for(Class<? extends PricingProblemSolver<T, U, V>> solverClass : solvers){
-			DefaultPricingProblemSolverFactory<T, U, V> factory=new DefaultPricingProblemSolverFactory<T, U, V>(solverClass, solverClass.getName(), dataModel);
+			DefaultPricingProblemSolverFactory<T, U, V> factory=new DefaultPricingProblemSolverFactory<T, U, V>(solverClass, /*solverClass.getName(), */dataModel);
 			PricingProblemBunddle<T, U, V> bunddle=new PricingProblemBunddle<>(solverClass, pricingProblems, factory);
 			pricingProblemBunddles.add(bunddle);
 		}
@@ -118,7 +145,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends AbstractPricingProblem
 		//set time limit pricing problems
 		pricingProblemManager.setTimeLimit(timeLimit);
 		
-		runtime=System.currentTimeMillis();
+		colGenSolveTime=System.currentTimeMillis();
 //		if(config.EXPORT_MODEL) master.exportModel("master0.lp");
 //			List<List<ExamSchedule>> newColumns=new ArrayList<List<ExamSchedule>>();
 //			for(int i=0; i<geoxam.exams.size(); i++)
@@ -130,7 +157,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends AbstractPricingProblem
 			nrOfColGenIterations++;
 			hasNewCuts=false;
 			//Solve the master
-			logger.info("### MASTER "+master.getIterationCount()+" ################################");
+			logger.debug("### MASTER "+master.getIterationCount()+" ################################");
 			long time=System.currentTimeMillis();
 			master.solve(timeLimit);
 			objective=master.getObjective();
@@ -153,7 +180,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends AbstractPricingProblem
 			}
 			
 			//Get new columns
-			logger.info("### PRICING ################################");
+			logger.debug("### PRICING ################################");
 			foundNewColumns=false;
 			
 			time=System.currentTimeMillis();
@@ -217,8 +244,6 @@ public class ColGen<T, U extends Column<T,U,V>, V extends AbstractPricingProblem
 				this.close();
 				throw new TimeLimitExceededException();
 			}
-			if(logger.isDebugEnabled() && !foundNewColumns) master.printSolution();
-			
 			//Check for cuts. This can only be done if the master problem hasn't changed (no columns can be added).
 			if(config.CUTSENABLED && !foundNewColumns && !thisNodeCanBePruned()){
 				time=System.currentTimeMillis();
@@ -228,7 +253,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends AbstractPricingProblem
 			
 		}while(foundNewColumns || hasNewCuts);// || !master.isConclusive());
 //		if(config.EXPORT_MODEL) master.exportModel(""+master.getIterationCount());
-		runtime=System.currentTimeMillis()-runtime;
+		colGenSolveTime=System.currentTimeMillis()-colGenSolveTime;
 		
 		logger.debug("Finished colGen loop");
 		logger.debug("Objective: {}",objective);
@@ -267,7 +292,7 @@ public class ColGen<T, U extends Column<T,U,V>, V extends AbstractPricingProblem
 		return nrOfColGenIterations;
 	}
 	public long getRuntime(){
-		return runtime;
+		return colGenSolveTime;
 	}
 	public long getMasterSolveTime(){
 		return masterSolveTime;
@@ -278,10 +303,6 @@ public class ColGen<T, U extends Column<T,U,V>, V extends AbstractPricingProblem
 	public int getNrGeneratedColumns(){
 		return nrGeneratedColumns;
 	}
-//	public int getNrRestartsMaster(){
-//		return master.getNrRestartsMaster();
-//	}
-	
 	public List<U> getSolution(){
 		return master.getSolution();
 	}

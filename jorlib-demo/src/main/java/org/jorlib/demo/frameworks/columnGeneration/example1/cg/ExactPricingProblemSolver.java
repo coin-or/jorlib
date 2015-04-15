@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * ExactPricingProblemSolver.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.demo.frameworks.columnGeneration.example1.cg;
 
 import ilog.concert.IloException;
@@ -26,8 +52,9 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<CuttingStock
 	private IloObjective obj; //Objective function
 	private IloIntVar[] vars; //Problem variables
 	
-	public ExactPricingProblemSolver(CuttingStock dataModel,String name, PricingProblem pricingProblem) {
-		super(dataModel, "ExactSolver", pricingProblem);
+	public ExactPricingProblemSolver(CuttingStock dataModel, PricingProblem pricingProblem) {
+		super(dataModel, pricingProblem);
+		this.name="ExactSolver"; //Set a name for the solver
 		this.buildModel();
 	}
 

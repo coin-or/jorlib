@@ -1,9 +1,35 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * AbstractMaster.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.frameworks.columnGeneration.master;
 
 import java.util.Collection;
 import java.util.List;
 
-import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
+import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
@@ -12,7 +38,17 @@ import org.jorlib.frameworks.columnGeneration.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractMaster<T, V extends AbstractPricingProblem<T,U,V>, U extends Column<T,U,V>, W extends MasterData> {
+/**
+ * 
+ * @author Joris Kinable
+ * @version 13-4-2015
+ *
+ * @param <T>
+ * @param <V>
+ * @param <U>
+ * @param <W>
+ */
+public abstract class AbstractMaster<T, V extends AbstractPricingProblem<T,U,V>, U extends AbstractColumn<T,U,V>, W extends MasterData> {
 	protected final Logger logger = LoggerFactory.getLogger(AbstractMaster.class);
 	protected final Configuration config=Configuration.getConfiguration();
 

@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * Matching.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.demo.frameworks.columnGeneration.example2.cg;
 
 import java.util.Arrays;
@@ -5,10 +31,16 @@ import java.util.Set;
 
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.Edge;
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.TSP;
-import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
+import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 
-public class Matching extends Column<TSP, Matching, PricingProblemByColor> {
+/**
+ * 
+ * @author Joris Kinable
+ * @version 13-4-2015
+ *
+ */
+public class Matching extends AbstractColumn<TSP, Matching, PricingProblemByColor> {
 
 	public Matching(String creator, boolean isArtificial,	PricingProblemByColor associatedPricingProblem,
 			Set<Edge> edges,

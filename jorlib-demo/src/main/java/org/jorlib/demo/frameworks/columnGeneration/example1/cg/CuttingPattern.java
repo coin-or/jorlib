@@ -1,9 +1,35 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * CuttingPattern.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.demo.frameworks.columnGeneration.example1.cg;
 
 import java.util.Arrays;
 
 import org.jorlib.demo.frameworks.columnGeneration.example1.model.CuttingStock;
-import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
+import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 
 /**
  * Implementation of a column in the cutting stock problem.
@@ -12,7 +38,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
  * @author Joris Kinable
  * @version 13-4-2015
  */
-public class CuttingPattern extends Column<CuttingStock, CuttingPattern, PricingProblem> {
+public class CuttingPattern extends AbstractColumn<CuttingStock, CuttingPattern, PricingProblem> {
 
 	//Denotes the number of times each final is cut out of the raw. 
 	public final int[] yieldVector;

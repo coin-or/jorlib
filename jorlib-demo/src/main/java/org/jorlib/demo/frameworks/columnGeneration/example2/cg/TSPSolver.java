@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * TSPSolver.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.demo.frameworks.columnGeneration.example2.cg;
 
 import java.util.ArrayList;
@@ -29,7 +55,8 @@ import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
  * Note: this is an example class to demonstrate features of the Column Generation framework. This class is not
  * intended as a high-performance TSP solver!
  * 
- * @author jkinable
+ * @author Joris Kinable
+ * @version 13-4-2015
  *
  */
 public class TSPSolver {

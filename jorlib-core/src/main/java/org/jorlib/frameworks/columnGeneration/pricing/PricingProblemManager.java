@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * PricingProblemManager.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.frameworks.columnGeneration.pricing;
 
 import java.util.ArrayList;
@@ -13,16 +39,18 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
-import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
+import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
 
 /**
  * Class which takes care of the parallel execution of the pricing problems.
- * @author jkinable
+ * 
+ * @author Joris Kinable
+ * @version 13-4-2015
  *
  */
-public class PricingProblemManager<T, U extends Column<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
+public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
 	
 	private static final Configuration config=Configuration.getConfiguration();
 	

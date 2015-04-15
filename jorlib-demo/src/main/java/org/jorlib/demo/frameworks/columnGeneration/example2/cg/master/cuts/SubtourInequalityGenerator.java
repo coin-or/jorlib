@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * SubtourInequalityGenerator.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.demo.frameworks.columnGeneration.example2.cg.master.cuts;
 
 import ilog.concert.IloException;
@@ -26,6 +52,12 @@ import org.jorlib.demo.frameworks.columnGeneration.example2.model.TSP;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutGenerator;
 import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
 
+/**
+ * 
+ * @author Joris Kinable
+ * @version 13-4-2015
+ *
+ */
 public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData> {
 
 	//Graph which is used to calculate any violated subtour inequalities

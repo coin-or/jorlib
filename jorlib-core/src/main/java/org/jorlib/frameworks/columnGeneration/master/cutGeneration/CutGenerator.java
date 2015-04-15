@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * CutGenerator.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.frameworks.columnGeneration.master.cutGeneration;
 
 import java.util.List;
@@ -8,7 +34,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-
+/**
+ * 
+ * @author Joris Kinable
+ * @version 13-4-2015
+ *
+ * @param <T>
+ * @param <W>
+ */
 public abstract class CutGenerator<T, W extends MasterData> {
 
 	protected final Logger logger = LoggerFactory.getLogger(CutGenerator.class);

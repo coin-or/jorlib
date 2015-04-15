@@ -1,17 +1,46 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * AbstractPricingProblem.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.frameworks.columnGeneration.pricing;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
+import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 
 /**
- * Often, Column generation models decouple in a single Master problem and multiple Pricing problems. The pricing problems can be solved
+ * Defines a Pricing Problem.
+ * Often, Column generation models decouple in a single Master problem and one or more Pricing problems. The pricing problems can be solved
  * independently. This class models a pricing problem.
- * @author jkinable
+ * 
+ * @author Joris Kinable
+ * @version 13-4-2015
  *
  */
-public abstract class AbstractPricingProblem<T, U extends Column<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
+public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
 
 	protected final T modelData;
 	

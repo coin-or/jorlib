@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * ExactPricingProblemSolver.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.demo.frameworks.columnGeneration.example2.cg;
 
 import ilog.concert.IloException;
@@ -20,14 +46,21 @@ import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.CplexUtil;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
+/**
+ * 
+ * @author Joris Kinable
+ * @version 13-4-2015
+ *
+ */
 public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matching, PricingProblemByColor> {
 
 	private IloCplex cplex; //Cplex instance.
 	private IloObjective obj; //Objective function
 	public OrderedBiMap<Edge, IloIntVar> vars; //Variables
 	
-	public ExactPricingProblemSolver(TSP dataModel, String name, PricingProblemByColor pricingProblem) {
-		super(dataModel, "ExactMatchingCalculator", pricingProblem);
+	public ExactPricingProblemSolver(TSP dataModel, PricingProblemByColor pricingProblem) {
+		super(dataModel, pricingProblem);
+		this.name="ExactMatchingCalculator"; //Set a nice name for the solver
 		this.buildModel();
 	}
 

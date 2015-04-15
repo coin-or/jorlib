@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * PricingProblemSolver.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.frameworks.columnGeneration.pricing;
 
 import java.util.ArrayList;
@@ -5,7 +31,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.jorlib.frameworks.columnGeneration.colgenMain.Column;
+import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
 import org.slf4j.Logger;
@@ -13,16 +39,18 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class representing a pricing problem
- * @author jkinable
+ * 
+ * @author Joris Kinable
+ * @version 13-4-2015
  *
  */
-public abstract class PricingProblemSolver<T,U extends Column<T,U,V>, V extends AbstractPricingProblem<T,U,V>> implements Callable<Void>{
+public abstract class PricingProblemSolver<T,U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> implements Callable<Void>{
 	
 	protected final Logger logger = LoggerFactory.getLogger(PricingProblemSolver.class);
 	protected final Configuration config=Configuration.getConfiguration();
 
 	//Name of the pricing problem solver
-	protected final String name;
+	protected String name="solverName";
 	//Data model
 	protected final T dataModel;
 	//Pricing problem
@@ -37,9 +65,9 @@ public abstract class PricingProblemSolver<T,U extends Column<T,U,V>, V extends 
 	protected boolean pricingProblemInfeasible;
 	
 	
-	public PricingProblemSolver(T dataModel, String name, V pricingProblem){
+	public PricingProblemSolver(T dataModel/*, String name*/, V pricingProblem){
 		this.dataModel=dataModel;
-		this.name=name;
+//		this.name=name;
 		this.pricingProblem=pricingProblem;
 		this.columns=new ArrayList<>();
 	}

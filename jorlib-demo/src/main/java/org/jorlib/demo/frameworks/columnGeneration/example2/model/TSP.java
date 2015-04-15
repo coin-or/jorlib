@@ -1,9 +1,39 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * TSP.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.demo.frameworks.columnGeneration.example2.model;
 
 /**
- * Define a TSP problem.
+ * Defines a TSP problem.
  * For simplicity we assume that the problem is defined on a undirected, complete, weighted graph.
  * In addition we assume that N is even!
+ * 
+ * @author Joris Kinable
+ * @version 13-4-2015
+ * 
  */
 public class TSP {
 
