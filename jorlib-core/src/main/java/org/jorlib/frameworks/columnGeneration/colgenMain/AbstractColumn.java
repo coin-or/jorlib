@@ -43,10 +43,10 @@ public abstract class AbstractColumn<T, U extends AbstractColumn<T,U,V>, V exten
 	//Optimal solutions may NOT contain artificial columns unless the problem is infeasible
 	public final boolean isArtificialColumn;
 	//Textual description of the method who created this column, e.g. a pricing problem, initial solution, artificial, etc.
-	//Used for debugging purposes only to determine where a column is comming from
+	//Used for debugging purposes only to determine where a column is coming from
 	public final String creator;
 	
-	//public final PricingProblem<T, U> associatedPricingProblem;
+	//The pricing problem to which this column belongs
 	public final V associatedPricingProblem;
 	
 	/**

@@ -180,16 +180,10 @@ public abstract class AbstractMaster<T, V extends AbstractPricingProblem<T,U,V>,
 			this.addColumn(column);
 		}
 	}	
-	/**
-	 * Calculates lower bound on the optimal solution (assuming that the master problem is a minimization problem
-	 */
-	public double getLowerBound(){
-		throw new UnsupportedOperationException("Not implemented");
-	}
 	
 	/**
 	 * After the master problem has been solved, a solution has to be returned, consisting of a set of columns selected by the master problem
-	 * @return 
+	 * @return solution (columns)
 	 */
 	public abstract List<U> getSolution();
 	

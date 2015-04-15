@@ -28,14 +28,11 @@ package org.jorlib.frameworks.columnGeneration.colgenMain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemBunddle;
@@ -48,7 +45,8 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Solves geoxam through column generation
+ * Main class defining the Column Generation procedure. It keeps track of all the data structures. Its solve() method is the core of this class.
+ * Assumptions: the Master problem is a minimization problem. The optimal solution with non-fractional variable values has an integer objective value.
  * 
  * U is reserved for columns
  * T is reserved for the model
@@ -61,36 +59,46 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 	final Logger logger = LoggerFactory.getLogger(ColGen.class);
 	static final Configuration config=Configuration.getConfiguration();
 
-	private final T dataModel;
+	//Define the problem
+	protected final T dataModel;
 	
 	//Define the master problem
-	private final AbstractMaster<T, V, U, ? extends MasterData> master;
+	protected final AbstractMaster<T, V, U, ? extends MasterData> master;
 	//Define the pricing problems
-	private final List<V> pricingProblems;
+	protected final List<V> pricingProblems;
 	//Maintain the classes which can be used to solve the pricing problems
-	private final List<Class<? extends PricingProblemSolver<T, U, V>>> solvers;
+	protected final List<Class<? extends PricingProblemSolver<T, U, V>>> solvers;
 	//For each solver, we maintain an instance for each pricing problem. This gives a |solvers|x|pricingProblems| array
-	private final List<PricingProblemBunddle<T, U, V>> pricingProblemBunddles;
+	protected final List<PricingProblemBunddle<T, U, V>> pricingProblemBunddles;
 	//Manages parallel execution of pricing problems
-	private final PricingProblemManager<T,U, V> pricingProblemManager;
+	protected final PricingProblemManager<T,U, V> pricingProblemManager;
 	
 	//Objective value of column generation procedure
-	private double objective; 
+	protected double objective; 
 	//Colgen is terminated if objective exceeds upperBound. Upperbound is set equal to the best incumbent integer solution
-	private int upperBound=Integer.MAX_VALUE;
+	protected int upperBound=Integer.MAX_VALUE;
 	//Lower bound on the objective. If lowerbound > upperBound, this node can be pruned.
-	private double lowerBound=0;
+	protected double lowerBound=0;
 	//Total number of iterations.
-	private int nrOfColGenIterations=0;
+	protected int nrOfColGenIterations=0;
 	//Total time spent on solving column generation problem
-	private long colGenSolveTime;
+	protected long colGenSolveTime;
 	//Total time spent on solving the master problem
-	private long masterSolveTime=0;
+	protected long masterSolveTime=0;
 	//Total time spent on solving the pricing problem
-	private long pricingSolveTime=0;
+	protected long pricingSolveTime=0;
 	//Total number of columns generated and added to the master problem
-	private int nrGeneratedColumns=0;
+	protected int nrGeneratedColumns=0;
 	
+	/**
+	 * Create a new column generation instance
+	 * @param dataModel data model
+	 * @param master master problem
+	 * @param pricingProblems pricing problems
+	 * @param solvers pricing problem solvers
+	 * @param initSolution initial solution
+	 * @param upperBound upper bound on solution. Column generation process is terminated if lower bound exceeds upper bound
+	 */
 	public ColGen(T dataModel, 
 					AbstractMaster<T,V,U, ? extends MasterData> master, 
 					List<V> pricingProblems,
@@ -100,7 +108,7 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 		this.dataModel=dataModel;
 		this.master=master;
 		this.pricingProblems=pricingProblems;
-		this.solvers=solvers;//solvers;
+		this.solvers=solvers;
 		master.addColumns(initSolution);
 		this.upperBound=upperBound;
 		
@@ -112,9 +120,19 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 			pricingProblemBunddles.add(bunddle);
 		}
 		
+		//Create a pricing problem manager for parallel execution of the pricing problems
 		pricingProblemManager=new PricingProblemManager<T,U, V>(pricingProblems, pricingProblemBunddles);
 	}
 	
+	/**
+	 * Create a new column generation instance
+	 * @param dataModel data model
+	 * @param master master problem
+	 * @param pricingProblems pricing problems
+	 * @param solvers pricing problem solvers
+	 * @param initSolution initial solution
+	 * @param upperBound upper bound on solution. Column generation process is terminated if lower bound exceeds upper bound
+	 */
 	public ColGen(T dataModel, 
 			AbstractMaster<T,V,U,? extends MasterData> master, 
 			V pricingProblem,
@@ -141,21 +159,23 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 		this.solve(timeLimit);
 	}*/
 	
+	/**
+	 * Solve the Column Generation problem
+	 * @param timeLimit Future point in time (ms) by which the procedure should be finished. Should be defined as: System.currentTimeMilis()+<desired runtime>
+	 * @throws TimeLimitExceededException Exception is thrown when time limit is exceeded
+	 */
 	public void solve(long timeLimit) throws TimeLimitExceededException{
 		//set time limit pricing problems
 		pricingProblemManager.setTimeLimit(timeLimit);
-		
 		colGenSolveTime=System.currentTimeMillis();
-//		if(config.EXPORT_MODEL) master.exportModel("master0.lp");
-//			List<List<ExamSchedule>> newColumns=new ArrayList<List<ExamSchedule>>();
-//			for(int i=0; i<geoxam.exams.size(); i++)
-//				newColumns.add(new ArrayList<ExamSchedule>());
-		List<U> newColumns=new ArrayList<>();
-		boolean foundNewColumns=false;
-		boolean hasNewCuts=false;
+		
+		List<U> newColumns=new ArrayList<>(); //List containing new columns generated by the pricing problem
+		boolean foundNewColumns=false; //Identify whether the pricing problem generated new columns
+		boolean hasNewCuts=false; //Identify whether the master problem violates any valid inequalities
 		do{
 			nrOfColGenIterations++;
 			hasNewCuts=false;
+			
 			//Solve the master
 			logger.debug("### MASTER "+master.getIterationCount()+" ################################");
 			long time=System.currentTimeMillis();
@@ -165,7 +185,7 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 			logger.debug("Objective master: {}",master.getObjective());
 			
 			//if the objective of the master problem equals 0, we can stop generating columns as 0 is a lower bound on the optimal solution.
-			//Alternatively, we can stop when the objective equals the lowerBound
+			//Alternatively, we can stop when the objective equals the lowerBound. We still need to check for violated inequalities though.
 			if(master.getObjective() < config.PRECISION || Math.abs(objective-lowerBound)<config.PRECISION){
 				//Check whether there are cuts. Otherwise potentially an infeasible integer solution (e.g. TSP solution with subtours) might be returned.
 				if(config.CUTSENABLED && master.hasNewCuts()){  
@@ -179,17 +199,13 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 				break;
 			}
 			
-			//Get new columns
+			//Solve the pricing problem
 			logger.debug("### PRICING ################################");
 			foundNewColumns=false;
-			
 			time=System.currentTimeMillis();
 			
 			//Update data in pricing problems
 			for(V pricingProblem : pricingProblems){
-//				double[] modifiedCosts=master.getReducedCostVector(pricingProblem);
-//				double dualConstant=master.getDualConstant(pricingProblem);
-//				pricingProblem.initPricingProblem(modifiedCosts, dualConstant);
 				master.initializePricingProblem(pricingProblem);
 			}
 			
@@ -198,27 +214,9 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 				newColumns=pricingProblemManager.solvePricingProblems(solver);
 				foundNewColumns=!newColumns.isEmpty();
 				
+				//Calculate a lower bound on the optimal solution of the master problem
+				this.lowerBound=Math.max(lowerBound,this.calculateLowerBound(solver));
 				
-				
-				//Calculate lower bound when the pricing problems are solved using an exact algorithm
-				/*if(solver==solvers.size()-1){
-					//Check whether all pricing problems are feasible. If not, no feasible solution exists to the pricing problem, probably caused because of branching decisions. Then we quit.
-					boolean pricingProblemIsFeasible=true;
-					for(PricingProblem pp : pricingProblems.get(pa)){
-						pricingProblemIsFeasible &=pp.pricingProblemIsFeasible();
-					}
-					if(!pricingProblemIsFeasible){
-						System.out.println("PRICING INFEASIBLE. RETURNING CG!");
-						this.lowerBound=Double.MAX_VALUE;
-						break;
-					}
-					//If all exact pricing problems are solved to optimality, we can compute a bound.
-					if(Math.ceil(this.calculateLowerBound(pa)) > upperBound){ //Lower bound exceeds upper bound
-						newColumns.clear(); //Dont bother about any possible columns
-						break;
-					}
-//						System.out.println("Updated lower bound! LB: "+lowerBound+" obj: "+objective);
-				}*/
 				//Stop when we found new columns
 				if(foundNewColumns){
 					break;
@@ -229,6 +227,7 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 			pricingSolveTime+=(System.currentTimeMillis()-time);
 			nrGeneratedColumns+=newColumns.size();
 			logger.debug("CG Adding columns. Found new columns: {}",foundNewColumns);
+			//Add columns to the master problem
 			if(foundNewColumns){
 				for(U column : newColumns){
 					master.addColumn(column);
@@ -237,10 +236,8 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 				}
 			}
 			
-//			if(config.EXPORT_MODEL) master.exportModel(""+master.getIterationCount());
-			
+			//Check whether we are still within the timeLimit
 			if(System.currentTimeMillis() >= timeLimit){
-				//this.closeMaster();
 				this.close();
 				throw new TimeLimitExceededException();
 			}
@@ -251,8 +248,7 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 				masterSolveTime+=(System.currentTimeMillis()-time); //Generating cuts is considered part of the master problem
 			}
 			
-		}while(foundNewColumns || hasNewCuts);// || !master.isConclusive());
-//		if(config.EXPORT_MODEL) master.exportModel(""+master.getIterationCount());
+		}while(foundNewColumns || hasNewCuts);
 		colGenSolveTime=System.currentTimeMillis()-colGenSolveTime;
 		
 		logger.debug("Finished colGen loop");
@@ -263,49 +259,77 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 	/**
 	 * Compute lower bound on the optimal objective value attainable by the the current master problem. The bound is based on both dual variables from the master,
 	 * as well as the optimal pricing problem solutions.
-	 * The parameter specifies which Pricing Problem should be used to obtain Upper bound information from.
-	 * Returns the best lower bound for the currenst master
+	 * The parameter specifies which solver was last invoked to solve the pricing problems.
+	 * Returns the best lower bound for the current master.
+	 * NOTE: This method is not implemented by default.
+	 * 
+	 * @param solverID id of last invoked solver: solvers.get(solverID)
 	 */
-	/*private double calculateLowerBound(PricingSolvers pa){
-		double newLowerBound=0;
-		double[] upperBoundsOnPricing=pricingProblemManager.getBoundsOnPricingProblems(pa); //Calculate all bounds through parallel execution
-		
-		int index=0;
-		for(PricingProblem pp : pricingProblems.get(pa)){
-//			double upperBoundOnPricing=pp.getUpperbound();
-			double upperBoundOnPricing=upperBoundsOnPricing[index];
-			newLowerBound-=upperBoundOnPricing;
-			index++;
-		}
-		newLowerBound += master.getLowerBoundComponent();
-		this.lowerBound=Math.max(this.lowerBound, newLowerBound);
-		return lowerBound;
-	}*/
+	protected double calculateLowerBound(int solverID){
+		//This method is not implemented as it is problem dependent. Override this method.
+		//The following methods are at your disposal (see documentation):
+		//double master.getLowerboundComponent()
+		//double[] pricingProblemManager.getUpperBound()
+		return 0;
+	}
 	
+	/**
+	 * @return Returns the objective value of the column generation procedure
+	 */
 	public double getObjective(){
 		return objective;
 	}
+	/**
+	 * Returns a lower bound on the objective of the column generation procedure. When the column generation procedure is solved to optimality,
+	 * getObjective() and getLowerBound() should return the same value. However, if the column generation procedure terminates for example due to
+	 * a time limit exceeded exception, there may be a gap in between those values.
+	 * 
+	 * @return Returns a lower bound on the column generation objective
+	 */
 	public double getLowerBound(){
 		return lowerBound;
 	}
+	/**
+	 * @return Returns the number of column generation iterations
+	 */
 	public int getNumberOfIterations(){
 		return nrOfColGenIterations;
 	}
+	/**
+	 * @return Returns how much time it took to solve the column generation problem. This time equals:
+	 * getMasterSolveTime()+getPricingSolveTime()+(small amount of overhead).
+	 */
 	public long getRuntime(){
 		return colGenSolveTime;
 	}
+	/**
+	 * @return Returns how much time was spent on solving the master problem
+	 */
 	public long getMasterSolveTime(){
 		return masterSolveTime;
 	}
+	/**
+	 * @return Returns how much time was spent on solving the pricing problems
+	 */
 	public long getPricingSolveTime(){
 		return pricingSolveTime;
 	}
+	/**
+	 * @return Returns how many columns have been generated in total
+	 */
 	public int getNrGeneratedColumns(){
 		return nrGeneratedColumns;
 	}
+	/**
+	 * @return Returns the solution maintained by the master problem
+	 */
 	public List<U> getSolution(){
 		return master.getSolution();
 	}
+	
+	/**
+	 * @return Returns all cuts generated for the master problem
+	 */
 	public List<Inequality> getCuts(){
 		return master.getCuts();
 	}

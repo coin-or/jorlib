@@ -44,13 +44,24 @@ public final class PricingProblemBunddle<T, U extends AbstractColumn<T,U,V>, V e
 	public final List<PricingProblemSolver<T, U, V>> solverInstances;
 	
 	public PricingProblemBunddle(Class<? extends PricingProblemSolver<T, U, V>> pricingSolver, 
-									List<V> pricingProblems, 
-									DefaultPricingProblemSolverFactory<T, U, V> solverFactory){
+			List<V> pricingProblems, 
+			PricingProblemSolverFactory<T, U, V> solverFactory){
 		this.pricingSolver=pricingSolver;
 		//Create the solver instances
 		solverInstances=new ArrayList<>(pricingProblems.size());
 		for(V pricingProblem : pricingProblems){
 			solverInstances.add(solverFactory.createSolverInstance(pricingProblem));
-		}
 	}
+}
+	
+//	public PricingProblemBunddle(Class<? extends PricingProblemSolver<T, U, V>> pricingSolver, 
+//									List<V> pricingProblems, 
+//									DefaultPricingProblemSolverFactory<T, U, V> solverFactory){
+//		this.pricingSolver=pricingSolver;
+//		//Create the solver instances
+//		solverInstances=new ArrayList<>(pricingProblems.size());
+//		for(V pricingProblem : pricingProblems){
+//			solverInstances.add(solverFactory.createSolverInstance(pricingProblem));
+//		}
+//	}
 }

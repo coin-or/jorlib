@@ -113,6 +113,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<CuttingStock
 					for(int i=0; i<dataModel.nrFinals; i++)
 						pattern[i]=CplexUtil.doubleToInt(values[i]);
 					CuttingPattern column=new CuttingPattern("exactPricing", false, pattern, pricingProblem);
+					logger.debug("Generated new column for pricing:\n{}",column);
 					newPatterns.add(column);
 				}
 			}

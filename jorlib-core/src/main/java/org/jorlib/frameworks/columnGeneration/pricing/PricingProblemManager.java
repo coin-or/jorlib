@@ -56,11 +56,11 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 	
 	//Ordered list of pricing problems. First the first pricing problem will be executed. If this yields columns then we return. If not, we continue with the next pricing problem.
 	//Pricing problems are grouped per algorithm.
-	//private final EnumMap<PricingSolvers, List<PricingProblemSolver>> pricingProblems;
-//	private final List<PricingProblem<?>> pricingProblems;
 	private final List<PricingProblemBunddle<T, U, V>> pricingProblemBunddles;
 	//List of tasks which can be invoked in parallel to calculate bounds on the pricing problems
 //	private final Map<PricingProblemSolver, Callable<Double>> ppBoundTasks;
+	private final Map<PricingProblemSolver<T, U, V>, Callable<Double>> ppBoundTasks;
+	//private final List<Callable<Double>> ppBoundTasks;
 	
 	private final ExecutorService executor;
 	private final List<Future<Void>> futures;
@@ -74,6 +74,19 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 		this.pricingProblemBunddles=pricingProblemBunddles;
 		
 		//Create tasks which calculate bounds on the pricing problems
+		ppBoundTasks=new HashMap<>();
+		for(PricingProblemBunddle<T, U, V> pricingProblemBunddle : pricingProblemBunddles){
+			for(PricingProblemSolver<T, U, V> solver : pricingProblemBunddle.solverInstances){
+				Callable<Double> task=new Callable<Double>() {
+					@Override
+					public Double call() throws Exception {
+						return solver.getUpperbound();  //Gets the upper bound on the pricing problem through the solver instance
+					}
+				};
+				ppBoundTasks.put(solver, task);
+			}
+		}
+		
 //		ppBoundTasks=new HashMap<PricingProblemSolver, Callable<Double>>();
 //		for(List<PricingProblemSolver> pricingProblemGroup: pricingProblems.values()){
 //			for(PricingProblemSolver pp : pricingProblemGroup){
@@ -98,19 +111,15 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 	 * @return List of columns which have been generated in the pricing problems.
 	 * @throws TimeLimitExceededException
 	 */
-	public List<U> solvePricingProblems(int bunddleID) throws TimeLimitExceededException{
-		//List<PricingProblemSolver> pricingProblemGroup=pricingProblems.get(solver);
-		PricingProblemBunddle<T, U, V> bunddle=pricingProblemBunddles.get(bunddleID);
+	public List<U> solvePricingProblems(int solverID) throws TimeLimitExceededException{
+		PricingProblemBunddle<T, U, V> bunddle=pricingProblemBunddles.get(solverID);
 		
 		//1. schedule pricing problems
 		for(PricingProblemSolver<T, U, V> solverInstance : bunddle.solverInstances){
 			Future<Void> f=executor.submit(solverInstance);
         	futures.add(f);
 		}
-//		for(PricingProblemSolver pp : pricingProblemGroup){
-//			Future<Void> f=executor.submit(pp);
-//        	futures.add(f);
-//		}
+		
 		//2. Wait for completion and check whether any of the threads has thrown an exception which needs to be handled upstream
 		for(Future<Void> f: futures){
 			try {
@@ -132,17 +141,36 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 		for(PricingProblemSolver<T, U, V> solverInstance : bunddle.solverInstances){
 			newColumns.addAll(solverInstance.getColumns());
 		}
-//		for(PricingProblemSolver pp : pricingProblemGroup){
-//			newColumns.addAll(pp.getColumns());
-//		}
 		
-		
-//		return newColumns;
 		return newColumns;
 	}
 	
-	
-//	public double[] getBoundsOnPricingProblems(PricingSolvers pa){
+	/**
+	 * Invokes pricingSolver.getUpperBound() in parallel for all pricing problems defined.
+	 * @param solverID Solver on which getUpperBound() is invoked.
+	 * @return array containing the bounds calculated for each pricing problem
+	 */
+	public double[] getBoundsOnPricingProblems(int solverID){
+		//Get the bunddle of solverInstances corresponding to the solverID
+		PricingProblemBunddle<T, U, V> bunddle=pricingProblemBunddles.get(solverID);
+		double[] bounds=new double[bunddle.solverInstances.size()];
+		//Submit all the relevant getUpperBound() tasks to the executor
+		List<Future<Double>> futureList=new ArrayList<Future<Double>>();
+		for(PricingProblemSolver<T, U, V> solverInstance : bunddle.solverInstances){
+			Callable<Double> task=ppBoundTasks.get(solverInstance);
+			Future<Double> f=executor.submit(task);
+			futureList.add(f);
+		}
+		//Query the results of each task one by one
+		for(int i=0; i<bounds.length; i++){
+			try {
+				bounds[i]=futureList.get(i).get(); //Get result, note that this is a blocking procedure!
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+		}
+		return bounds;
+		
 //		List<PricingProblemSolver> pricingProblemGroup=pricingProblems.get(pa);
 //		double[] bounds=new double[pricingProblemGroup.size()];
 //		List<Future<Double>> futureList=new ArrayList<Future<Double>>();
@@ -164,7 +192,7 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 //		}
 //		
 //		return bounds;
-//	}
+	}
 	
 	/**
 	 * Future point in time when the pricing problem must be finished
@@ -176,11 +204,6 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 				solverInstance.setTimeLimit(timeLimit);
 			}
 		}
-//		for(List<PricingProblemSolver> pricingProblemGroup : pricingProblems.values()){
-//			for(PricingProblemSolver pp : pricingProblemGroup){
-//				pp.setTimeLimit(timeLimit);
-//			}
-//		}
 	}
 	
 	/**
@@ -211,13 +234,6 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 				solverInstance.close();
 			}
 		}
-		
-		
-//		for(List<PricingProblemSolver> pricingProblemGroup : pricingProblems.values()){
-//			for(PricingProblemSolver pp : pricingProblemGroup){
-//				pp.close();
-//			}
-//		}
 	}
 
 }

@@ -42,13 +42,13 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
  */
 public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
 
+	//Data object
 	protected final T modelData;
 	
+	//Name of this pricing problem
 	public final String name;
-	//Set of columns active for this pricing problem
+	//Set of columns generated for this pricing problem
 	protected final Set<U> activeColumns;
-	//List of new columns generated for this pricing problem
-//	protected final List<U> newColumns;
 	
 	//Information coming from the master problem
 	public double[] modifiedCosts;
@@ -58,7 +58,6 @@ public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>,
 		this.modelData=modelData;
 		this.name=name;
 		activeColumns=new LinkedHashSet<>();
-//		newColumns=new ArrayList<>();
 	}
 	
 	public void initPricingProblem(double[] modifiedCosts){
@@ -67,7 +66,6 @@ public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>,
 	public void initPricingProblem(double[] modifiedCosts, double dualConstant){
 		this.modifiedCosts=modifiedCosts;
 		this.dualConstant=dualConstant;
-//		newColumns.clear();
 	}
 	
 	public int getNrColumns(){
@@ -85,20 +83,6 @@ public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>,
 			activeColumns.add(column);
 	}
 	
-//	protected void addNewColumns(List<U> newColumns){
-//		for(U column : newColumns){
-//			if(activeColumns.contains(column))
-//				throw new RuntimeException("Duplicate column has been generated for pricing problem: "+this.toString()+"! This column already exists and by definition should not have negative reduced cost: "+column);
-//			else
-//				activeColumns.add(column);
-//		}
-//		this.newColumns.addAll(newColumns);
-//	}
-	
-//	public List<U> getNewColumns(){
-//		return newColumns;
-//	}
-
 	public String toString(){
 		return name;
 	}
