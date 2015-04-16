@@ -30,6 +30,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Defines a Pricing Problem.
@@ -42,6 +45,8 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
  */
 public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
 
+	protected final Logger logger = LoggerFactory.getLogger(AbstractPricingProblem.class);
+	
 	//Data object
 	protected final T modelData;
 	

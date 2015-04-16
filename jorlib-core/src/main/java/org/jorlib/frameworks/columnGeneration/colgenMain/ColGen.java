@@ -33,9 +33,9 @@ import java.util.List;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
-import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemBunddle;
+import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemBundle;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemManager;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.pricing.DefaultPricingProblemSolverFactory;
@@ -69,7 +69,7 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 	//Maintain the classes which can be used to solve the pricing problems
 	protected final List<Class<? extends PricingProblemSolver<T, U, V>>> solvers;
 	//For each solver, we maintain an instance for each pricing problem. This gives a |solvers|x|pricingProblems| array
-	protected final List<PricingProblemBunddle<T, U, V>> pricingProblemBunddles;
+	protected final List<PricingProblemBundle<T, U, V>> pricingProblemBunddles;
 	//Manages parallel execution of pricing problems
 	protected final PricingProblemManager<T,U, V> pricingProblemManager;
 	
@@ -116,7 +116,7 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 		pricingProblemBunddles=new ArrayList<>();
 		for(Class<? extends PricingProblemSolver<T, U, V>> solverClass : solvers){
 			DefaultPricingProblemSolverFactory<T, U, V> factory=new DefaultPricingProblemSolverFactory<T, U, V>(solverClass, /*solverClass.getName(), */dataModel);
-			PricingProblemBunddle<T, U, V> bunddle=new PricingProblemBunddle<>(solverClass, pricingProblems, factory);
+			PricingProblemBundle<T, U, V> bunddle=new PricingProblemBundle<>(solverClass, pricingProblems, factory);
 			pricingProblemBunddles.add(bunddle);
 		}
 		

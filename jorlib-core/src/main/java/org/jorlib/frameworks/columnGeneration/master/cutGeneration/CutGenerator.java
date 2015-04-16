@@ -29,7 +29,6 @@ package org.jorlib.frameworks.columnGeneration.master.cutGeneration;
 import java.util.List;
 
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
-import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

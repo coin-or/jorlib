@@ -32,7 +32,7 @@ import java.util.List;
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
-import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
 import org.slf4j.Logger;

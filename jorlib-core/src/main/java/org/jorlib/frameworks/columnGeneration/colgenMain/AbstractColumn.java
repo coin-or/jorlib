@@ -31,6 +31,7 @@ import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 
 /**
  * Abstract Class modeling a column in the column generation procedure.
+ * Note that the fields in a column (except the value assigned to it by the master problem) are all final: a column should NOT be tempered with.
  * 
  * @author Joris Kinable
  * @version 13-4-2015
@@ -54,7 +55,6 @@ public abstract class AbstractColumn<T, U extends AbstractColumn<T,U,V>, V exten
 	 * @param creator Who/What created this column?
 	 * @param isArtificial Is this an artificial column?
 	 */
-//	public Column(String creator, boolean isArtificial, PricingProblem<T, U> associatedPricingProblem){
 	public AbstractColumn(String creator, boolean isArtificial, V associatedPricingProblem){
 		this.creator=creator;
 		this.isArtificialColumn=isArtificial;

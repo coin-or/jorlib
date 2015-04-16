@@ -54,13 +54,12 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 	
 	private static final Configuration config=Configuration.getConfiguration();
 	
-	//Ordered list of pricing problems. First the first pricing problem will be executed. If this yields columns then we return. If not, we continue with the next pricing problem.
-	//Pricing problems are grouped per algorithm.
-	private final List<PricingProblemBunddle<T, U, V>> pricingProblemBunddles;
+	//For each PricingProblemSolver and for each Pricing Problem we have a new instance of the PricingProblemSolver. All instances corresponding to the same
+	//solver are bundled together in a PricingProblemBundle. Note that the list of pricingProblemBunddles is hierarchical. The solvers are invoked in the order
+	//determined by the order of the bundles. 
+	private final List<PricingProblemBundle<T, U, V>> pricingProblemBundles;
 	//List of tasks which can be invoked in parallel to calculate bounds on the pricing problems
-//	private final Map<PricingProblemSolver, Callable<Double>> ppBoundTasks;
 	private final Map<PricingProblemSolver<T, U, V>, Callable<Double>> ppBoundTasks;
-	//private final List<Callable<Double>> ppBoundTasks;
 	
 	private final ExecutorService executor;
 	private final List<Future<Void>> futures;
@@ -69,13 +68,12 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 	 * Note: the parameter is the number of pricing problems, NOT the number of algorithms used to solve the pricing problems.
 	 * @param nrPricingProblemsPerGroup Number of pricing problems that have to be solved for every algorithm.
 	 */
-	//public PricingProblemManager(List<PricingProblem<?, U>> pricingProblems, List<PricingProblemBunddle<?, U, PricingProblem<?, U>>> pricingProblemBunddles){
-	public PricingProblemManager(List<V> pricingProblems, List<PricingProblemBunddle<T, U, V>> pricingProblemBunddles){
-		this.pricingProblemBunddles=pricingProblemBunddles;
+	public PricingProblemManager(List<V> pricingProblems, List<PricingProblemBundle<T, U, V>> pricingProblemBundles){
+		this.pricingProblemBundles=pricingProblemBundles;
 		
 		//Create tasks which calculate bounds on the pricing problems
 		ppBoundTasks=new HashMap<>();
-		for(PricingProblemBunddle<T, U, V> pricingProblemBunddle : pricingProblemBunddles){
+		for(PricingProblemBundle<T, U, V> pricingProblemBunddle : pricingProblemBundles){
 			for(PricingProblemSolver<T, U, V> solver : pricingProblemBunddle.solverInstances){
 				Callable<Double> task=new Callable<Double>() {
 					@Override
@@ -86,19 +84,6 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 				ppBoundTasks.put(solver, task);
 			}
 		}
-		
-//		ppBoundTasks=new HashMap<PricingProblemSolver, Callable<Double>>();
-//		for(List<PricingProblemSolver> pricingProblemGroup: pricingProblems.values()){
-//			for(PricingProblemSolver pp : pricingProblemGroup){
-//				Callable<Double> task=new Callable<Double>() {
-//					@Override
-//					public Double call() throws Exception {
-//						return pp.getUpperbound();  //Gets the upper bound on the pricing problem
-//					}
-//				};
-//				ppBoundTasks.put(pp, task);
-//			}
-//		}
 		
 		//Define workers
 		executor = Executors.newFixedThreadPool(config.MAXTHREADS); //Creates a threat pool consisting of MAXTHREADS threats
@@ -112,7 +97,7 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 	 * @throws TimeLimitExceededException
 	 */
 	public List<U> solvePricingProblems(int solverID) throws TimeLimitExceededException{
-		PricingProblemBunddle<T, U, V> bunddle=pricingProblemBunddles.get(solverID);
+		PricingProblemBundle<T, U, V> bunddle=pricingProblemBundles.get(solverID);
 		
 		//1. schedule pricing problems
 		for(PricingProblemSolver<T, U, V> solverInstance : bunddle.solverInstances){
@@ -152,7 +137,7 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 	 */
 	public double[] getBoundsOnPricingProblems(int solverID){
 		//Get the bunddle of solverInstances corresponding to the solverID
-		PricingProblemBunddle<T, U, V> bunddle=pricingProblemBunddles.get(solverID);
+		PricingProblemBundle<T, U, V> bunddle=pricingProblemBundles.get(solverID);
 		double[] bounds=new double[bunddle.solverInstances.size()];
 		//Submit all the relevant getUpperBound() tasks to the executor
 		List<Future<Double>> futureList=new ArrayList<Future<Double>>();
@@ -170,28 +155,6 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 			}
 		}
 		return bounds;
-		
-//		List<PricingProblemSolver> pricingProblemGroup=pricingProblems.get(pa);
-//		double[] bounds=new double[pricingProblemGroup.size()];
-//		List<Future<Double>> futureList=new ArrayList<Future<Double>>();
-//		
-//		//submit all the relevant tasks to calculate the bounds
-//		for(PricingProblemSolver pp : pricingProblemGroup){
-//			Callable<Double> task=ppBoundTasks.get(pp);
-//			Future<Double> f=executor.submit(task);
-//			futureList.add(f);
-//		}
-//		
-//		//Query the results of each task one by one
-//		for(int i=0; i<pricingProblemGroup.size(); i++){
-//			try {
-//				bounds[i]=futureList.get(i).get(); //Get result, note that this is a blocking procedure!
-//			} catch (InterruptedException | ExecutionException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		
-//		return bounds;
 	}
 	
 	/**
@@ -199,7 +162,7 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 	 * @param timeLimit
 	 */
 	public void setTimeLimit(long timeLimit){
-		for(PricingProblemBunddle<T, U, V> bunddle : pricingProblemBunddles){
+		for(PricingProblemBundle<T, U, V> bunddle : pricingProblemBundles){
 			for(PricingProblemSolver<T, U, V> solverInstance : bunddle.solverInstances){
 				solverInstance.setTimeLimit(timeLimit);
 			}
@@ -210,17 +173,18 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 	 * Shut down the executors
 	 */
 	private void shutdownAndAwaitTermination(ExecutorService pool) {
-	   pool.shutdownNow(); // Disable new tasks from being submitted
-	   try {
-	       // Wait a while for tasks to respond to being cancelled
-	       if (!pool.awaitTermination(60, TimeUnit.SECONDS))
-	           System.err.println("Pool did not terminate");
-	   } catch (InterruptedException ie) {
-	     // (Re-)Cancel if current thread also interrupted
-	     pool.shutdownNow();
-	     // Preserve interrupt status
-	     Thread.currentThread().interrupt();
-	   }
+		// Prevent new tasks from being submitted
+		pool.shutdownNow(); 
+		try {
+			// Wait a while for tasks to respond to being cancelled
+			if (!pool.awaitTermination(60, TimeUnit.SECONDS))
+				System.err.println("Pool did not terminate");
+		} catch (InterruptedException ie) {
+			// (Re-)Cancel if current thread also interrupted
+			pool.shutdownNow();
+			// Preserve interrupt status
+			Thread.currentThread().interrupt();
+		}
 	}
 	
 	/**
@@ -229,7 +193,7 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 	public void close(){
 		executor.shutdownNow();
 		//Close pricing problems
-		for(PricingProblemBunddle<T, U, V> bunddle : pricingProblemBunddles){
+		for(PricingProblemBundle<T, U, V> bunddle : pricingProblemBundles){
 			for(PricingProblemSolver<T, U, V> solverInstance : bunddle.solverInstances){
 				solverInstance.close();
 			}

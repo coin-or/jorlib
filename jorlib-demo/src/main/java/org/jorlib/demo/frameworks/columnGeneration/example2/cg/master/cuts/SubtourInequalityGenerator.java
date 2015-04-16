@@ -50,7 +50,7 @@ import org.jorlib.demo.frameworks.columnGeneration.example2.model.Edge;
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.MatchingColor;
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.TSP;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutGenerator;
-import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
 
 /**
  * 

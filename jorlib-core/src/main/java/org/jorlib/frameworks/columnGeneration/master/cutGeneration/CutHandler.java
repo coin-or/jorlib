@@ -35,7 +35,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
-import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -47,13 +48,11 @@ import org.jorlib.frameworks.columnGeneration.master.cuts.Inequality;
  */
 public class CutHandler<T,W extends MasterData>{
 
+	protected final Logger logger = LoggerFactory.getLogger(CutHandler.class);
 	
-	//private EnumMap<InequalityType, CutGenerator> cutGenerators;
-//	private Map<CutGenerator, >
 	private Set<CutGenerator<T,W>> cutGenerators;
 	
 	public CutHandler(){
-//		cutGenerators=new EnumMap<InequalityType, CutGenerator>(InequalityType.class);
 		cutGenerators=new LinkedHashSet<CutGenerator<T,W>>();
 	}
 	
@@ -63,7 +62,6 @@ public class CutHandler<T,W extends MasterData>{
 	 * @param masterData
 	 */
 	public void setMasterData(W masterData){
-//		for(CutGenerator cg : cutGenerators.values()){
 		for(CutGenerator<T,W> cg : cutGenerators){
 			cg.setMasterData(masterData);
 		}
@@ -74,7 +72,6 @@ public class CutHandler<T,W extends MasterData>{
 	 * @param cutGenerator
 	 */
 	public void addCutGenerator(CutGenerator<T,W> cutGenerator){
-//		cutGenerators.put(cutGenerator.inequalityType, cutGenerator);
 		cutGenerators.add(cutGenerator);
 	}
 	
@@ -85,7 +82,6 @@ public class CutHandler<T,W extends MasterData>{
 	 */
 	public boolean generateCuts(){
 		boolean foundCut=false;
-		//for(CutGenerator cutGen: cutGenerators.values()){
 		for(CutGenerator<T,W> cutGen: cutGenerators){
 			foundCut |= cutGen.generateInqualities();
 			if(foundCut)
@@ -102,7 +98,6 @@ public class CutHandler<T,W extends MasterData>{
 	public void addCuts(Collection<Inequality> cuts){
 		System.out.println("Cuthandler: Added initial cuts: "+cuts.size());
 		for(Inequality cut : cuts){
-			//cutGenerators.get(cut.type).addCut(cut);
 			if(!this.cutGenerators.contains(cut.maintainingGenerator))
 				throw new RuntimeException("Attempt to add cut failed. CutGenerator for this type of cuts is not registered with the cut handler!");
 			else
@@ -115,7 +110,6 @@ public class CutHandler<T,W extends MasterData>{
 	 */
 	public List<Inequality> getCuts(){
 		List<Inequality> cuts=new ArrayList<Inequality>();
-		//for(CutGenerator cutGen : cutGenerators.values())
 		for(CutGenerator<T,W> cutGen : cutGenerators)
 			cuts.addAll(cutGen.getCuts());
 		return cuts;
@@ -125,7 +119,6 @@ public class CutHandler<T,W extends MasterData>{
 	 * Close the Cut Generators
 	 */
 	public void close(){
-//		for(CutGenerator cutGen : cutGenerators.values()){
 		for(CutGenerator<T,W> cutGen : cutGenerators){
 			cutGen.close();
 		}

@@ -33,17 +33,24 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 
 /**
  * Each pricing problem (PricingProblem) is solved by some algorithm (PricingProblemSolver). This class is a container which holds
- * a single instance of a PricingProblemSolver for *each* PricingProblem. 
+ * a single instance of a PricingProblemSolver for *each* PricingProblem. The instances are produced by a PricingProblemSolverFactory
  * 
  * @author Joris Kinable
  * @version 13-4-2015
  *
  */
-public final class PricingProblemBunddle<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
+public final class PricingProblemBundle<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
 	public final Class<? extends PricingProblemSolver<T, U, V>> pricingSolver;
 	public final List<PricingProblemSolver<T, U, V>> solverInstances;
 	
-	public PricingProblemBunddle(Class<? extends PricingProblemSolver<T, U, V>> pricingSolver, 
+	/**
+	 * Each pricing problem (PricingProblem) is solved by some algorithm (PricingProblemSolver). This class is a container which holds
+	 * a single instance of a PricingProblemSolver for *each* PricingProblem. The instances are produced by a PricingProblemSolverFactory
+	 * @param pricingSolver The solver for which the instances need to be created
+	 * @param pricingProblems List of pricing problems
+	 * @param solverFactory Factory to produce Solver Instances
+	 */
+	public PricingProblemBundle(Class<? extends PricingProblemSolver<T, U, V>> pricingSolver, 
 			List<V> pricingProblems, 
 			PricingProblemSolverFactory<T, U, V> solverFactory){
 		this.pricingSolver=pricingSolver;
@@ -51,17 +58,6 @@ public final class PricingProblemBunddle<T, U extends AbstractColumn<T,U,V>, V e
 		solverInstances=new ArrayList<>(pricingProblems.size());
 		for(V pricingProblem : pricingProblems){
 			solverInstances.add(solverFactory.createSolverInstance(pricingProblem));
+		}
 	}
-}
-	
-//	public PricingProblemBunddle(Class<? extends PricingProblemSolver<T, U, V>> pricingSolver, 
-//									List<V> pricingProblems, 
-//									DefaultPricingProblemSolverFactory<T, U, V> solverFactory){
-//		this.pricingSolver=pricingSolver;
-//		//Create the solver instances
-//		solverInstances=new ArrayList<>(pricingProblems.size());
-//		for(V pricingProblem : pricingProblems){
-//			solverInstances.add(solverFactory.createSolverInstance(pricingProblem));
-//		}
-//	}
 }

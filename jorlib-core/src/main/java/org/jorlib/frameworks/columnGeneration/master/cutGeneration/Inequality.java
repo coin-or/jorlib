@@ -24,9 +24,8 @@
  * -------
  *
  */
-package org.jorlib.frameworks.columnGeneration.master.cuts;
+package org.jorlib.frameworks.columnGeneration.master.cutGeneration;
 
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutGenerator;
 
 /**
  * 

@@ -1,4 +1,4 @@
-package geoxam.algorithms.exact.columnGeneration.branchAndPrice.branchingDecisions;
+package org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions;
 
 public interface BranchingDecision {
 
@@ -6,6 +6,6 @@ public interface BranchingDecision {
 	public void executeDecision();
 	
 	//Revert the branching decision.
-	public void revertDecision();
+	public void rewindDecision();
 	
 }
