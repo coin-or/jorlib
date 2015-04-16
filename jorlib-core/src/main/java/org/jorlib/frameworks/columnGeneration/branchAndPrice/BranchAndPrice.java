@@ -12,42 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import geoxam.algorithms.exact.columnGeneration.ExamSchedule;
-import geoxam.algorithms.exact.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
-import geoxam.algorithms.exact.columnGeneration.branchAndPrice.branchingDecisions.FixLocation;
-import geoxam.algorithms.exact.columnGeneration.branchAndPrice.branchingDecisions.FixRoom;
-import geoxam.algorithms.exact.columnGeneration.branchAndPrice.branchingDecisions.RemoveLocation;
-import geoxam.algorithms.exact.columnGeneration.branchAndPrice.branchingDecisions.RemoveRoom;
-import geoxam.algorithms.exact.columnGeneration.colgenMain.ColGen;
-import geoxam.algorithms.exact.columnGeneration.master.cutGeneration.CoverInequalityGenerator;
-import geoxam.algorithms.exact.columnGeneration.master.cutGeneration.CoverInequalityGenerator2;
-import geoxam.algorithms.exact.columnGeneration.master.cutGeneration.CutHandler;
-import geoxam.algorithms.exact.columnGeneration.master.cutGeneration.LiftedCoverInequalityGenerator;
-import geoxam.algorithms.exact.columnGeneration.master.cuts.CoverInequality;
-import geoxam.algorithms.exact.columnGeneration.master.cuts.LiftedCoverInequality;
-import geoxam.algorithms.exact.columnGeneration.pricing.PricingAlgorithm;
-import geoxam.algorithms.exact.columnGeneration.pricing.PricingProblem;
-import geoxam.algorithms.exact.columnGeneration.pricing.PricingProblemFactory;
-import geoxam.algorithms.exact.columnGeneration.pricing.PricingProblemManager;
-import geoxam.algorithms.exact.columnGeneration.pricing.MIP.MipPricing;
-import geoxam.io.BPStatsWriter;
-import geoxam.io.TimeLimitExceededException;
-import geoxam.io.UpdateEnum;
-import geoxam.model.Exam;
-import geoxam.model.Participant;
-import geoxam.model.Problem;
-import geoxam.model.Room;
-import geoxam.model.ScheduledExam;
-import geoxam.model.Site;
-import geoxam.model.Solution;
-import geoxam.tools.Constants;
-import geoxam.tools.CplexUtil;
-
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
+import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
+import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.InequalityType;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
+import org.jorlib.frameworks.columnGeneration.util.CplexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +48,7 @@ public abstract class BranchAndPrice<T, U extends AbstractColumn<T,U,V>, V exten
 	
 	protected GraphManipulator graphManipulator;
 	protected Deque<BAPNode> stack;
-	protected int nodeCounter=0;
+	protected static int nodeCounter=0;
 	
 	protected int upperBoundOnObjective=Integer.MAX_VALUE;
 	protected double lowerBoundOnObjective=0;
@@ -185,7 +157,7 @@ public abstract class BranchAndPrice<T, U extends AbstractColumn<T,U,V>, V exten
 				totalNrIterations+=cg.getNumberOfIterations();
 				totalGeneratedColumns+=cg.getNrGeneratedColumns();
 				totalNrRestarts+=0;//cg.getNrRestartsMaster();
-				if(config.WRITE_STATS) stats.update(UpdateEnum.SOLVE_STATS, new Object[]{cg.getNumberOfIterations(), cg.getMasterSolveTime(), cg.getPricingSolveTime(), cg.getNrGeneratedColumns()});
+//				if(config.WRITE_STATS) stats.update(UpdateEnum.SOLVE_STATS, new Object[]{cg.getNumberOfIterations(), cg.getMasterSolveTime(), cg.getPricingSolveTime(), cg.getNrGeneratedColumns()});
 			} catch (TimeLimitExceededException e) {
 				stack.push(bapNode);
 				break;
@@ -197,46 +169,36 @@ public abstract class BranchAndPrice<T, U extends AbstractColumn<T,U,V>, V exten
 			//NOTE: based on this, we may no longer need to check whether there are artificial columns in the solution.
 			if(bapNode.bound >= bestObjective){ //Do not bother to create a branch even though the node is fractional. Bound is worse than best solution
 				logger.debug("Lower bound ({}) of node is worse than best solution ({}). Do not branch.",bapNode.bound, bestObjective);
-				if(config.WRITE_STATS) stats.update(UpdateEnum.BAP_NODE_PRUNE, new Object[]{bapNode.bound});
+//				if(config.WRITE_STATS) stats.update(UpdateEnum.BAP_NODE_PRUNE, new Object[]{bapNode.bound});
 				nodesProcessed++;
 				cg.closeMaster();
 				continue;
 			}
 			
 			//Query the solution
-			List<List<Column>> solution= cg.getSolution();
+			List<U> solution= cg.getSolution();
 			
 			//Check if node was infeasible, i.e. whether there are artifical columns in the solution. If so, ignore it and continue with the next node.
 			boolean hasArtificalColsInSol=false;
-			for(Exam e: geoxam.exams){
-				for(Column es : solution.get(e.ID)){
-					hasArtificalColsInSol |=es.isArtificialColumn;
-					if(hasArtificalColsInSol) break;
-				}
+			for(U column : solution){
+				hasArtificalColsInSol |=column.isArtificialColumn;
 				if(hasArtificalColsInSol) break;
 			}
 			if(hasArtificalColsInSol){
 				logger.debug("Solution is artificial: Node is infeasible");
-//				System.out.println("Solution is artificial: Node is infeasible nodeID: "+bapNode.nodeID);
-				if(config.WRITE_STATS) stats.update(UpdateEnum.BAP_NODE_ISINFEAS, null);
+//				if(config.WRITE_STATS) stats.update(UpdateEnum.BAP_NODE_ISINFEAS, null);
 				nodesProcessed++;
 				cg.closeMaster();
 				continue;
 			}
 			
 			//Check if solution is integral (in an integral solution, each exam should only have 1 schedule);
-			boolean isIntegral=true;
-			for(int i=0; i<geoxam.exams.size() && isIntegral; i++){
-				isIntegral &=solution.get(i).size()==1;
-			}
-			if(logger.isDebugEnabled() && isIntegral){
-				logger.debug("Found integral solution");
-			}
+			boolean isIntegral=this.isIntegralSolution(solution);
 			
-			//If solution is integral, check whether it is the best incumbent solution
+			//If solution is integral, check whether it is better than the current best solution
 			if(isIntegral){
 				logger.debug("Integer solution found with obj: {}", cg.getObjective());
-				if(config.WRITE_STATS) stats.update(UpdateEnum.BAP_NODE_ISINTEGER, new Object[]{cg.getObjective(), bapNode.bound});
+//				if(config.WRITE_STATS) stats.update(UpdateEnum.BAP_NODE_ISINTEGER, new Object[]{cg.getObjective(), bapNode.bound});
 				if(cg.getObjective() < this.bestObjective){
 					logger.debug("Solution is new best");
 					this.bestObjective=CplexUtil.doubleToInt(cg.getObjective());
@@ -283,7 +245,7 @@ public abstract class BranchAndPrice<T, U extends AbstractColumn<T,U,V>, V exten
 				lowerBoundOnObjective=Math.min(lowerBoundOnObjective, bapNode.bound);
 			}
 		}
-		if(config.WRITE_STATS) stats.update(UpdateEnum.FINISH_BAP, null);
+//		if(config.WRITE_STATS) stats.update(UpdateEnum.FINISH_BAP, null);
 	}
 	
 	
@@ -487,5 +449,7 @@ public abstract class BranchAndPrice<T, U extends AbstractColumn<T,U,V>, V exten
 	 * To prevent them from ending up in a final solution, a high cost is associated with them.  
 	 */
 	protected abstract List<U> generateArtificialSolution();
+	
+	protected abstract boolean isIntegralSolution(List<U> solution);
 	
 }
