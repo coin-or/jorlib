@@ -2,6 +2,7 @@ package org.jorlib.frameworks.columnGeneration.branchAndPrice;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
@@ -10,11 +11,11 @@ import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
 
 public abstract class BranchCreator<T,U extends AbstractColumn<T,U,?>> {
 
-	public List<BAPNode<T,U>> branch(List<U> solution){
+	public List<BAPNode<T,U>> branch(List<U> solution, List<Inequality> cuts){
 		//1. Decide whether we can branch, and if so, on what we can branch. 
 		if(!this.canPerformBranching())
-			return Collection.emptyList();
-		List<BAPNode<T,U>> branches=this.getBranches();
+			return Collections.emptyList();
+		List<BAPNode<T,U>> branches=this.getBranches(solution, cuts);
 		return branches;
 	}
 	
@@ -41,7 +42,7 @@ public abstract class BranchCreator<T,U extends AbstractColumn<T,U,?>> {
 	}
 	
 	protected abstract boolean canPerformBranching();
-	protected abstract List<BAPNode<T,U>> getBranches();
+	protected abstract List<BAPNode<T,U>> getBranches(List<U> solution, List<Inequality> cuts);
 	
 	/**
 	 * Determine whether a particular column from the parent node is feasible for the child node resulting from the Branching Decision
