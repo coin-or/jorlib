@@ -1,7 +1,5 @@
 package org.jorlib.frameworks.columnGeneration.branchAndPrice;
 
-import ilog.concert.IloException;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +28,6 @@ import org.jorlib.frameworks.columnGeneration.util.Configuration;
 import org.jorlib.frameworks.columnGeneration.util.CplexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public abstract class BranchAndPrice<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
 	protected final Logger logger = LoggerFactory.getLogger(BranchAndPrice.class);
@@ -136,11 +133,19 @@ public abstract class BranchAndPrice<T, U extends AbstractColumn<T,U,V>, V exten
 				bapNode.columns.addAll(this.generateArtificialSolution());
 			}
 			
-			//Create a new master problem
+//			ColGen(T dataModel, 
+//					AbstractMaster<T,V,U, ? extends MasterData> master, 
+//					List<V> pricingProblems,
+//					List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
+//					PricingProblemManager<T,U, V> pricingProblemManager,
+//					List<U> initSolution,
+//					int upperBound)
+			
+			//Create a new master problem 
 			AbstractMaster<T, V, U, ? extends MasterData> master=masterFactory.createMaster(modelData, cutHandler);
 			ColGen cg=null;
 			try {
-				cg = new ColGen(geoxam, cutHandler, pricingAlgorithms, pricingProblems, pricingProblemManager, bapNode.columns, bapNode.inequalities, timeLimit, bestObjective); //Solve the node
+				cg = new ColGen(modelData, master, pricingProblems, solvers, pricingProblemManager, bapNode.columns, bestObjective); //Solve the node
 				//Update statistics
 				timeSolvingMaster+=cg.getMasterSolveTime();
 				timeSolvingPricing+=cg.getPricingSolveTime();
@@ -318,5 +323,4 @@ public abstract class BranchAndPrice<T, U extends AbstractColumn<T,U,V>, V exten
 	protected abstract List<U> generateArtificialSolution();
 	
 	protected abstract boolean isIntegralSolution(List<U> solution);
-	
 }

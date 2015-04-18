@@ -69,7 +69,7 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 	//Maintain the classes which can be used to solve the pricing problems
 	protected final List<Class<? extends PricingProblemSolver<T, U, V>>> solvers;
 	//For each solver, we maintain an instance for each pricing problem. This gives a |solvers|x|pricingProblems| array
-	protected final List<PricingProblemBundle<T, U, V>> pricingProblemBunddles;
+//	protected final List<PricingProblemBundle<T, U, V>> pricingProblemBunddles;
 	//Manages parallel execution of pricing problems
 	protected final PricingProblemManager<T,U, V> pricingProblemManager;
 	
@@ -113,7 +113,7 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 		this.upperBound=upperBound;
 		
 		//Generate the pricing problem instances
-		pricingProblemBunddles=new ArrayList<>();
+		List<PricingProblemBundle<T, U, V>> pricingProblemBunddles=new ArrayList<>();
 		for(Class<? extends PricingProblemSolver<T, U, V>> solverClass : solvers){
 			DefaultPricingProblemSolverFactory<T, U, V> factory=new DefaultPricingProblemSolverFactory<T, U, V>(solverClass, /*solverClass.getName(), */dataModel);
 			PricingProblemBundle<T, U, V> bunddle=new PricingProblemBundle<>(solverClass, pricingProblems, factory);
@@ -142,6 +142,22 @@ public class ColGen<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricin
 		this(dataModel, master, Arrays.asList(pricingProblem), solvers, initSolution, upperBound);
 	}
 	
+	
+	public ColGen(T dataModel, 
+			AbstractMaster<T,V,U, ? extends MasterData> master, 
+			List<V> pricingProblems,
+			List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
+			PricingProblemManager<T,U, V> pricingProblemManager,
+			List<U> initSolution,
+			int upperBound){
+		this.dataModel=dataModel;
+		this.master=master;
+		this.pricingProblems=pricingProblems;
+		this.solvers=solvers;
+		this.pricingProblemManager=pricingProblemManager;
+		master.addColumns(initSolution);
+		this.upperBound=upperBound;
+	}
 	
 	/*public <U extends Column> ColGen(T dataModel, CutHandler cutHandler, PricingSolvers[] pricingAlgorithms, EnumMap<PricingSolvers, List<PricingProblem>> pricingProblems, PricingProblemManager pricingProblemManager, List<U> initSolution, List<Inequality> initialCuts, long timeLimit, int upperBound) throws TimeLimitExceededException{
 		this.dataModel=dataModel;

@@ -1,10 +1,10 @@
 package org.jorlib.frameworks.columnGeneration.branchAndPrice;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.BranchAndPrice;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
