@@ -11,7 +11,7 @@
  *
  */
 /* -----------------
- * AllAlgTest.java
+ * AllIOTest.java
  * -----------------
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
@@ -24,28 +24,36 @@
  * -------
  *
  */
-package org.jorlib.alg;
+package org.jorlib.io;
 
-import org.jorlib.alg.knapsack.*;
-import org.jorlib.alg.knapsack.separation.*;
-import org.jorlib.alg.packing.circlePacking.SmallestEnclosingCircleCalculatorTest;
-import org.jorlib.alg.tsp.separation.SubtourSeparatorTest;
-import org.junit.runner.*;
-import org.junit.runners.*;
+import org.jorlib.io.tspLibReader.DistanceFunctionTest;
+import org.jorlib.io.tspLibReader.EdgeTest;
+import org.jorlib.io.tspLibReader.TestATSP;
+import org.jorlib.io.tspLibReader.TestHCP;
+import org.jorlib.io.tspLibReader.TestSOP;
+import org.jorlib.io.tspLibReader.TestTSP;
+import org.jorlib.io.tspLibReader.TestVRP;
+import org.jorlib.io.tspLibReader.TourTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * A TestSuite for all tests in this package.
  *
  * @author Joris Kinable
- * @since April 8, 2015
+ * @since April 24, 2015
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	KnapsackTest.class,
-	LiftedCoverInequalitySeparatorTest.class,
-	SmallestEnclosingCircleCalculatorTest.class,
-	SubtourSeparatorTest.class
+	DistanceFunctionTest.class,
+	EdgeTest.class,
+	TestATSP.class,
+	TestHCP.class,
+	TestSOP.class,
+	TestTSP.class,
+	TestVRP.class,
+	TourTest.class
 })
 
-public class AllAlgTest {
+public class AllIOTests {
 }
