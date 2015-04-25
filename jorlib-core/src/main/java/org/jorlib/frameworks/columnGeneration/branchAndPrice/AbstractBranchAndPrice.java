@@ -2,15 +2,11 @@ package org.jorlib.frameworks.columnGeneration.branchAndPrice;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Stack;
 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecisionListener;
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
@@ -29,21 +25,19 @@ import org.jorlib.frameworks.columnGeneration.util.CplexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class BranchAndPrice<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
-	protected final Logger logger = LoggerFactory.getLogger(BranchAndPrice.class);
+public abstract class AbstractBranchAndPrice<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
+	protected final Logger logger = LoggerFactory.getLogger(AbstractBranchAndPrice.class);
 	protected final Configuration config=Configuration.getConfiguration();
 	
 //	private final BPStatsWriter stats= BPStatsWriter.getStatistics();
 	
 	protected final T modelData;
 	protected final MasterFactory masterFactory;
-	protected final List<BranchCreator<T, U>> branchCreators;
+	protected final List<? extends AbstractBranchCreator<T, U, V>> branchCreators;
 	protected List<V> pricingProblems;
 	protected List<Class<? extends PricingProblemSolver<T, U, V>>> solvers;
 		
-//	protected final EnumMap<PricingSolvers, List<PricingProblem>> pricingProblems;
 	protected final PricingProblemManager pricingProblemManager;
-//	private final CutHandler cutHandler;
 	//Handle to a cutHandler which performs separation
 	protected CutHandler<T,? extends MasterData> cutHandler;
 	
@@ -62,19 +56,17 @@ public abstract class BranchAndPrice<T, U extends AbstractColumn<T,U,V>, V exten
 	protected long timeSolvingMaster=0; //Counts how much time is spend on solving master problems
 	protected long timeSolvingPricing=0; //Counts how much time is spend on solving pricing problems
 	protected int totalGeneratedColumns=0; //Counts how many columns have been generated over the entire branch and price tree
-	protected int totalNrRestarts=0; //Counts how many times a master has been restarted (i.e. increased its penalty functions)
 	protected int totalNrIterations=0; // Counts how many column generation iterations have been made.
-	protected boolean presolveInfeas=false; //Flag indicating whether the presolver determined that the instance is infeasible,.
-	
+
 	//TODO: add artifical solution to nodes to ensure feasibility
 	
-	public BranchAndPrice(T modelData,
-							MasterFactory masterFactory,
-							List<V> pricingProblems,
-							List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
-							List<BranchCreator<T, U>> branchCreators,
-							int upperBoundOnObjective,
-							List<U> initialSolution){
+	public AbstractBranchAndPrice(T modelData,
+								  MasterFactory masterFactory,
+								  List<V> pricingProblems,
+								  List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
+								  List<? extends AbstractBranchCreator<T, U, V>> branchCreators,
+								  int upperBoundOnObjective,
+								  List<U> initialSolution){
 		this.modelData=modelData;
 		this.masterFactory=masterFactory;
 		this.branchCreators=branchCreators;
@@ -109,7 +101,7 @@ public abstract class BranchAndPrice<T, U extends AbstractColumn<T,U,V>, V exten
 		
 	}
 	
-	
+	//TODO: do something with the cuts
 	public void runBranchAndPrice(long timeLimit){
 //		if(config.WRITE_STATS) stats.update(UpdateEnum.START_BAP, new Object[]{geoxam.name});
 		
@@ -146,12 +138,12 @@ public abstract class BranchAndPrice<T, U extends AbstractColumn<T,U,V>, V exten
 			ColGen cg=null;
 			try {
 				cg = new ColGen(modelData, master, pricingProblems, solvers, pricingProblemManager, bapNode.columns, bestObjective); //Solve the node
+				cg.solve(timeLimit);
 				//Update statistics
 				timeSolvingMaster+=cg.getMasterSolveTime();
 				timeSolvingPricing+=cg.getPricingSolveTime();
 				totalNrIterations+=cg.getNumberOfIterations();
 				totalGeneratedColumns+=cg.getNrGeneratedColumns();
-				totalNrRestarts+=0;//cg.getNrRestartsMaster();
 //				if(config.WRITE_STATS) stats.update(UpdateEnum.SOLVE_STATS, new Object[]{cg.getNumberOfIterations(), cg.getMasterSolveTime(), cg.getPricingSolveTime(), cg.getNrGeneratedColumns()});
 			} catch (TimeLimitExceededException e) {
 				stack.push(bapNode);
@@ -204,8 +196,8 @@ public abstract class BranchAndPrice<T, U extends AbstractColumn<T,U,V>, V exten
 //				if(config.WRITE_STATS) stats.update(UpdateEnum.BAP_NODE_ISNONINTEGER, new Object[]{cg.getObjective(), bapNode.bound});
 				List<Inequality> cuts=cg.getCuts();
 				List<BAPNode<T, U>> newBranches=null;
-				for(BranchCreator<T, U> bc : branchCreators){
-					newBranches=bc.branch(solution, cuts);
+				for(AbstractBranchCreator<T, U, V> bc : branchCreators){
+					newBranches=bc.branch(bapNode, solution, cuts);
 					if(!newBranches.isEmpty()) break;
 				}
 				
@@ -297,12 +289,6 @@ public abstract class BranchAndPrice<T, U extends AbstractColumn<T,U,V>, V exten
 		return totalGeneratedColumns;
 	}
 	/**
-	 * Counts how many times a master has been restarted (i.e. increased its penalty functions)
-	 **/
-	public int getTotalNrRestarts(){ 
-		return totalNrRestarts;
-	}
-	/**
 	 * Counts how many column generation iterations have been made over the entire branch and price tree
 	 **/
 	public int getTotalNrIterations(){
@@ -323,4 +309,11 @@ public abstract class BranchAndPrice<T, U extends AbstractColumn<T,U,V>, V exten
 	protected abstract List<U> generateArtificialSolution();
 	
 	protected abstract boolean isIntegralSolution(List<U> solution);
+
+	public void addBranchingDecisionListener(BranchingDecisionListener listener){
+		graphManipulator.addBranchingDecisionListener(listener);
+	}
+	public void removeBranchingDecisionListener(BranchingDecisionListener listener){
+		graphManipulator.removeBranchingDecisionListener(listener);
+	}
 }

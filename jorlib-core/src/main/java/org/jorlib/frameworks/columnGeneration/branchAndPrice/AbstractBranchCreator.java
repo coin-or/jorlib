@@ -4,34 +4,42 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jorlib.frameworks.columnGeneration.branchAndPrice.BranchAndPrice;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
+import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 
-public abstract class BranchCreator<T,U extends AbstractColumn<T,U,?>> {
+public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T,U,V>,V extends AbstractPricingProblem<T,U,V>> {
 
-	public List<BAPNode<T,U>> branch(List<U> solution, List<Inequality> cuts){
+	protected final T modelData;
+	protected final List<V> pricingProblems;
+
+	public AbstractBranchCreator(T modelData, List<V> pricingProblems){
+		this.modelData=modelData;
+		this.pricingProblems=pricingProblems;
+	}
+
+	public List<BAPNode<T,U>> branch(BAPNode<T,U> parentNode, List<U> solution, List<Inequality> cuts){
 		//1. Decide whether we can branch, and if so, on what we can branch. 
-		if(!this.canPerformBranching())
+		if(!this.canPerformBranching(solution))
 			return Collections.emptyList();
-		List<BAPNode<T,U>> branches=this.getBranches(solution, cuts);
+		List<BAPNode<T,U>> branches=this.getBranches(parentNode, solution, cuts);
 		return branches;
 	}
 	
-	public <B extends BranchingDecision> BAPNode<T,U> createBranch(BAPNode<T,U> parentNode, B branchingDecision, List<U> solution, List<Inequality> inequalities){
-		int childNodeID=BranchAndPrice.nodeCounter++;
+	protected <B extends BranchingDecision> BAPNode<T,U> createBranch(BAPNode<T,U> parentNode, B branchingDecision, List<U> solution, List<Inequality> inequalities){
+		int childNodeID= AbstractBranchAndPrice.nodeCounter++;
 		List<Integer> rootPath1=new ArrayList<Integer>(parentNode.rootPath);
 		rootPath1.add(childNodeID);
 		//Copy columns from the parent to the child. The columns need to comply with the Branching Decision. Artificial columns are ignored
 		List<U> initSolution=new ArrayList<U>();
 		for(U column : parentNode.columns)
-			if(!column.isArtificialColumn &&  this.columnIsCompatibleWithBranchingDecision(branchingDecision, column))
+			if(!column.isArtificialColumn &&  branchingDecision.columnIsCompatibleWithBranchingDecision(column))
 				initSolution.add(column);
 		//Copy inequalities to the child node whenever applicable
 		List<Inequality> initCuts=new ArrayList<>();
 		for(Inequality inequality : parentNode.inequalities){
-			if(this.inEqualityIsCompatibleWithBranchingDecision(branchingDecision, inequality))
+			if(branchingDecision.inEqualityIsCompatibleWithBranchingDecision(inequality))
 				initCuts.add(inequality);
 		}
 		
@@ -41,28 +49,10 @@ public abstract class BranchCreator<T,U extends AbstractColumn<T,U,?>> {
 		return childNode;
 	}
 	
-	protected abstract boolean canPerformBranching();
-	protected abstract List<BAPNode<T,U>> getBranches(List<U> solution, List<Inequality> cuts);
+	protected abstract boolean canPerformBranching(List<U> solution);
+	protected abstract List<BAPNode<T,U>> getBranches(BAPNode<T,U> parentNode, List<U> solution, List<Inequality> cuts);
 	
-	/**
-	 * Determine whether a particular column from the parent node is feasible for the child node resulting from the Branching Decision
-	 * and hence can be transferred.
-	 * 
-	 * @param branchingDecision
-	 * @param column
-	 * @return true if the column is feasible, false otherwise
-	 */
-	protected abstract <B extends BranchingDecision> boolean columnIsCompatibleWithBranchingDecision(B branchingDecision, U column);
-	
-	/**
-	 * Determine whether a particular inequality from the parent node is feasible for the child node resulting from the Branching Decision
-	 * and hence can be transferred.
-	 * 
-	 * @param branchingDecision
-	 * @param inequality
-	 * @return true if the inequality is feasible, false otherwise
-	 */
-	protected abstract <B extends BranchingDecision> boolean inEqualityIsCompatibleWithBranchingDecision(B branchingDecision, Inequality inequality);
+
 	
 	//==============================================================================
 //	Object[] o={examForBranching.ID, roomForBranching.ID, fractionalRoomValue};
