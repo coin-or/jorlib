@@ -182,7 +182,7 @@ public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends
 		} catch (InterruptedException ie) {
 			// (Re-)Cancel if current thread also interrupted
 			pool.shutdownNow();
-			// Preserve interrupt status
+			// Preserve interrupt nodeStatus
 			Thread.currentThread().interrupt();
 		}
 	}

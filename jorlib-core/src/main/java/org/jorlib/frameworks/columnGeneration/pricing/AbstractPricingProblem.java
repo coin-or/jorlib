@@ -26,9 +26,13 @@
  */
 package org.jorlib.frameworks.columnGeneration.pricing;
 
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.Matching;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecisionListener;
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutGenerator;
 import org.slf4j.Logger;
@@ -43,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * @version 13-4-2015
  *
  */
-public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
+public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> implements BranchingDecisionListener{
 
 	protected final Logger logger = LoggerFactory.getLogger(AbstractPricingProblem.class);
 	
@@ -90,5 +94,21 @@ public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>,
 	
 	public String toString(){
 		return name;
+	}
+
+	@Override
+	public void branchingDecisionPerformed(BranchingDecision bd) {
+//		Iterator<U> it=this.activeColumns.iterator();
+//		while(it.hasNext()){
+//			U column=it.next();
+//			if(!bd.columnIsCompatibleWithBranchingDecision(column))
+//				it.remove();
+//		}
+		this.activeColumns.clear();
+	}
+
+	@Override
+	public void branchingDecisionRewinded(BranchingDecision bd) {
+		//Nothing to do here
 	}
 }

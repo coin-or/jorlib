@@ -24,7 +24,7 @@
  * -------
  *
  */
-package org.jorlib.demo.frameworks.columnGeneration.example2.cg;
+package org.jorlib.demo.frameworks.columnGeneration.example2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +32,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.jorlib.demo.frameworks.columnGeneration.example2.cg.ExactPricingProblemSolver;
+import org.jorlib.demo.frameworks.columnGeneration.example2.cg.Matching;
+import org.jorlib.demo.frameworks.columnGeneration.example2.cg.PricingProblemByColor;
 import org.jorlib.demo.frameworks.columnGeneration.example2.cg.master.Master;
 import org.jorlib.demo.frameworks.columnGeneration.example2.cg.master.TSPMasterData;
 import org.jorlib.demo.frameworks.columnGeneration.example2.cg.master.cuts.SubtourInequalityGenerator;
@@ -65,6 +68,9 @@ public class TSPSolver {
 	
 	public TSPSolver(TSP tsp){
 		this.tsp=tsp;
+		if(tsp.N % 2 == 1)
+			throw new RuntimeException("This solver can only solve TSP instances with an even number of vertices!");
+
 		//Create a cutHandler, then create a Subtour Inequality Generator and add it to the handler 
 		CutHandler<TSP, TSPMasterData> cutHandler=new CutHandler<>();
 		SubtourInequalityGenerator cutGen=new SubtourInequalityGenerator(tsp);

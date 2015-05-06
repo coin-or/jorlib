@@ -26,6 +26,7 @@
  */
 package org.jorlib.alg.tsp.separation;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -84,20 +85,28 @@ public class SubtourSeparator<V, E> {
 		this.inputGraph=inputGraph;
 		this.workingGraph=new SimpleWeightedGraph<V, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 		Graphs.addAllVertices(workingGraph, inputGraph.vertexSet());
+		for(E edge : inputGraph.edgeSet())
+			Graphs.addEdge(workingGraph, inputGraph.getEdgeSource(edge), inputGraph.getEdgeTarget(edge),0);
 	}
 	
 	/**
 	 * 
-	 * @param edgeValueMap Mapping of all edges to their corresponding values, i.e. the x_e variable values for all e \in E. The behavior
-	 * 		of this class is undefined when the map contains only a subset of the edges
+	 * @param edgeValueMap Mapping of edges to their corresponding values, i.e. the x_e variable values for all e \in E. It suffices to provide the values
+	 *                     of the non-zero edges. All other edges are presumed to have the value 0.
 	 */
 	public void separateSubtour(Map<E, Double> edgeValueMap){
 		//Update the weights of our working graph
+		//a. Reset all weights to zero
+		for(DefaultWeightedEdge edge : workingGraph.edgeSet())
+			workingGraph.setEdgeWeight(edge, 0);
+
+		//b. Update the edge values with the values supplied in the edgeValueMap
 		for(Map.Entry<E, Double> entry : edgeValueMap.entrySet()){
 			if(entry.getValue() > PRECISION){
 				V i=inputGraph.getEdgeSource(entry.getKey());
 				V j=inputGraph.getEdgeTarget(entry.getKey());
-				Graphs.addEdge(workingGraph, i, j, entry.getValue());
+				DefaultWeightedEdge edge = workingGraph.getEdge(i,j);
+				workingGraph.setEdgeWeight(edge, entry.getValue() + workingGraph.getEdgeWeight(edge));
 			}
 		}
 		//Compute the min cut in the graph
@@ -108,6 +117,7 @@ public class SubtourSeparator<V, E> {
 		
 		//If the cut value is smaller than 2, a subtour constraint has been violated
 		hasSubtour= minCutValue<2-PRECISION;
+		System.out.println("minCutValue: "+minCutValue);
 	}
 
 	/**

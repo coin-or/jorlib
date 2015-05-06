@@ -37,7 +37,7 @@ import java.util.List;
 import org.jorlib.demo.frameworks.columnGeneration.example1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
-import org.jorlib.frameworks.columnGeneration.util.CplexUtil;
+import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
 /**
  * This class provides a solver for the cutting stock pricing problem.
@@ -93,7 +93,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<CuttingStock
 			double timeRemaining=Math.max(1,(timeLimit-System.currentTimeMillis())/1000.0);
 			cplex.setParam(IloCplex.DoubleParam.TiLim, timeRemaining); //set time limit in seconds
 			
-			//Solve the problem and check the solution status
+			//Solve the problem and check the solution nodeStatus
 			if(!cplex.solve() || cplex.getStatus()!=IloCplex.Status.Optimal){
 				if(cplex.getCplexStatus()==IloCplex.CplexStatus.AbortTimeLim){ //Aborted due to time limit
 					throw new TimeLimitExceededException();
@@ -111,7 +111,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<CuttingStock
 					double[] values=cplex.getValues(vars);
 					int[] pattern=new int[dataModel.nrFinals];
 					for(int i=0; i<dataModel.nrFinals; i++)
-						pattern[i]=CplexUtil.doubleToInt(values[i]);
+						pattern[i]= MathProgrammingUtil.doubleToInt(values[i]);
 					CuttingPattern column=new CuttingPattern("exactPricing", false, pattern, pricingProblem);
 					logger.debug("Generated new column for pricing:\n{}",column);
 					newPatterns.add(column);

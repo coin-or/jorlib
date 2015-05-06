@@ -31,6 +31,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecisionListener;
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
@@ -44,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * @version 13-4-2015
  *
  */
-public abstract class PricingProblemSolver<T,U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> implements Callable<Void>{
+public abstract class PricingProblemSolver<T,U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> implements Callable<Void>, BranchingDecisionListener{
 	
 	protected final Logger logger = LoggerFactory.getLogger(PricingProblemSolver.class);
 	protected final Configuration config=Configuration.getConfiguration();
@@ -145,5 +147,13 @@ public abstract class PricingProblemSolver<T,U extends AbstractColumn<T,U,V>, V 
 	 * Close the pricing problem and perform cleanup
 	 */
 	public abstract void close();
+
+	@Override
+	public void branchingDecisionPerformed(BranchingDecision bd) {
+	}
+
+	@Override
+	public void branchingDecisionRewinded(BranchingDecision bd) {
+	}
 	
 }

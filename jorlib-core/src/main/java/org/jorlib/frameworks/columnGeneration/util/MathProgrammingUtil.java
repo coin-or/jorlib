@@ -11,7 +11,7 @@
  *
  */
 /* -----------------
- * CplexUtil.java
+ * MathProgrammingUtil.java
  * -----------------
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
@@ -33,7 +33,7 @@ package org.jorlib.frameworks.columnGeneration.util;
  * @version 13-4-2015
  *
  */
-public class CplexUtil {
+public class MathProgrammingUtil {
 	
 	private static final Configuration config=Configuration.getConfiguration();
 

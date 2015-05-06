@@ -1,8 +1,11 @@
 package org.jorlib.frameworks.columnGeneration.branchAndPrice;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.Stack;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecisionListener;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +22,12 @@ public class GraphManipulator {
 	private boolean ignoreNextEvent=false; //Reverting an event triggers a new event. If this method invoked the reversal of an invent it shouldn't react on the next event. This to protect against a cascading effect.
 	
 	private BAPNode previousNode; //The previous node that has been solved.
+
+	private final Set<BranchingDecisionListener> listeners;
 	
 	/**
 	 * This Stack keeps track of all the changes that have been made to the data structures due to the execution of branching decisions.
-	 * Each frame on the stack corresponds to all the changes caused by a single branching decision. The number of frames on the stack
+	 * Each frame on the queue corresponds to all the changes caused by a single branching decision. The number of frames on the queue
 	 * equals the depth of <previousNode> in the search tree.
 	 */
 	private Stack<BranchingDecision> changeHistory;
@@ -31,12 +36,13 @@ public class GraphManipulator {
 		this.previousNode=rootNode;
 //			btsp.addGraphListener(this);
 		changeHistory=new Stack<BranchingDecision>();
+		listeners=new LinkedHashSet<>();
 	}
 	
 	/**
 	 * Prepares the data structures for the next node to be solved.
 	 */
-	public void next(BAPNode nextNode){
+	public void next(BAPNode<?,?> nextNode){
 		logger.debug("Previous node: {}, history: {}", previousNode.nodeID, previousNode.rootPath);
 		logger.debug("Next node: {}, history: {}, nrBranchingDec: {}", nextNode.nodeID, nextNode.rootPath);
 		
@@ -48,7 +54,7 @@ public class GraphManipulator {
 				break;
 			mutualNodesOnPath++;
 		}
-		logger.debug("mutualNodesOnPath: {}", mutualNodesOnPath);
+		logger.debug("number of mutualNodesOnPath: {}", mutualNodesOnPath);
 		
 		//1b. revert until the first mutual ancestor
 		while(changeHistory.size() > mutualNodesOnPath-1){
@@ -56,9 +62,9 @@ public class GraphManipulator {
 			//List<RevertibleEvent> changes= changeHistory.pop();
 			BranchingDecision bd=changeHistory.pop();
 			//Revert the branching decision!
-			bd.rewindDecision();
+			this.rewindBranchingDecision(bd);
 		}
-		/* 2. Modify the data structures by performing the branching decisions. Each branch will add a stack to the history.
+		/* 2. Modify the data structures by performing the branching decisions. Each branch will add a queue to the history.
 		 * Each branching decision will trigger a number of modifications to the data structures. These are collected by the stacks.
 		 */
 		logger.debug("Next node nrBranchingDec: {}, changeHist.size: {}", nextNode.branchingDecisions.size(), changeHistory.size());
@@ -68,7 +74,7 @@ public class GraphManipulator {
 			changeHistory.add(bd);
 			//Execute the decision
 			logger.debug("BAP exec branchingDecision: {}",bd);
-			bd.executeDecision();
+			this.performBranchingDecision(bd);
 		}
 		this.previousNode=nextNode;
 	}
@@ -79,7 +85,21 @@ public class GraphManipulator {
 	public void restore(){
 		while(!changeHistory.isEmpty()){
 			BranchingDecision bd = changeHistory.pop();
-			bd.rewindDecision();
+			this.rewindBranchingDecision(bd);
 		}
+	}
+
+	protected void addBranchingDecisionListener(BranchingDecisionListener listener){
+		listeners.add(listener);
+	}
+	protected void removeBranchingDecisionListener(BranchingDecisionListener listener){	listeners.remove(listener);	}
+
+	private void performBranchingDecision(BranchingDecision bd){
+		for(BranchingDecisionListener listener : listeners)
+			listener.branchingDecisionPerformed(bd);
+	}
+	private void rewindBranchingDecision(BranchingDecision bd){
+		for(BranchingDecisionListener listener : listeners)
+			listener.branchingDecisionRewinded(bd);
 	}
 }

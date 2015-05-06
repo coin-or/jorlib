@@ -34,7 +34,6 @@ import ilog.concert.IloObjective;
 import ilog.cplex.IloCplex;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,7 +42,7 @@ import org.jorlib.demo.frameworks.columnGeneration.example2.model.Edge;
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.TSP;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
-import org.jorlib.frameworks.columnGeneration.util.CplexUtil;
+import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
 /**
@@ -112,7 +111,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 			double timeRemaining=Math.max(1,(timeLimit-System.currentTimeMillis())/1000.0);
 			cplex.setParam(IloCplex.DoubleParam.TiLim, timeRemaining); //set time limit in seconds
 			
-			//Solve the problem and check the solution status
+			//Solve the problem and check the solution nodeStatus
 			if(!cplex.solve() || cplex.getStatus()!=IloCplex.Status.Optimal){
 				if(cplex.getCplexStatus()==IloCplex.CplexStatus.AbortTimeLim){ //Aborted due to time limit
 					throw new TimeLimitExceededException();
@@ -136,7 +135,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 //					Arrays.fill(succ, -1);
 					int cost=0;
 					for(int k=0; k<vars.size(); k++){
-						if(CplexUtil.doubleToBoolean(values[k])){
+						if(MathProgrammingUtil.doubleToBoolean(values[k])){
 							matching.add(edges[k]);
 							int i=edges[k].i;
 							int j=edges[k].j;

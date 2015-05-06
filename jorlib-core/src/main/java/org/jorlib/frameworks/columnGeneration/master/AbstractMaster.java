@@ -29,6 +29,8 @@ package org.jorlib.frameworks.columnGeneration.master;
 import java.util.Collection;
 import java.util.List;
 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecisionListener;
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
@@ -48,21 +50,19 @@ import org.slf4j.LoggerFactory;
  * @param <U>
  * @param <W>
  */
-public abstract class AbstractMaster<T, V extends AbstractPricingProblem<T,U,V>, U extends AbstractColumn<T,U,V>, W extends MasterData> {
+public abstract class AbstractMaster<T, V extends AbstractPricingProblem<T,U,V>, U extends AbstractColumn<T,U,V>, W extends MasterData> implements BranchingDecisionListener{
 	protected final Logger logger = LoggerFactory.getLogger(AbstractMaster.class);
 	protected final Configuration config=Configuration.getConfiguration();
 
 	//Data object describing the problem at hand
 	protected final T modelData;
 	//Data object containing information for the master problem
-	protected final W masterData;
+	protected W masterData;
 	//Handle to a cutHandler which performs separation
 	protected CutHandler<T,W> cutHandler;
 	
 	public AbstractMaster(T modelData){
 		this.modelData=modelData;
-		//this.masterData=new MasterData();
-//		this.masterData=masterData;
 		masterData=this.buildModel();
 		cutHandler=new CutHandler<T,W>();
 		cutHandler.setMasterData(masterData);
@@ -73,7 +73,12 @@ public abstract class AbstractMaster<T, V extends AbstractPricingProblem<T,U,V>,
 		masterData=this.buildModel();
 		cutHandler.setMasterData(masterData);
 	}
-	
+
+	/**
+	 * Build the master problem
+	 */
+	protected abstract W buildModel();
+
 	/**
 	 * Solve the master problem
 	 * @param timeLimit Future point in time by which this method must be finished
@@ -97,13 +102,11 @@ public abstract class AbstractMaster<T, V extends AbstractPricingProblem<T,U,V>,
 	 * a_1x_1+a_2x_2+...+a_nx_n <= b, where a_i are dual variables, and b some constant. this method retuns the a_i values.
 	 * @return reduced cost information
 	 */
-//	public abstract double[] getReducedCostVector(V pricingProblem);
 
 	/**
 	 * Get the reduced cost information required for a particular pricingProblem. The pricing problem often looks like:
 	 * a_1x_1+a_2x_2+...+a_nx_n <= b, where a_i are dual variables, and b some constant. this method retuns the a_i values.
 	 * @param pricingProblem
-	 * @return Returns the dual constant
 	 */
 //	public abstract double getDualConstant(V pricingProblem);
 	public abstract void initializePricingProblem(V pricingProblem);
@@ -139,7 +142,7 @@ public abstract class AbstractMaster<T, V extends AbstractPricingProblem<T,U,V>,
 		if(cutHandler != null){
 			hasNewCuts=cutHandler.generateCuts();
 		}
-		logger.debug("Cuts found: {}",hasNewCuts);
+		logger.debug("Cuts found: {}", hasNewCuts);
 		return hasNewCuts;
 	}
 	
@@ -159,11 +162,6 @@ public abstract class AbstractMaster<T, V extends AbstractPricingProblem<T,U,V>,
 	public List<Inequality> getCuts(){
 		return cutHandler.getCuts();
 	}
-	
-	/**
-	 * Build the master problem
-	 */
-	protected abstract W buildModel();
 	
 	/**
 	 * Add a column to the model
@@ -191,7 +189,7 @@ public abstract class AbstractMaster<T, V extends AbstractPricingProblem<T,U,V>,
 	 * @return Return true if the solution derived by the master problem is integer
 	 */
 	public boolean solutionIsInteger(){
-		throw new UnsupportedOperationException("Not implemented");
+		throw new UnsupportedOperationException("Not implemented. You should override this function");
 	}
 	
 	/**
@@ -199,14 +197,14 @@ public abstract class AbstractMaster<T, V extends AbstractPricingProblem<T,U,V>,
 	 * are required, including information from the master problem. This function returns that information.
 	 */
 	public double getLowerBoundComponent(){
-		throw new UnsupportedOperationException("Not implemented");
+		throw new UnsupportedOperationException("Not implemented. You should override this function");
 	}
 	/**
 	 * Export the master problem to a .lp file
 	 * @param name
 	 */
 	public void exportModel(String name){
-		throw new UnsupportedOperationException("Not implemented");
+		throw new UnsupportedOperationException("Not implemented. You should override this function");
 	}
 	
 	/**
@@ -218,5 +216,14 @@ public abstract class AbstractMaster<T, V extends AbstractPricingProblem<T,U,V>,
 	 * Close the master problem
 	 */
 	public abstract void close();
+
+
+	@Override
+	public void branchingDecisionPerformed(BranchingDecision bd) {
+	}
+
+	@Override
+	public void branchingDecisionRewinded(BranchingDecision bd) {
+	}
 }
 

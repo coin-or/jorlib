@@ -50,9 +50,8 @@ public class Configuration {
 		
 		//CG & Branch-and-price params
 		CUTSENABLED = true;
-		EXPORT_MODEL=true;
+		EXPORT_MODEL=false;
 		EXPORT_MASTER_DIR="./output/masterLP/";
-		WRITE_STATS = false;
 	}
 	/**
 	 * Use configuration from file
@@ -67,7 +66,6 @@ public class Configuration {
 		CUTSENABLED=Boolean.valueOf(properties.getProperty("CUTSENABLED"));
 		EXPORT_MODEL=Boolean.valueOf(properties.getProperty("EXPORT_MODEL"));
 		EXPORT_MASTER_DIR=properties.getProperty("EXPORT_MODEL_DIR");
-		WRITE_STATS=Boolean.valueOf(properties.getProperty("WRITE_STATS"));
 	}
 	
 	/**
@@ -81,7 +79,7 @@ public class Configuration {
 	
 	/**
 	 * Read properties from a file
-	 * @param Properties file containing the configuration.
+	 * @param properties file containing the configuration.
 	 */
 	public static void readFromFile(Properties properties){
 		if(instance != null)
@@ -108,7 +106,5 @@ public class Configuration {
 	public final  boolean EXPORT_MODEL; 
 	//Define export directory for master models
 	public final String EXPORT_MASTER_DIR;
-	//Define whether statistics should be written to output file
-	public final boolean WRITE_STATS; 
 	
 }
