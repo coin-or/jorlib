@@ -97,8 +97,8 @@ public class TSPSolver {
 		List<Class<? extends PricingProblemSolver<TSP, Matching, PricingProblemByColor>>> solvers=Arrays.asList(ExactPricingProblemSolver.class);
 		
 		//OPTIONAL: Get an initial solution at use it as an upper bound
-//		TSPLibTour initTour=tsp.tspLibInstance.getTours().get(0);
-		TSPLibTour initTour=TSPLibTour.createCanonicalTour(tsp.N); //Feasible solution
+		TSPLibTour initTour=tsp.tspLibInstance.getTours().get(0);
+//		TSPLibTour initTour=TSPLibTour.createCanonicalTour(tsp.N); //Feasible solution
 //		TSPLibTour tour=TSPLibTour.createRandomTour(tsp.N);
 		int tourLength=tsp.getTourLength(initTour); //Upper bound (Stronger is better)
 
@@ -189,10 +189,10 @@ public class TSPSolver {
 //		TSP tsp=new TSP("./data/tspLib/tsp/burma14.tsp");
 //		TSP tsp=new TSP("./data/tspLib/tsp/ulysses16.tsp"); //gr17.tsp
 //		TSP tsp=new TSP("./data/tspLib/tsp/ulysses22.tsp");
-		TSP tsp=new TSP("./data/tspLib/tsp/gr24.tsp"); //Includes branching
+//		TSP tsp=new TSP("./data/tspLib/tsp/gr24.tsp"); //Includes branching
 //		TSP tsp=new TSP("./data/tspLib/tsp/fri26.tsp"); //937
-//		TSP tsp=new TSP("./data/tspLib/tsp/att48.tsp");
-//		tsp.tspLibInstance.addTour(new File("./data/tspLib/tsp/att48.opt.tour"));
+		TSP tsp=new TSP("./data/tspLib/tsp/att48.tsp");
+		tsp.tspLibInstance.addTour(new File("./data/tspLib/tsp/att48.opt.tour"));
 
 		new TSPSolver(tsp);
 	}

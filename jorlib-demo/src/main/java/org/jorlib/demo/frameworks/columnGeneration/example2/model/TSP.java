@@ -26,6 +26,8 @@
  */
 package org.jorlib.demo.frameworks.columnGeneration.example2.model;
 
+import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
+
 /**
  * Defines a TSP problem.
  * For simplicity we assume that the problem is defined on a undirected, complete, weighted graph.
@@ -35,7 +37,7 @@ package org.jorlib.demo.frameworks.columnGeneration.example2.model;
  * @version 13-4-2015
  * 
  */
-public class TSP {
+public class TSP implements ModelInterface{
 
 	public final int N; //nr of vertices
 	public final int[][] distanceMatrix; //distances between vertices
@@ -54,5 +56,10 @@ public class TSP {
 											{54, 58, 36, 0, 50, 92},
 											{20, 54, 42, 50, 0, 45},
 											{40, 67, 71, 92, 45, 0}};
+	}
+
+	@Override
+	public String getName() {
+		return "TSPExample";
 	}
 }

@@ -26,7 +26,6 @@
  */
 package org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model;
 
-
 import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
 import org.jorlib.io.tspLibReader.TSPLibInstance;
 import org.jorlib.io.tspLibReader.TSPLibTour;
@@ -38,13 +37,11 @@ import java.io.IOException;
 /**
  * Defines a TSP problem. This is a simple wrapper class for a TSPLibInstance
  * For simplicity we assume that the problem is defined on a undirected, complete, weighted graph.
-
  * 
  * @author Joris Kinable
  * @version 13-4-2015
  * 
  */
-
 public class TSP implements ModelInterface{
 
 	public final int N; //nr of vertices
@@ -69,6 +66,5 @@ public class TSP implements ModelInterface{
 	@Override
 	public String getName() {
 		return tspLibInstance.getName();
-
 	}
 }
