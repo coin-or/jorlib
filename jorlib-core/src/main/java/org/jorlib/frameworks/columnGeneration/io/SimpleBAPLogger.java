@@ -149,7 +149,8 @@ public class SimpleBAPLogger implements BAPListener{
     @Override
     public void processNextNode(ProcessingNextNodeEvent processingNextNodeEvent) {
         this.reset();
-        this.bapNodeID=processingNextNodeEvent.nodeID;
+        this.bapNodeID=processingNextNodeEvent.node.nodeID;
+        this.parentNodeID=processingNextNodeEvent.node.getAncestorID();
         this.globalUB=processingNextNodeEvent.globalUB;
     }
 

@@ -18,8 +18,8 @@ import java.util.*;
  */
 public class BranchOnEdge extends AbstractBranchCreator<TSP, Matching, PricingProblemByColor>{
 
-    private PricingProblemByColor pricingProblemForMatching;
-    private Edge edgeForBranching;
+    private PricingProblemByColor pricingProblemForMatching=null;
+    private Edge edgeForBranching=null;
     private double bestEdgeValue=0;
 
     public BranchOnEdge(TSP modelData, List<PricingProblemByColor> pricingProblems){
@@ -28,6 +28,15 @@ public class BranchOnEdge extends AbstractBranchCreator<TSP, Matching, PricingPr
 
     @Override
     protected boolean canPerformBranching(List<Matching> solution) {
+        //Reset values
+        pricingProblemForMatching=null;
+        edgeForBranching=null;
+        bestEdgeValue=0;
+
+//        System.out.println("Determining whether we can create a branch, based on solution:");
+//        for(Matching m : solution)
+//            System.out.println(m);
+
         //For each color, determine whether there's a fractional edge for branching
         Map<PricingProblemByColor,Map<Edge, Double>> edgeValueMap=new HashMap<>();
         for(PricingProblemByColor pricingProblem : pricingProblems)
@@ -55,18 +64,20 @@ public class BranchOnEdge extends AbstractBranchCreator<TSP, Matching, PricingPr
                 }
             }
         }
+
+//        System.out.println("Branching on: edge: "+edgeForBranching+" edgeValue: "+bestEdgeValue+" color: "+pricingProblemForMatching.color);
         return MathProgrammingUtil.isFractional(bestEdgeValue);
     }
 
     @Override
     protected List<BAPNode<TSP,Matching>> getBranches(BAPNode<TSP,Matching> parentNode, List<Matching> solution, List<Inequality> cuts) {
-        //Left branch: fix the edge:
-        FixEdge branchingDecision1=new FixEdge(pricingProblemForMatching, edgeForBranching);
-        BAPNode node1=this.createBranch(parentNode, branchingDecision1, solution, cuts);
+        //Branch 1: remove the edge:
+        RemoveEdge branchingDecision1=new RemoveEdge(pricingProblemForMatching, edgeForBranching);
+        BAPNode node2=this.createBranch(parentNode, branchingDecision1, solution, cuts);
 
-        //Right branch: remove the edge:
-        RemoveEdge branchingDecision2=new RemoveEdge(pricingProblemForMatching, edgeForBranching);
-        BAPNode node2=this.createBranch(parentNode, branchingDecision2, solution, cuts);
+        //Branch 2: fix the edge:
+        FixEdge branchingDecision2=new FixEdge(pricingProblemForMatching, edgeForBranching);
+        BAPNode node1=this.createBranch(parentNode, branchingDecision2, solution, cuts);
 
         return Arrays.asList(node1,node2);
     }

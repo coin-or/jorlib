@@ -26,6 +26,8 @@
  */
 package org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling;
 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
+
 import java.util.EventObject;
 
 /**
@@ -35,20 +37,20 @@ import java.util.EventObject;
  * @version 5-5-2015
  */
 public class NodeIsIntegerEvent extends EventObject{
-    public final int nodeID;
+    public final BAPNode node;
     public final double nodeBound;
     public final int nodeValue;
 
     /**
      * Creates a new NodeIsIntegerEvent
      * @param source Generator of the event
-     * @param nodeID Node which is integer
+     * @param node Node which is integer
      * @param nodeBound Lower bound on the objective value of the node
      * @param nodeValue Objective value of the node. nodeBound and nodeValue are equal when the node is solved to optimality
      */
-    public NodeIsIntegerEvent(Object source, int nodeID, double nodeBound, int nodeValue){
+    public NodeIsIntegerEvent(Object source, BAPNode node, double nodeBound, int nodeValue){
         super(source);
-        this.nodeID=nodeID;
+        this.node=node;
         this.nodeBound=nodeBound;
         this.nodeValue=nodeValue;
     }

@@ -41,7 +41,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	
 	protected GraphManipulator graphManipulator;
 	protected Queue<BAPNode<T,U>> queue;
-	protected static int nodeCounter=0;
+	protected int nodeCounter=0;
 	
 	protected double lowerBoundOnObjective=0;
 	protected int nodesProcessed=0; //Counts how many branch-and-price nodes have been processed.
@@ -60,14 +60,12 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 								  int upperBoundOnObjective,
 								  List<U> initialSolution){
 		this.modelData=modelData;
-		//this.masterFactory=masterFactory;
 		this.master=master;
 		this.branchCreators=branchCreators;
 		this.pricingProblems=pricingProblems;
 		this.solvers=solvers;
 		this.bestObjective=upperBoundOnObjective;
 		this.bestSolution=new ArrayList<>(initialSolution);
-		//queue =new ArrayDeque<>();
 		queue =new PriorityQueue<>(new DFSbapNodeComparator());
 		
 		//Create the root node
@@ -100,6 +98,11 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 				this.addBranchingDecisionListener(solverInstance);
 		}
 
+		//Register this class with the branch creators
+		for(AbstractBranchCreator<T,U,V> branchCreator : branchCreators)
+			branchCreator.registerBAP(this);
+
+		//Create a new notifier which informs associated listeners about events occurring the the Branch and Price procedure
 		notifier=new BAPNotifier();
 	}
 	public AbstractBranchAndPrice(T modelData,
@@ -135,11 +138,11 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		
 		processNextNode: while(!queue.isEmpty()){
 			BAPNode<T, U> bapNode = queue.poll();
-			notifier.fireNextNodeEvent(bapNode.nodeID);
+			notifier.fireNextNodeEvent(bapNode);
 
 			//Prune this node if the bound exceeds the best found solution (minimization problem). Since all solutions are integral, we may round upwards
 			if(Math.ceil(bapNode.bound) >= bestObjective){
-				notifier.firePruneNodeEvent(bapNode.nodeID, bapNode.bound);
+				notifier.firePruneNodeEvent(bapNode, bapNode.bound);
 				continue;
 			}
 			
@@ -151,13 +154,12 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			}
 
 			//TEMP
-//			System.out.println("Initial columsn: ");
-//			Iterator it=bapNode.columns.iterator();
-//			while(it.hasNext())
-//				System.out.println(it.next());
+			System.out.println("Initial columns: ");
+			Iterator it=bapNode.columns.iterator();
+			while(it.hasNext())
+				System.out.println(it.next());
 			//END TEMP
 
-//			System.out.println("Entering colgen"); //TEMP
 			ColGen<T,U,V> cg=null;
 			try {
 				cg = new ColGen<>(modelData, master, pricingProblems, solvers, pricingProblemManager, bapNode.columns, bestObjective); //Solve the node
@@ -181,7 +183,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			
 			//Check whether the node's bound exceeds the best integer solution, if so we can skip this node (no branching required)
 			if(bapNode.bound >= bestObjective){ //Do not bother to create a branch even though the node is fractional. Bound is worse than best solution
-				notifier.firePruneNodeEvent(bapNode.nodeID, bapNode.bound);
+				notifier.firePruneNodeEvent(bapNode, bapNode.bound);
 				nodesProcessed++;
 				continue;
 			}
@@ -190,43 +192,30 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			List<U> solution= cg.getSolution();
 
 			//TEMP
-//			System.out.println("Solution:");
-//			for(U column : solution)
-//				System.out.println(column);
+			System.out.println("Solution:");
+			for(U column : solution)
+				System.out.println(column);
 			//END TEMP
-
-			//Check if node was infeasible, i.e. whether there are artifical columns in the solution. If so, ignore it and continue with the next node.
-//			boolean hasArtificalColsInSol=false;
-//			for(U column : solution){
-//				hasArtificalColsInSol = column.isArtificialColumn;
-//				if(hasArtificalColsInSol) break;
-//			}
-//			if(hasArtificalColsInSol){
-//				notifier.fireNodeIsInfeasibleEvent(bapNode.nodeID);
-//				nodesProcessed++;
-//				continue;
-//			}
 
 			//Check if node was infeasible, i.e. whether there are artifical columns in the solution. If so, ignore it and continue with the next node.
 			for(U column : solution){
 				if(column.isArtificialColumn) {
-					notifier.fireNodeIsInfeasibleEvent(bapNode.nodeID);
+					notifier.fireNodeIsInfeasibleEvent(bapNode);
 					nodesProcessed++;
 					continue processNextNode;
 				}
 			}
 
-			
 			//If solution is integral, check whether it is better than the current best solution
 			if(this.isIntegralSolution(solution)){
 				int integerObjective=MathProgrammingUtil.doubleToInt(cg.getObjective());
-				notifier.fireNodeIsIntegerEvent(bapNode.nodeID, bapNode.bound, integerObjective);
+				notifier.fireNodeIsIntegerEvent(bapNode, bapNode.bound, integerObjective);
 				if(integerObjective < this.bestObjective){
 					this.bestObjective= integerObjective;
 					this.bestSolution=solution;
 				}
 			}else{ //We need to branch
-				notifier.fireNodeIsFractionalEvent(bapNode.nodeID, bapNode.bound, cg.getObjective());
+				notifier.fireNodeIsFractionalEvent(bapNode, bapNode.bound, cg.getObjective());
 				List<Inequality> cuts=cg.getCuts();
 				List<BAPNode<T, U>> newBranches=new ArrayList<>();
 				for(AbstractBranchCreator<T, U, V> bc : branchCreators){
@@ -260,7 +249,14 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		}
 		notifier.fireStopBAPEvent(); //Signal that BAP has been completed
 	}
-	
+
+	/**
+	 * Returns a unique node ID. The internal nodeCounter is incremented by one each time this method is invoked.
+	 * @return returns a unique node ID, thereby guaranteeing that none of the nodes in the branch-and-price tree have this ID.
+	 */
+	protected int getUniqueNodeID(){
+		return  nodeCounter++;
+	}
 	
 	/**
 	 * Returns the objective of the best solution found
@@ -409,49 +405,49 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 				listener.stopBAP(stopBAPEvent);
 			}
 		}
-		protected void fireNodeIsFractionalEvent(int nodeID, double nodeBound, double nodeValue){
-			logger.debug("Node {} is fractional. Solution: {}, bound: {}", new Object[]{nodeID, nodeValue, nodeBound});
+		protected void fireNodeIsFractionalEvent(BAPNode node, double nodeBound, double nodeValue){
+			logger.debug("Node {} is fractional. Solution: {}, bound: {}", new Object[]{node.nodeID, nodeValue, nodeBound});
 			NodeIsFractionalEvent nodeIsFractionalEvent=null;
 			for(BAPListener listener : listeners){
 				if(nodeIsFractionalEvent==null)
-					nodeIsFractionalEvent=new NodeIsFractionalEvent(AbstractBranchAndPrice.this, nodeID, nodeBound, nodeValue);
+					nodeIsFractionalEvent=new NodeIsFractionalEvent(AbstractBranchAndPrice.this, node, nodeBound, nodeValue);
 				listener.nodeIsFractional(nodeIsFractionalEvent);
 			}
 		}
-		protected void fireNodeIsIntegerEvent(int nodeID, double nodeBound, int nodeValue){
-			logger.debug("Node {} is integer. Solution: {}, new best: {}", new Object[]{nodeID, nodeValue, nodeValue < bestObjective});
+		protected void fireNodeIsIntegerEvent(BAPNode node, double nodeBound, int nodeValue){
+			logger.debug("Node {} is integer. Solution: {}, new best: {}", new Object[]{node.nodeID, nodeValue, nodeValue < bestObjective});
 			NodeIsIntegerEvent nodeIsIntegerEvent=null;
 			for(BAPListener listener : listeners){
 				if(nodeIsIntegerEvent==null)
-					nodeIsIntegerEvent=new NodeIsIntegerEvent(AbstractBranchAndPrice.this, nodeID, nodeBound, nodeValue);
+					nodeIsIntegerEvent=new NodeIsIntegerEvent(AbstractBranchAndPrice.this, node, nodeBound, nodeValue);
 				listener.nodeIsInteger(nodeIsIntegerEvent);
 			}
 		}
-		protected void fireNodeIsInfeasibleEvent(int nodeID){
-			logger.debug("Node {} is infeasible.", nodeID);
+		protected void fireNodeIsInfeasibleEvent(BAPNode node){
+			logger.debug("Node {} is infeasible.", node.nodeID);
 			NodeIsInfeasibleEvent nodeIsInfeasibleEvent=null;
 			for(BAPListener listener : listeners){
 				if(nodeIsInfeasibleEvent==null)
-					nodeIsInfeasibleEvent=new NodeIsInfeasibleEvent(AbstractBranchAndPrice.this, nodeID);
+					nodeIsInfeasibleEvent=new NodeIsInfeasibleEvent(AbstractBranchAndPrice.this, node);
 				listener.nodeIsInfeasible(nodeIsInfeasibleEvent);
 			}
 		}
-		protected void firePruneNodeEvent(int nodeID, double nodeBound){
-			logger.debug("Pruning node {}. Bound: {}, best incumbent: {}", new Object[]{nodeID, nodeBound, bestObjective});
+		protected void firePruneNodeEvent(BAPNode node, double nodeBound){
+			logger.debug("Pruning node {}. Bound: {}, best incumbent: {}", new Object[]{node.nodeID, nodeBound, bestObjective});
 			PruneNodeEvent pruneNodeEvent=null;
 			for(BAPListener listener : listeners){
 				if(pruneNodeEvent==null)
-					pruneNodeEvent=new PruneNodeEvent(AbstractBranchAndPrice.this, nodeID, nodeBound, bestObjective);
+					pruneNodeEvent=new PruneNodeEvent(AbstractBranchAndPrice.this, node, nodeBound, bestObjective);
 				listener.pruneNode(pruneNodeEvent);
 			}
 		}
 
-		protected  void fireNextNodeEvent(int nodeID){
-			logger.debug("Processing node {}",nodeID);
+		protected  void fireNextNodeEvent(BAPNode node){
+			logger.debug("Processing node {}",node.nodeID);
 			ProcessingNextNodeEvent processingNextNodeEvent=null;
 			for(BAPListener listener : listeners){
 				if(processingNextNodeEvent==null)
-					processingNextNodeEvent=new ProcessingNextNodeEvent(AbstractBranchAndPrice.this, nodeID, queue.size(), bestObjective);
+					processingNextNodeEvent=new ProcessingNextNodeEvent(AbstractBranchAndPrice.this, node, queue.size(), bestObjective);
 				listener.processNextNode(processingNextNodeEvent);
 			}
 		}

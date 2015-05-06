@@ -187,10 +187,10 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 		try {
 			if(bd instanceof FixEdge){
 				FixEdge fixEdgeDecision = (FixEdge) bd;
-					vars.get(fixEdgeDecision.edge).setLB(1); //Ensure that any column returned contains this edge.
+				vars.get(fixEdgeDecision.edge).setLB(1); //Ensure that any column returned contains this edge.
 			}else if(bd instanceof RemoveEdge){
 				RemoveEdge removeEdgeDecision= (RemoveEdge) bd;
-					vars.get(removeEdgeDecision.edge).setUB(0); //Ensure that any column returned does NOT contain this edge.
+				vars.get(removeEdgeDecision.edge).setUB(0); //Ensure that any column returned does NOT contain this edge.
 			}
 		} catch (IloException e) {
 			e.printStackTrace();

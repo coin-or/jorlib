@@ -26,6 +26,8 @@
  */
 package org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling;
 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
+
 import java.util.EventObject;
 
 /**
@@ -36,15 +38,15 @@ import java.util.EventObject;
  */
 public class NodeIsInfeasibleEvent extends EventObject{
 
-    public final int nodeID;
+    public final BAPNode node;
 
     /**
      * Creates a new NodeIsInfeasibleEvent
      * @param source Generator of the event
-     * @param nodeID Node which is infeasible
+     * @param node Node which is infeasible
      */
-    public NodeIsInfeasibleEvent(Object source, int nodeID){
+    public NodeIsInfeasibleEvent(Object source, BAPNode node){
         super(source);
-        this.nodeID=nodeID;
+        this.node=node;
     }
 }

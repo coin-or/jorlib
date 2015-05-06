@@ -26,6 +26,8 @@
  */
 package org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling;
 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
+
 import java.util.EventObject;
 
 /**
@@ -35,20 +37,21 @@ import java.util.EventObject;
  * @version 5-5-2015
  */
 public class NodeIsFractionalEvent extends EventObject{
-    public final int nodeID;
+    //public final int nodeID;
+    public final BAPNode node;
     public final double nodeBound;
     public final double nodeValue;
 
     /**
      * Creates a new NodeIsFractionalEvent
      * @param source Generator of the event
-     * @param nodeID Node which has a fractional solution
+     * @param node Node which has a fractional solution
      * @param nodeBound Lower bound on the solution
      * @param nodeValue Objective value of the node. nodeBound and nodeValue are equal when the node is solved to optimality
      */
-    public NodeIsFractionalEvent(Object source, int nodeID, double nodeBound, double nodeValue){
+    public NodeIsFractionalEvent(Object source, BAPNode node, double nodeBound, double nodeValue){
         super(source);
-        this.nodeID=nodeID;
+        this.node=node;
         this.nodeBound=nodeBound;
         this.nodeValue=nodeValue;
     }

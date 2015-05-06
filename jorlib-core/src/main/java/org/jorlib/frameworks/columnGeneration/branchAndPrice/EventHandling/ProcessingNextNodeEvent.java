@@ -26,6 +26,8 @@
  */
 package org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling;
 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
+
 import java.util.EventObject;
 
 /**
@@ -36,20 +38,20 @@ import java.util.EventObject;
  */
 public class ProcessingNextNodeEvent extends EventObject{
 
-    public final int nodeID;
+    public final BAPNode node;
     public final int nodesInQueue;
     public final int globalUB;
 
     /**
      * Creates a new ProcessingNextNodeEvent
      * @param source Generator of the event
-     * @param nodeID ID of the node which will be processed
+     * @param node Node which will be processed
      * @param nodesInQueue Number of nodes currently in the queue
      * @param globalUB Best integer solution found thus far
      */
-    public ProcessingNextNodeEvent(Object source, int nodeID, int nodesInQueue, int globalUB){
+    public ProcessingNextNodeEvent(Object source, BAPNode node, int nodesInQueue, int globalUB){
         super(source);
-        this.nodeID=nodeID;
+        this.node=node;
         this.nodesInQueue=nodesInQueue;
         this.globalUB=globalUB;
     }

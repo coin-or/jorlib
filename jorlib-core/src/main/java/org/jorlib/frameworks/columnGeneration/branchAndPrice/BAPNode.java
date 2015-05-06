@@ -27,8 +27,30 @@ public class BAPNode<T,U extends AbstractColumn<T,U,?>> {
 		this.rootPath=rootPath;
 		this.bound=bound;
 	}
-	
-	
+
+	/**
+	 * Returns the ID of its parent in the Branch-and-Price tree. For memory efficiency, no pointer to the ancestor is returned. As maintaining a link to every
+	 * parent may be expensive.
+	 * @return ID of parent node, or -1 if this is the root node
+	 */
+	public int getAncestorID(){
+		if(nodeID == 0)
+			return -1;
+		else
+			return rootPath.get(rootPath.size()-2);
+	}
+
+	/**
+	 * Returns the branching decision that produced this particular node.
+	 * @return The branching decision that links this node to its parent, or null if this node is the root node
+	 */
+	public BranchingDecision getBranchingDecision(){
+		if(nodeID == 0)
+			return null;
+		else
+			return branchingDecisions.get(branchingDecisions.size()-1);
+	}
+
 	public String toString(){
 		return "BAP node: "+nodeID;
 	}

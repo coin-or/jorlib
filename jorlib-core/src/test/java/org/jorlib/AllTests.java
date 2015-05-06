@@ -11,7 +11,7 @@
  *
  */
 /* -----------------
- * StartBAPEvent.java
+ * AllTests.java
  * -----------------
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
@@ -24,27 +24,25 @@
  * -------
  *
  */
-package org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling;
+package org.jorlib;
 
-import java.util.EventObject;
+import org.jorlib.alg.AllAlgTests;
+import org.jorlib.io.AllIOTests;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- * Event generated when branch and price is started
+ * A TestSuite for all tests in this package.
  *
  * @author Joris Kinable
- * @version 5-5-2015
+ * @since April 8, 2015
  */
-public class StartBAPEvent extends EventObject{
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+	AllAlgTests.class,
+	AllIOTests.class
+})
 
-    public final String instanceName; //Instance being solved
+public class AllTests {
 
-    /**
-     * Creates a new StartBAPEvent
-     * @param source Generator of the event
-     * @param instanceName Name of the instance being solved
-     */
-    public StartBAPEvent(Object source, String instanceName){
-        super(source);
-        this.instanceName=instanceName;
-    }
 }

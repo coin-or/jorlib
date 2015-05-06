@@ -117,7 +117,6 @@ public class SubtourSeparator<V, E> {
 		
 		//If the cut value is smaller than 2, a subtour constraint has been violated
 		hasSubtour= minCutValue<2-PRECISION;
-		System.out.println("minCutValue: "+minCutValue);
 	}
 
 	/**

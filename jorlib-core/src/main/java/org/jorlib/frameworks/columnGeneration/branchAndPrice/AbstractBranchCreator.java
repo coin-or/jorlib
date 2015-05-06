@@ -13,10 +13,21 @@ public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T,U,V>,V 
 
 	protected final T modelData;
 	protected final List<V> pricingProblems;
+	protected AbstractBranchAndPrice bap=null;
 
 	public AbstractBranchCreator(T modelData, List<V> pricingProblems){
 		this.modelData=modelData;
 		this.pricingProblems=pricingProblems;
+	}
+
+	/**
+	 * Registers the branch and price Problem for which this class creates branches
+	 * @param bap
+	 */
+	protected void registerBAP(AbstractBranchAndPrice bap){
+		if(this.bap != null)
+			throw new RuntimeException("This class can only be associated with a Branch and Price problem once!");
+		this.bap=bap;
 	}
 
 	public List<BAPNode<T,U>> branch(BAPNode<T,U> parentNode, List<U> solution, List<Inequality> cuts){
@@ -28,17 +39,18 @@ public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T,U,V>,V 
 	}
 	
 	protected <B extends BranchingDecision> BAPNode<T,U> createBranch(BAPNode<T,U> parentNode, B branchingDecision, List<U> solution, List<Inequality> inequalities){
-		int childNodeID= AbstractBranchAndPrice.nodeCounter++;
+		//int childNodeID= AbstractBranchAndPrice.nodeCounter++;
+		int childNodeID= bap.getUniqueNodeID();
 		List<Integer> rootPath1=new ArrayList<Integer>(parentNode.rootPath);
 		rootPath1.add(childNodeID);
 		//Copy columns from the parent to the child. The columns need to comply with the Branching Decision. Artificial columns are ignored
 		List<U> initSolution=new ArrayList<U>();
-		for(U column : parentNode.columns)
+		for(U column : solution)
 			if(!column.isArtificialColumn &&  branchingDecision.columnIsCompatibleWithBranchingDecision(column))
 				initSolution.add(column);
 		//Copy inequalities to the child node whenever applicable
 		List<Inequality> initCuts=new ArrayList<>();
-		for(Inequality inequality : parentNode.inequalities){
+		for(Inequality inequality : inequalities){
 			if(branchingDecision.inEqualityIsCompatibleWithBranchingDecision(inequality))
 				initCuts.add(inequality);
 		}
@@ -51,100 +63,5 @@ public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T,U,V>,V 
 	
 	protected abstract boolean canPerformBranching(List<U> solution);
 	protected abstract List<BAPNode<T,U>> getBranches(BAPNode<T,U> parentNode, List<U> solution, List<Inequality> cuts);
-	
 
-	
-	//==============================================================================
-//	Object[] o={examForBranching.ID, roomForBranching.ID, fractionalRoomValue};
-//	logger.debug("Branching on Exam: {}, room: {}, value: {}",o);
-//	
-//	//2. Branch on Exam/Room pair. This involves creating two BAP nodes
-//	
-//	//2a. Branch 1: enforce that the exam uses that particular room
-//	BranchingDecision bd1=new FixRoom(pricingProblems, examForBranching, roomForBranching);
-//	int nodeID1=nodeCounter++;
-//	List<Integer> rootPath1=new ArrayList<Integer>(parentNode.rootPath);
-//	rootPath1.add(nodeID1);
-//	List<List<Column>> initSolution1=new ArrayList<List<Column>>();
-//	for(Exam e: geoxam.exams){
-//		List<Column> schedulesForExam=new ArrayList<Column>();
-//		if(e!=examForBranching){ //Copy all schedules, except the artificial ones.
-//			for(Column es: solution.get(e.ID)){
-//				if(!es.isArtificialColumn){
-//					schedulesForExam.add(es);
-//				}
-//			}
-//		}else{ //only copy schedules containing roomForBranching
-//			for(Column es: solution.get(e.ID)){
-//				if(es.roomsUsed.contains(roomForBranching) && !es.isArtificialColumn){
-//					schedulesForExam.add(es);
-//				}
-//			}
-//		}
-//		initSolution1.add(schedulesForExam);
-//	}
-//	//Copy inequalities from parent node
-//	List<Inequality> inequalities1=new ArrayList<Inequality>(inequalities); //All inequalities from the parent are valid in this node
-//	BAPNode node1=new BAPNode(nodeID1, rootPath1, initSolution1, inequalities1, parentNode.bound);
-//	node1.branchingDecisions.addAll(parentNode.branchingDecisions);
-//	node1.branchingDecisions.add(bd1);
-//	
-//	//2b. Branch 2: room removed
-//	BranchingDecision bd2=new RemoveRoom(pricingProblems, examForBranching, roomForBranching);
-//	int nodeID2=nodeCounter++;
-//	List<Integer> rootPath2=new ArrayList<Integer>(parentNode.rootPath);
-//	rootPath2.add(nodeID2);
-//	//Copy columns from parent node
-//	List<List<Column>> initSolution2=new ArrayList<List<Column>>();
-//	for(Exam e: geoxam.exams){
-//		List<Column> schedulesForExam=new ArrayList<Column>();
-//		if(e!=examForBranching){ //Copy schedules except artificial ones
-//			for(Column es: solution.get(e.ID)){
-//				if(!es.isArtificialColumn){
-//					schedulesForExam.add(es);
-//				}
-//			}
-//		}else{ //Copy matchings which do not contain roomForBranching. Also artificial columns are removed
-//			for(Column es: solution.get(e.ID)){
-//				if(!es.roomsUsed.contains(roomForBranching)  && !es.isArtificialColumn){
-//					schedulesForExam.add(es);
-//				}
-//			}
-//		}
-//		initSolution2.add(schedulesForExam);
-//	}
-//	//Copy inequalities from parent node
-//	List<Inequality> inequalities2=new ArrayList<Inequality>();
-//	for(Inequality inequality : inequalities){
-//		switch (inequality.type) {
-//		case COVERINEQUALITY:
-//			CoverInequality coverInequality=(CoverInequality)inequality;
-//			if(coverInequality.room != roomForBranching)
-//				inequalities2.add(inequality);
-//			break;
-//		case LIFTEDCOVERINEQUALITY:
-//			LiftedCoverInequality liftedCoverInequality=(LiftedCoverInequality)inequality;
-//			if(liftedCoverInequality.room != roomForBranching)
-//				inequalities2.add(inequality);
-//			break;
-//		default:
-//			break;
-//		}
-//	}
-//	//Create child node 2
-//	BAPNode node2=new BAPNode(nodeID2, rootPath2, initSolution2, inequalities2, parentNode.bound);
-//	node2.branchingDecisions.addAll(parentNode.branchingDecisions);
-//	node2.branchingDecisions.add(bd2);
-//	
-//	//Add both nodes to the stack
-//	//1. BFS;
-////	stack.add(node1);
-////	stack.add(node2);
-//	//2. DFS (put the most constraint node, node 1 on top. This node will be explorered first):
-//	stack.push(node2);
-//	stack.push(node1);
-//	
-//	logger.debug("Finished branching. Stack size: {}",stack.size());
-//	
-//	return true;
 }

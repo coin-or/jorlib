@@ -26,6 +26,8 @@
  */
 package org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling;
 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
+
 import java.util.EventObject;
 
 /**
@@ -36,20 +38,20 @@ import java.util.EventObject;
  */
 public class PruneNodeEvent extends EventObject{
 
-    public final int nodeID;
+    public final BAPNode node;
     public final double nodeBound;
     public final int bestIntegerSolution;
 
     /**
      * Creates a new PruneNodeEvent
      * @param source Generator of the event
-     * @param nodeID ID of the node being pruned
+     * @param node ID of the node being pruned
      * @param nodeBound Lower bound on the node
      * @param bestIntegerSolution Best integer solution discovered thus far
      */
-    public PruneNodeEvent(Object source, int nodeID, double nodeBound, int bestIntegerSolution){
+    public PruneNodeEvent(Object source, BAPNode node, double nodeBound, int bestIntegerSolution){
         super(source);
-        this.nodeID=nodeID;
+        this.node=node;
         this.nodeBound=nodeBound;
         this.bestIntegerSolution=bestIntegerSolution;
     }
