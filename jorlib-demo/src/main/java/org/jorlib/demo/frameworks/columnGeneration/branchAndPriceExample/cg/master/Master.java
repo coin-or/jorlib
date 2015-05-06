@@ -28,6 +28,7 @@ package org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.mas
 
 import ilog.concert.IloColumn;
 import ilog.concert.IloException;
+
 import ilog.concert.IloNumVar;
 import ilog.concert.IloObjective;
 import ilog.concert.IloRange;
@@ -44,6 +45,7 @@ import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.Matc
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.PricingProblemByColor;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.master.cuts.SubtourInequality;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model.MatchingColor;
+
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
@@ -51,6 +53,7 @@ import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 import org.jorlib.io.tspLibReader.graph.Edge;
+
 
 /**
  * 
@@ -103,6 +106,7 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 				for(int j=i+1; j<modelData.N; j++){
 					Edge edge=new Edge(i, j);
 					modifiedCosts[index]=masterData.cplex.getDual(edgeOnlyUsedOnceConstr.get(edge))-modelData.getEdgeWeight(edge);
+
 					for(SubtourInequality subtourInequality : masterData.subtourInequalities.keySet()){
 						if(subtourInequality.cutSet.contains(i) ^ subtourInequality.cutSet.contains(j))
 							modifiedCosts[index]+= masterData.cplex.getDual(masterData.subtourInequalities.get(subtourInequality));

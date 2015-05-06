@@ -49,6 +49,7 @@ import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 import org.jorlib.io.tspLibReader.graph.Edge;
 
+
 /**
  * 
  * @author Joris Kinable

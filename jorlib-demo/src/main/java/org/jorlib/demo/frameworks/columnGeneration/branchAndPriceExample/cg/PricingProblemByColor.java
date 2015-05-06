@@ -29,6 +29,7 @@ package org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model.MatchingColor;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
+
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 
 /**

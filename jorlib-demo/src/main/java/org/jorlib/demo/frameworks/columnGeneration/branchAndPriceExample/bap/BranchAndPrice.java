@@ -34,6 +34,7 @@ public class BranchAndPrice extends AbstractBranchAndPrice<TSP,Matching, Pricing
         Matching matching1=new Matching("Artificial", true,	pricingProblems.get(0), bestSolution.get(0).edges,bestSolution.get(0).succ,bestObjective);
         Matching matching2=new Matching("Artificial", true,	pricingProblems.get(1), bestSolution.get(1).edges,bestSolution.get(1).succ,bestObjective);
         return Arrays.asList(matching1, matching2);
+
     }
 
     @Override
@@ -41,3 +42,4 @@ public class BranchAndPrice extends AbstractBranchAndPrice<TSP,Matching, Pricing
         return solution.size()==pricingProblems.size();
     }
 }
+

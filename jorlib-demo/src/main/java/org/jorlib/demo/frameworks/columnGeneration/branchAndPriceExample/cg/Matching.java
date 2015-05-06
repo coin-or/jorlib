@@ -34,6 +34,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 import org.jorlib.io.tspLibReader.graph.Edge;
 
+
 /**
  * 
  * @author Joris Kinable

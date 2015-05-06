@@ -27,12 +27,11 @@
 package org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.master.cuts;
 
 import ilog.concert.IloException;
+
 import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumVar;
 import ilog.concert.IloRange;
-
 import java.util.*;
-
 import org.jgrapht.Graph;
 import org.jgrapht.VertexFactory;
 import org.jgrapht.generate.CompleteGraphGenerator;
@@ -41,11 +40,14 @@ import org.jgrapht.graph.SimpleGraph;
 import org.jorlib.alg.tsp.separation.SubtourSeparator;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.Matching;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.master.TSPMasterData;
+
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model.MatchingColor;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutGenerator;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
+
 import org.jorlib.io.tspLibReader.graph.Edge;
+
 
 /**
  * 
@@ -75,15 +77,18 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 	public boolean generateInqualities() {
 		//Get the edge weights as a map
 		double[][] edgeValues=masterData.getEdgeValues();
+
 //		System.out.println("Separating subtours. Edge values: ");
 //		for(int i=0; i<edgeValues.length; i++)
 //			System.out.println(Arrays.toString(edgeValues[i]));
+
 		Map<DefaultEdge,Double> edgeValueMap=new HashMap<>();
 		for(int i=0; i<modelData.N-1; i++){
 			for(int j=i+1; j<modelData.N; j++){
 				edgeValueMap.put(completeGraph.getEdge(i, j), edgeValues[i][j]);
 			}
 		}
+
 //		for(DefaultEdge e : edgeValueMap.keySet()){
 //			if(edgeValueMap.get(e) >0){
 //				System.out.println("Edge: ("+completeGraph.getEdgeSource(e)+","+completeGraph.getEdgeTarget(e)+") value: "+edgeValueMap.get(e));
@@ -95,14 +100,17 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 		separator.separateSubtour(edgeValueMap);
 		if(separator.hasSubtour()){
 //			System.out.println("Found subtour! :)");
+
 			Set<Integer> cutSet=separator.getCutSet();
 			SubtourInequality inequality=new SubtourInequality(this, cutSet);
 			this.addCut(inequality);
 			return true;
 		}
+
 //		else{
 //			System.out.println("Didn't find subtour :(!");
 //		}
+
 		return false;
 	}
 
