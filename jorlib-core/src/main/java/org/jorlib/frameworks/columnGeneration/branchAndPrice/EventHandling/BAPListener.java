@@ -88,4 +88,10 @@ public interface BAPListener extends EventListener {
      * @param timeOutEvent
      */
     public void timeOut(TimeOutEvent timeOutEvent);
+
+    /**
+     * Method invoked when branch and price created new branches in the branch and price tree
+     * @param branchEvent
+     */
+    public void branchCreated(BranchEvent branchEvent);
 }

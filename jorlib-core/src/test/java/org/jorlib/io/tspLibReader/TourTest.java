@@ -23,6 +23,9 @@ package org.jorlib.io.tspLibReader;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
+import java.util.Arrays;
+
 /**
  * Tests the {@link TSPLibTour} class.
  * 
@@ -70,8 +73,8 @@ public class TourTest {
 	public void testReverse1() {
 		TSPLibTour tour = TSPLibTour.createCanonicalTour(5);
 		tour.reverse(1, 3);
-		
-		Assert.assertArrayEquals(new int[] { 1, 4, 3, 2, 5 }, tour.toArray());
+
+		Assert.assertArrayEquals(new int[] { 0, 3, 2, 1, 4 }, tour.toArray());
 	}
 	
 	@Test
@@ -79,7 +82,7 @@ public class TourTest {
 		TSPLibTour tour = TSPLibTour.createCanonicalTour(5);
 		tour.reverse(0, 4);
 		
-		Assert.assertArrayEquals(new int[] { 5, 4, 3, 2, 1 }, tour.toArray());
+		Assert.assertArrayEquals(new int[] { 4, 3, 2, 1, 0 }, tour.toArray());
 	}
 	
 	@Test
@@ -87,7 +90,7 @@ public class TourTest {
 		TSPLibTour tour = TSPLibTour.createCanonicalTour(5);
 		tour.reverse(4, 0);
 		
-		Assert.assertArrayEquals(new int[] { 5, 2, 3, 4, 1 }, tour.toArray());
+		Assert.assertArrayEquals(new int[] { 4, 1, 2, 3, 0 }, tour.toArray());
 	}
 	
 	@Test
@@ -95,7 +98,7 @@ public class TourTest {
 		TSPLibTour tour = TSPLibTour.createCanonicalTour(5);
 		tour.reverse(2, 2);
 		
-		Assert.assertArrayEquals(new int[] { 1, 2, 3, 4, 5 }, tour.toArray());
+		Assert.assertArrayEquals(new int[] { 0, 1, 2, 3, 4 }, tour.toArray());
 	}
 
 }

@@ -170,6 +170,11 @@ public class SimpleBAPLogger implements BAPListener{
         this.constructAndWriteLine();
     }
 
+    @Override
+    public void branchCreated(BranchEvent branchEvent) {
+        //Ignore this event, not needed by the logger.
+    }
+
     protected enum NodeResultStatus{
         PRUNED, INFEASIBLE, FRACTIONAL, INTEGER, INCONCLUSIVE
     }

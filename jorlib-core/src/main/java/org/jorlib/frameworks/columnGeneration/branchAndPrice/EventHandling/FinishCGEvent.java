@@ -26,6 +26,8 @@
  */
 package org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling;
 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
+
 import java.util.EventObject;
 
 /**
@@ -36,7 +38,7 @@ import java.util.EventObject;
  */
 public class FinishCGEvent extends EventObject{
 
-    public final int nodeID; //ID of the node which has been solved
+    public final BAPNode node; //ID of the node which has been solved
     public final double nodeBound; //Lower bound on the node
     public final double nodeValue; //Objective value of the node
     public final int numberOfCGIterations;
@@ -47,7 +49,7 @@ public class FinishCGEvent extends EventObject{
     /**
      * Creates a new FinishCGEvent
      * @param source Generator of this event
-     * @param nodeID ID of the node which has been solved
+     * @param node node which has been solved
      * @param nodeBound Lower bound on the node which has been solved
      * @param nodeValue Objective value of the node which has been solved. When solved to optimality, nodeBound and nodeValue should be equal
      * @param numberOfCGIterations Number of CG iterations it took to solve the node
@@ -56,7 +58,7 @@ public class FinishCGEvent extends EventObject{
      * @param nrGeneratedColumns Total number of columns generated
      */
     public FinishCGEvent(Object source,
-                         int nodeID,
+                         BAPNode node,
                          double nodeBound,
                          double nodeValue,
                          int numberOfCGIterations,
@@ -64,7 +66,7 @@ public class FinishCGEvent extends EventObject{
                          long pricingSolveTime,
                          int nrGeneratedColumns){
         super(source);
-        this.nodeID=nodeID;
+        this.node=node;
         this.nodeBound=nodeBound;
         this.nodeValue=nodeValue;
         this.numberOfCGIterations=numberOfCGIterations;

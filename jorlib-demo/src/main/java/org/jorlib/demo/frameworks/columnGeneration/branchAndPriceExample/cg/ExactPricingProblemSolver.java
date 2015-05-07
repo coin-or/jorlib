@@ -111,7 +111,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 	protected List<Matching> generateNewColumns()throws TimeLimitExceededException {
 		List<Matching> newPatterns=new ArrayList<Matching>();
 		try {
-			cplex.exportModel("./output/pricingLP/pricing.lp");
+//			cplex.exportModel("./output/pricingLP/pricing.lp");
 			//Compute how much time we may take to solve the pricing problem
 			double timeRemaining=Math.max(1,(timeLimit-System.currentTimeMillis())/1000.0);
 			cplex.setParam(IloCplex.DoubleParam.TiLim, timeRemaining); //set time limit in seconds
@@ -125,6 +125,11 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 					this.objective=Double.MAX_VALUE;
 					System.out.println("Pricing infeasible");
 				}else{
+					if(cplex.getStatus() == IloCplex.Status.Unbounded) {
+						cplex.exportModel("./output/pricingLP/pricing_unbounded.lp");
+						cplex.exportModel("./output/pricingLP/pricing_unbounded.mps");
+					}
+					System.exit(1);
 					throw new RuntimeException("Pricing problem solve failed! Status: "+cplex.getStatus());
 				}
 			}else{ //Pricing problem solved to optimality. Exact Matching

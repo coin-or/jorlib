@@ -27,20 +27,24 @@
 package org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
 
 import java.util.EventObject;
+import java.util.List;
 
 /**
  * Created by jkinable on 5/5/15.
  */
 public class BranchEvent extends EventObject{
 
-    public final AbstractBranchCreator branchCreator;
     public final int nrBranches;
+    public final BAPNode parentNode;
+    public final List<BAPNode> childNodes;
 
-    public BranchEvent(Object source, AbstractBranchCreator branchCreator, int nrBranches){
+    public BranchEvent(Object source, int nrBranches, BAPNode parentNode, List<BAPNode> childNodes){
         super(source);
-        this.branchCreator=branchCreator;
         this.nrBranches=nrBranches;
+        this.parentNode=parentNode;
+        this.childNodes=childNodes;
     }
 }

@@ -192,7 +192,18 @@ public class TSPSolver {
 //		TSP tsp=new TSP("./data/tspLib/tsp/gr24.tsp"); //Includes branching
 //		TSP tsp=new TSP("./data/tspLib/tsp/fri26.tsp"); //937
 		TSP tsp=new TSP("./data/tspLib/tsp/att48.tsp");
-//		tsp.tspLibInstance.addTour(new File("./data/tspLib/tsp/att48.opt.tour"));
+//		tsp.tspLibInstance.addTour(new File("./data/tspLib/tsp/att48.opt.tour")); //10653?
+
+//		int[] tourArray=tsp.tspLibInstance.getTours().get(0).toArray();
+//		System.out.println("tour: "+Arrays.toString(tourArray));
+//		int length=0;
+//		for(int i=0; i<tourArray.length; i++){
+//			int j=(i+1)%tsp.N;
+//			length+=tsp.getEdgeWeight(tourArray[i],tourArray[j]);
+//		}
+//		System.out.println("tour length: "+length);
+
+//		System.out.println("tour length: "+tsp.getTourLength(TSPLibTour.createTour(0, 7, 37, 30, 43, 17, 6, 27, 5, 36, 18, 26, 16, 42, 29, 35, 45, 32, 19, 46, 20, 31, 38, 47, 4, 41, 23, 9, 44, 34, 3, 25, 1, 28, 40, 15, 21, 2, 33, 13, 24, 12, 22, 10, 11, 14, 39, 8)));
 
 		new TSPSolver(tsp);
 	}

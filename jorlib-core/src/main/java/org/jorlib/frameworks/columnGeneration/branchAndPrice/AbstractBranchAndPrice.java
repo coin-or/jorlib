@@ -50,8 +50,6 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	protected int totalGeneratedColumns=0; //Counts how many columns have been generated over the entire branch and price tree
 	protected int totalNrIterations=0; // Counts how many column generation iterations have been made.
 
-	//TODO: add artifical solution to nodes to ensure feasibility
-	
 	public AbstractBranchAndPrice(T modelData,
 								  AbstractMaster<T,V,U, ? extends MasterData> master,//MasterFactory masterFactory,
 								  List<V> pricingProblems,
@@ -175,7 +173,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 					timeSolvingPricing += cg.getPricingSolveTime();
 					totalNrIterations += cg.getNumberOfIterations();
 					totalGeneratedColumns += cg.getNrGeneratedColumns();
-					notifier.fireFinishCGEvent(bapNode.nodeID, cg.getLowerBound(), cg.getObjective(), cg.getNumberOfIterations(), cg.getMasterSolveTime(), cg.getPricingSolveTime(), cg.getNrGeneratedColumns());
+					notifier.fireFinishCGEvent(bapNode, cg.getLowerBound(), cg.getObjective(), cg.getNumberOfIterations(), cg.getMasterSolveTime(), cg.getPricingSolveTime(), cg.getNrGeneratedColumns());
 				}
 			}
 
@@ -225,8 +223,10 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 				
 				if(newBranches.isEmpty())
 					throw new RuntimeException("BAP encountered fractional solution, but non of the BranchCreators produced any new branches?");
-				else
+				else {
 					queue.addAll(newBranches);
+					notifier.fireBranchEvent(bapNode, Collections.unmodifiableList(newBranches));
+				}
 			}
 
 			nodesProcessed++;
@@ -452,12 +452,21 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			}
 		}
 
-		protected void fireFinishCGEvent(int nodeID, double nodeBound, double nodeValue, int numberOfCGIterations, long masterSolveTime, long pricingSolveTime, int nrGeneratedColumns){
+		protected void fireFinishCGEvent(BAPNode node, double nodeBound, double nodeValue, int numberOfCGIterations, long masterSolveTime, long pricingSolveTime, int nrGeneratedColumns){
 			FinishCGEvent finishCGEvent=null;
 			for(BAPListener listener : listeners){
 				if(finishCGEvent==null)
-					finishCGEvent=new FinishCGEvent(AbstractBranchAndPrice.this, nodeID, nodeBound, nodeValue, numberOfCGIterations, masterSolveTime, pricingSolveTime, nrGeneratedColumns);
+					finishCGEvent=new FinishCGEvent(AbstractBranchAndPrice.this, node, nodeBound, nodeValue, numberOfCGIterations, masterSolveTime, pricingSolveTime, nrGeneratedColumns);
 				listener.finishedColumnGenerationForNode(finishCGEvent);
+			}
+		}
+
+		protected void fireBranchEvent(BAPNode parentNode, List<BAPNode> childNodes){
+			BranchEvent branchEvent=null;
+			for(BAPListener listener : listeners){
+				if(branchEvent==null)
+					branchEvent=new BranchEvent(AbstractBranchAndPrice.this, childNodes.size(), parentNode, childNodes);
+				listener.branchCreated(branchEvent);
 			}
 		}
 	}
