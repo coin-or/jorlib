@@ -139,8 +139,26 @@ public class TSPSolver {
 		bap.close(); //Close master and pricing problems
 		cutHandler.close(); //Close the cut handler. The close() call is propagated to all registered CutGenerator classes
 	}
-	
 
+	public TSPSolver(TSP tsp, int i){
+		this.tsp=tsp;
+		TSPLibTour initTour=tsp.tspLibInstance.getTours().get(0);
+		System.out.println("Init1 tour length: "+tsp.getTourLength(initTour));
+
+		//Create the two pricing problems
+		List<PricingProblemByColor> pricingProblems=new ArrayList<>();
+		pricingProblems.add(new PricingProblemByColor(tsp, "redPricing", MatchingColor.RED));
+		pricingProblems.add(new PricingProblemByColor(tsp, "bluePricing", MatchingColor.BLUE));
+
+		List<Matching> matchings=this.convertTourToColumns(initTour, pricingProblems);
+		for(Matching m : matchings)
+			System.out.println(m);
+
+		TSPLibTour newTour=this.convertColumnsToTour(matchings);
+		System.out.println("new tour: " + newTour);
+
+		System.out.println("Final tour length: "+tsp.getTourLength(newTour));
+	}
 
 	private List<Matching> convertTourToColumns(TSPLibTour tour, List<PricingProblemByColor> pricingProblems) {
 		List<Set<Edge>> matchings=new ArrayList<>();
@@ -185,14 +203,28 @@ public class TSPSolver {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		//TSPLib instance Burma 14 - Optimal tour length: 3323, see http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
-//		TSP tsp=new TSP("./data/tspLib/tsp/burma14.tsp");
-//		TSP tsp=new TSP("./data/tspLib/tsp/ulysses16.tsp"); //gr17.tsp
-//		TSP tsp=new TSP("./data/tspLib/tsp/ulysses22.tsp");
-//		TSP tsp=new TSP("./data/tspLib/tsp/gr24.tsp"); //Includes branching
-//		TSP tsp=new TSP("./data/tspLib/tsp/fri26.tsp"); //937
-		TSP tsp=new TSP("./data/tspLib/tsp/att48.tsp");
-//		tsp.tspLibInstance.addTour(new File("./data/tspLib/tsp/att48.opt.tour")); //10653?
+		//TSPLib instances, see http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
+//		TSP tsp= new TSP("./data/tspLib/tsp/burma14.tsp"); //Optimal: 3323
+//		TSP tsp= new TSP("./data/tspLib/tsp/ulysses16.tsp"); //Optimal: 6859
+//		TSP tsp= new TSP("./data/tspLib/tsp/ulysses22.tsp"); //Optimal: 7013
+//		TSP tsp= new TSP("./data/tspLib/tsp/gr24.tsp"); //Optimal: 1272
+//		TSP tsp= new TSP("./data/tspLib/tsp/fri26.tsp"); //Optimal: 937
+//		TSP tsp= new TSP("./data/tspLib/tsp/dantzig42.tsp"); //Optimal: 699
+//		TSP tsp= new TSP("./data/tspLib/tsp/swiss42.tsp"); //Optimal: 1273
+//		TSP tsp= new TSP("./data/tspLib/tsp/att48.tsp"); //Optimal: 10628
+
+
+		TSP tsp= new TSP("./data/tspLib/tsp/gr48.tsp"); //Optimal: 5046
+//		TSP tsp= new TSP("./data/tspLib/tsp/hk48.tsp"); //Optimal: 11461
+//		TSP tsp= new TSP("./data/tspLib/tsp/berlin52.tsp"); //Optimal: 7542
+//		TSP tsp= new TSP("./data/tspLib/tsp/brazil58.tsp"); //Optimal: 25395
+//		TSP tsp= new TSP("./data/tspLib/tsp/st70.tsp"); //Optimal: 675
+//		TSP tsp= new TSP("./data/tspLib/tsp/eil76.tsp"); //Optimal: 538
+//		TSP tsp= new TSP("./data/tspLib/tsp/pr76.tsp"); //Optimal: 108159
+//		TSP tsp= new TSP("./data/tspLib/tsp/gr96.tsp"); //Optimal: 55209
+
+//		tsp.tspLibInstance.addTour(new File("./data/tspLib/tsp/swiss42.opt.tour")); //Optimal: 1273
+//		tsp.tspLibInstance.addTour(new File("./data/tspLib/tsp/att48.opt.tour")); //Optimal: 10628
 
 //		int[] tourArray=tsp.tspLibInstance.getTours().get(0).toArray();
 //		System.out.println("tour: "+Arrays.toString(tourArray));
@@ -203,9 +235,9 @@ public class TSPSolver {
 //		}
 //		System.out.println("tour length: "+length);
 
-//		System.out.println("tour length: "+tsp.getTourLength(TSPLibTour.createTour(0, 7, 37, 30, 43, 17, 6, 27, 5, 36, 18, 26, 16, 42, 29, 35, 45, 32, 19, 46, 20, 31, 38, 47, 4, 41, 23, 9, 44, 34, 3, 25, 1, 28, 40, 15, 21, 2, 33, 13, 24, 12, 22, 10, 11, 14, 39, 8)));
-
 		new TSPSolver(tsp);
+//
+//		new TSPSolver(tsp,0);
 	}
 }
 

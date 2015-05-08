@@ -229,8 +229,6 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 					}
 				}
 			}
-		} catch (UnknownObjectException e) {
-			e.printStackTrace();
 		} catch (IloException e) {
 			e.printStackTrace();
 		}
@@ -269,25 +267,10 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 		this.close(); //Close the old cplex model
 		masterData=this.buildModel(); //Create a new model
 		cutHandler.setMasterData(masterData); //Inform the cutHandler about the new master model
-
-
-//		for(MatchingColor matchingColor : MatchingColor.values()){
-//			OrderedBiMap<Matching, IloNumVar> matchingVarMap=masterData.matchingVars.get(matchingColor);
-//			for(Matching matching : matchingVarMap.keyList()){
-//				if(!bd.columnIsCompatibleWithBranchingDecision(matching)){
-//					try {
-//						masterData.cplex.end(matchingVarMap.get(matching)); //Destroy the variable associated with
-//						//masterData.cplex.remove(matchingVarMap.get(matching));
-//					} catch (IloException e) {
-//						e.printStackTrace();
-//					}
-//				}
-//			}
-//		}
 	}
 
 	@Override
 	public void branchingDecisionRewinded(BranchingDecision bd) {
-		//No actions are required
+		//No action required
 	}
 }

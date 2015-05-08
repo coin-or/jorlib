@@ -26,6 +26,7 @@
  */
 package org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import ilog.concert.IloException;
 import ilog.concert.IloIntVar;
 import ilog.concert.IloLinearIntExpr;
@@ -33,13 +34,11 @@ import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloObjective;
 import ilog.cplex.IloCplex;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.bap.branching.branchingDecisions.FixEdge;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.bap.branching.branchingDecisions.RemoveEdge;
+import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model.MatchingColor;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecisionListener;
@@ -123,13 +122,12 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 				}else if(cplex.getStatus()==IloCplex.Status.Infeasible) { //Pricing problem infeasible
 					pricingProblemInfeasible=true;
 					this.objective=Double.MAX_VALUE;
-					System.out.println("Pricing infeasible");
+					throw new RuntimeException("Pricing problem infeasible");
 				}else{
 					if(cplex.getStatus() == IloCplex.Status.Unbounded) {
 						cplex.exportModel("./output/pricingLP/pricing_unbounded.lp");
 						cplex.exportModel("./output/pricingLP/pricing_unbounded.mps");
 					}
-					System.exit(1);
 					throw new RuntimeException("Pricing problem solve failed! Status: "+cplex.getStatus());
 				}
 			}else{ //Pricing problem solved to optimality. Exact Matching
@@ -167,6 +165,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 		}catch (IloException e1) {
 			e1.printStackTrace();
 		}
+//		this.test();
 		return newPatterns;
 	}
 
@@ -192,10 +191,12 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 		try {
 			if(bd instanceof FixEdge){
 				FixEdge fixEdgeDecision = (FixEdge) bd;
-				vars.get(fixEdgeDecision.edge).setLB(1); //Ensure that any column returned contains this edge.
+				if(fixEdgeDecision.pricingProblem == this.pricingProblem)
+					vars.get(fixEdgeDecision.edge).setLB(1); //Ensure that any column returned contains this edge.
 			}else if(bd instanceof RemoveEdge){
 				RemoveEdge removeEdgeDecision= (RemoveEdge) bd;
-				vars.get(removeEdgeDecision.edge).setUB(0); //Ensure that any column returned does NOT contain this edge.
+				if(removeEdgeDecision.pricingProblem == this.pricingProblem)
+					vars.get(removeEdgeDecision.edge).setUB(0); //Ensure that any column returned does NOT contain this edge.
 			}
 		} catch (IloException e) {
 			e.printStackTrace();
@@ -207,13 +208,83 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 		try {
 			if(bd instanceof FixEdge){
 				FixEdge fixEdgeDecision = (FixEdge) bd;
-				vars.get(fixEdgeDecision.edge).setLB(0); //Reset the LB to its original value
+				if(fixEdgeDecision.pricingProblem == this.pricingProblem)
+					vars.get(fixEdgeDecision.edge).setLB(0); //Reset the LB to its original value
 			}else if(bd instanceof RemoveEdge){
 				RemoveEdge removeEdgeDecision= (RemoveEdge) bd;
-				vars.get(removeEdgeDecision.edge).setUB(1); //Reset the UB to its original value
+				if(removeEdgeDecision.pricingProblem == this.pricingProblem)
+					vars.get(removeEdgeDecision.edge).setUB(1); //Reset the UB to its original value
 			}
 		} catch (IloException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void test(){
+		Set<Edge> myEdges=new HashSet<>();
+		if(this.pricingProblem.color== MatchingColor.RED){
+			myEdges.add(new Edge(0,7));
+			myEdges.add(new Edge(37,30));
+			myEdges.add(new Edge(43,17));
+			myEdges.add(new Edge(6,27));
+			myEdges.add(new Edge(5,36));
+			myEdges.add(new Edge(18,26));
+			myEdges.add(new Edge(16,42));
+			myEdges.add(new Edge(29,35));
+			myEdges.add(new Edge(45,32));
+			myEdges.add(new Edge(19,46));
+			myEdges.add(new Edge(20,31));
+			myEdges.add(new Edge(38,47));
+			myEdges.add(new Edge(4,41));
+			myEdges.add(new Edge(23,9));
+			myEdges.add(new Edge(44,34));
+			myEdges.add(new Edge(3,25));
+			myEdges.add(new Edge(1,28));
+			myEdges.add(new Edge(33,40));
+			myEdges.add(new Edge(15,21));
+			myEdges.add(new Edge(2,22));
+			myEdges.add(new Edge(13,24));
+			myEdges.add(new Edge(12,10));
+			myEdges.add(new Edge(11,14));
+			myEdges.add(new Edge(39,8));
+		}else{
+			myEdges.add(new Edge(7,37));
+			myEdges.add(new Edge(30,43));
+			myEdges.add(new Edge(17,6));
+			myEdges.add(new Edge(27,5));
+			myEdges.add(new Edge(36,18));
+			myEdges.add(new Edge(26,16));
+			myEdges.add(new Edge(42,29));
+			myEdges.add(new Edge(35,45));
+			myEdges.add(new Edge(32,19));
+			myEdges.add(new Edge(46,20));
+			myEdges.add(new Edge(31,38));
+			myEdges.add(new Edge(47,4));
+			myEdges.add(new Edge(41,23));
+			myEdges.add(new Edge(9,44));
+			myEdges.add(new Edge(34,3));
+			myEdges.add(new Edge(25,1));
+			myEdges.add(new Edge(28,33));
+			myEdges.add(new Edge(40,15));
+			myEdges.add(new Edge(21,2));
+			myEdges.add(new Edge(22,13));
+			myEdges.add(new Edge(24,12));
+			myEdges.add(new Edge(10,11));
+			myEdges.add(new Edge(14,39));
+			myEdges.add(new Edge(8,0));
+		}
+
+		double value=0;
+		for(int i=0; i<vars.keyList().size(); i++){
+			Edge e=vars.keyList().get(i);
+			if(myEdges.contains(e))
+				value+=pricingProblem.modifiedCosts[i];
+		}
+		try {
+			cplex.exportModel("./output/pricingLP/pricing"+pricingProblem.color.name()+".lp");
+		} catch (IloException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Reduced cost of optimal column: "+value+" dual constant: "+(-pricingProblem.dualConstant) +" color: "+pricingProblem.color.name());
 	}
 }

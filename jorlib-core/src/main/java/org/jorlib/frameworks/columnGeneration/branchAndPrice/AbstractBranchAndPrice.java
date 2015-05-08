@@ -193,6 +193,8 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			System.out.println("Solution:");
 			for(U column : solution)
 				System.out.println(column);
+//			if(bapNode.nodeID==2)
+//				System.exit(1);
 			//END TEMP
 
 			//Check if node was infeasible, i.e. whether there are artifical columns in the solution. If so, ignore it and continue with the next node.

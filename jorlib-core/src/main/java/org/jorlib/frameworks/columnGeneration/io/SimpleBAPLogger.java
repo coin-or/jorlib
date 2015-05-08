@@ -24,9 +24,10 @@ public class SimpleBAPLogger implements BAPListener{
     protected int globalUB; //Best integer solution
     protected double lowerBoundNode; //Lower bound on the BAP node
     protected NodeResultStatus nodeStatus; //What to do with the node, i.e. prune (based on obj), Infeasible, Integer, Fractional, or Inconclusive if the nodeStatus could not be determined (e.g. due to time limit)
+    protected int nodesInQueue;
 
     //Colgen stats
-    protected int cgIterations=0; //Number of column generation iterations
+    protected int cgIterations; //Number of column generation iterations
 
     //Master problem
     protected long timeSolvingMaster; //Counts how much time is spent on solving master problems
@@ -73,11 +74,12 @@ public class SimpleBAPLogger implements BAPListener{
         parentNodeID=-1;
         globalUB=-1;
         lowerBoundNode=-1;
-        cgIterations=-1;
-        timeSolvingMaster=-1;
+        cgIterations=0;
+        timeSolvingMaster=0;
         nodeValue=-1;
-        timeSolvingPricing=-1;
-        nrGeneratedColumns=-1;
+        timeSolvingPricing=0;
+        nrGeneratedColumns=0;
+        nodesInQueue=-1;
     }
 
     /**
@@ -104,12 +106,14 @@ public class SimpleBAPLogger implements BAPListener{
         builder.append(nrGeneratedColumns);
         builder.append("\t");
         builder.append(nodeStatus);
+        builder.append("\t");
+        builder.append(nodesInQueue);
         this.writeLine(builder.toString());
     }
 
     @Override
     public void startBAP(StartBAPEvent startBAPEvent) {
-        this.writeLine("BAPNodeID \t parentNodeID \t globalUB \t nodeLB \t nodeValue \t cgIterations \t t_master \t t_pricing \t nrGenColumns \t solutionStatus");
+        this.writeLine("BAPNodeID \t parentNodeID \t globalUB \t nodeLB \t nodeValue \t cgIterations \t t_master \t t_pricing \t nrGenColumns \t solutionStatus \t nodesInQueue");
     }
 
     @Override
@@ -125,6 +129,7 @@ public class SimpleBAPLogger implements BAPListener{
     @Override
     public void pruneNode(PruneNodeEvent pruneNodeEvent) {
         this.nodeStatus =NodeResultStatus.PRUNED;
+        this.lowerBoundNode=pruneNodeEvent.nodeBound;
         this.constructAndWriteLine();
     }
 
@@ -152,6 +157,7 @@ public class SimpleBAPLogger implements BAPListener{
         this.bapNodeID=processingNextNodeEvent.node.nodeID;
         this.parentNodeID=processingNextNodeEvent.node.getAncestorID();
         this.globalUB=processingNextNodeEvent.globalUB;
+        this.nodesInQueue=processingNextNodeEvent.nodesInQueue;
     }
 
     @Override
