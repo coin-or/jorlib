@@ -36,13 +36,23 @@ import org.jorlib.io.tspLibReader.graph.Edge;
 
 
 /**
- * 
+ * Definition of a column. For the TSP example, each column is a perfect matching.
+ *
  * @author Joris Kinable
  * @version 13-4-2015
  *
  */
 public class Matching extends AbstractColumn<TSP, Matching, PricingProblemByColor> {
 
+	/**
+	 * Creates a new column (matching)
+	 * @param creator
+	 * @param isArtificial
+	 * @param associatedPricingProblem
+	 * @param edges
+	 * @param succ
+	 * @param cost
+	 */
 	public Matching(String creator, boolean isArtificial,	PricingProblemByColor associatedPricingProblem,
 			Set<Edge> edges,
 			int[] succ,

@@ -56,7 +56,8 @@ import org.jorlib.io.tspLibReader.graph.Edge;
 
 
 /**
- * 
+ * Defines the master problem.
+ *
  * @author Joris Kinable
  * @version 13-4-2015
  *
@@ -66,12 +67,23 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 	private IloObjective obj; //Objective function
 	private IloRange exactlyOneRedMatchingConstr; //Constraint
 	private IloRange exactlyOneBlueMatchingConstr; //Constraint
-	private Map<Edge, IloRange> edgeOnlyUsedOnceConstr;
-	
+	private Map<Edge, IloRange> edgeOnlyUsedOnceConstr; //Constraint
+
+	/**
+	 * Create a new master problem
+	 * @param modelData
+	 * @param cutHandler
+	 */
 	public Master(TSP modelData, CutHandler<TSP, TSPMasterData> cutHandler) {
 		super(modelData, cutHandler);
 	}
-	
+
+	/**
+	 * Solve the master problem
+	 * @param timeLimit
+	 * @return true if the master problem has been solved
+	 * @throws TimeLimitExceededException
+	 */
 	@Override
 	protected boolean solveMasterProblem(long timeLimit)	throws TimeLimitExceededException {
 		try {
@@ -97,35 +109,10 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 		return true;
 	}
 
-	@Override
-	public void initializePricingProblem(PricingProblemByColor pricingProblem) {
-		try {
-			double[] modifiedCosts=new double[modelData.N*(modelData.N-1)/2]; //Modified cost for every edge
-			int index=0;
-			for(int i=0; i<modelData.N-1; i++){
-				for(int j=i+1; j<modelData.N; j++){
-					Edge edge=new Edge(i, j);
-					modifiedCosts[index]=masterData.cplex.getDual(edgeOnlyUsedOnceConstr.get(edge))-modelData.getEdgeWeight(edge);
-
-					for(SubtourInequality subtourInequality : masterData.subtourInequalities.keySet()){
-						if(subtourInequality.cutSet.contains(i) ^ subtourInequality.cutSet.contains(j))
-							modifiedCosts[index]+= masterData.cplex.getDual(masterData.subtourInequalities.get(subtourInequality));
-					}
-					index++;
-				}
-			}
-			double dualConstant;
-			if(pricingProblem.color==MatchingColor.RED)
-				dualConstant=masterData.cplex.getDual(exactlyOneRedMatchingConstr);
-			else
-				dualConstant=masterData.cplex.getDual(exactlyOneBlueMatchingConstr);
-			
-			pricingProblem.initPricingProblem(modifiedCosts, dualConstant);
-		} catch (IloException e) {
-			e.printStackTrace();
-		}
-	}
-
+	/**
+	 * Builds the master model
+	 * @return Returns a MasterData object which is a data container for information coming from the master problem
+	 */
 	@Override
 	protected TSPMasterData buildModel() {
 		IloCplex cplex=null;
@@ -154,7 +141,6 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 			}
 			
 			//Define a container for the variables
-//			matchingVars=new OrderedBiMap<>();
 			matchingVars=new EnumMap<>(MatchingColor.class);
 			matchingVars.put(MatchingColor.RED, new OrderedBiMap<>());
 			matchingVars.put(MatchingColor.BLUE, new OrderedBiMap<>());
@@ -167,6 +153,10 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 		return new TSPMasterData(cplex, matchingVars);
 	}
 
+	/**
+	 * Adds a new column to the master problem
+	 * @param column column to add
+	 */
 	@Override
 	public void addColumn(Matching column) {
 		MatchingColor matchingColor= column.associatedPricingProblem.color;
@@ -203,7 +193,6 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 			}
 			
 			//Create the variable and store it
-			//IloNumVar var=masterData.cplex.numVar(iloColumn, 0, Double.MAX_VALUE, "z_"+matchingColor.name()+"_"+column.associatedPricingProblem.getNrColumns());
 			IloNumVar var=masterData.cplex.numVar(iloColumn, 0, Double.MAX_VALUE, "z_"+matchingColor.name()+"_"+masterData.matchingVars.get(matchingColor).size());
 			masterData.cplex.add(var);
 			masterData.matchingVars.get(matchingColor).put(column, var);
@@ -212,6 +201,43 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 		}
 	}
 
+	/**
+	 * Extracts information from the master problem which is required by the pricing problems, e.g. the reduced costs
+	 * @param pricingProblem
+	 */
+	@Override
+	public void initializePricingProblem(PricingProblemByColor pricingProblem) {
+		try {
+			double[] modifiedCosts=new double[modelData.N*(modelData.N-1)/2]; //Modified cost for every edge
+			int index=0;
+			for(int i=0; i<modelData.N-1; i++){
+				for(int j=i+1; j<modelData.N; j++){
+					Edge edge=new Edge(i, j);
+					modifiedCosts[index]=masterData.cplex.getDual(edgeOnlyUsedOnceConstr.get(edge))-modelData.getEdgeWeight(edge);
+
+					for(SubtourInequality subtourInequality : masterData.subtourInequalities.keySet()){
+						if(subtourInequality.cutSet.contains(i) ^ subtourInequality.cutSet.contains(j))
+							modifiedCosts[index]+= masterData.cplex.getDual(masterData.subtourInequalities.get(subtourInequality));
+					}
+					index++;
+				}
+			}
+			double dualConstant;
+			if(pricingProblem.color==MatchingColor.RED)
+				dualConstant=masterData.cplex.getDual(exactlyOneRedMatchingConstr);
+			else
+				dualConstant=masterData.cplex.getDual(exactlyOneBlueMatchingConstr);
+
+			pricingProblem.initPricingProblem(modifiedCosts, dualConstant);
+		} catch (IloException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Gets the solution from the master problem
+	 * @return Returns all non-zero valued columns from the master problem
+	 */
 	@Override
 	public List<Matching> getSolution() {
 		List<Matching> solution=new ArrayList<>();
@@ -235,6 +261,9 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 		return solution;
 	}
 
+	/**
+	 * Prints the solution
+	 */
 	@Override
 	public void printSolution() {
 		List<Matching> solution=this.getSolution();
@@ -242,11 +271,18 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 			System.out.println(m);
 	}
 
+	/**
+	 * Closes the master problem
+	 */
 	@Override
 	public void close() {
 		masterData.cplex.end();
 	}
 
+	/**
+	 * Checks whether there are any violated inequalities, thereby invoking the cut handler
+	 * @return true if violated inqualities have been found (and added to the master problem)
+	 */
 	@Override
 	public boolean hasNewCuts(){
 		//For convenience, we will precompute values required by the SubtourInequalityGenerator class
@@ -261,6 +297,10 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 		return super.hasNewCuts();
 	}
 
+	/**
+	 * Listen to branching decisions
+	 * @param bd Branching decision
+	 */
 	@Override
 	public void branchingDecisionPerformed(BranchingDecision bd) {
 		//For simplicity, we simply destroy the master problem and rebuild it. Of course, something more sophisticated may be used which retains the master problem.
@@ -269,6 +309,10 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 		cutHandler.setMasterData(masterData); //Inform the cutHandler about the new master model
 	}
 
+	/**
+	 * Undo branching decisions during backtracking in the branch and price tree
+	 * @param bd Branching decision
+	 */
 	@Override
 	public void branchingDecisionRewinded(BranchingDecision bd) {
 		//No action required

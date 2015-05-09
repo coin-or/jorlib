@@ -33,7 +33,9 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 
 /**
- * 
+ * Define a pricing problem which is unique for every color: a pricing problem for the blue matchings and a pricing problem
+ * for the red matchings.
+ *
  * @author Joris Kinable
  * @version 13-4-2015
  *
@@ -42,7 +44,13 @@ public class PricingProblemByColor extends AbstractPricingProblem<TSP, Matching,
 	
 	//Color of the matching group. Can be either Red or Blue
 	public final MatchingColor color;
-	
+
+	/**
+	 * Creates a new Pricing problem instance
+	 * @param modelData
+	 * @param name
+	 * @param color
+	 */
 	public PricingProblemByColor(TSP modelData, String name, MatchingColor color) {
 		super(modelData, name);
 		this.color=color;

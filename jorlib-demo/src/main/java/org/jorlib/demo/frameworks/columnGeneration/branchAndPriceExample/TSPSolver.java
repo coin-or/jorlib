@@ -29,11 +29,7 @@ package org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample;
 import java.io.File;
 import java.io.IOException;
 import java.time.Clock;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.bap.BranchAndPrice;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.bap.branching.BranchOnEdge;
@@ -97,13 +93,9 @@ public class TSPSolver {
 		List<Class<? extends PricingProblemSolver<TSP, Matching, PricingProblemByColor>>> solvers=Arrays.asList(ExactPricingProblemSolver.class);
 		
 		//OPTIONAL: Get an initial solution at use it as an upper bound
-//		TSPLibTour initTour=tsp.tspLibInstance.getTours().get(0);
 		TSPLibTour initTour=TSPLibTour.createCanonicalTour(tsp.N); //Feasible solution
-//		TSPLibTour tour=TSPLibTour.createRandomTour(tsp.N);
 		int tourLength=tsp.getTourLength(initTour); //Upper bound (Stronger is better)
-
-		//Create a set of initial columns.
-		List<Matching> initSolution=this.convertTourToColumns(initTour, pricingProblems);
+		List<Matching> initSolution=this.convertTourToColumns(initTour, pricingProblems); //Create a set of initial columns.
 
 		//Define Branch creators
 		List<? extends AbstractBranchCreator<TSP, Matching, PricingProblemByColor>> branchCreators=Arrays.asList(new BranchOnEdge(tsp, pricingProblems));
@@ -140,26 +132,13 @@ public class TSPSolver {
 		cutHandler.close(); //Close the cut handler. The close() call is propagated to all registered CutGenerator classes
 	}
 
-	public TSPSolver(TSP tsp, int i){
-		this.tsp=tsp;
-		TSPLibTour initTour=tsp.tspLibInstance.getTours().get(0);
-		System.out.println("Init1 tour length: "+tsp.getTourLength(initTour));
 
-		//Create the two pricing problems
-		List<PricingProblemByColor> pricingProblems=new ArrayList<>();
-		pricingProblems.add(new PricingProblemByColor(tsp, "redPricing", MatchingColor.RED));
-		pricingProblems.add(new PricingProblemByColor(tsp, "bluePricing", MatchingColor.BLUE));
-
-		List<Matching> matchings=this.convertTourToColumns(initTour, pricingProblems);
-		for(Matching m : matchings)
-			System.out.println(m);
-
-		TSPLibTour newTour=this.convertColumnsToTour(matchings);
-		System.out.println("new tour: " + newTour);
-
-		System.out.println("Final tour length: "+tsp.getTourLength(newTour));
-	}
-
+	/**
+	 * Converts a TSPLib tour to a set of columns: A column for every pricing problem is created
+	 * @param tour
+	 * @param pricingProblems
+	 * @return
+	 */
 	private List<Matching> convertTourToColumns(TSPLibTour tour, List<PricingProblemByColor> pricingProblems) {
 		List<Set<Edge>> matchings=new ArrayList<>();
 		matchings.add(new LinkedHashSet<>());
@@ -180,18 +159,15 @@ public class TSPSolver {
 		return initSolution;
 	}
 
-	private TSPLibTour convertColumnsToTour(List<Matching> columns){
-		int[] nodes=new int[tsp.N];
-		nodes[0]=0;
-		for(int i=1; i<tsp.N; i++){
-			nodes[i]=columns.get(i%2).succ[nodes[i-1]];
-		}
-		return TSPLibTour.createTour(nodes);
-	}
-
+	/**
+	 * Helper method which builds a column for a given pricing problem consisting of the predefined edges
+	 * @param pricingProblem
+	 * @param edges
+	 * @return
+	 */
 	private Matching buildMatching(PricingProblemByColor pricingProblem, Set<Edge> edges) {
 		int[] succ=new int[tsp.N];
-		System.out.println("N: "+tsp.N);
+		System.out.println("N: " + tsp.N);
 
 		int cost=0;
 		for(Edge edge : edges) {
@@ -201,10 +177,24 @@ public class TSPSolver {
 		}
 		return new Matching("init", false, pricingProblem, edges, succ, cost);
 	}
+
+	/**
+	 * Converts a set of matchings (columns) back to a TSPLib tour
+	 * @param columns
+	 * @return
+	 */
+	private TSPLibTour convertColumnsToTour(List<Matching> columns){
+		int[] nodes=new int[tsp.N];
+		nodes[0]=0;
+		for(int i=1; i<tsp.N; i++){
+			nodes[i]=columns.get(i%2).succ[nodes[i-1]];
+		}
+		return TSPLibTour.createTour(nodes);
+	}
 	
 	public static void main(String[] args) throws IOException {
 		//TSPLib instances, see http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
-//		TSP tsp= new TSP("./data/tspLib/tsp/burma14.tsp"); //Optimal: 3323
+		TSP tsp= new TSP("./data/tspLib/tsp/burma14.tsp"); //Optimal: 3323
 //		TSP tsp= new TSP("./data/tspLib/tsp/ulysses16.tsp"); //Optimal: 6859
 //		TSP tsp= new TSP("./data/tspLib/tsp/ulysses22.tsp"); //Optimal: 7013
 //		TSP tsp= new TSP("./data/tspLib/tsp/gr24.tsp"); //Optimal: 1272
@@ -213,31 +203,7 @@ public class TSPSolver {
 //		TSP tsp= new TSP("./data/tspLib/tsp/swiss42.tsp"); //Optimal: 1273
 //		TSP tsp= new TSP("./data/tspLib/tsp/att48.tsp"); //Optimal: 10628
 
-
-		TSP tsp= new TSP("./data/tspLib/tsp/gr48.tsp"); //Optimal: 5046
-//		TSP tsp= new TSP("./data/tspLib/tsp/hk48.tsp"); //Optimal: 11461
-//		TSP tsp= new TSP("./data/tspLib/tsp/berlin52.tsp"); //Optimal: 7542
-//		TSP tsp= new TSP("./data/tspLib/tsp/brazil58.tsp"); //Optimal: 25395
-//		TSP tsp= new TSP("./data/tspLib/tsp/st70.tsp"); //Optimal: 675
-//		TSP tsp= new TSP("./data/tspLib/tsp/eil76.tsp"); //Optimal: 538
-//		TSP tsp= new TSP("./data/tspLib/tsp/pr76.tsp"); //Optimal: 108159
-//		TSP tsp= new TSP("./data/tspLib/tsp/gr96.tsp"); //Optimal: 55209
-
-//		tsp.tspLibInstance.addTour(new File("./data/tspLib/tsp/swiss42.opt.tour")); //Optimal: 1273
-//		tsp.tspLibInstance.addTour(new File("./data/tspLib/tsp/att48.opt.tour")); //Optimal: 10628
-
-//		int[] tourArray=tsp.tspLibInstance.getTours().get(0).toArray();
-//		System.out.println("tour: "+Arrays.toString(tourArray));
-//		int length=0;
-//		for(int i=0; i<tourArray.length; i++){
-//			int j=(i+1)%tsp.N;
-//			length+=tsp.getEdgeWeight(tourArray[i],tourArray[j]);
-//		}
-//		System.out.println("tour length: "+length);
-
 		new TSPSolver(tsp);
-//
-//		new TSPSolver(tsp,0);
 	}
 }
 

@@ -50,7 +50,8 @@ import org.jorlib.io.tspLibReader.graph.Edge;
 
 
 /**
- * 
+ * Checks for violated subtour inequalities in the master problem. Any violated inqualities are added to the master problem.
+ *
  * @author Joris Kinable
  * @version 13-4-2015
  *
@@ -61,7 +62,11 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 	private final Graph<Integer, DefaultEdge> completeGraph;
 	//We use the subtour separator provided in jORLib
 	private final SubtourSeparator<Integer, DefaultEdge> separator;
-	
+
+	/**
+	 * Creates a new subtour inequality generator
+	 * @param modelData
+	 */
 	public SubtourInequalityGenerator(TSP modelData) {
 		super(modelData);
 		
@@ -73,15 +78,14 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 		separator=new SubtourSeparator<Integer, DefaultEdge>(completeGraph);
 	}
 
+	/**
+	 * Generate inequalities
+	 * @return Returns true if a violated inquality has been found
+	 */
 	@Override
 	public boolean generateInqualities() {
 		//Get the edge weights as a map
 		double[][] edgeValues=masterData.getEdgeValues();
-
-//		System.out.println("Separating subtours. Edge values: ");
-//		for(int i=0; i<edgeValues.length; i++)
-//			System.out.println(Arrays.toString(edgeValues[i]));
-
 		Map<DefaultEdge,Double> edgeValueMap=new HashMap<>();
 		for(int i=0; i<modelData.N-1; i++){
 			for(int j=i+1; j<modelData.N; j++){
@@ -89,31 +93,21 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 			}
 		}
 
-//		for(DefaultEdge e : edgeValueMap.keySet()){
-//			if(edgeValueMap.get(e) >0){
-//				System.out.println("Edge: ("+completeGraph.getEdgeSource(e)+","+completeGraph.getEdgeTarget(e)+") value: "+edgeValueMap.get(e));
-//			}
-//			edgeValueMap.put(completeGraph.getEdge(1,2), 0.0);
-//			System.out.println("edgeValueMap.put(completeGraph.getEdge("+completeGraph.getEdgeSource(e)+","+completeGraph.getEdgeTarget(e)+"), "+edgeValueMap.get(e)+");");
-//		}
 		//Check for violated subtours. When found, generate an inequality
 		separator.separateSubtour(edgeValueMap);
 		if(separator.hasSubtour()){
-//			System.out.println("Found subtour! :)");
-
 			Set<Integer> cutSet=separator.getCutSet();
 			SubtourInequality inequality=new SubtourInequality(this, cutSet);
 			this.addCut(inequality);
 			return true;
 		}
-
-//		else{
-//			System.out.println("Didn't find subtour :(!");
-//		}
-
 		return false;
 	}
 
+	/**
+	 * If a violated inequality has been found add it to the master problem.
+	 * @param subtourInequality
+	 */
 	private void addCut(SubtourInequality subtourInequality){
 		if(masterData.subtourInequalities.containsKey(subtourInequality))
 			throw new RuntimeException("Error, duplicate subtour cut is being generated! This cut should already exist in the master problem: "+subtourInequality);
@@ -141,7 +135,11 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Add a subtour inequality to the master problem
+	 * @param cut Inequality
+	 */
 	@Override
 	public void addCut(Inequality cut) {
 		if(!(cut instanceof SubtourInequality))
@@ -150,13 +148,21 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 		this.addCut(subtourInequality);
 	}
 
+	/**
+	 * Retuns a list of inequalities that have been generated.
+	 * @return Retuns a list of inequalities that have been generated.
+	 */
 	@Override
 	public List<Inequality> getCuts() {
 		return new ArrayList<>(masterData.subtourInequalities.keySet());
 	}
 
+	/**
+	 * Close the generator
+	 */
 	@Override
 	public void close() {} //Nothing to do here
+
 
 	/**
 	 * Simple factory class which produces integers as vertices

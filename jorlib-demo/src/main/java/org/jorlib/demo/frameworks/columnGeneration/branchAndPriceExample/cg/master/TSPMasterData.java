@@ -41,7 +41,8 @@ import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
 /**
- * 
+ * Container which stores information coming from the master problem.
+ *
  * @author Joris Kinable
  * @version 13-4-2015
  *
@@ -50,15 +51,19 @@ public class TSPMasterData extends MasterData{
 
 	//Cplex instance
 	public final IloCplex cplex;
-	//Variables
-	//public final OrderedBiMap<Matching, IloNumVar> matchingVars;
+
+	//Variables:
+
 	//Maintain a separate storage of columns for each pricing problem
 	public final EnumMap<MatchingColor, OrderedBiMap<Matching, IloNumVar>> matchingVars;
+	//For each edge in the graph, record how often it is used (aggregated over all columns)
+	protected double[][] edgeValues;
+
+
+	//Inequalities:
+
 	//Subtour inequalities
 	public final Map<SubtourInequality, IloRange> subtourInequalities;
-	
-	
-	protected double[][] edgeValues;
 	
 	public TSPMasterData(IloCplex cplex,
 							EnumMap<MatchingColor, OrderedBiMap<Matching, IloNumVar>> matchingVars){
