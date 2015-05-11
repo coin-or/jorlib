@@ -57,7 +57,7 @@ public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>,
 	//Name of this pricing problem
 	public final String name;
 	//Set of columns generated for this pricing problem
-	protected final Set<U> activeColumns;
+//	protected final Set<U> activeColumns;
 	
 	//Information coming from the master problem
 	public double[] modifiedCosts;
@@ -66,7 +66,7 @@ public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>,
 	public AbstractPricingProblem(T modelData, String name){
 		this.modelData=modelData;
 		this.name=name;
-		activeColumns=new LinkedHashSet<>();
+//		activeColumns=new LinkedHashSet<>();
 	}
 	
 	public void initPricingProblem(double[] modifiedCosts){
@@ -77,20 +77,20 @@ public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>,
 		this.dualConstant=dualConstant;
 	}
 	
-	public int getNrColumns(){
-		return activeColumns.size();
-	}
+//	public int getNrColumnsForPricingProblem(){
+//		return activeColumns.size();
+//	}
 	
-	public boolean removeColumn(U column){
-		return activeColumns.remove(column);
-	}
+//	public boolean removeColumn(U column){
+//		return activeColumns.remove(column);
+//	}
 	
-	public void addColumn(U column){
-		if(activeColumns.contains(column))
-			throw new RuntimeException("Duplicate column has been generated for pricing problem: "+this.toString()+"! This column already exists and by definition should not have negative reduced cost: "+column);
-		else
-			activeColumns.add(column);
-	}
+//	public void addColumn(U column){
+//		if(activeColumns.contains(column))
+//			throw new RuntimeException("Duplicate column has been generated for pricing problem: "+this.toString()+"! This column already exists and by definition should not have negative reduced cost: "+column);
+//		else
+//			activeColumns.add(column);
+//	}
 	
 	public String toString(){
 		return name;
@@ -104,7 +104,9 @@ public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>,
 //			if(!bd.columnIsCompatibleWithBranchingDecision(column))
 //				it.remove();
 //		}
-		this.activeColumns.clear();
+//		this.activeColumns.clear();
+
+		//Nothing to do here
 	}
 
 	@Override

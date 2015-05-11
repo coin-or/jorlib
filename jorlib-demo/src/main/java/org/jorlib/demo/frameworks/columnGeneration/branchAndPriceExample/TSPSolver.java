@@ -80,14 +80,14 @@ public class TSPSolver {
 		CutHandler<TSP, TSPMasterData> cutHandler=new CutHandler<>();
 		SubtourInequalityGenerator cutGen=new SubtourInequalityGenerator(tsp);
 		cutHandler.addCutGenerator(cutGen);
-		
-		//Create the master problem
-		Master master=new Master(tsp, cutHandler);
-		
+
 		//Create the two pricing problems
 		List<PricingProblemByColor> pricingProblems=new ArrayList<>();
 		pricingProblems.add(new PricingProblemByColor(tsp, "redPricing", MatchingColor.RED));
 		pricingProblems.add(new PricingProblemByColor(tsp, "bluePricing", MatchingColor.BLUE));
+
+		//Create the master problem
+		Master master=new Master(tsp, pricingProblems, cutHandler);
 		
 		//Define which solvers to use
 		List<Class<? extends PricingProblemSolver<TSP, Matching, PricingProblemByColor>>> solvers=Arrays.asList(ExactPricingProblemSolver.class);

@@ -33,13 +33,8 @@ import ilog.concert.IloNumVar;
 import ilog.concert.IloObjective;
 import ilog.concert.IloRange;
 import ilog.cplex.IloCplex;
-import ilog.cplex.IloCplex.UnknownObjectException;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.Matching;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.PricingProblemByColor;
@@ -62,7 +57,7 @@ import org.jorlib.io.tspLibReader.graph.Edge;
  * @version 13-4-2015
  *
  */
-public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching, TSPMasterData> {
+public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor, TSPMasterData> {
 
 	private IloObjective obj; //Objective function
 	private IloRange exactlyOneRedMatchingConstr; //Constraint
@@ -74,8 +69,8 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 	 * @param modelData
 	 * @param cutHandler
 	 */
-	public Master(TSP modelData, CutHandler<TSP, TSPMasterData> cutHandler) {
-		super(modelData, cutHandler);
+	public Master(TSP modelData, List<PricingProblemByColor> pricingProblems, CutHandler<TSP, TSPMasterData> cutHandler) {
+		super(modelData, pricingProblems, cutHandler);
 	}
 
 	/**
@@ -117,7 +112,7 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 	protected TSPMasterData buildModel() {
 		IloCplex cplex=null;
 //		OrderedBiMap<Matching, IloNumVar> matchingVars=null;
-		EnumMap<MatchingColor, OrderedBiMap<Matching, IloNumVar>> matchingVars=null;
+//		EnumMap<MatchingColor, OrderedBiMap<Matching, IloNumVar>> matchingVars=null;
 		
 		try {
 			cplex=new IloCplex(); //Create cplex instance
@@ -141,16 +136,21 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 			}
 			
 			//Define a container for the variables
-			matchingVars=new EnumMap<>(MatchingColor.class);
-			matchingVars.put(MatchingColor.RED, new OrderedBiMap<>());
-			matchingVars.put(MatchingColor.BLUE, new OrderedBiMap<>());
+//			matchingVars=new EnumMap<>(MatchingColor.class);
+//			matchingVars.put(MatchingColor.RED, new OrderedBiMap<>());
+//			matchingVars.put(MatchingColor.BLUE, new OrderedBiMap<>());
 		} catch (IloException e) {
 			e.printStackTrace();
 		}
+
+		Map<PricingProblemByColor, OrderedBiMap<Matching, IloNumVar>> varMap=new LinkedHashMap<>();
+		for(PricingProblemByColor pricingProblem : pricingProblems)
+			varMap.put(pricingProblem, new OrderedBiMap<>());
 		logger.info("Finished building master");
 		
 		//Create a new data object which will store information from the master. This object automatically be passed to the CutHandler class.
-		return new TSPMasterData(cplex, matchingVars);
+//		return new TSPMasterData(cplex, matchingVars);
+		return new TSPMasterData(cplex, Collections.unmodifiableList(pricingProblems), varMap);
 	}
 
 	/**
@@ -193,9 +193,10 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 			}
 			
 			//Create the variable and store it
-			IloNumVar var=masterData.cplex.numVar(iloColumn, 0, Double.MAX_VALUE, "z_"+matchingColor.name()+"_"+masterData.matchingVars.get(matchingColor).size());
+			IloNumVar var=masterData.cplex.numVar(iloColumn, 0, Double.MAX_VALUE, "z_"+matchingColor.name()+"_"+masterData.getNrColumnsForPricingProblem(column.associatedPricingProblem));
 			masterData.cplex.add(var);
-			masterData.matchingVars.get(matchingColor).put(column, var);
+//			masterData.matchingVars.get(matchingColor).put(column, var);
+			masterData.addColumn(column,var);
 		} catch (IloException e) {
 			e.printStackTrace();
 		}
@@ -242,9 +243,9 @@ public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching,
 	public List<Matching> getSolution() {
 		List<Matching> solution=new ArrayList<>();
 		try {
-			for(MatchingColor color : MatchingColor.values()){
-				Matching[] matchings=masterData.matchingVars.get(color).getKeysAsArray(new Matching[masterData.matchingVars.size()]);
-				IloNumVar[] vars=masterData.matchingVars.get(color).getValuesAsArray(new IloNumVar[masterData.matchingVars.size()]);
+			for(PricingProblemByColor pricingProblem : pricingProblems){
+				Matching[] matchings=masterData.getVarMapForPricingProblem(pricingProblem).getKeysAsArray(new Matching[masterData.getNrColumnsForPricingProblem(pricingProblem)]);
+				IloNumVar[] vars=masterData.getVarMapForPricingProblem(pricingProblem).getValuesAsArray(new IloNumVar[masterData.getNrColumnsForPricingProblem(pricingProblem)]);
 				double[] values=masterData.cplex.getValues(vars);
 				
 				//Iterate over each column and add it to the solution if it has a non-zero value

@@ -28,7 +28,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	protected final Configuration config=Configuration.getConfiguration();
 	
 	protected final T modelData;
-	protected AbstractMaster<T,V,U, ? extends MasterData> master;
+	protected AbstractMaster<T, U, V, ? extends MasterData> master;
 	protected final List<? extends AbstractBranchCreator<T, U, V>> branchCreators;
 	protected List<V> pricingProblems;
 	protected List<Class<? extends PricingProblemSolver<T, U, V>>> solvers;
@@ -51,7 +51,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	protected int totalNrIterations=0; // Counts how many column generation iterations have been made.
 
 	public AbstractBranchAndPrice(T modelData,
-								  AbstractMaster<T,V,U, ? extends MasterData> master,//MasterFactory masterFactory,
+								  AbstractMaster<T, U, V, ? extends MasterData> master,//MasterFactory masterFactory,
 								  List<V> pricingProblems,
 								  List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
 								  List<? extends AbstractBranchCreator<T, U, V>> branchCreators,
@@ -104,7 +104,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		notifier=new BAPNotifier();
 	}
 	public AbstractBranchAndPrice(T modelData,
-								  AbstractMaster<T,V,U, ? extends MasterData> master,
+								  AbstractMaster<T, U, V, ? extends MasterData> master,
 								  V pricingProblem,
 								  List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
 								  List<? extends AbstractBranchCreator<T, U, V>> branchCreators,
@@ -113,7 +113,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		this(modelData, master, Collections.singletonList(pricingProblem), solvers, branchCreators, upperBoundOnObjective, initialSolution);
 	}
 	public AbstractBranchAndPrice(T modelData,
-								  AbstractMaster<T,V,U, ? extends MasterData> master,
+								  AbstractMaster<T, U, V, ? extends MasterData> master,
 								  List<V> pricingProblems,
 								  List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
 								  List<? extends AbstractBranchCreator<T, U, V>> branchCreators,
@@ -122,7 +122,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		queue.peek().columns.addAll(this.generateArtificialSolution());
 	}
 	public AbstractBranchAndPrice(T modelData,
-								  AbstractMaster<T,V,U, ? extends MasterData> master,
+								  AbstractMaster<T, U, V, ? extends MasterData> master,
 								  V pricingProblem,
 								  List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
 								  List<? extends AbstractBranchCreator<T, U, V>> branchCreators,

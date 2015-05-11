@@ -35,13 +35,13 @@ import ilog.cplex.IloCplex;
 import ilog.cplex.IloCplex.UnknownObjectException;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jorlib.demo.frameworks.columnGeneration.example1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
-import org.jorlib.frameworks.columnGeneration.master.MasterData;
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
 /**
@@ -52,19 +52,18 @@ import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
  * @version 13-4-2015
  *
  */
-public class Master extends AbstractMaster<CuttingStock, PricingProblem, CuttingPattern,MasterData> {
+public class Master extends AbstractMaster<CuttingStock, CuttingPattern, PricingProblem, CuttingStockMasterData> {
 
-	IloCplex master; //Cplex instance
+	IloCplex cplex; //Cplex instance
 	private IloObjective obj; //Objective function
 	private IloRange[] satisfyDemandConstr; //Constraint
-	public OrderedBiMap<CuttingPattern, IloNumVar> cuttingPatternVars; //Variables
 	
-	public Master(CuttingStock modelData) {
-		super(modelData);
+	public Master(CuttingStock modelData, PricingProblem pricingProblem) {
+		super(modelData, pricingProblem);
 	}
 
 	/**
-	 * Solve the master problem and return whether it was solved to optimality
+	 * Solve the cplex problem and return whether it was solved to optimality
 	 */
 	@Override
 	protected boolean solveMasterProblem(long timeLimit) throws TimeLimitExceededException {
@@ -72,20 +71,20 @@ public class Master extends AbstractMaster<CuttingStock, PricingProblem, Cutting
 			//Set time limit
 			double timeRemaining=Math.max(1,(timeLimit-System.currentTimeMillis())/1000.0);
 			logger.debug("Setting time limit to: {}",timeRemaining);
-			master.setParam(IloCplex.DoubleParam.TiLim, timeRemaining); //set time limit in seconds
+			cplex.setParam(IloCplex.DoubleParam.TiLim, timeRemaining); //set time limit in seconds
 			//Potentially export the model
-			if(config.EXPORT_MODEL) master.exportModel(config.EXPORT_MASTER_DIR+"master_"+this.getIterationCount()+".lp");
+			if(config.EXPORT_MODEL) cplex.exportModel(config.EXPORT_MASTER_DIR+"master_"+this.getIterationCount()+".lp");
 			
 			//Solve the model
-			if(!master.solve() || master.getStatus()!=IloCplex.Status.Optimal){
-				if(master.getCplexStatus()==IloCplex.CplexStatus.AbortTimeLim) //Aborted due to time limit
+			if(!cplex.solve() || cplex.getStatus()!=IloCplex.Status.Optimal){
+				if(cplex.getCplexStatus()==IloCplex.CplexStatus.AbortTimeLim) //Aborted due to time limit
 					throw new TimeLimitExceededException();
 				else
-					throw new RuntimeException("Master problem solve failed! Status: "+master.getStatus());
+					throw new RuntimeException("Master problem solve failed! Status: "+ cplex.getStatus());
 			}else{
-				masterData.objectiveValue=master.getObjValue();
+				masterData.objectiveValue= cplex.getObjValue();
 			}
-			logger.debug("Finished solving master");
+			logger.debug("Finished solving cplex");
 		} catch (IloException e) {
 			e.printStackTrace();
 		}
@@ -99,7 +98,7 @@ public class Master extends AbstractMaster<CuttingStock, PricingProblem, Cutting
 	@Override
 	public void initializePricingProblem(PricingProblem pricingProblem){
 		try {
-			double[] duals=master.getDuals(satisfyDemandConstr);
+			double[] duals= cplex.getDuals(satisfyDemandConstr);
 			pricingProblem.initPricingProblem(duals);
 		} catch (UnknownObjectException e) {
 			e.printStackTrace();
@@ -109,52 +108,57 @@ public class Master extends AbstractMaster<CuttingStock, PricingProblem, Cutting
 	}
 
 	/**
-	 * Build the master problem
+	 * Build the cplex problem
 	 */
 	@Override
-	protected MasterData buildModel() {
+	protected CuttingStockMasterData buildModel() {
 		try {
-			master=new IloCplex(); //Create cplex instance
-			master.setOut(null); //Disable cplex output
-			master.setParam(IloCplex.IntParam.Threads,config.MAXTHREADS); //Set number of threads that may be used by the master
+			cplex =new IloCplex(); //Create cplex instance
+			cplex.setOut(null); //Disable cplex output
+			cplex.setParam(IloCplex.IntParam.Threads, config.MAXTHREADS); //Set number of threads that may be used by the cplex
 			
 			//Define objective
-			obj=master.addMinimize();
+			obj= cplex.addMinimize();
 			
 			//Define constraints
 			satisfyDemandConstr=new IloRange[modelData.nrFinals];
 			for(int i=0; i<modelData.nrFinals; i++)
-				satisfyDemandConstr[i]=master.addRange(modelData.demandForFinals[i], modelData.demandForFinals[i], "satisfyDemandFinal_"+i);
+				satisfyDemandConstr[i]= cplex.addRange(modelData.demandForFinals[i], modelData.demandForFinals[i], "satisfyDemandFinal_"+i);
 			
 			//Define a container for the variables
-			cuttingPatternVars=new OrderedBiMap<>();
+//			cuttingPatternVars=new OrderedBiMap<>();
 		} catch (IloException e) {
 			e.printStackTrace();
 		}
-		logger.info("Finished building master");
-		
+		logger.info("Finished building cplex");
+
+		//Define a container for the variables
+		Map<PricingProblem,OrderedBiMap<CuttingPattern, IloNumVar>> varMap=new LinkedHashMap<>();
+		varMap.put(pricingProblems.get(0),new OrderedBiMap<>());
+
 		//Return a new data object which will hold data from the Master Problem. Since we are not working with cuts in this example,
 		//we can simply return the default.
-		return new MasterData();
+		return new CuttingStockMasterData(varMap);
 	}
 
 	/**
-	 * Function which adds a new column to the master problem
+	 * Function which adds a new column to the cplex problem
 	 */
 	@Override
 	public void addColumn(CuttingPattern column) {
 		try {
 			//Register column with objective
-			IloColumn iloColumn=master.column(obj,1);
+			IloColumn iloColumn= cplex.column(obj,1);
 		
 			//Register column with demand constraint
 			for(int i=0; i<modelData.nrFinals; i++)
-				iloColumn=iloColumn.and(master.column(satisfyDemandConstr[i],column.yieldVector[i]));
+				iloColumn=iloColumn.and(cplex.column(satisfyDemandConstr[i], column.yieldVector[i]));
 			
 			//Create the variable and store it
-			IloNumVar var=master.numVar(iloColumn, 0, Double.MAX_VALUE, "z_"+","+column.associatedPricingProblem.getNrColumns());
-			master.add(var);
-			cuttingPatternVars.put(column, var);
+			IloNumVar var= cplex.numVar(iloColumn, 0, Double.MAX_VALUE, "z_"+","+masterData.getNrColumnsForPricingProblem(column.associatedPricingProblem));
+			cplex.add(var);
+			masterData.addColumn(column, var);
+//			cuttingPatternVars.put(column, var);
 		} catch (IloException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -162,15 +166,15 @@ public class Master extends AbstractMaster<CuttingStock, PricingProblem, Cutting
 	}
 
 	/**
-	 * Return the solution, i.e. columns with non-zero values in the master problem
+	 * Return the solution, i.e. columns with non-zero values in the cplex problem
 	 */
 	@Override
 	public List<CuttingPattern> getSolution() {
 		List<CuttingPattern> solution=new ArrayList<>();
 		try {
-			CuttingPattern[] cuttingPatterns=cuttingPatternVars.getKeysAsArray(new CuttingPattern[cuttingPatternVars.size()]);
-			IloNumVar[] vars=cuttingPatternVars.getValuesAsArray(new IloNumVar[cuttingPatternVars.size()]);
-			double[] values=master.getValues(vars);
+			CuttingPattern[] cuttingPatterns=masterData.getVarMap().getKeysAsArray(new CuttingPattern[masterData.getNrColumns()]);
+			IloNumVar[] vars=masterData.getVarMap().getValuesAsArray(new IloNumVar[masterData.getNrColumns()]);
+			double[] values= cplex.getValues(vars);
 			
 			//Iterate over each column and add it to the solution if it has a non-zero value
 			for(int i=0; i<cuttingPatterns.length; i++){
@@ -188,11 +192,11 @@ public class Master extends AbstractMaster<CuttingStock, PricingProblem, Cutting
 	}
 
 	/**
-	 * Close the master problem
+	 * Close the cplex problem
 	 */
 	@Override
 	public void close() {
-		master.end();
+		cplex.end();
 	}
 
 	/**
@@ -211,7 +215,7 @@ public class Master extends AbstractMaster<CuttingStock, PricingProblem, Cutting
 	@Override
 	public void exportModel(String fileName){
 		try {
-			master.exportModel(config.EXPORT_MASTER_DIR+fileName);
+			cplex.exportModel(config.EXPORT_MASTER_DIR + fileName);
 		} catch (IloException e) {
 			e.printStackTrace();
 		}

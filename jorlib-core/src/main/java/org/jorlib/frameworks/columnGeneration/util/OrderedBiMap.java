@@ -26,12 +26,7 @@
  */
 package org.jorlib.frameworks.columnGeneration.util;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -163,5 +158,5 @@ public class OrderedBiMap<K,V> extends AbstractMap<K, V>{
 	public BiMap<V,K> inverse(){
 		return biMap.inverse();
 	}
-	
+
 }

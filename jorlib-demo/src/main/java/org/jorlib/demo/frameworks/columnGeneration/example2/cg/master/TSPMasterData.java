@@ -46,7 +46,7 @@ import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
  * @version 13-4-2015
  *
  */
-public class TSPMasterData extends MasterData{
+public class TSPMasterData extends MasterData {
 
 	//Cplex instance
 	public final IloCplex cplex;

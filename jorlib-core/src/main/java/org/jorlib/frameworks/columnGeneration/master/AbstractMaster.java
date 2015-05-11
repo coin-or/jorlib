@@ -27,7 +27,9 @@
 package org.jorlib.frameworks.columnGeneration.master;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecisionListener;
@@ -50,28 +52,38 @@ import org.slf4j.LoggerFactory;
  * @param <U>
  * @param <W>
  */
-public abstract class AbstractMaster<T, V extends AbstractPricingProblem<T,U,V>, U extends AbstractColumn<T,U,V>, W extends MasterData> implements BranchingDecisionListener{
+public abstract class AbstractMaster<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>, W extends MasterData> implements BranchingDecisionListener{
 	protected final Logger logger = LoggerFactory.getLogger(AbstractMaster.class);
 	protected final Configuration config=Configuration.getConfiguration();
 
 	//Data object describing the problem at hand
 	protected final T modelData;
+	//Define the pricing problems
+	protected final List<V> pricingProblems;
 	//Data object containing information for the master problem
 	protected W masterData;
 	//Handle to a cutHandler which performs separation
 	protected CutHandler<T,W> cutHandler;
 	
-	public AbstractMaster(T modelData){
+	public AbstractMaster(T modelData, List<V> pricingProblems){
 		this.modelData=modelData;
+		this.pricingProblems=pricingProblems;
 		masterData=this.buildModel();
 		cutHandler=new CutHandler<T,W>();
 		cutHandler.setMasterData(masterData);
 	}
-	public AbstractMaster(T modelData, CutHandler<T,W> cutHandler){
+	public AbstractMaster(T modelData, V pricingProblems){
+		this(modelData, Collections.singletonList(pricingProblems));
+	}
+	public AbstractMaster(T modelData, List<V> pricingProblems, CutHandler<T,W> cutHandler){
 		this.modelData=modelData;
+		this.pricingProblems=pricingProblems;
 		this.cutHandler=cutHandler;
 		masterData=this.buildModel();
 		cutHandler.setMasterData(masterData);
+	}
+	public AbstractMaster(T modelData, V pricingProblems, CutHandler<T,W> cutHandler){
+		this(modelData, Collections.singletonList(pricingProblems), cutHandler);
 	}
 
 	/**
@@ -178,9 +190,14 @@ public abstract class AbstractMaster<T, V extends AbstractPricingProblem<T,U,V>,
 			this.addColumn(column);
 		}
 	}	
-	
+
+	public Set<V> getColumns(V pricingProblem){
+		return masterData.getColumnsForPricingProblem(pricingProblem);
+	}
+
 	/**
-	 * After the master problem has been solved, a solution has to be returned, consisting of a set of columns selected by the master problem
+	 * After the master problem has been solved, a solution has to be returned, consisting of a set of columns selected by the master problem, i.e the columns with a
+	 * non-zero solution.
 	 * @return solution (columns)
 	 */
 	public abstract List<U> getSolution();

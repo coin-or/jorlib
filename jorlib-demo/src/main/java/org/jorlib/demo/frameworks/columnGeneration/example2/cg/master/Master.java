@@ -28,7 +28,6 @@ package org.jorlib.demo.frameworks.columnGeneration.example2.cg.master;
 
 import ilog.concert.IloColumn;
 import ilog.concert.IloException;
-import ilog.concert.IloIntVar;
 import ilog.concert.IloNumVar;
 import ilog.concert.IloObjective;
 import ilog.concert.IloRange;
@@ -49,7 +48,6 @@ import org.jorlib.demo.frameworks.columnGeneration.example2.model.Edge;
 import org.jorlib.demo.frameworks.columnGeneration.example2.model.TSP;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
-import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
@@ -59,7 +57,7 @@ import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
  * @version 13-4-2015
  *
  */
-public class Master extends AbstractMaster<TSP, PricingProblemByColor, Matching, TSPMasterData> {
+public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor, TSPMasterData> {
 
 	private IloObjective obj; //Objective function
 	private IloRange exactlyOneRedMatchingConstr; //Constraint

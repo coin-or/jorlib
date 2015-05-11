@@ -39,6 +39,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.jorlib.alg.tsp.separation.SubtourSeparator;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.Matching;
+import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.PricingProblemByColor;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.master.TSPMasterData;
 
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model.MatchingColor;
@@ -115,8 +116,8 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 		try {
 			IloLinearNumExpr expr=masterData.cplex.linearNumExpr();
 			//Register the columns with this constraint.
-			for(MatchingColor color : MatchingColor.values()){
-				for(Matching matching: masterData.matchingVars.get(color).keyList()){
+			for(PricingProblemByColor pricingProblem : masterData.pricingProblems){
+				for(Matching matching: masterData.getColumnsForPricingProblemAsList(pricingProblem)){
 					//Test how many edges in the matching enter/leave the cutSet (edges with exactly one endpoint in the cutSet)
 					int crossings=0;
 					for(Edge edge: matching.edges){
@@ -124,7 +125,8 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 							crossings++;
 					}
 					if(crossings>0){
-						IloNumVar var=masterData.matchingVars.get(color).get(matching);
+//						IloNumVar var=masterData.matchingVars.get(color).get(matching);
+						IloNumVar var=masterData.getVar(pricingProblem,matching);
 						expr.addTerm(crossings, var);
 					}
 				}

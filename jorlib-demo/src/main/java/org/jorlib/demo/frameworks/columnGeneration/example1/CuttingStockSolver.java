@@ -24,13 +24,17 @@
  * -------
  *
  */
-package org.jorlib.demo.frameworks.columnGeneration.example1.cg;
+package org.jorlib.demo.frameworks.columnGeneration.example1;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import org.jorlib.demo.frameworks.columnGeneration.example1.cg.CuttingPattern;
+import org.jorlib.demo.frameworks.columnGeneration.example1.cg.ExactPricingProblemSolver;
+import org.jorlib.demo.frameworks.columnGeneration.example1.cg.Master;
+import org.jorlib.demo.frameworks.columnGeneration.example1.cg.PricingProblem;
 import org.jorlib.demo.frameworks.columnGeneration.example1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
@@ -48,18 +52,24 @@ public class CuttingStockSolver {
 	
 	public CuttingStockSolver(CuttingStock modelData){
 		this.modelData=modelData;
-		//Create the master problem
-		Master master=new Master(modelData);
+
 		//Create the pricing problem
 		PricingProblem pricingProblem=new PricingProblem(modelData, "cuttingStockPricing");
+
+		//Create the master problem
+		Master master=new Master(modelData, pricingProblem);
+
 		//Define which solvers to use
 		List<Class<? extends PricingProblemSolver<CuttingStock, CuttingPattern, PricingProblem>>> solvers=Arrays.asList(ExactPricingProblemSolver.class);
-		//Define an upper bound (stronger is better). In this case we simply sum the demands, i.e. cut each final from its own raw (Rather poor initial solution). 
+
+		//Define an upper bound (stronger is better). In this case we simply sum the demands, i.e. cut each final from its own raw (Rather poor initial solution).
 		int upperBound=IntStream.of(modelData.demandForFinals).sum();
+
 		//Create a set of initial columns.
 		List<CuttingPattern> initSolution=this.getInitialSolution(pricingProblem);
+
 		//Create a column generation instance
-		ColGen<CuttingStock, CuttingPattern, PricingProblem> cg=new ColGen<CuttingStock, CuttingPattern, PricingProblem>(modelData, master, pricingProblem, solvers, initSolution, upperBound);
+		ColGen<CuttingStock, CuttingPattern, PricingProblem> cg=new ColGen<>(modelData, master, pricingProblem, solvers, initSolution, upperBound);
 		
 		//Solve the problem through column generation
 		try {

@@ -27,7 +27,6 @@
 package org.jorlib.frameworks.columnGeneration.colgenMain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,7 +64,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V
 	protected final T dataModel;
 	
 	//Define the master problem
-	protected final AbstractMaster<T, V, U, ? extends MasterData> master;
+	protected final AbstractMaster<T, U, V, ? extends MasterData> master;
 	//Define the pricing problems
 	protected final List<V> pricingProblems;
 	//Maintain the classes which can be used to solve the pricing problems
@@ -102,7 +101,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V
 	 * @param upperBound upper bound on solution. Column generation process is terminated if lower bound exceeds upper bound
 	 */
 	public ColGen(T dataModel, 
-					AbstractMaster<T,V,U, ? extends MasterData> master, 
+					AbstractMaster<T, U, V, ? extends MasterData> master,
 					List<V> pricingProblems,
 					List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
 					List<U> initSolution,
@@ -136,7 +135,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V
 	 * @param upperBound upper bound on solution. Column generation process is terminated if lower bound exceeds upper bound
 	 */
 	public ColGen(T dataModel, 
-			AbstractMaster<T,V,U,? extends MasterData> master, 
+			AbstractMaster<T, U, V, ? extends MasterData> master,
 			V pricingProblem,
 			List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
 			List<U> initSolution,
@@ -146,7 +145,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V
 	
 	
 	public ColGen(T dataModel, 
-			AbstractMaster<T,V,U, ? extends MasterData> master, 
+			AbstractMaster<T, U, V, ? extends MasterData> master,
 			List<V> pricingProblems,
 			List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
 			PricingProblemManager<T,U, V> pricingProblemManager,
@@ -249,7 +248,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V
 			if(foundNewColumns){
 				for(U column : newColumns){
 					master.addColumn(column);
-					column.associatedPricingProblem.addColumn(column);
+//					column.associatedPricingProblem.addColumn(column);
 					
 				}
 			}
