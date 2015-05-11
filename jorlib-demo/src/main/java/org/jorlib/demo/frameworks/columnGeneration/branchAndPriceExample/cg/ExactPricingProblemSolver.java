@@ -120,7 +120,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 	 */
 	@Override
 	protected List<Matching> generateNewColumns()throws TimeLimitExceededException {
-		List<Matching> newPatterns=new ArrayList<Matching>();
+		List<Matching> newPatterns=new ArrayList<>();
 		try {
 			//Compute how much time we may take to solve the pricing problem
 			double timeRemaining=Math.max(1,(timeLimit-System.currentTimeMillis())/1000.0);

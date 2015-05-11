@@ -37,9 +37,11 @@ import java.util.EventObject;
  * @version 5-5-2015
  */
 public class NodeIsFractionalEvent extends EventObject{
-    //public final int nodeID;
+    /** Node which is fractional **/
     public final BAPNode node;
+    /** Lower bound of this node **/
     public final double nodeBound;
+    /** Objective value of this node **/
     public final double nodeValue;
 
     /**

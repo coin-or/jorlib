@@ -50,7 +50,7 @@ import org.jorlib.frameworks.columnGeneration.util.Configuration;
  * @version 13-4-2015
  *
  */
-public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
+public class PricingProblemManager<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T>> {
 	
 	private static final Configuration config=Configuration.getConfiguration();
 	

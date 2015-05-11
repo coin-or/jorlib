@@ -155,12 +155,11 @@ public class Master extends AbstractMaster<CuttingStock, CuttingPattern, Pricing
 				iloColumn=iloColumn.and(cplex.column(satisfyDemandConstr[i], column.yieldVector[i]));
 			
 			//Create the variable and store it
-			IloNumVar var= cplex.numVar(iloColumn, 0, Double.MAX_VALUE, "z_"+","+masterData.getNrColumnsForPricingProblem(column.associatedPricingProblem));
+			IloNumVar var= cplex.numVar(iloColumn, 0, Double.MAX_VALUE, "z_"+","+masterData.getNrColumns());
 			cplex.add(var);
 			masterData.addColumn(column, var);
 //			cuttingPatternVars.put(column, var);
 		} catch (IloException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

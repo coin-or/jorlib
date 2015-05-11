@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * @param <U>
  * @param <W>
  */
-public abstract class AbstractMaster<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>, W extends MasterData> implements BranchingDecisionListener{
+public abstract class AbstractMaster<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T>, W extends MasterData> implements BranchingDecisionListener{
 	protected final Logger logger = LoggerFactory.getLogger(AbstractMaster.class);
 	protected final Configuration config=Configuration.getConfiguration();
 

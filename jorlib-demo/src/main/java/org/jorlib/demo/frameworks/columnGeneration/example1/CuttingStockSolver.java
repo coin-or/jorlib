@@ -65,7 +65,7 @@ public class CuttingStockSolver {
 		//Define an upper bound (stronger is better). In this case we simply sum the demands, i.e. cut each final from its own raw (Rather poor initial solution).
 		int upperBound=IntStream.of(modelData.demandForFinals).sum();
 
-		//Create a set of initial columns.
+		//OPTIONAL: Create a set of initial columns.
 		List<CuttingPattern> initSolution=this.getInitialSolution(pricingProblem);
 
 		//Create a column generation instance

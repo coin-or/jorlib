@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * @author Joris Kinable
  * @version 13-4-2015
  */
-public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
+public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T>> {
 	
 	final Logger logger = LoggerFactory.getLogger(ColGen.class);
 	static final Configuration config=Configuration.getConfiguration();
@@ -69,8 +69,6 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V
 	protected final List<V> pricingProblems;
 	//Maintain the classes which can be used to solve the pricing problems
 	protected final List<Class<? extends PricingProblemSolver<T, U, V>>> solvers;
-	//For each solver, we maintain an instance for each pricing problem. This gives a |solvers|x|pricingProblems| array
-//	protected final List<PricingProblemBundle<T, U, V>> pricingProblemBunddles;
 	//Manages parallel execution of pricing problems
 	protected final PricingProblemManager<T,U, V> pricingProblemManager;
 	
@@ -160,22 +158,6 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V
 		this.upperBound=upperBound;
 	}
 	
-	/*public <U extends Column> ColGen(T dataModel, CutHandler cutHandler, PricingSolvers[] pricingAlgorithms, EnumMap<PricingSolvers, List<PricingProblem>> pricingProblems, PricingProblemManager pricingProblemManager, List<U> initSolution, List<Inequality> initialCuts, long timeLimit, int upperBound) throws TimeLimitExceededException{
-		this.dataModel=dataModel;
-		this.cutHandler=cutHandler;
-		master=new MasterImplementation(geoxam, cutHandler);
-		master.addCuts(initialCuts);
-		if(initSolution != null){
-			master.setInitialSolution(initSolution);
-			this.upperBound=upperBound;
-		}
-		this.pricingAlgorithms=pricingAlgorithms;
-		this.pricingProblems=pricingProblems;
-		this.pricingProblemManager=pricingProblemManager;
-		
-		this.solve(timeLimit);
-	}*/
-	
 	/**
 	 * Solve the Column Generation problem
 	 * @param timeLimit Future point in time (ms) by which the procedure should be finished. Should be defined as: System.currentTimeMilis()+<desired runtime>
@@ -248,8 +230,6 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V
 			if(foundNewColumns){
 				for(U column : newColumns){
 					master.addColumn(column);
-//					column.associatedPricingProblem.addColumn(column);
-					
 				}
 			}
 			
@@ -358,13 +338,6 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V
 	private boolean thisNodeCanBePruned(){
 		return Math.ceil(lowerBound) > upperBound;
 	}
-	
-	/**
-	 * Destroy the master problem
-	 */
-//	public void closeMaster(){
-//		master.close();
-//	}
 	
 	/**
 	 * Destroy both the master problem and pricing problems

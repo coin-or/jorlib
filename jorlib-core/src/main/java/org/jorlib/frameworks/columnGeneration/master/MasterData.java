@@ -41,7 +41,7 @@ import java.util.*;
  * @version 13-4-2015
  *
  */
-public class MasterData<U extends AbstractColumn<?,U,V>, V extends AbstractPricingProblem<?,U,V>, W> {
+public class MasterData<U extends AbstractColumn<?,U,V>, V extends AbstractPricingProblem<?>, W> {
 
 	//Objective value of the current master problem
 	public double objectiveValue;

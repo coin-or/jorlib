@@ -38,8 +38,11 @@ import java.util.EventObject;
  */
 public class ProcessingNextNodeEvent extends EventObject{
 
+    /** Node which will be processed **/
     public final BAPNode node;
+    /** Number of nodes currently waiting in the queue **/
     public final int nodesInQueue;
+    /** Best integer solution obtained so far **/
     public final int globalUB;
 
     /**

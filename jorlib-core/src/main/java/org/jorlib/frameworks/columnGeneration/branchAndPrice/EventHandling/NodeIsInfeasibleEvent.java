@@ -38,6 +38,7 @@ import java.util.EventObject;
  */
 public class NodeIsInfeasibleEvent extends EventObject{
 
+    /** Node which is infeasible **/
     public final BAPNode node;
 
     /**

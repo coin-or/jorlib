@@ -38,12 +38,19 @@ import java.util.EventObject;
  */
 public class FinishCGEvent extends EventObject{
 
-    public final BAPNode node; //ID of the node which has been solved
-    public final double nodeBound; //Lower bound on the node
-    public final double nodeValue; //Objective value of the node
+    /** Node which has been solved **/
+    public final BAPNode node;
+    /** Lower bound on the node after it is solved **/
+    public final double nodeBound;
+    /** Objective value of the node **/
+    public final double nodeValue;
+    /** Number of column generation iterations performed to solve this node **/
     public final int numberOfCGIterations;
+    /** Total time spent on solving master problems for this node **/
     public final long masterSolveTime;
+    /** Total time spent on solving pricing problems for this node **/
     public final long pricingSolveTime;
+    /** Total number of columns generated for this node **/
     public final int nrGeneratedColumns;
 
     /**

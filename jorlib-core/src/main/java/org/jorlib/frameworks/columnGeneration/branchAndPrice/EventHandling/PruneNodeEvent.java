@@ -38,8 +38,11 @@ import java.util.EventObject;
  */
 public class PruneNodeEvent extends EventObject{
 
+    /** Node which is being pruned **/
     public final BAPNode node;
+    /** Bound on this node **/
     public final double nodeBound;
+    /** Best integer solution discovered so far **/
     public final int bestIntegerSolution;
 
     /**

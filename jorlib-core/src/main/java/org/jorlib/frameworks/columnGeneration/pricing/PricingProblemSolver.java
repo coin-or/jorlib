@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * @version 13-4-2015
  *
  */
-public abstract class PricingProblemSolver<T,U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> implements Callable<Void>, BranchingDecisionListener{
+public abstract class PricingProblemSolver<T,U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T>> implements Callable<Void>, BranchingDecisionListener{
 	
 	protected final Logger logger = LoggerFactory.getLogger(PricingProblemSolver.class);
 	protected final Configuration config=Configuration.getConfiguration();

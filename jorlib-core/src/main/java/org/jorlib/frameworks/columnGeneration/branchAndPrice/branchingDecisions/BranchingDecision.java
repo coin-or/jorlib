@@ -1,16 +1,42 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * BranchingDecision.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions;
 
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 
+/**
+ * Interface defining a BranchingDecision.
+ *
+ * @author Joris Kinable
+ * @version 5-5-2015
+ */
 public interface BranchingDecision<T,U extends AbstractColumn<T,U,? extends AbstractPricingProblem>> {
-
-	//Execute the branching decision.
-//	public void executeDecision(); DEPRECATED
-	
-	//Revert the branching decision.
-//	public void rewindDecision(); DEPRECATED
 
 	/**
 	 * Determine whether a particular column from the parent node is feasible for the child node resulting from the Branching Decision

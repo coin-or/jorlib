@@ -35,6 +35,8 @@ import java.util.EventObject;
  * @version 5-5-2015
  */
 public class TimeOutEvent extends EventObject{
+
+    /** Node which was being processed when TimeOutEvent occurred **/
     public final int  nodeID;
 
     /**

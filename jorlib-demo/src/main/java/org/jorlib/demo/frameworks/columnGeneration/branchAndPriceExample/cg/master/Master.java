@@ -74,6 +74,48 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 	}
 
 	/**
+	 * Builds the master model
+	 * @return Returns a MasterData object which is a data container for information coming from the master problem
+	 */
+	@Override
+	protected TSPMasterData buildModel() {
+		IloCplex cplex=null;
+
+		try {
+			cplex=new IloCplex(); //Create cplex instance
+			cplex.setOut(null); //Disable cplex output
+			cplex.setParam(IloCplex.IntParam.Threads,config.MAXTHREADS); //Set number of threads that may be used by the master
+
+			//Define objective
+			obj=cplex.addMinimize();
+
+			//Define constraints
+			exactlyOneRedMatchingConstr=cplex.addRange(1, 1, "exactlyOneRed"); //Select exactly one red matching
+			exactlyOneBlueMatchingConstr=cplex.addRange(1, 1, "exactlyOneBlue"); //Select exactly one blue matching
+
+			edgeOnlyUsedOnceConstr=new LinkedHashMap<Edge, IloRange>(); //Each edge may only be used once
+			for(int i=0; i<modelData.N-1; i++){
+				for(int j=i+1; j<modelData.N; j++){
+					Edge edge=new Edge(i, j);
+					IloRange constr=cplex.addRange(0, 1, "edgeOnlyUsedOnce_"+i+"_"+j);
+					edgeOnlyUsedOnceConstr.put(edge,  constr);
+				}
+			}
+
+		} catch (IloException e) {
+			e.printStackTrace();
+		}
+
+		Map<PricingProblemByColor, OrderedBiMap<Matching, IloNumVar>> varMap=new LinkedHashMap<>();
+		for(PricingProblemByColor pricingProblem : pricingProblems)
+			varMap.put(pricingProblem, new OrderedBiMap<>());
+		logger.info("Finished building master");
+
+		//Create a new data object which will store information from the master. This object automatically be passed to the CutHandler class.
+		return new TSPMasterData(cplex, pricingProblems, varMap);
+	}
+
+	/**
 	 * Solve the master problem
 	 * @param timeLimit
 	 * @return true if the master problem has been solved
@@ -102,55 +144,6 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 			e.printStackTrace();
 		}
 		return true;
-	}
-
-	/**
-	 * Builds the master model
-	 * @return Returns a MasterData object which is a data container for information coming from the master problem
-	 */
-	@Override
-	protected TSPMasterData buildModel() {
-		IloCplex cplex=null;
-//		OrderedBiMap<Matching, IloNumVar> matchingVars=null;
-//		EnumMap<MatchingColor, OrderedBiMap<Matching, IloNumVar>> matchingVars=null;
-		
-		try {
-			cplex=new IloCplex(); //Create cplex instance
-			cplex.setOut(null); //Disable cplex output
-			cplex.setParam(IloCplex.IntParam.Threads,config.MAXTHREADS); //Set number of threads that may be used by the master
-			
-			//Define objective
-			obj=cplex.addMinimize();
-			
-			//Define constraints
-			exactlyOneRedMatchingConstr=cplex.addRange(1, 1, "exactlyOneRed"); //Select exactly one red matching
-			exactlyOneBlueMatchingConstr=cplex.addRange(1, 1, "exactlyOneBlue"); //Select exactly one blue matching
-			
-			edgeOnlyUsedOnceConstr=new LinkedHashMap<Edge, IloRange>(); //Each edge may only be used once
-			for(int i=0; i<modelData.N-1; i++){
-				for(int j=i+1; j<modelData.N; j++){
-					Edge edge=new Edge(i, j);
-					IloRange constr=cplex.addRange(0, 1, "edgeOnlyUsedOnce_"+i+"_"+j);
-					edgeOnlyUsedOnceConstr.put(edge,  constr);
-				}
-			}
-			
-			//Define a container for the variables
-//			matchingVars=new EnumMap<>(MatchingColor.class);
-//			matchingVars.put(MatchingColor.RED, new OrderedBiMap<>());
-//			matchingVars.put(MatchingColor.BLUE, new OrderedBiMap<>());
-		} catch (IloException e) {
-			e.printStackTrace();
-		}
-
-		Map<PricingProblemByColor, OrderedBiMap<Matching, IloNumVar>> varMap=new LinkedHashMap<>();
-		for(PricingProblemByColor pricingProblem : pricingProblems)
-			varMap.put(pricingProblem, new OrderedBiMap<>());
-		logger.info("Finished building master");
-		
-		//Create a new data object which will store information from the master. This object automatically be passed to the CutHandler class.
-//		return new TSPMasterData(cplex, matchingVars);
-		return new TSPMasterData(cplex, Collections.unmodifiableList(pricingProblems), varMap);
 	}
 
 	/**
@@ -195,7 +188,6 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 			//Create the variable and store it
 			IloNumVar var=masterData.cplex.numVar(iloColumn, 0, Double.MAX_VALUE, "z_"+matchingColor.name()+"_"+masterData.getNrColumnsForPricingProblem(column.associatedPricingProblem));
 			masterData.cplex.add(var);
-//			masterData.matchingVars.get(matchingColor).put(column, var);
 			masterData.addColumn(column,var);
 		} catch (IloException e) {
 			e.printStackTrace();
@@ -306,7 +298,7 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 	public void branchingDecisionPerformed(BranchingDecision bd) {
 		//For simplicity, we simply destroy the master problem and rebuild it. Of course, something more sophisticated may be used which retains the master problem.
 		this.close(); //Close the old cplex model
-		masterData=this.buildModel(); //Create a new model
+		masterData=this.buildModel(); //Create a new model without any columns
 		cutHandler.setMasterData(masterData); //Inform the cutHandler about the new master model
 	}
 

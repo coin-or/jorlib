@@ -9,7 +9,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 
-public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T,U,V>,V extends AbstractPricingProblem<T,U,V>> {
+public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T,U,V>,V extends AbstractPricingProblem<T>> {
 
 	protected final T modelData;
 	protected final List<V> pricingProblems;

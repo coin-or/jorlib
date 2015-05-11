@@ -36,6 +36,7 @@ import java.util.EventObject;
  */
 public class StartBAPEvent extends EventObject{
 
+    /** Name of the instance being solved **/
     public final String instanceName; //Instance being solved
 
     /**

@@ -38,6 +38,6 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
  * @param <U> Columns
  * @param <V> PricingProblem
  */
-public interface PricingProblemSolverFactory<T,U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
+public interface PricingProblemSolverFactory<T,U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T>> {
 	public PricingProblemSolver<T, U, V> createSolverInstance(V pricingProblem);
 }

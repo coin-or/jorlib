@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * @version 13-4-2015
  *
  */
-public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> implements BranchingDecisionListener{
+public abstract class AbstractPricingProblem<T> implements BranchingDecisionListener{
 
 	protected final Logger logger = LoggerFactory.getLogger(AbstractPricingProblem.class);
 	
@@ -56,9 +56,7 @@ public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>,
 	
 	//Name of this pricing problem
 	public final String name;
-	//Set of columns generated for this pricing problem
-//	protected final Set<U> activeColumns;
-	
+
 	//Information coming from the master problem
 	public double[] modifiedCosts;
 	public double dualConstant;
@@ -66,7 +64,6 @@ public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>,
 	public AbstractPricingProblem(T modelData, String name){
 		this.modelData=modelData;
 		this.name=name;
-//		activeColumns=new LinkedHashSet<>();
 	}
 	
 	public void initPricingProblem(double[] modifiedCosts){
@@ -77,35 +74,12 @@ public abstract class AbstractPricingProblem<T, U extends AbstractColumn<T,U,V>,
 		this.dualConstant=dualConstant;
 	}
 	
-//	public int getNrColumnsForPricingProblem(){
-//		return activeColumns.size();
-//	}
-	
-//	public boolean removeColumn(U column){
-//		return activeColumns.remove(column);
-//	}
-	
-//	public void addColumn(U column){
-//		if(activeColumns.contains(column))
-//			throw new RuntimeException("Duplicate column has been generated for pricing problem: "+this.toString()+"! This column already exists and by definition should not have negative reduced cost: "+column);
-//		else
-//			activeColumns.add(column);
-//	}
-	
 	public String toString(){
 		return name;
 	}
 
 	@Override
 	public void branchingDecisionPerformed(BranchingDecision bd) {
-//		Iterator<U> it=this.activeColumns.iterator();
-//		while(it.hasNext()){
-//			U column=it.next();
-//			if(!bd.columnIsCompatibleWithBranchingDecision(column))
-//				it.remove();
-//		}
-//		this.activeColumns.clear();
-
 		//Nothing to do here
 	}
 

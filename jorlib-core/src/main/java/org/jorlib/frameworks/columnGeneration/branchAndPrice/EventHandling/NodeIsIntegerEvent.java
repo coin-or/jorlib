@@ -37,8 +37,12 @@ import java.util.EventObject;
  * @version 5-5-2015
  */
 public class NodeIsIntegerEvent extends EventObject{
+
+    /** Node which is integer **/
     public final BAPNode node;
+    /** Lower bound on this node **/
     public final double nodeBound;
+    /** Objective value of this node **/
     public final int nodeValue;
 
     /**

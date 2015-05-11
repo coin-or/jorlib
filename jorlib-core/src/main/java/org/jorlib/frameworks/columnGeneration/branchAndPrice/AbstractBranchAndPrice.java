@@ -22,7 +22,7 @@ import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
+public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T>> {
 	protected final Logger logger = LoggerFactory.getLogger(AbstractBranchAndPrice.class);
 	protected final BAPNotifier notifier;
 	protected final Configuration config=Configuration.getConfiguration();

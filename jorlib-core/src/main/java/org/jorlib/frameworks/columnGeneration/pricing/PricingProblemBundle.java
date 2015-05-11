@@ -39,7 +39,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
  * @version 13-4-2015
  *
  */
-public final class PricingProblemBundle<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> {
+public final class PricingProblemBundle<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T>> {
 	public final Class<? extends PricingProblemSolver<T, U, V>> pricingSolver;
 	public final List<PricingProblemSolver<T, U, V>> solverInstances;
 	

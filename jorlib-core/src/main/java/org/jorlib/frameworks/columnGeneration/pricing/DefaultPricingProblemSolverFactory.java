@@ -37,7 +37,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
  * @version 13-4-2015
  *
  */
-public final class  DefaultPricingProblemSolverFactory<T,U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T,U,V>> implements PricingProblemSolverFactory<T,U,V>{
+public final class  DefaultPricingProblemSolverFactory<T,U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T>> implements PricingProblemSolverFactory<T,U,V>{
 	
 	private final Class<? extends PricingProblemSolver<T, U, V>> solverClass;
 	private final T dataModel;

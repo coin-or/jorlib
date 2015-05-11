@@ -119,7 +119,7 @@ public class OrderedBiMap<K,V> extends AbstractMap<K, V>{
 	
 	/**
 	 * Returns the keys of this map as an array
-	 * @param an array which will contain the keys
+	 * @param a array which will contain the keys
 	 * @return keys array
 	 */
 	public K[] getKeysAsArray(K[] a){
@@ -128,7 +128,7 @@ public class OrderedBiMap<K,V> extends AbstractMap<K, V>{
 	
 	/**
 	 * Returns the values of this map as an array
-	 * @param an array which will contain the values
+	 * @param a array which will contain the values
 	 * @return value array
 	 */
 	public V[] getValuesAsArray(V[] a){

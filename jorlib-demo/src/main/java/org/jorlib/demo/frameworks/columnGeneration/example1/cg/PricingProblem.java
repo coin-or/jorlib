@@ -36,7 +36,7 @@ import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
  * @author Joris Kinable
  * @version 13-4-2015
  */
-public class PricingProblem extends AbstractPricingProblem<CuttingStock, CuttingPattern, PricingProblem> {
+public class PricingProblem extends AbstractPricingProblem<CuttingStock> {
 
 	public PricingProblem(CuttingStock modelData, String name) {
 		super(modelData, name);

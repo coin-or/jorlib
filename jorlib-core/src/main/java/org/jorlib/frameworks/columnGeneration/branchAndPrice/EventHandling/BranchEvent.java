@@ -33,14 +33,27 @@ import java.util.EventObject;
 import java.util.List;
 
 /**
- * Created by jkinable on 5/5/15.
+ * Event invoked when new branches are created in the branch and price tree
+ *
+ * @author Joris Kinable
+ * @version 5-5-2015
  */
 public class BranchEvent extends EventObject{
 
+    /** Number of branching created **/
     public final int nrBranches;
+    /** Parent node **/
     public final BAPNode parentNode;
+    /** List of child nodes **/
     public final List<BAPNode> childNodes;
 
+    /**
+     * Creates a new BranchEvent
+     * @param source Generator of this event
+     * @param nrBranches Number of branching created
+     * @param parentNode Parent node
+     * @param childNodes List of child nodes
+     */
     public BranchEvent(Object source, int nrBranches, BAPNode parentNode, List<BAPNode> childNodes){
         super(source);
         this.nrBranches=nrBranches;
