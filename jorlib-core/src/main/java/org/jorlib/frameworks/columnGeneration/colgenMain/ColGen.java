@@ -48,45 +48,48 @@ import org.slf4j.LoggerFactory;
 /**
  * Main class defining the Column Generation procedure. It keeps track of all the data structures. Its solve() method is the core of this class.
  * Assumptions: the Master problem is a minimization problem. The optimal solution with non-fractional variable values has an integer objective value.
- * 
- * U is reserved for columns
- * T is reserved for the model
+ *
+ * @param <T> The data model
+ * @param <U> Type of column
+ * @param <V> Type of pricing problem
  * 
  * @author Joris Kinable
  * @version 13-4-2015
  */
 public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T>> {
-	
+
+	/** Logger for this class **/
 	final Logger logger = LoggerFactory.getLogger(ColGen.class);
+	/** Configuration file for this class **/
 	static final Configuration config=Configuration.getConfiguration();
 
-	//Define the problem
+	/** Data model **/
 	protected final T dataModel;
 	
-	//Define the master problem
+	/** Master problem **/
 	protected final AbstractMaster<T, U, V, ? extends MasterData> master;
-	//Define the pricing problems
+	/** Pricing problems **/
 	protected final List<V> pricingProblems;
-	//Maintain the classes which can be used to solve the pricing problems
+	/** Solvers for the pricing problems **/
 	protected final List<Class<? extends PricingProblemSolver<T, U, V>>> solvers;
-	//Manages parallel execution of pricing problems
+	/** Manages parallel execution of pricing problems **/
 	protected final PricingProblemManager<T,U, V> pricingProblemManager;
 	
-	//Objective value of column generation procedure
+	/** Objective value of column generation procedure **/
 	protected double objective; 
-	//Colgen is terminated if objective exceeds upperBound. Upperbound is set equal to the best incumbent integer solution
+	/** The Colgen procedure is terminated if objective exceeds upperBound. The Upperbound is set equal to the best incumbent integer solution **/
 	protected int upperBound=Integer.MAX_VALUE;
-	//Lower bound on the objective. If lowerbound > upperBound, this node can be pruned.
+	/** Lower bound on the objective value. If lowerbound > upperBound, this node can be pruned.**/
 	protected double lowerBound=0;
-	//Total number of iterations.
+	/** Total number of column generation iterations. **/
 	protected int nrOfColGenIterations=0;
-	//Total time spent on solving column generation problem
+	/**Total time spent on the column generation procedure**/
 	protected long colGenSolveTime;
-	//Total time spent on solving the master problem
+	/** Total time spent on solving the master problem **/
 	protected long masterSolveTime=0;
-	//Total time spent on solving the pricing problem
+	/** Total time spent on solving the pricing problem **/
 	protected long pricingSolveTime=0;
-	//Total number of columns generated and added to the master problem
+	/** Total number of columns generated and added to the master problem **/
 	protected int nrGeneratedColumns=0;
 	
 	/**
@@ -108,15 +111,15 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V
 		this.master=master;
 		this.pricingProblems=pricingProblems;
 		this.solvers=solvers;
-		master.addColumns(initSolution);
 		this.upperBound=upperBound;
-		
+		master.addColumns(initSolution);
+
 		//Generate the pricing problem instances
 		List<PricingProblemBundle<T, U, V>> pricingProblemBunddles=new ArrayList<>();
 		for(Class<? extends PricingProblemSolver<T, U, V>> solverClass : solvers){
-			DefaultPricingProblemSolverFactory<T, U, V> factory=new DefaultPricingProblemSolverFactory<>(solverClass, /*solverClass.getName(), */dataModel);
-			PricingProblemBundle<T, U, V> bunddle=new PricingProblemBundle<>(solverClass, pricingProblems, factory);
-			pricingProblemBunddles.add(bunddle);
+			DefaultPricingProblemSolverFactory<T, U, V> factory=new DefaultPricingProblemSolverFactory<>(solverClass, dataModel);
+			PricingProblemBundle<T, U, V> bundle=new PricingProblemBundle<>(solverClass, pricingProblems, factory);
+			pricingProblemBunddles.add(bundle);
 		}
 		
 		//Create a pricing problem manager for parallel execution of the pricing problems
@@ -140,8 +143,17 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V
 			int upperBound){
 		this(dataModel, master, Collections.singletonList(pricingProblem), solvers, initSolution, upperBound);
 	}
-	
-	
+
+	/**
+	 * Create a new column generation instance
+	 * @param dataModel data model
+	 * @param master master problem
+	 * @param pricingProblems pricing problems
+	 * @param solvers pricing problem solvers
+	 * @param pricingProblemManager pricing problem manager
+	 * @param initSolution initial solution
+	 * @param upperBound upper bound on solution. Column generation process is terminated if lower bound exceeds upper bound
+	 */
 	public ColGen(T dataModel, 
 			AbstractMaster<T, U, V, ? extends MasterData> master,
 			List<V> pricingProblems,
@@ -277,6 +289,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V
 	public double getObjective(){
 		return objective;
 	}
+
 	/**
 	 * Returns a lower bound on the objective of the column generation procedure. When the column generation procedure is solved to optimality,
 	 * getObjective() and getLowerBound() should return the same value. However, if the column generation procedure terminates for example due to
@@ -287,37 +300,44 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V
 	public double getLowerBound(){
 		return lowerBound;
 	}
+
 	/**
-	 * @return Returns the number of column generation iterations
+	 * @return Returns the number of column generation iterations performed
 	 */
 	public int getNumberOfIterations(){
 		return nrOfColGenIterations;
 	}
+
 	/**
+	 * Returns the total runtime
 	 * @return Returns how much time it took to solve the column generation problem. This time equals:
 	 * getMasterSolveTime()+getPricingSolveTime()+(small amount of overhead).
 	 */
 	public long getRuntime(){
 		return colGenSolveTime;
 	}
+
 	/**
 	 * @return Returns how much time was spent on solving the master problem
 	 */
 	public long getMasterSolveTime(){
 		return masterSolveTime;
 	}
+
 	/**
 	 * @return Returns how much time was spent on solving the pricing problems
 	 */
 	public long getPricingSolveTime(){
 		return pricingSolveTime;
 	}
+
 	/**
 	 * @return Returns how many columns have been generated in total
 	 */
 	public int getNrGeneratedColumns(){
 		return nrGeneratedColumns;
 	}
+
 	/**
 	 * @return Returns the solution maintained by the master problem
 	 */

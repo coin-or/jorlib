@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * SimpleBAPLogger.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.frameworks.columnGeneration.io;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice;
@@ -11,31 +37,43 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 /**
- * Created by jkinable on 5/5/15.
+ * Simple class which logs events from the Branch and Price class
+ *
+ * @author Joris Kinable
+ * @version 5-5-2015
  */
 public class SimpleBAPLogger implements BAPListener{
     protected BufferedWriter writer;
     protected NumberFormat formatter;
 
-
-    //Branch and price
-    protected int bapNodeID; //Branch and price node ID
-    protected int parentNodeID; //Parent node ID, -1 if root node
-    protected int globalUB; //Best integer solution
-    protected double lowerBoundNode; //Lower bound on the BAP node
-    protected NodeResultStatus nodeStatus; //What to do with the node, i.e. prune (based on obj), Infeasible, Integer, Fractional, or Inconclusive if the nodeStatus could not be determined (e.g. due to time limit)
+    /** Branch and price node ID of node currently being solved**/
+    protected int bapNodeID;
+    /** Parent node ID, -1 if root node **/
+    protected int parentNodeID;
+    /** Best integer solution **/
+    protected int globalUB;
+    /** Lower bound on the BAP node **/
+    protected double lowerBoundNode;
+    /** What to do with the node, i.e. prune (based on obj), Infeasible, Integer, Fractional, or Inconclusive if the nodeStatus could not be determined (e.g. due to time limit) **/
+    protected NodeResultStatus nodeStatus;
+    /** Number of nodes currently in the queue **/
     protected int nodesInQueue;
 
     //Colgen stats
-    protected int cgIterations; //Number of column generation iterations
+    /** Number of column generation iterations **/
+    protected int cgIterations;
 
     //Master problem
-    protected long timeSolvingMaster; //Counts how much time is spent on solving master problems
-    protected double nodeValue; //Objective value of bap node
+    /** Counts how much time is spent on solving master problems **/
+    protected long timeSolvingMaster;
+    /** Objective value of bap node **/
+    protected double nodeValue;
 
     //Pricing Problem
-    protected long timeSolvingPricing; //Counts how much time is spend on solving pricing problems
-    protected int nrGeneratedColumns; //Total number of generated columns by the pricing problems
+    /** Counts how much time is spend on solving pricing problems **/
+    protected long timeSolvingPricing;
+    /** Total number of generated columns by the pricing problems **/
+    protected int nrGeneratedColumns;
 
 
     /**
@@ -155,7 +193,7 @@ public class SimpleBAPLogger implements BAPListener{
     public void processNextNode(ProcessingNextNodeEvent processingNextNodeEvent) {
         this.reset();
         this.bapNodeID=processingNextNodeEvent.node.nodeID;
-        this.parentNodeID=processingNextNodeEvent.node.getAncestorID();
+        this.parentNodeID=processingNextNodeEvent.node.getParentID();
         this.globalUB=processingNextNodeEvent.globalUB;
         this.nodesInQueue=processingNextNodeEvent.nodesInQueue;
     }

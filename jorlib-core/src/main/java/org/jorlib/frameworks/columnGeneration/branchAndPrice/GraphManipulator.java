@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * GraphManipulator.java
+ * -----------------
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.frameworks.columnGeneration.branchAndPrice;
 
 import java.util.LinkedHashSet;
@@ -11,36 +37,37 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class modifies the data structures according to the branching decisions. A branching decision modifies the master problem or pricing problems. This class
+ * This class modifies the data structures according to the branching decisions. A branching decision modifies the master problem and or pricing problems. This class
  * performs these changes. Whenever a backtrack occurs in the tree, all changes are reverted.
  *
+ * @author Joris Kinable
+ * @version 5-5-2015
  */
 public class GraphManipulator {
 
-	protected final Logger logger = LoggerFactory.getLogger(AbstractMaster.class);
-	
-	private boolean ignoreNextEvent=false; //Reverting an event triggers a new event. If this method invoked the reversal of an invent it shouldn't react on the next event. This to protect against a cascading effect.
-	
-	private BAPNode previousNode; //The previous node that has been solved.
+	/** Logger for this class **/
+	protected final Logger logger = LoggerFactory.getLogger(GraphManipulator.class);
 
+	/** The previous node that has been solved. **/
+	private BAPNode previousNode;
+	/** Set of listeners which should be informed about the Branching Decisions which were made **/
 	private final Set<BranchingDecisionListener> listeners;
-	
+
 	/**
-	 * This Stack keeps track of all the changes that have been made to the data structures due to the execution of branching decisions.
-	 * Each frame on the queue corresponds to all the changes caused by a single branching decision. The number of frames on the queue
-	 * equals the depth of <previousNode> in the search tree.
+	 * This stack keeps track of all the branching decisions that lead from the root node of the BAP tree to the last node for which
+	 * this.next(BAPNode<?,?> nextNode) has been invoked.
 	 */
 	private Stack<BranchingDecision> changeHistory;
 	
 	public GraphManipulator(BAPNode rootNode){
 		this.previousNode=rootNode;
-//			btsp.addGraphListener(this);
 		changeHistory=new Stack<BranchingDecision>();
 		listeners=new LinkedHashSet<>();
 	}
 	
 	/**
 	 * Prepares the data structures for the next node to be solved.
+	 * @param nextNode The next node to be solved
 	 */
 	public void next(BAPNode<?,?> nextNode){
 		logger.debug("Previous node: {}, history: {}", previousNode.nodeID, previousNode.rootPath);
@@ -59,14 +86,12 @@ public class GraphManipulator {
 		//1b. revert until the first mutual ancestor
 		while(changeHistory.size() > mutualNodesOnPath-1){
 			logger.debug("Reverting 1 branch lvl");
-			//List<RevertibleEvent> changes= changeHistory.pop();
 			BranchingDecision bd=changeHistory.pop();
 			//Revert the branching decision!
 			this.rewindBranchingDecision(bd);
 		}
-		/* 2. Modify the data structures by performing the branching decisions. Each branch will add a queue to the history.
-		 * Each branching decision will trigger a number of modifications to the data structures. These are collected by the stacks.
-		 */
+		// 2. Modify the data structures by performing the branching decisions which lead from the first mutual ancestor to the nextNode.
+		// The Branching Decisions are stored in the changeHistory
 		logger.debug("Next node nrBranchingDec: {}, changeHist.size: {}", nextNode.branchingDecisions.size(), changeHistory.size());
 		for(int i=changeHistory.size(); i< nextNode.branchingDecisions.size(); i++){
 			//Get the next branching decision and add it to the changeHistory
@@ -89,15 +114,33 @@ public class GraphManipulator {
 		}
 	}
 
+	/**
+	 * Add a BranchingDecisionListener
+	 * @param listener listener
+	 */
 	protected void addBranchingDecisionListener(BranchingDecisionListener listener){
 		listeners.add(listener);
 	}
+
+	/**
+	 * Remove a BranchingDecisionListener
+	 * @param listener listener
+	 */
 	protected void removeBranchingDecisionListener(BranchingDecisionListener listener){	listeners.remove(listener);	}
 
+	/**
+	 * Inform the listeners that a branching decision has been executed
+	 * @param bd branching decision
+	 */
 	private void performBranchingDecision(BranchingDecision bd){
 		for(BranchingDecisionListener listener : listeners)
 			listener.branchingDecisionPerformed(bd);
 	}
+
+	/**
+	 * Inform the listeners that a branching decision has been reversed due to backtracking
+	 * @param bd branching decision
+	 */
 	private void rewindBranchingDecision(BranchingDecision bd){
 		for(BranchingDecisionListener listener : listeners)
 			listener.branchingDecisionRewinded(bd);
