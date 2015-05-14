@@ -60,9 +60,7 @@ public class TSPMasterData extends MasterData<TSP, Matching, PricingProblemByCol
 	/** List of pricing problems **/
 	public final List<PricingProblemByColor> pricingProblems;
 
-	/** For each edge in the graph, record how often it is used (aggregated over all columns) **/
-	protected double[][] edgeValues;
-
+	/** Record how often a particular edge is used (only non-zero edges are considered) **/
 	public Map<Edge, Double> edgeValueMap;
 
 	/** Mapping of the Subtour inequalities to constraints in the cplex model **/
@@ -75,11 +73,6 @@ public class TSPMasterData extends MasterData<TSP, Matching, PricingProblemByCol
 		this.cplex=cplex;
 		this.pricingProblems=pricingProblems;
 		subtourInequalities=new LinkedHashMap<>();
-
 		edgeValueMap=new HashMap<>();
-	}
-	
-	public double[][] getEdgeValues(){
-		return edgeValues;
 	}
 }

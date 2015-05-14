@@ -32,10 +32,11 @@ import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumVar;
 import ilog.concert.IloRange;
 import java.util.*;
+
+import org.jgrapht.EdgeFactory;
 import org.jgrapht.Graph;
 import org.jgrapht.VertexFactory;
 import org.jgrapht.generate.CompleteGraphGenerator;
-import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.jorlib.alg.tsp.separation.SubtourSeparator;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.Matching;
@@ -58,43 +59,32 @@ import org.jorlib.io.tspLibReader.graph.Edge;
  */
 public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData> {
 
-	//Graph which is used to calculate any violated subtour inequalities
-	private final Graph<Integer, DefaultEdge> completeGraph;
 	//We use the subtour separator provided in jORLib
-	private final SubtourSeparator<Integer, DefaultEdge> separator;
+	private final SubtourSeparator<Integer, Edge> separator;
 
 	/**
 	 * Creates a new subtour inequality generator
-	 * @param modelData
+	 * @param modelData data model
 	 */
 	public SubtourInequalityGenerator(TSP modelData) {
 		super(modelData);
 		
 		//Create a complete graph using the CompleteGraphGenerator in the JGraphT package. The graph is required by the SubtourSeparator
-		completeGraph=new SimpleGraph<>(DefaultEdge.class);
-		CompleteGraphGenerator<Integer, DefaultEdge> completeGenerator =new CompleteGraphGenerator<>(modelData.N);
+		Graph<Integer, Edge> completeGraph = new SimpleGraph<>(new MyEdgeFactory());
+		CompleteGraphGenerator<Integer, Edge> completeGenerator =new CompleteGraphGenerator<>(modelData.N);
 		completeGenerator.generateGraph(completeGraph, new IntegerVertexFactory(), null);
 		//Create a subtour separator 
 		separator=new SubtourSeparator<>(completeGraph);
 	}
 
 	/**
-	 * Generate inequalities
-	 * @return Returns true if a violated inquality has been found
+	 * Generate inequalities using the data originating from the master problem
+	 * @return Returns true if a violated inequality has been found
 	 */
 	@Override
 	public boolean generateInqualities() {
-		//Get the edge weights as a map
-		double[][] edgeValues=masterData.getEdgeValues();
-		Map<DefaultEdge,Double> edgeValueMap=new HashMap<>();
-		for(int i=0; i<modelData.N-1; i++){
-			for(int j=i+1; j<modelData.N; j++){
-				edgeValueMap.put(completeGraph.getEdge(i, j), edgeValues[i][j]);
-			}
-		}
-
 		//Check for violated subtours. When found, generate an inequality
-		separator.separateSubtour(edgeValueMap);
+		separator.separateSubtour(masterData.edgeValueMap);
 		if(separator.hasSubtour()){
 			Set<Integer> cutSet=separator.getCutSet();
 			SubtourInequality inequality=new SubtourInequality(this, cutSet);
@@ -172,6 +162,15 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 		@Override
 		public Integer createVertex() {
 			return counter++;
+		}
+	}
+	/**
+	 * Simple factory class which produces Edges
+	 */
+	private class MyEdgeFactory implements EdgeFactory<Integer,Edge>{
+		@Override
+		public Edge createEdge(Integer sourceVertex, Integer targetVertex) {
+			return new Edge(sourceVertex,targetVertex);
 		}
 	}
 }

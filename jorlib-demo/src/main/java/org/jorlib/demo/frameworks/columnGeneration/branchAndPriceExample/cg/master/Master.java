@@ -279,14 +279,17 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 	@Override
 	public boolean hasNewCuts(){
 		//For convenience, we will precompute values required by the SubtourInequalityGenerator class
-		//and store it in the masterData object.
-		masterData.edgeValues=new double[modelData.N][modelData.N];
+		//and store it in the masterData object. For each edge, we need to know how often it is used.
+		masterData.edgeValueMap.clear();
 		for(Matching m : this.getSolution()){
 			for(Edge edge : m.edges){
-				masterData.edgeValues[edge.getId1()][edge.getId2()]+=m.value;
-				masterData.edgeValues[edge.getId2()][edge.getId1()]+=m.value;
+				if(masterData.edgeValueMap.containsKey(edge))
+					masterData.edgeValueMap.put(edge, masterData.edgeValueMap.get(edge)+m.value);
+				else
+					masterData.edgeValueMap.put(edge,m.value);
 			}
 		}
+
 		return super.hasNewCuts();
 	}
 

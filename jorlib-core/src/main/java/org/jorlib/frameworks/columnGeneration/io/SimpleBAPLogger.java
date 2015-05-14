@@ -92,7 +92,7 @@ public class SimpleBAPLogger implements BAPListener{
 
     /**
      * Write a single line of text to the output file
-     * @param line
+     * @param line line of text to be written
      */
     protected void writeLine(String line){
         try {
@@ -124,29 +124,7 @@ public class SimpleBAPLogger implements BAPListener{
      * Construct a single line in the log file, and write it to the output file
      */
     protected void constructAndWriteLine(){
-        StringBuilder builder = new StringBuilder();
-        builder.append(bapNodeID);
-        builder.append("\t");
-        builder.append(parentNodeID);
-        builder.append("\t");
-        builder.append(globalUB);
-        builder.append("\t");
-        builder.append(lowerBoundNode);
-        builder.append("\t");
-        builder.append(formatter.format(nodeValue));
-        builder.append("\t");
-        builder.append(cgIterations);
-        builder.append("\t");
-        builder.append(timeSolvingMaster);
-        builder.append("\t");
-        builder.append(timeSolvingPricing);
-        builder.append("\t");
-        builder.append(nrGeneratedColumns);
-        builder.append("\t");
-        builder.append(nodeStatus);
-        builder.append("\t");
-        builder.append(nodesInQueue);
-        this.writeLine(builder.toString());
+        this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + globalUB + "\t" + lowerBoundNode + "\t" + formatter.format(nodeValue) + "\t" + cgIterations + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nrGeneratedColumns + "\t" + nodeStatus + "\t" + nodesInQueue);
     }
 
     @Override
