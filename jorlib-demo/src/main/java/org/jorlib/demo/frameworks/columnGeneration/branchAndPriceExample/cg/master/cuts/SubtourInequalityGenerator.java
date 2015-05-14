@@ -42,7 +42,6 @@ import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.Matc
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.PricingProblemByColor;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.master.TSPMasterData;
 
-import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model.MatchingColor;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutGenerator;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
@@ -71,12 +70,12 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 	public SubtourInequalityGenerator(TSP modelData) {
 		super(modelData);
 		
-		//Create a complete graph using the CompleteGraphGenerator in the JGraphT package
+		//Create a complete graph using the CompleteGraphGenerator in the JGraphT package. The graph is required by the SubtourSeparator
 		completeGraph=new SimpleGraph<>(DefaultEdge.class);
-		CompleteGraphGenerator<Integer, DefaultEdge> completeGenerator =new CompleteGraphGenerator<Integer, DefaultEdge>(modelData.N);
+		CompleteGraphGenerator<Integer, DefaultEdge> completeGenerator =new CompleteGraphGenerator<>(modelData.N);
 		completeGenerator.generateGraph(completeGraph, new IntegerVertexFactory(), null);
 		//Create a subtour separator 
-		separator=new SubtourSeparator<Integer, DefaultEdge>(completeGraph);
+		separator=new SubtourSeparator<>(completeGraph);
 	}
 
 	/**
@@ -107,7 +106,7 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 
 	/**
 	 * If a violated inequality has been found add it to the master problem.
-	 * @param subtourInequality
+	 * @param subtourInequality subtour inequality
 	 */
 	private void addCut(SubtourInequality subtourInequality){
 		if(masterData.subtourInequalities.containsKey(subtourInequality))
@@ -125,7 +124,6 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 							crossings++;
 					}
 					if(crossings>0){
-//						IloNumVar var=masterData.matchingVars.get(color).get(matching);
 						IloNumVar var=masterData.getVar(pricingProblem,matching);
 						expr.addTerm(crossings, var);
 					}
@@ -173,8 +171,7 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 		private int counter=0;
 		@Override
 		public Integer createVertex() {
-			return new Integer(counter++);
+			return counter++;
 		}
-		
 	}
 }

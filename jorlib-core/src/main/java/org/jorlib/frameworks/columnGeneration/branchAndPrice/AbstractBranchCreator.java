@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T,U,V>,V extends AbstractPricingProblem<T>> {
+public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T, V>,V extends AbstractPricingProblem<T>> {
 
 	/** Logger for this class **/
 	protected final Logger logger = LoggerFactory.getLogger(AbstractBranchCreator.class);

@@ -27,7 +27,8 @@
 package org.jorlib.frameworks.columnGeneration.io;
 
 /**
- * 
+ * Exception thrown when the time limit is exceeded.
+ *
  * @author Joris Kinable
  * @version 13-4-2015
  *

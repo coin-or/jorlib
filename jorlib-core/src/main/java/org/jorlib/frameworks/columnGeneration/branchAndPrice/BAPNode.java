@@ -39,7 +39,7 @@ import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class BAPNode<T,U extends AbstractColumn<T,U,?>> {
+public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 
 	/** Unique node ID **/
 	public final int nodeID;

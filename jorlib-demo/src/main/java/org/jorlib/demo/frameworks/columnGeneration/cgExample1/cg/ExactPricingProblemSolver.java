@@ -24,7 +24,7 @@
  * -------
  *
  */
-package org.jorlib.demo.frameworks.columnGeneration.example1.cg;
+package org.jorlib.demo.frameworks.columnGeneration.cgExample1.cg;
 
 import ilog.concert.IloException;
 import ilog.concert.IloIntVar;
@@ -34,7 +34,7 @@ import ilog.cplex.IloCplex;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jorlib.demo.frameworks.columnGeneration.example1.model.CuttingStock;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
@@ -87,7 +87,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<CuttingStock
 
 	@Override
 	protected List<CuttingPattern> generateNewColumns() throws TimeLimitExceededException {
-		List<CuttingPattern> newPatterns=new ArrayList<CuttingPattern>();
+		List<CuttingPattern> newPatterns=new ArrayList<>();
 		try {
 			//Compute how much time we may take to solve the pricing problem
 			double timeRemaining=Math.max(1,(timeLimit-System.currentTimeMillis())/1000.0);
@@ -128,7 +128,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<CuttingStock
 	protected void setObjective() {
 		//Update the objective function with the new dual values
 		try {
-			cplex.setLinearCoefs(obj, pricingProblem.modifiedCosts, vars);
+			cplex.setLinearCoefs(obj, pricingProblem.dualCosts, vars);
 		} catch (IloException e) {
 			e.printStackTrace();
 		}

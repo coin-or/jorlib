@@ -24,9 +24,9 @@
  * -------
  *
  */
-package org.jorlib.demo.frameworks.columnGeneration.example1.cg;
+package org.jorlib.demo.frameworks.columnGeneration.cgExample1.cg;
 
-import org.jorlib.demo.frameworks.columnGeneration.example1.model.CuttingStock;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 
 /**

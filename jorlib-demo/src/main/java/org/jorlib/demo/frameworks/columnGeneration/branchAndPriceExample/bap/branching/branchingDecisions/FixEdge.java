@@ -12,7 +12,9 @@ import org.jorlib.io.tspLibReader.graph.Edge;
  */
 public class FixEdge implements BranchingDecision<TSP,Matching> {
 
+    /** Pricing problem **/
     public final PricingProblemByColor pricingProblem;
+    /** Edge on which we branch **/
     public final Edge edge;
 
     public FixEdge(PricingProblemByColor pricingProblem, Edge edge){
@@ -20,11 +22,21 @@ public class FixEdge implements BranchingDecision<TSP,Matching> {
         this.edge=edge;
     }
 
+    /**
+     * Determine whether the given inequality remains feasible for the child node
+     * @param inequality inequality
+     * @return true
+     */
     @Override
     public boolean inEqualityIsCompatibleWithBranchingDecision(Inequality inequality) {
         return true;  //In this example we only have subtourInequalities. They remain valid, independent of whether we fix an edge.
     }
 
+    /**
+     * Determine whether the given column remains feasible for the child node
+     * @param column column
+     * @return true if the column is compliant with the branching decision
+     */
     @Override
     public boolean columnIsCompatibleWithBranchingDecision(Matching column) {
        return column.associatedPricingProblem != this.pricingProblem || column.edges.contains(edge);

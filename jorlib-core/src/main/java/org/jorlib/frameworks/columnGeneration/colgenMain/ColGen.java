@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
  * @author Joris Kinable
  * @version 13-4-2015
  */
-public class ColGen<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T>> {
+public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T>> {
 
 	/** Logger for this class **/
 	final Logger logger = LoggerFactory.getLogger(ColGen.class);

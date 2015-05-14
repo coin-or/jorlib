@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T>> {
+public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T>> {
 	/** Logger attached to this class **/
 	protected final Logger logger = LoggerFactory.getLogger(AbstractBranchAndPrice.class);
 	/** Helper class which notifies BAPListeners **/

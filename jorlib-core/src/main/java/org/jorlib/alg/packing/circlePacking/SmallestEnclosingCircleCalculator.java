@@ -72,7 +72,7 @@ public class SmallestEnclosingCircleCalculator {
 	//Enable/disable debugging output
 	public static final boolean DEBUG=false;
 	
-	//Precision parameter
+	/** Precision parameter **/
 	public static final double PRECISION=0.000001;
 		
 		
@@ -146,7 +146,7 @@ public class SmallestEnclosingCircleCalculator {
 		this.radii=MathUtil.doubleToBigDecimalArray(radii);
 		this.n=xCors.length;
 		
-		List<Integer> C=new ArrayList<Integer>();
+		List<Integer> C=new ArrayList<>();
 		for(int i=0; i<n; i++)
 			C.add(i);
 		List<Integer> B=Collections.emptyList();
@@ -184,12 +184,12 @@ public class SmallestEnclosingCircleCalculator {
 			this.radii=MathUtil.doubleToBigDecimalArray(radii);
 			this.n=xCors.length;
 			
-			List<Integer> C=new ArrayList<Integer>();
+			List<Integer> C=new ArrayList<>();
 			for(int i=0; i<n; i++){
 				if(i!=posCircleToAdd)
 					C.add(i);
 			}
-			List<Integer> B=new ArrayList<Integer>(); 
+			List<Integer> B=new ArrayList<>();
 			B.add(posCircleToAdd); //The new circle must be on the edge of the container
 			
 			Disk dNew=this.miniCircle(C, B);
@@ -246,18 +246,18 @@ public class SmallestEnclosingCircleCalculator {
 			
 		}else{
 			int c=C.get(0);
-			List<Integer> Cnew=new ArrayList<Integer>(C);
+			List<Integer> Cnew=new ArrayList<>(C);
 			Cnew.remove(0);
 			D=this.miniCircle(Cnew, B);
 			if(!D.circleIsContained(xCors[c], yCors[c], radii[c])){ //A new corner point has been found
 				if(B.size()<= 1){
-					Cnew=new ArrayList<Integer>(C);
-					List<Integer> Bnew=new ArrayList<Integer>(B);
+					Cnew=new ArrayList<>(C);
+					List<Integer> Bnew=new ArrayList<>(B);
 					Cnew.remove(Cnew.indexOf(c));
 					Bnew.add(c);
 					D=this.miniCircle(Cnew, Bnew);
 				}else{
-					List<Integer> Bnew=new ArrayList<Integer>(B);
+					List<Integer> Bnew=new ArrayList<>(B);
 					Bnew.add(c);
 					D=this.getDiskThreeTangentCircles(Bnew);
 				}
@@ -464,12 +464,11 @@ public class SmallestEnclosingCircleCalculator {
 		BigDecimal r2=(b.negate().subtract(MathUtil.sqrt(d, MathContext.DECIMAL128))).divide(BigDecimal.valueOf(2).multiply(a),25, RoundingMode.HALF_UP);
 		
 		if(DEBUG) System.out.println("r1: "+r1+" r2: "+r2);
-	
-		BigDecimal r=r2;
-		BigDecimal xCor=c1.subtract(r.multiply(c2)); //c1-r*c2;
-		BigDecimal yCor=c4.subtract(r.multiply(c5)); //c4-r*c5;
+
+		BigDecimal xCor=c1.subtract(r2.multiply(c2)); //c1-r*c2;
+		BigDecimal yCor=c4.subtract(r2.multiply(c5)); //c4-r*c5;
 		
-		Disk D=new Disk(xCor, yCor, r);
+		Disk D=new Disk(xCor, yCor, r2);
 		if(DEBUG) System.out.println("Disk: "+D);
 		if(VALIDATORS_ENABLED) this.validateGetDiskThreeTangentCircles(B, D);
 		return D;
@@ -554,10 +553,7 @@ public class SmallestEnclosingCircleCalculator {
 		 * @return true if this circle fully encloses the given circle
 		 */
 		public boolean circleIsContained(BigDecimal x_i, BigDecimal y_i, BigDecimal radix){
-			if(MathUtil.sqrt((this.x.subtract(x_i)).pow(2).add((this.y.subtract(y_i)).pow(2)),MathContext.DECIMAL128).add(radix).compareTo(this.R.add(BigDecimal.valueOf(PRECISION)))<=0)
-				return true;
-			else
-				return false;	
+			return MathUtil.sqrt((this.x.subtract(x_i)).pow(2).add((this.y.subtract(y_i)).pow(2)), MathContext.DECIMAL128).add(radix).compareTo(this.R.add(BigDecimal.valueOf(PRECISION))) <= 0;
 		}
 		
 		public String toString(){

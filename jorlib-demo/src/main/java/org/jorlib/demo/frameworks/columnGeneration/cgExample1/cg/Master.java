@@ -24,7 +24,7 @@
  * -------
  *
  */
-package org.jorlib.demo.frameworks.columnGeneration.example1.cg;
+package org.jorlib.demo.frameworks.columnGeneration.cgExample1.cg;
 
 import ilog.concert.IloColumn;
 import ilog.concert.IloException;
@@ -32,14 +32,13 @@ import ilog.concert.IloNumVar;
 import ilog.concert.IloObjective;
 import ilog.concert.IloRange;
 import ilog.cplex.IloCplex;
-import ilog.cplex.IloCplex.UnknownObjectException;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jorlib.demo.frameworks.columnGeneration.example1.model.CuttingStock;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
@@ -100,8 +99,6 @@ public class Master extends AbstractMaster<CuttingStock, CuttingPattern, Pricing
 		try {
 			double[] duals= cplex.getDuals(satisfyDemandConstr);
 			pricingProblem.initPricingProblem(duals);
-		} catch (UnknownObjectException e) {
-			e.printStackTrace();
 		} catch (IloException e) {
 			e.printStackTrace();
 		}
@@ -126,7 +123,6 @@ public class Master extends AbstractMaster<CuttingStock, CuttingPattern, Pricing
 				satisfyDemandConstr[i]= cplex.addRange(modelData.demandForFinals[i], modelData.demandForFinals[i], "satisfyDemandFinal_"+i);
 			
 			//Define a container for the variables
-//			cuttingPatternVars=new OrderedBiMap<>();
 		} catch (IloException e) {
 			e.printStackTrace();
 		}
@@ -158,7 +154,6 @@ public class Master extends AbstractMaster<CuttingStock, CuttingPattern, Pricing
 			IloNumVar var= cplex.numVar(iloColumn, 0, Double.MAX_VALUE, "z_"+","+masterData.getNrColumns());
 			cplex.add(var);
 			masterData.addColumn(column, var);
-//			cuttingPatternVars.put(column, var);
 		} catch (IloException e) {
 			e.printStackTrace();
 		}
@@ -182,8 +177,6 @@ public class Master extends AbstractMaster<CuttingStock, CuttingPattern, Pricing
 					solution.add(cuttingPatterns[i]);
 				}
 			}
-		} catch (UnknownObjectException e) {
-			e.printStackTrace();
 		} catch (IloException e) {
 			e.printStackTrace();
 		}

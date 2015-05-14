@@ -32,13 +32,16 @@ import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutGenerator;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
 
 /**
- * 
+ * Class representing a subtour inequality: The number of edges entering/leaving the
+ * cutSet must at least 2, otherwise there is a subtour within the cutSet
+ *
  * @author Joris Kinable
  * @version 13-4-2015
  *
  */
 public class SubtourInequality extends Inequality{
 
+	/** Vertices in the cut set **/
 	public final Set<Integer> cutSet;
 	
 	public SubtourInequality(CutGenerator maintainingGenerator, Set<Integer> cutSet) {

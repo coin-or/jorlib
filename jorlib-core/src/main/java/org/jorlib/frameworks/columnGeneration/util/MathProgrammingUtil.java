@@ -34,7 +34,8 @@ package org.jorlib.frameworks.columnGeneration.util;
  *
  */
 public class MathProgrammingUtil {
-	
+
+	/** Configuration file for this class **/
 	private static final Configuration config=Configuration.getConfiguration();
 
 	/**

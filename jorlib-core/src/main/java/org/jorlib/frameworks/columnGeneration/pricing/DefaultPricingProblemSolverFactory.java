@@ -31,47 +31,51 @@ import java.lang.reflect.InvocationTargetException;
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 
 /**
- * Factory class for instantiating new pricing problems
+ * Factory class which produces a solver instances for a given pricing problem
  * 
  * @author Joris Kinable
  * @version 13-4-2015
  *
  */
-public final class  DefaultPricingProblemSolverFactory<T,U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T>> implements PricingProblemSolverFactory<T,U,V>{
-	
+public final class  DefaultPricingProblemSolverFactory<T,U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T>> implements PricingProblemSolverFactory<T,U,V>{
+
+	/** The solver (class)**/
 	private final Class<? extends PricingProblemSolver<T, U, V>> solverClass;
+
+	/** Data model **/
 	private final T dataModel;
-	
-	
-	
+
+
+	/**
+	 * Creates a new factory.
+	 *
+	 * @param solverClass The solver for which this factory produces instances
+	 * @param dataModel The data model
+	 */
 	public DefaultPricingProblemSolverFactory(Class<? extends PricingProblemSolver<T, U, V>> solverClass, T dataModel){
 		this.solverClass=solverClass;
 		this.dataModel=dataModel;
 	}
-	
+
+	/**
+	 * Creates a new instance of the solver for the given pricing problem.
+	 *
+	 * @param pricingProblem The pricing problem for which a new solver instance must be created
+	 * @return A new solver instance
+	 */
 	public PricingProblemSolver<T, U, V> createSolverInstance(V pricingProblem){
 
-		Class<?>[] cArg = new Class[2]; //Our constructor has 3 arguments
-		cArg[0] = dataModel.getClass(); //First argument is of *object* type Long
-		cArg[1] = pricingProblem.getClass(); //Third argument is of *primitive* type int
+		Class<?>[] cArg = new Class[2]; //Our constructor has 2 arguments
+		cArg[0] = dataModel.getClass(); //First argument is of type T
+		cArg[1] = pricingProblem.getClass(); //Second argument has the type of the pricing problem
 		
-		PricingProblemSolver<T, U, V> solverInstance=null;
+		PricingProblemSolver<T, U, V> solverInstance=null; //Create the new instance
 		try {
 			solverInstance=solverClass.getDeclaredConstructor(cArg).newInstance(dataModel, pricingProblem);
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 		}
-		
+
 		return solverInstance;
 	}
 }

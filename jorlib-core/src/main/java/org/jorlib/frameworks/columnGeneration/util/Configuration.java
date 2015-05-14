@@ -29,7 +29,7 @@ package org.jorlib.frameworks.columnGeneration.util;
 import java.util.Properties;
 
 /**
- * Singleton class providing configuration data
+ * Singleton class providing configuration settings
  * 
  * @author Joris Kinable
  * @version 13-4-2015
@@ -37,7 +37,7 @@ import java.util.Properties;
  */
 public class Configuration {
 	
-	//Handle to the Configuration
+	/** Handle to the Configuration **/
 	private static Configuration instance = null;
 	
 	/**
@@ -53,6 +53,7 @@ public class Configuration {
 		EXPORT_MODEL=false;
 		EXPORT_MASTER_DIR="./output/masterLP/";
 	}
+
 	/**
 	 * Use configuration from file
 	 * @param properties properties in file
@@ -69,6 +70,7 @@ public class Configuration {
 	}
 	
 	/**
+	 * Returns the configuration
 	 * @return Returns configuration
 	 */
 	public static Configuration getConfiguration(){
@@ -91,20 +93,26 @@ public class Configuration {
 	
 	//---------------- CONFIGURATION --------------------------
 	
-	/**
+	/*
 	 * Global parameters
 	 */
-	public final int MAXTHREADS; //Number of threads used by the column generationo procedure
-	public final double PRECISION; //Precision parameter. DONT CHANGE THIS IF YOU ARE USING CPLEX!
-	
-	/**
+
+	/** Number of threads used by the column generationo procedure. Default: 3**/
+	public final int MAXTHREADS;
+
+	/** Precision parameter. DONT CHANGE THIS IF YOU ARE USING CPLEX! Default: 0.000001**/
+	public final double PRECISION;
+
+
+	/*
 	 * Column generation & Branch-and-price configuration
 	 */
-	//Enable/Disable generation of cuts in master problem.
+
+	/** Enable/Disable generation of cuts in master problem. Default: true **/
 	public final boolean CUTSENABLED; 
-	//Define whether master problem should be written to .lp file
+	/** Define whether master problem should be written to .lp file. Default: false **/
 	public final  boolean EXPORT_MODEL; 
-	//Define export directory for master models
+	/** Define export directory for master models. Default: ./output/masterLP/ **/
 	public final String EXPORT_MASTER_DIR;
 	
 }

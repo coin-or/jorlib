@@ -28,14 +28,12 @@ package org.jorlib.alg.knapsack.separation;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jorlib.alg.knapsack.BinaryKnapsack;
 import org.jorlib.alg.knapsack.KnapsackAlgorithm;
 
 
@@ -61,34 +59,36 @@ import org.jorlib.alg.knapsack.KnapsackAlgorithm;
  *
  */
 public class LiftedCoverInequalitySeparator {
-	
+
+	/** Rounding precision **/
 	public static final double PRECISION=0.000001;
 	
-	//Knapsack solver used by the separator
+	/** Knapsack solver used by the separator **/
 	private final KnapsackAlgorithm knapsackAlgorithm;
 	
-	//Knapsack constraint \sum_{i=0}^n a_ix_i \leq b
+	/** Knapsack constraint \sum_{i=0}^n a_ix_i \leq b **/
 	private int nrVars; //Number of variables
 	private int[] knapsackCoefficients;
 	private int b;
 	private double[] variableValues;
 	
-	//COVER INEQUALITIES
+	/** COVER INEQUALITIES **/
 	private boolean coverInequalityExists; //Indicates whether a cover inequality exists. If \sum_i a_i \leq b, then no cover exists and hence no inequality can be generated.
 	
-	//Minimal cover
+	/** Minimal cover **/
 	private int minimalCoverRHS; //Right hand side of the minimal cover inequality
 	private boolean[] minimalCover; //Boolean array indicating whether a variable is in the minimal cover 
 	private Set<Integer> minimalCoverSet; //Set containing the variables which are part of the minimal cover
 	private boolean minimalCoverIsViolated; //Returns true if LHS > minimalCoverSize-1 for the given variableValues
 	
-	//Lifted cover
+	/** Lifted cover **/
 	private double liftedCoverLHS=0; // Evaluation of the left hand side of the equality
 	private int liftedCoverRHS; //Right hand side of lifted cover inequality
 	private int[] liftedCoverCoefficients; //Coefficients of variables in lifted cover inequality
 	private boolean liftedCoverIsViolated;
 	
 	/**
+	 * Creates a new separator
 	 * @param knapsackAlgorithm This separator requires an algorithm to solve knapsack problems
 	 */
 	public LiftedCoverInequalitySeparator(KnapsackAlgorithm knapsackAlgorithm){
@@ -180,7 +180,7 @@ public class LiftedCoverInequalitySeparator {
 		double minimalCoverValue=0;
 		minimalCoverRHS=0;
 		minimalCover=new boolean[nrVars];
-		minimalCoverSet=new LinkedHashSet<Integer>();
+		minimalCoverSet=new LinkedHashSet<>();
 		for(int i=0; i<nrVars; i++){
 			minimalCover[i]=!selectedItems[i];
 			if(minimalCover[i]){
@@ -201,8 +201,8 @@ public class LiftedCoverInequalitySeparator {
 	private void computeLiftedCover(Set<Integer> C2){
 		
 		//List<Integer> cover=new ArrayList<Integer>(); //Variable ids which are part of the cover C
-		Set<Integer> Lk=new LinkedHashSet<Integer>(); //Variable ids of N/C, where N is the complete set of vars.
-		List<Integer> NminLk=new ArrayList<Integer>(); //List maintaining N\L1
+		Set<Integer> Lk=new LinkedHashSet<>(); //Variable ids of N/C, where N is the complete set of vars.
+		List<Integer> NminLk=new ArrayList<>(); //List maintaining N\L1
 		liftedCoverCoefficients=new int[nrVars]; //Array of alpha's
 		//Compute Lk=N\C
 		for(int i=0; i<nrVars; i++){
@@ -286,7 +286,7 @@ public class LiftedCoverInequalitySeparator {
 		minimalCoverRHS--;
 		b-=knapsackCoefficients[k];
 		
-		this.computeLiftedCover(new HashSet<Integer>(Arrays.asList(k)));
+		this.computeLiftedCover(new HashSet<>(Collections.singletonList(k)));
 		
 		//STEP 3 in Separation Algorithm: lift variable k back in using Proposition 1.2 p262
 		double[] itemValues=new double[nrVars];

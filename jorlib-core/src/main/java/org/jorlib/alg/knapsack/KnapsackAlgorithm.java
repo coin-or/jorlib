@@ -38,21 +38,21 @@ public interface KnapsackAlgorithm {
 	 * Solve the knapsack problem.
 	 * @param nrItems nr of items in the knapsack
 	 * @param maxKnapsackWeight max size/weight of the knapsack
-	 * @param itemValues
-	 * @param itemWeights
+	 * @param itemValues item values
+	 * @param itemWeights item weights
 	 * @return The value of the knapsack solution
 	 */
-	public double solveKnapsackProblem(int nrItems, int maxKnapsackWeight, double[] itemValues, int[] itemWeights);
+	double solveKnapsackProblem(int nrItems, int maxKnapsackWeight, double[] itemValues, int[] itemWeights);
 	/**
 	 * @return Get the value of the knapsack
 	 */
-	public double getKnapsackValue();
+	double getKnapsackValue();
 	/**
 	 * @return Get the total weight of the knapsack
 	 */
-	public int getKnapsackWeight();
+	int getKnapsackWeight();
 	/**
 	 * @return Get the items in the knapsack
 	 */
-	public boolean[] getKnapsackItems();
+	boolean[] getKnapsackItems();
 }

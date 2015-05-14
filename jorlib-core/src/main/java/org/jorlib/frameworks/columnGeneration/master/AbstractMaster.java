@@ -37,44 +37,67 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
+import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * Main class represting the Master Problem.
+ *
  * @author Joris Kinable
  * @version 13-4-2015
  *
- * @param <T>
- * @param <V>
- * @param <U>
- * @param <W>
+ * @param <T> Type of data model
+ * @param <V> Type of pricing problem
+ * @param <U> Type of columns
+ * @param <W> Type of Master Data
  */
-public abstract class AbstractMaster<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T>, W extends MasterData> implements BranchingDecisionListener{
+public abstract class AbstractMaster<T extends ModelInterface, U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T>, W extends MasterData<T,U,V,?>> implements BranchingDecisionListener{
+
+	/** Logger for this class **/
 	protected final Logger logger = LoggerFactory.getLogger(AbstractMaster.class);
+	/** Configuration file for this class **/
 	protected final Configuration config=Configuration.getConfiguration();
 
-	//Data object describing the problem at hand
+	/** Data model **/
 	protected final T modelData;
-	//Define the pricing problems
+	/** Pricing Problems **/
 	protected final List<V> pricingProblems;
-	//Data object containing information for the master problem
+	/** Data object which stores data from the Master Problem **/
 	protected W masterData;
-	//Handle to a cutHandler which performs separation
+	/** Handle to a cutHandler which performs separation **/
 	protected CutHandler<T,W> cutHandler;
-	
+
+	/**
+	 * Creates a new Master Problem
+	 * @param modelData data model
+	 * @param pricingProblems pricing problems
+	 */
 	public AbstractMaster(T modelData, List<V> pricingProblems){
 		this.modelData=modelData;
 		this.pricingProblems=pricingProblems;
 		masterData=this.buildModel();
-		cutHandler=new CutHandler<T,W>();
+		cutHandler=new CutHandler<>();
 		cutHandler.setMasterData(masterData);
 	}
-	public AbstractMaster(T modelData, V pricingProblems){
-		this(modelData, Collections.singletonList(pricingProblems));
+
+	/**
+	 * Creates a new Master Problem
+	 * @param modelData data model
+	 * @param pricingProblem pricing problem
+	 */
+	public AbstractMaster(T modelData, V pricingProblem){
+		this(modelData, Collections.singletonList(pricingProblem));
 	}
+
+	/**
+	 * Creates a new Master Problem
+	 * @param modelData data model
+	 * @param pricingProblems pricing problems
+	 * @param cutHandler Reference to a cut handler
+	 */
 	public AbstractMaster(T modelData, List<V> pricingProblems, CutHandler<T,W> cutHandler){
 		this.modelData=modelData;
 		this.pricingProblems=pricingProblems;
@@ -82,8 +105,15 @@ public abstract class AbstractMaster<T, U extends AbstractColumn<T,U,V>, V exten
 		masterData=this.buildModel();
 		cutHandler.setMasterData(masterData);
 	}
-	public AbstractMaster(T modelData, V pricingProblems, CutHandler<T,W> cutHandler){
-		this(modelData, Collections.singletonList(pricingProblems), cutHandler);
+
+	/**
+	 * Creates a new Master Problem
+	 * @param modelData data model
+	 * @param pricingProblem pricing problem
+	 * @param cutHandler Reference to a cut handler
+	 */
+	public AbstractMaster(T modelData, V pricingProblem, CutHandler<T,W> cutHandler){
+		this(modelData, Collections.singletonList(pricingProblem), cutHandler);
 	}
 
 	/**
@@ -94,7 +124,7 @@ public abstract class AbstractMaster<T, U extends AbstractColumn<T,U,V>, V exten
 	/**
 	 * Solve the master problem
 	 * @param timeLimit Future point in time by which this method must be finished
-	 * @throws TimeLimitExceededException
+	 * @throws TimeLimitExceededException if time limit is exceeded
 	 */
 	public void solve(long timeLimit) throws TimeLimitExceededException{
 		masterData.iterations++;
@@ -102,25 +132,20 @@ public abstract class AbstractMaster<T, U extends AbstractColumn<T,U,V>, V exten
 	}
 	
 	/**
-	 * Solve the master problem
-	 * @param timeLimit
+	 * Method implementing the solve procedure for the master problem
+	 * @param timeLimit Future point in time by which this method must be finished
 	 * @return Returns true if successfull (and optimal)
-	 * @throws TimeLimitExceededException 
+	 * @throws TimeLimitExceededException if time limit is exceeded
 	 */
 	protected abstract boolean solveMasterProblem(long timeLimit) throws TimeLimitExceededException;
 	
 	/**
 	 * Get the reduced cost information required for a particular pricingProblem. The pricing problem often looks like:
-	 * a_1x_1+a_2x_2+...+a_nx_n <= b, where a_i are dual variables, and b some constant. this method retuns the a_i values.
-	 * @return reduced cost information
+	 * a_1x_1+a_2x_2+...+a_nx_n <= b, where a_i are dual variables, and b some constant. The dual information is stored in
+	 * the PricingProblem object.
+	 *
+	 * @param pricingProblem Object in which the dual information required to solve the pricing problems is stored.
 	 */
-
-	/**
-	 * Get the reduced cost information required for a particular pricingProblem. The pricing problem often looks like:
-	 * a_1x_1+a_2x_2+...+a_nx_n <= b, where a_i are dual variables, and b some constant. this method retuns the a_i values.
-	 * @param pricingProblem
-	 */
-//	public abstract double getDualConstant(V pricingProblem);
 	public abstract void initializePricingProblem(V pricingProblem);
 	
 	/**
@@ -136,6 +161,7 @@ public abstract class AbstractMaster<T, U extends AbstractColumn<T,U,V>, V exten
 	public int getIterationCount(){
 		return masterData.iterations;
 	}
+
 	/**
 	 * @return Returns true if the master problem has been solved to optimality
 	 */
@@ -145,7 +171,7 @@ public abstract class AbstractMaster<T, U extends AbstractColumn<T,U,V>, V exten
 	
 	/**
 	* Method which can be invoked externally to check whether the current master problem solution violates any cuts.
-	* Obviously, a handle to a cutHandler must have been provided
+	* A handle to a cutHandler must have been provided when constructing the master problem
 	* @return true if cuts were added to the master problem, false otherwise
 	*/
 	public boolean hasNewCuts(){
@@ -160,7 +186,7 @@ public abstract class AbstractMaster<T, U extends AbstractColumn<T,U,V>, V exten
 	
 	/**
 	 * Adds cuts to this master.
-	 * Obviously, a handle to a cutHandler must have been provided
+	 * A handle to a cutHandler must have been provided in the constructor of this class
 	 * @param cuts cuts to be added
 	 */
 	public void addCuts(Collection<Inequality> cuts){
@@ -169,7 +195,7 @@ public abstract class AbstractMaster<T, U extends AbstractColumn<T,U,V>, V exten
 	
 	/**
 	 * Returns all the cuts in the master model
-	 * Obviously, a handle to a cutHandler must have been provided
+	 * A handle to a cutHandler must have been provided in the constructor of this class
 	 */
 	public List<Inequality> getCuts(){
 		return cutHandler.getCuts();
@@ -183,26 +209,32 @@ public abstract class AbstractMaster<T, U extends AbstractColumn<T,U,V>, V exten
 
 	/**
 	 * Add a initial solution (list of columns)
-	 * @param columns
+	 * @param columns initial set of columns
 	 */
 	public void addColumns(List<U> columns){
 		for(U column : columns){
 			this.addColumn(column);
 		}
-	}	
+	}
 
-	public Set<V> getColumns(V pricingProblem){
+	/**
+	 * Returns all columns generated for the provided pricing problem.
+	 * @param pricingProblem Pricing problem
+	 * @return Set of columns
+	 */
+	public Set<U> getColumns(V pricingProblem){
 		return masterData.getColumnsForPricingProblem(pricingProblem);
 	}
 
 	/**
 	 * After the master problem has been solved, a solution has to be returned, consisting of a set of columns selected by the master problem, i.e the columns with a
-	 * non-zero solution.
-	 * @return solution (columns)
+	 * non-zero value.
+	 * @return solution consisting of non-zero columns
 	 */
 	public abstract List<U> getSolution();
 	
 	/**
+	 * Verifies whether a particular solution is an integer solution.
 	 * @return Return true if the solution derived by the master problem is integer
 	 */
 	public boolean solutionIsInteger(){
@@ -217,8 +249,8 @@ public abstract class AbstractMaster<T, U extends AbstractColumn<T,U,V>, V exten
 		throw new UnsupportedOperationException("Not implemented. You should override this function");
 	}
 	/**
-	 * Export the master problem to a .lp file
-	 * @param name
+	 * Export the master problem to a file e.g. an .lp file
+	 * @param name Name of the exported file
 	 */
 	public void exportModel(String name){
 		throw new UnsupportedOperationException("Not implemented. You should override this function");
@@ -235,10 +267,18 @@ public abstract class AbstractMaster<T, U extends AbstractColumn<T,U,V>, V exten
 	public abstract void close();
 
 
+	/**
+	 * Method invoked when a branching decision is executed.
+	 * @param bd branching decision
+	 */
 	@Override
 	public void branchingDecisionPerformed(BranchingDecision bd) {
 	}
 
+	/**
+	 * Method invoked when a branching decision is reversed due to backtracking in the branch and price tree.
+	 * @param bd branching decision
+	 */
 	@Override
 	public void branchingDecisionRewinded(BranchingDecision bd) {
 	}

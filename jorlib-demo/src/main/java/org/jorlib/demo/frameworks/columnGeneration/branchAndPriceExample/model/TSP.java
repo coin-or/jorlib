@@ -44,21 +44,40 @@ import java.io.IOException;
  */
 public class TSP implements ModelInterface{
 
-	public final int N; //nr of vertices
-	public final TSPLibInstance tspLibInstance;
+	/** Number of vertices **/
+	public final int N;
+	/** TSP Lib instance **/
+	public final TSPLibInstance tspLibInstance; //
 	
 	public TSP(String tspInstanceLocation) throws IOException{
 		tspLibInstance= new TSPLibInstance(new File(tspInstanceLocation));
 		this.N=tspLibInstance.getDimension();
 	}
 
+	/**
+	 * Gets the weight of an edge (i,j)
+	 * @param i vertex i
+	 * @param j vertex j
+	 * @return weight
+	 */
 	public int getEdgeWeight(int i, int j){
 		return (int)tspLibInstance.getDistanceTable().getDistanceBetween(i, j);
 	}
+
+	/**
+	 * Gets weight of an Edge
+	 * @param edge edge
+	 * @return weight
+	 */
 	public int getEdgeWeight(Edge edge){
 		return (int)tspLibInstance.getDistanceTable().getDistanceBetween(edge.getId1(), edge.getId2());
 	}
 
+	/**
+	 * Gets the length of a tour
+	 * @param tour tour
+	 * @return length
+	 */
 	public int getTourLength(TSPLibTour tour){
 		return (int)tour.distance(tspLibInstance);
 	}

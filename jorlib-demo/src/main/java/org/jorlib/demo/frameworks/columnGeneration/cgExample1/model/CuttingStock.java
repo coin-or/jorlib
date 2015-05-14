@@ -24,7 +24,7 @@
  * -------
  *
  */
-package org.jorlib.demo.frameworks.columnGeneration.example1.model;
+package org.jorlib.demo.frameworks.columnGeneration.cgExample1.model;
 
 import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
 

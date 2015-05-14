@@ -51,7 +51,7 @@ import org.jorlib.io.tspLibReader.graph.Edge;
 
 
 /**
- * Defines the master problem.
+ * Defines the master problem: Select exactly 1 red and 1 blue matching which together form a hamiltonian cycle of minimum cost.
  *
  * @author Joris Kinable
  * @version 13-4-2015
@@ -66,8 +66,8 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 
 	/**
 	 * Create a new master problem
-	 * @param modelData
-	 * @param cutHandler
+	 * @param modelData model data
+	 * @param cutHandler cut handler
 	 */
 	public Master(TSP modelData, List<PricingProblemByColor> pricingProblems, CutHandler<TSP, TSPMasterData> cutHandler) {
 		super(modelData, pricingProblems, cutHandler);
@@ -93,7 +93,7 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 			exactlyOneRedMatchingConstr=cplex.addRange(1, 1, "exactlyOneRed"); //Select exactly one red matching
 			exactlyOneBlueMatchingConstr=cplex.addRange(1, 1, "exactlyOneBlue"); //Select exactly one blue matching
 
-			edgeOnlyUsedOnceConstr=new LinkedHashMap<Edge, IloRange>(); //Each edge may only be used once
+			edgeOnlyUsedOnceConstr=new LinkedHashMap<>(); //Each edge may only be used once
 			for(int i=0; i<modelData.N-1; i++){
 				for(int j=i+1; j<modelData.N; j++){
 					Edge edge=new Edge(i, j);
@@ -117,7 +117,7 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 
 	/**
 	 * Solve the master problem
-	 * @param timeLimit
+	 * @param timeLimit Future point in time by which the solve procedure must be completed
 	 * @return true if the master problem has been solved
 	 * @throws TimeLimitExceededException
 	 */
@@ -195,8 +195,8 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 	}
 
 	/**
-	 * Extracts information from the master problem which is required by the pricing problems, e.g. the reduced costs
-	 * @param pricingProblem
+	 * Extracts information from the master problem which is required by the pricing problems, e.g. the reduced costs/dual values
+	 * @param pricingProblem pricing problem
 	 */
 	@Override
 	public void initializePricingProblem(PricingProblemByColor pricingProblem) {

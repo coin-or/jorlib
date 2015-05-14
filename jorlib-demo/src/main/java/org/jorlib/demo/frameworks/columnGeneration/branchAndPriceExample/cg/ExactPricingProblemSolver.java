@@ -26,7 +26,6 @@
  */
 package org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import ilog.concert.IloException;
 import ilog.concert.IloIntVar;
 import ilog.concert.IloLinearIntExpr;
@@ -38,7 +37,6 @@ import java.util.*;
 
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.bap.branching.branchingDecisions.FixEdge;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.bap.branching.branchingDecisions.RemoveEdge;
-import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model.MatchingColor;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecisionListener;
@@ -61,21 +59,21 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 
 	private IloCplex cplex; //Cplex instance.
 	private IloObjective obj; //Objective function
-	public OrderedBiMap<Edge, IloIntVar> vars; //Variables
+	private OrderedBiMap<Edge, IloIntVar> vars; //Variables
 
 	/**
 	 * Creates a new solver instance for a particular pricing problem
-	 * @param dataModel
-	 * @param pricingProblem
+	 * @param dataModel data model
+	 * @param pricingProblem pricing problem
 	 */
 	public ExactPricingProblemSolver(TSP dataModel, PricingProblemByColor pricingProblem) {
 		super(dataModel, pricingProblem);
-		this.name="ExactMatchingCalculator"; //Set a nice name for the solver
+		this.name="ExactMatchingCalculator";
 		this.buildModel();
 	}
 
 	/**
-	 * Build the MIP model
+	 * Build the MIP model. Essentially this model generates maximum weight perfect matchings.
 	 */
 	private void buildModel(){
 		try {
@@ -115,7 +113,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 
 	/**
 	 * Main method which solves the pricing problem.
-	 * @return List of columns with negative reduced cost.
+	 * @return List of columns (matchings) with negative reduced cost.
 	 * @throws TimeLimitExceededException
 	 */
 	@Override
@@ -182,7 +180,7 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 	protected void setObjective() {
 		try {
 			IloIntVar[] edgeVarsArray=vars.getValuesAsArray(new IloIntVar[vars.size()]);
-			IloLinearNumExpr objExpr=cplex.scalProd(pricingProblem.modifiedCosts, edgeVarsArray);
+			IloLinearNumExpr objExpr=cplex.scalProd(pricingProblem.dualCosts, edgeVarsArray);
 			obj.setExpr(objExpr);
 		} catch (IloException e) {
 			e.printStackTrace();

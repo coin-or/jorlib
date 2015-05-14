@@ -69,7 +69,6 @@ public class BinaryKnapsack implements KnapsackAlgorithm{
 	/**
 	 * Calculates a greedy solution for the knapsack problem. This solution is a valid lower bound and is used for pruning.
 	 * @param itemOrder Order in which the items are considered by the greedy algorithm. The items are sorted ascending, based on their value/weight ratio
-	 * @return
 	 */
 	private void getGreedyKnapsackSolution(Integer[] itemOrder){
 		double value=0;
@@ -93,8 +92,8 @@ public class BinaryKnapsack implements KnapsackAlgorithm{
 	 * Solve the knapsack problem.
 	 * @param nrItems nr of items in the knapsack
 	 * @param maxKnapsackWeight max size/weight of the knapsack
-	 * @param itemValues
-	 * @param itemWeights
+	 * @param itemValues item values
+	 * @param itemWeights item weights
 	 * @return The value of the knapsack solution
 	 */
 	public double solveKnapsackProblem(int nrItems, int maxKnapsackWeight, double[] itemValues, int[] itemWeights){
@@ -107,7 +106,7 @@ public class BinaryKnapsack implements KnapsackAlgorithm{
 		this.knapsackValue=0;
 		this.knapsackWeight=0;
 		
-		Queue<KnapsackNode> queue=new PriorityQueue<KnapsackNode>();
+		Queue<KnapsackNode> queue=new PriorityQueue<>();
 		
 		//Define the order in which items will be processed. The items are sorted based on their value/weight ratio, thereby considering proportionally more valuable items first.
 		Integer[] itemOrder=new Integer[nrItems];

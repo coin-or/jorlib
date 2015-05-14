@@ -26,7 +26,6 @@
  */
 package org.jorlib.alg.tsp.separation;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -62,7 +61,8 @@ import org.jgrapht.graph.SimpleWeightedGraph;
  *
  */
 public class SubtourSeparator<V, E> {
-	
+
+	/** Precision **/
 	public static final double PRECISION=0.000001;
 	
 	//Solution
@@ -79,18 +79,18 @@ public class SubtourSeparator<V, E> {
 	 * Multiple edges between two vertices i,j, for example two direct arc <i,j> and <j,i> are aggregated into in undirected edge (i,j).
 	 * WARNING: if the input graph is modified, i.e. edges or vertices are added/removed then the behavior of this class is undefined!
 	 * 			A new instance should of this class should be made if this happens!
-	 * @param inputGraph
+	 * @param inputGraph input graph
 	 */
 	public SubtourSeparator(Graph<V,E> inputGraph){
 		this.inputGraph=inputGraph;
-		this.workingGraph=new SimpleWeightedGraph<V, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+		this.workingGraph=new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
 		Graphs.addAllVertices(workingGraph, inputGraph.vertexSet());
 		for(E edge : inputGraph.edgeSet())
 			Graphs.addEdge(workingGraph, inputGraph.getEdgeSource(edge), inputGraph.getEdgeTarget(edge),0);
 	}
 	
 	/**
-	 * 
+	 * Starts the subtour separation.
 	 * @param edgeValueMap Mapping of edges to their corresponding values, i.e. the x_e variable values for all e \in E. It suffices to provide the values
 	 *                     of the non-zero edges. All other edges are presumed to have the value 0.
 	 */
@@ -111,7 +111,7 @@ public class SubtourSeparator<V, E> {
 		}
 		//Compute the min cut in the graph
 		//WARNING: The StoerWagnerMinimumCut class copies the workingGraph each time it is invoked! This is expensive and may be avoided.
-		StoerWagnerMinimumCut<V,DefaultWeightedEdge> mc= new StoerWagnerMinimumCut<V,DefaultWeightedEdge>(workingGraph);
+		StoerWagnerMinimumCut<V,DefaultWeightedEdge> mc= new StoerWagnerMinimumCut<>(workingGraph);
 		minCutValue=mc.minCutWeight();
 		cutSet=mc.minCut();
 		

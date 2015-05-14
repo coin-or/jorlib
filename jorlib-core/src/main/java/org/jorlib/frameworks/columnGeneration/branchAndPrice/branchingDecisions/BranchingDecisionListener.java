@@ -38,11 +38,11 @@ public interface BranchingDecisionListener {
      * This method is called when a branching decision is executed
      * @param bd branching decision
      */
-    public void branchingDecisionPerformed(BranchingDecision bd);
+    void branchingDecisionPerformed(BranchingDecision bd);
 
     /**
      * This method is called when a branching decision is reversed (backtracking in the branch and price tree)
      * @param bd branching decision
      */
-    public void branchingDecisionRewinded(BranchingDecision bd);
+    void branchingDecisionRewinded(BranchingDecision bd);
 }

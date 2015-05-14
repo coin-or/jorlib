@@ -24,18 +24,18 @@
  * -------
  *
  */
-package org.jorlib.demo.frameworks.columnGeneration.example1;
+package org.jorlib.demo.frameworks.columnGeneration.cgExample1;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import org.jorlib.demo.frameworks.columnGeneration.example1.cg.CuttingPattern;
-import org.jorlib.demo.frameworks.columnGeneration.example1.cg.ExactPricingProblemSolver;
-import org.jorlib.demo.frameworks.columnGeneration.example1.cg.Master;
-import org.jorlib.demo.frameworks.columnGeneration.example1.cg.PricingProblem;
-import org.jorlib.demo.frameworks.columnGeneration.example1.model.CuttingStock;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample1.cg.CuttingPattern;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample1.cg.ExactPricingProblemSolver;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample1.cg.Master;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample1.cg.PricingProblem;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
@@ -60,7 +60,7 @@ public class CuttingStockSolver {
 		Master master=new Master(modelData, pricingProblem);
 
 		//Define which solvers to use
-		List<Class<? extends PricingProblemSolver<CuttingStock, CuttingPattern, PricingProblem>>> solvers=Arrays.asList(ExactPricingProblemSolver.class);
+		List<Class<? extends PricingProblemSolver<CuttingStock, CuttingPattern, PricingProblem>>> solvers= Collections.singletonList(ExactPricingProblemSolver.class);
 
 		//Define an upper bound (stronger is better). In this case we simply sum the demands, i.e. cut each final from its own raw (Rather poor initial solution).
 		int upperBound=IntStream.of(modelData.demandForFinals).sum();
@@ -93,11 +93,11 @@ public class CuttingStockSolver {
 	/**
 	 * Create an initial solution for the Cutting Stock Problem.
 	 * Simple initial solution: cut each final from its own raw/roll.
-	 * @param pricingProblem
+	 * @param pricingProblem pricing problem
 	 * @return Initial solution
 	 */
 	private List<CuttingPattern> getInitialSolution(PricingProblem pricingProblem){
-		List<CuttingPattern> initSolution=new ArrayList<CuttingPattern>();
+		List<CuttingPattern> initSolution=new ArrayList<>();
 		for(int i=0; i<modelData.nrFinals; i++){
 			int[] pattern=new int[modelData.nrFinals];
 			pattern[i]=1;

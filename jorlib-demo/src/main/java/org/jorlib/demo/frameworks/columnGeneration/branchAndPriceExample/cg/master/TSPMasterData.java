@@ -26,6 +26,7 @@
  */
 package org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.master;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,33 +38,34 @@ import ilog.cplex.IloCplex;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.Matching;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.PricingProblemByColor;
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.master.cuts.SubtourInequality;
+import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
+import org.jorlib.io.tspLibReader.graph.Edge;
 
 /**
- * Container which stores information coming from the master problem.
+ * Container which stores information coming from the master problem. It contains:
+ * -a reference to the cplex model
+ * -a list of pricing problems
+ * -a mapping of subtour inequalities to the constraints in the cplex model
  *
  * @author Joris Kinable
  * @version 13-4-2015
  *
  */
-public class TSPMasterData extends MasterData<Matching, PricingProblemByColor, IloNumVar> {
+public class TSPMasterData extends MasterData<TSP, Matching, PricingProblemByColor, IloNumVar> {
 
-	//Cplex instance
+	/** Cplex instance **/
 	public final IloCplex cplex;
+	/** List of pricing problems **/
 	public final List<PricingProblemByColor> pricingProblems;
 
-	//Variables:
-
-	//Maintain a separate storage of columns for each pricing problem
-//	public final EnumMap<MatchingColor, OrderedBiMap<Matching, IloNumVar>> matchingVars;
-	//For each edge in the graph, record how often it is used (aggregated over all columns)
+	/** For each edge in the graph, record how often it is used (aggregated over all columns) **/
 	protected double[][] edgeValues;
 
+	public Map<Edge, Double> edgeValueMap;
 
-	//Inequalities:
-
-	//Subtour inequalities
+	/** Mapping of the Subtour inequalities to constraints in the cplex model **/
 	public final Map<SubtourInequality, IloRange> subtourInequalities;
 	
 	public TSPMasterData(IloCplex cplex,
@@ -72,8 +74,9 @@ public class TSPMasterData extends MasterData<Matching, PricingProblemByColor, I
 		super(varMap);
 		this.cplex=cplex;
 		this.pricingProblems=pricingProblems;
-//		this.matchingVars=matchingVars;
-		subtourInequalities=new LinkedHashMap<SubtourInequality, IloRange>();
+		subtourInequalities=new LinkedHashMap<>();
+
+		edgeValueMap=new HashMap<>();
 	}
 	
 	public double[][] getEdgeValues(){

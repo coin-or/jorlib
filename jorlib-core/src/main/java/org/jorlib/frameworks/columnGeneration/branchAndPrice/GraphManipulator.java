@@ -32,7 +32,6 @@ import java.util.Stack;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecisionListener;
-import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +60,7 @@ public class GraphManipulator {
 	
 	public GraphManipulator(BAPNode rootNode){
 		this.previousNode=rootNode;
-		changeHistory=new Stack<BranchingDecision>();
+		changeHistory=new Stack<>();
 		listeners=new LinkedHashSet<>();
 	}
 	

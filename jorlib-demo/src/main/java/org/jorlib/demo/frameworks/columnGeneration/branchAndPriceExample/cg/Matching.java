@@ -31,7 +31,6 @@ import java.util.Set;
 
 import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
-import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 import org.jorlib.io.tspLibReader.graph.Edge;
 
 
@@ -42,16 +41,23 @@ import org.jorlib.io.tspLibReader.graph.Edge;
  * @version 13-4-2015
  *
  */
-public class Matching extends AbstractColumn<TSP, Matching, PricingProblemByColor> {
+public class Matching extends AbstractColumn<TSP, PricingProblemByColor> {
+
+	/** Edges in the matching **/
+	public final Set<Edge> edges;
+	/** successor array. succ[2]=4 and succ[4]=2 models that edge (2,4) is contained in the matching. **/
+	public final int[] succ;
+	/** Weighted cost of the matching **/
+	public final int cost;
 
 	/**
 	 * Creates a new column (matching)
-	 * @param creator
-	 * @param isArtificial
-	 * @param associatedPricingProblem
-	 * @param edges
-	 * @param succ
-	 * @param cost
+	 * @param creator who created the matching
+	 * @param isArtificial indicates whether its an artificial column
+	 * @param associatedPricingProblem pricing problem for which the matching is created
+	 * @param edges edges in the matching
+	 * @param succ successor array
+	 * @param cost cost of matching (sum of edge lengths)
 	 */
 	public Matching(String creator, boolean isArtificial,	PricingProblemByColor associatedPricingProblem,
 			Set<Edge> edges,
@@ -62,14 +68,6 @@ public class Matching extends AbstractColumn<TSP, Matching, PricingProblemByColo
 		this.succ=succ;
 		this.cost=cost;
 	}
-
-	//Edges in the matching
-	public final Set<Edge> edges;
-	//successor array. succ[2]=4 and succ[4]=2 models that edge (2,4) is contained in the matching.
-	public final int[] succ;
-	//Weighted cost of the matching
-	public final int cost;
-		
 
 	@Override
 	public boolean equals(Object o) {

@@ -24,11 +24,11 @@
  * -------
  *
  */
-package org.jorlib.demo.frameworks.columnGeneration.example1.cg;
+package org.jorlib.demo.frameworks.columnGeneration.cgExample1.cg;
 
 import java.util.Arrays;
 
-import org.jorlib.demo.frameworks.columnGeneration.example1.model.CuttingStock;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 
 /**
@@ -38,11 +38,11 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
  * @author Joris Kinable
  * @version 13-4-2015
  */
-public class CuttingPattern extends AbstractColumn<CuttingStock, CuttingPattern, PricingProblem> {
+public class CuttingPattern extends AbstractColumn<CuttingStock, PricingProblem> {
 
-	//Denotes the number of times each final is cut out of the raw. 
+	/** Denotes the number of times each final is cut out of the raw. **/
 	public final int[] yieldVector;
-	
+
 	public CuttingPattern(String creator, boolean isArtificial, int[] pattern, PricingProblem pricingProblem) {
 		super(creator, isArtificial, pricingProblem);
 		this.yieldVector=pattern;
@@ -65,8 +65,7 @@ public class CuttingPattern extends AbstractColumn<CuttingStock, CuttingPattern,
 
 	@Override
 	public String toString() {
-		String s="Value: "+this.value+" Cutting pattern: "+Arrays.toString(yieldVector)+" creator: "+this.creator;
-		return s;
+		return "Value: "+ this.value+" Cutting pattern: "+Arrays.toString(yieldVector)+" creator: "+ this.creator;
 	}
 
 }

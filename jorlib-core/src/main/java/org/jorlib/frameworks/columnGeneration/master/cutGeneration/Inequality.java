@@ -28,19 +28,25 @@ package org.jorlib.frameworks.columnGeneration.master.cutGeneration;
 
 
 /**
- * 
+ * Class representing a valid inequality.
+ *
  * @author Joris Kinable
  * @version 13-4-2015
  *
  */
 public abstract class Inequality {
-	
+
+	/** Reference to the CutGenerator which generates inequalities of the type that extends this class **/
 	public final CutGenerator maintainingGenerator;
-	
+
+	/**
+	 * Creates a new inequality
+	 * @param maintainingGenerator Reference to the CutGenerator which generates inequalities of the type that extends this class
+	 */
 	public Inequality(CutGenerator maintainingGenerator){
 		this.maintainingGenerator=maintainingGenerator;
 	}
-	
+
 	@Override
 	public abstract boolean equals(Object o);
 	

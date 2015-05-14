@@ -82,8 +82,8 @@ public class MathUtil {
 		
 		
 		// Iteration variables, for the square root x and the reciprocal v
-		BigDecimal x = null, e = null;              // initial x:  x0 ~ sqrt()
-		BigDecimal v = null, g = null;              // initial v:  v0 = 1/(2*x)
+		BigDecimal x, e;              // initial x:  x0 ~ sqrt()
+		BigDecimal v, g;              // initial v:  v0 = 1/(2*x)
 		
 		// Estimate the square root with the foremost 62 bits of squarD
 		BigInteger bi = squarD.unscaledValue();     // bi and scale are a tandem
@@ -113,7 +113,7 @@ public class MathUtil {
 		
 		
 		// Collect iteration precisions beforehand
-		ArrayList<Integer> nPrecs = new ArrayList<Integer>();
+		ArrayList<Integer> nPrecs = new ArrayList<>();
 		
 		assert nInit > 3 : "Never ending loop!";                // assume nInit = 16 <= prec
 		

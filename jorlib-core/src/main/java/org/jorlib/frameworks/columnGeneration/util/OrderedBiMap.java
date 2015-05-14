@@ -33,7 +33,7 @@ import com.google.common.collect.HashBiMap;
 
 /**
  * Bidirectional map. Contains several methods to get lists/arrays of the keys/values which allow deterministic iteration ordering.
- * This class is more flexible than Guava's BiMap<K,V> or Oracle's LinkedHashMap<K,V> 
+ * This class is more flexible than Guava's BiMap<K,V> or Oracle's LinkedHashMap<K,V>. The map cannot hold duplicate keys!
  * 
  * @author Joris Kinable
  * @version 13-4-2015
@@ -48,12 +48,14 @@ public class OrderedBiMap<K,V> extends AbstractMap<K, V>{
 	
 	public OrderedBiMap(){
 		biMap=HashBiMap.create();
-		keys=new ArrayList<K>();
-		values=new ArrayList<V>();
+		keys=new ArrayList<>();
+		values=new ArrayList<>();
 	}
 	
 	/**
 	 * Put a key, value pair in the map. The key cannot be null, nor can you insert duplicate keys.
+	 * @param  key key
+	 * @param value value
 	 */
 	public V put(K key, V value){
 		if(key==null)
@@ -70,13 +72,14 @@ public class OrderedBiMap<K,V> extends AbstractMap<K, V>{
 	
 	/**
 	 * Get a key from the map (O(1))
+	 * @param key key
 	 */
 	public V get(Object key){
 		return biMap.get(key);
 	}
 	
 	/**
-	 * Remove a key.
+	 * Remove a key. Removing keys is relatively expensive O(n) time, where n is the number of items in the list.
 	 * @return returns null if they key was contained in the map, returns V
 	 */
 	public V remove(Object k){
@@ -89,7 +92,7 @@ public class OrderedBiMap<K,V> extends AbstractMap<K, V>{
 	}
 	
 	/**
-	 * @return returns whether the key is contained in the map
+	 * @return returns whether the key is contained in the map. Runtime: O(1)
 	 */
 	public boolean containsKey(Object key){
 		return biMap.containsKey(key);

@@ -42,14 +42,14 @@ import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
  */
 public class PricingProblemByColor extends AbstractPricingProblem<TSP> {
 	
-	//Color of the matching group. Can be either Red or Blue
+	/** Color of the matching group. Can be either Red or Blue **/
 	public final MatchingColor color;
 
 	/**
 	 * Creates a new Pricing problem instance
-	 * @param modelData
-	 * @param name
-	 * @param color
+	 * @param modelData data model
+	 * @param name name of pricing problem
+	 * @param color color
 	 */
 	public PricingProblemByColor(TSP modelData, String name, MatchingColor color) {
 		super(modelData, name);

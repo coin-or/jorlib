@@ -26,22 +26,16 @@
  */
 package org.jorlib.frameworks.columnGeneration.pricing;
 
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import org.jorlib.demo.frameworks.columnGeneration.branchAndPriceExample.cg.Matching;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecisionListener;
-import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Defines a Pricing Problem.
  * Often, Column generation models decouple in a single Master problem and one or more Pricing problems. The pricing problems can be solved
- * independently. This class models a pricing problem.
+ * independently. This class models a pricing problem and provides storage for information coming from the master problem which is required
+ * to solve the pricing problems, e.g. dual values.
  * 
  * @author Joris Kinable
  * @version 13-4-2015
@@ -49,28 +43,49 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractPricingProblem<T> implements BranchingDecisionListener{
 
+	/** Logger for this class **/
 	protected final Logger logger = LoggerFactory.getLogger(AbstractPricingProblem.class);
 	
-	//Data object
+	/** Data object **/
 	protected final T modelData;
 	
-	//Name of this pricing problem
+	/** Name of this pricing problem **/
 	public final String name;
 
-	//Information coming from the master problem
-	public double[] modifiedCosts;
+	/** Array containing dual information coming from the master problem **/
+	public double[] dualCosts;
+
+	/** Variable containing dual information coming from the master problem **/
 	public double dualConstant;
-		
+
+	/**
+	 * Create a new Pricing Problem
+	 * @param modelData Data model
+	 * @param name Name of the pricing problem
+	 */
 	public AbstractPricingProblem(T modelData, String name){
 		this.modelData=modelData;
 		this.name=name;
 	}
-	
-	public void initPricingProblem(double[] modifiedCosts){
-		this.initPricingProblem(modifiedCosts,0);
+
+	/**
+	 * Store dual information in the dualCosts array.
+	 * @param dualCosts dual values
+	 */
+	public void initPricingProblem(double[] dualCosts){
+		this.initPricingProblem(dualCosts,0);
 	}
-	public void initPricingProblem(double[] modifiedCosts, double dualConstant){
-		this.modifiedCosts=modifiedCosts;
+
+	/**
+	 * Store dual information in the dualCosts array and dualConstant variable. The pricing problem often looks like:
+	 * a_1x_1+a_2x_2+...+a_nx_n <= b, where a_i are dual variables, and b some constant. The dualCosts array would hold the
+	 * a_i values whereas b is stored in the dualConstant variable
+	 *
+	 * @param dualCosts dual values
+	 * @param dualConstant dual value
+	 */
+	public void initPricingProblem(double[] dualCosts, double dualConstant){
+		this.dualCosts =dualCosts;
 		this.dualConstant=dualConstant;
 	}
 	
@@ -78,11 +93,19 @@ public abstract class AbstractPricingProblem<T> implements BranchingDecisionList
 		return name;
 	}
 
+	/**
+	 * Method invoked when a branching decision is executed
+	 * @param bd branching decision
+	 */
 	@Override
 	public void branchingDecisionPerformed(BranchingDecision bd) {
 		//Nothing to do here
 	}
 
+	/**
+	 * Method invoked when a branching decision is reversed due to backtracking in the branch and price tree
+	 * @param bd branching decision
+	 */
 	@Override
 	public void branchingDecisionRewinded(BranchingDecision bd) {
 		//Nothing to do here

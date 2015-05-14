@@ -33,22 +33,28 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 
 /**
  * Each pricing problem (PricingProblem) is solved by some algorithm (PricingProblemSolver). This class is a container which holds
- * a single instance of a PricingProblemSolver for *each* PricingProblem. The instances are produced by a PricingProblemSolverFactory
+ * all instance of a particular PricingProblemSolver. Typically, there exists an instance for each pricing problem.
+ * The instances are produced by a PricingProblemSolverFactory. This class takes a solver, list of pricing problems and a solverFactory
+ * and it produces the necessary solver instances.
  * 
  * @author Joris Kinable
  * @version 13-4-2015
  *
  */
-public final class PricingProblemBundle<T, U extends AbstractColumn<T,U,V>, V extends AbstractPricingProblem<T>> {
+public final class PricingProblemBundle<T, U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T>> {
+
+	/** The solver (class) **/
 	public final Class<? extends PricingProblemSolver<T, U, V>> pricingSolver;
+
+	/** The solver instances. The number of instances equals the number of pricing problems **/
 	public final List<PricingProblemSolver<T, U, V>> solverInstances;
 	
 	/**
 	 * Each pricing problem (PricingProblem) is solved by some algorithm (PricingProblemSolver). This class is a container which holds
 	 * a single instance of a PricingProblemSolver for *each* PricingProblem. The instances are produced by a PricingProblemSolverFactory
-	 * @param pricingSolver The solver for which the instances need to be created
+	 * @param pricingSolver The solver
 	 * @param pricingProblems List of pricing problems
-	 * @param solverFactory Factory to produce Solver Instances
+	 * @param solverFactory Factory to produce Solver Instances of the type of the pricingSolver.
 	 */
 	public PricingProblemBundle(Class<? extends PricingProblemSolver<T, U, V>> pricingSolver, 
 			List<V> pricingProblems, 
