@@ -20,8 +20,8 @@
  */
 package org.jorlib.io.tspLibReader;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,7 +42,7 @@ public class TestHCP {
 	
 	@BeforeClass
 	public static void initializeInstances() {
-		instances = new HashSet<String>();
+		instances = new HashSet<>();
 		instances.add("alb1000");
 		instances.add("alb2000");
 		instances.add("alb3000a");
@@ -61,26 +61,25 @@ public class TestHCP {
 	
 	@Test
 	public void testLoad() throws IOException {
-		File directory = new File("./data/tspLib/hcp/");
-		if(!directory.exists()){
-			System.out.println("Skipping TestHCP unit tests: HCP data not available");
-			return;
-		}
-		for (String instance : instances) {
-			File instanceData = new File(directory, instance + ".hcp");
-			File optimalTour = new File(directory, instance + ".opt.tour");
-			
-			if (instanceData.exists() && optimalTour.exists()) {
-				TSPLibInstance problem = new TSPLibInstance(instanceData);
-				Assert.assertEquals(DataType.HCP, problem.getDataType());
-				problem.addTour(optimalTour);
-				
-				for (TSPLibTour tour : problem.getTours()) {
-					Assert.assertTrue(tour.isHamiltonianCycle(problem));
-					Assert.assertTrue(tour.containsFixedEdges(problem));
-				}
-			}else
-				System.out.println("Skipping TestHCP unit test for instance: "+instanceData.getName()+" - Instance file or tour file does not exist");
+		for(String instance : instances){
+			InputStream inputStream1 = getClass().getClassLoader().getResourceAsStream("./tspLib/hcp/"+instance+".hcp");
+			if(inputStream1 == null)
+				Assert.fail("Cannot find problem instance!");
+			TSPLibInstance problem = new TSPLibInstance(inputStream1);
+			Assert.assertEquals(DataType.HCP, problem.getDataType());
+
+			InputStream inputStream2 = getClass().getClassLoader().getResourceAsStream("./tspLib/hcp/"+instance+".opt.tour");
+			if(inputStream2 == null){ //No optimal tour file exists
+				inputStream1.close();
+				continue;
+			}
+			problem.addTour(inputStream2);
+			for (TSPLibTour tour : problem.getTours()) {
+				Assert.assertTrue(tour.isHamiltonianCycle(problem));
+				Assert.assertTrue(tour.containsFixedEdges(problem));
+			}
+			inputStream1.close();
+			inputStream2.close();
 		}
 	}
 

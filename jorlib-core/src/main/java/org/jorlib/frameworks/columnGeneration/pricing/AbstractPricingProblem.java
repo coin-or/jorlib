@@ -47,7 +47,7 @@ public abstract class AbstractPricingProblem<T> implements BranchingDecisionList
 	protected final Logger logger = LoggerFactory.getLogger(AbstractPricingProblem.class);
 	
 	/** Data object **/
-	protected final T modelData;
+	protected final T dataModel;
 	
 	/** Name of this pricing problem **/
 	public final String name;
@@ -60,11 +60,11 @@ public abstract class AbstractPricingProblem<T> implements BranchingDecisionList
 
 	/**
 	 * Create a new Pricing Problem
-	 * @param modelData Data model
+	 * @param dataModel Data model
 	 * @param name Name of the pricing problem
 	 */
-	public AbstractPricingProblem(T modelData, String name){
-		this.modelData=modelData;
+	public AbstractPricingProblem(T dataModel, String name){
+		this.dataModel = dataModel;
 		this.name=name;
 	}
 

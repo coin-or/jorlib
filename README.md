@@ -5,7 +5,7 @@ Released: April, 2015</p>
 
 Written by Joris Kinable and Contributors
 
-(C) Copyright 2015, by [Joris Kinable](mailto:joris.kinable@kuleuven.be) and Contributors. All rights
+(C) Copyright 2015, by [Joris Kinable](mailto:jkinable@cs.cmu.edu) and Contributors. All rights
 reserved.
 
 Please address all contributions, suggestions, and inquiries to the current project administrator [Joris Kinable](mailto:joris.kinable@kuleuven.be)
@@ -35,7 +35,9 @@ Will be included later....
 - jORLib requires JDK 1.8 or later to build.
 - [JUnit](http://www.junit.org) is a unit testing framework. You need JUnit only if you want to run the unit tests.  JUnit is licensed under the terms of the IBM Common Public License.  The JUnit tests included with jORLib have been created using JUnit `4.12`.
 - [jGraphT](http://jgrapht.org/) is a free Java graph library that provides mathematical graph-theory objects and algorithms and supports various types of graphs. jGraphT is required to model several problems, such as the TSP network for the subtour elimination algorithm. jGraphT version 0.9.0 is used in jORLib. 
-
+- [Guava](https://code.google.com/p/guava-libraries/) The Guava project contains several of Googles core libraries for Java-based projects: collections, caching, primitives support, concurrency libraries, common annotations, string processing, I/O, and so forth. Guava version 14.0.1 is needed for the Branch-and-Price framework.
+- [Logback](http://logback.qos.ch/) Provides logging fascilities. logback-classic-0.9.28.jar and logback-core-0.9.28.jar are required for the Branch-and-Price framework.
+- [Slf4j](http://www.slf4j.org/) The Simple Logging Facade for Java (SLF4J) serves as a simple facade or abstraction for various logging frameworks (e.g. java.util.logging, logback, log4j) allowing the end user to plug in the desired logging framework at deployment time. slf4j-api-1.6.1.jar is required for the Branch-and-Price framework.
 
 ## Online Resources ##
 
@@ -53,5 +55,5 @@ If you add improvements to jORLib please send them to us as pull requests on git
 
 With regards from
 
-[Joris Kinable](mailto:joris.kinable@kuleuven.be), jORLib Project Creator
+[Joris Kinable](mailto:jkinable@cs.cmu.edu), jORLib Project Creator
 

@@ -22,6 +22,7 @@ package org.jorlib.io.tspLibReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -95,20 +96,13 @@ public class TestSOP {
 	
 	@Test
 	public void testLoad() throws IOException {
-		File directory = new File("./data/tspLib/sop/");
-		if(!directory.exists()){
-			System.out.println("Skipping TestSOP unit tests: SOP data not available");
-			return;
-		}
-		
 		for (String instance : instances) {
-			File instanceData = new File(directory, instance + ".sop");
-			if (instanceData.exists()) {
-				TSPLibInstance problem = new TSPLibInstance(instanceData);
-				Assert.assertEquals(DataType.SOP, problem.getDataType());
-			}else{
-				System.out.println("Skipping TestSOP unit test for instance: "+instanceData.getName()+" - File does not exist");
-			}
+			InputStream inputStream = getClass().getClassLoader().getResourceAsStream("./tspLib/sop/"+instance+".sop");
+			if(inputStream == null)
+				Assert.fail("Cannot find problem instance!");
+			TSPLibInstance problem = new TSPLibInstance(inputStream);
+			Assert.assertEquals(DataType.SOP, problem.getDataType());
+			inputStream.close();
 		}
 	}
 

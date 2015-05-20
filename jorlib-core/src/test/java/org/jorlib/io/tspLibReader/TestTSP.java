@@ -20,8 +20,7 @@
  */
 package org.jorlib.io.tspLibReader;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -42,7 +41,7 @@ public class TestTSP {
 	
 	@BeforeClass
 	public static void initializeInstances() {
-		instances = new LinkedHashMap<String, Integer>();
+		instances = new LinkedHashMap<>();
 		instances.put("a280", 2579);
 		instances.put("ali535", 202339);
 		instances.put("att48", 10628);
@@ -160,45 +159,37 @@ public class TestTSP {
 	
 	@Test
 	public void testLoad() throws IOException {
-		File directory = new File("./data/tspLib/tsp/");
-		if(!directory.exists()){
-			System.out.println("Skipping TestTSP unit tests: TSP data not available");
-			return;
-		}
 		for (String instance : instances.keySet()) {
-			File instanceData = new File(directory, instance + ".tsp");
-			if (instanceData.exists()) {
-				TSPLibInstance problem = new TSPLibInstance(instanceData);
-				Assert.assertEquals(DataType.TSP, problem.getDataType());
-			}else{
-				System.out.println("Skipping TestTSP unit test for instance: "+instanceData.getName()+" - File does not exist");
-			}
+			InputStream inputStream = getClass().getClassLoader().getResourceAsStream("./tspLib/tsp/"+instance+".tsp");
+			if(inputStream == null)
+				Assert.fail("Cannot find problem instance!");
+			TSPLibInstance problem = new TSPLibInstance(inputStream);
+			Assert.assertEquals(DataType.TSP, problem.getDataType());
+			inputStream.close();
 		}
 	}
 	
 	@Test
 	public void testDistance() throws IOException {
-		File directory = new File("./data/tspLib/tsp/");
-		if(!directory.exists()){
-			System.out.println("Skipping TestTSP unit tests: TSP data not available");
-			return;
-		}
-		
 		for (String instance : instances.keySet()) {
-			File instanceData = new File(directory, instance + ".tsp");
-			File optimalTour = new File(directory, instance + ".opt.tour");
-			
-			if (instanceData.exists() && optimalTour.exists()) {
-				TSPLibInstance problem = new TSPLibInstance(instanceData);
-				Assert.assertEquals(DataType.TSP, problem.getDataType());
-				problem.addTour(optimalTour);
-				
-				for (TSPLibTour tour : problem.getTours()) {
-					double tourLength = tour.distance(problem);
-					double optimalLength = instances.get(instance);
-					Assert.assertEquals(optimalLength, tourLength, 0.5);
-				}
+			InputStream inputStream1 = getClass().getClassLoader().getResourceAsStream("./tspLib/tsp/"+instance+".tsp");
+			InputStream inputStream2 = getClass().getClassLoader().getResourceAsStream("./tspLib/tsp/"+instance+".opt.tour");
+			if(inputStream1 == null)
+				Assert.fail("Cannot find problem instance!");
+			else if(inputStream2 == null){ //No optimal tour file exists
+				inputStream1.close();
+				continue;
 			}
+			TSPLibInstance problem = new TSPLibInstance(inputStream1);
+			Assert.assertEquals(DataType.TSP, problem.getDataType());
+			problem.addTour(inputStream2);
+			for (TSPLibTour tour : problem.getTours()) {
+				double tourLength = tour.distance(problem);
+				double optimalLength = instances.get(instance);
+				Assert.assertEquals(optimalLength, tourLength, 0.5);
+			}
+			inputStream1.close();
+			inputStream2.close();
 		}
 	}
 

@@ -51,7 +51,7 @@ public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T, V>,V e
 	protected final Logger logger = LoggerFactory.getLogger(AbstractBranchCreator.class);
 
 	/** Data model **/
-	protected final T modelData;
+	protected final T dataModel;
 	/** Pricing problems **/
 	protected final List<V> pricingProblems;
 	/** Branch and Price class **/
@@ -59,20 +59,20 @@ public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T, V>,V e
 
 	/**
 	 * Creates a new BranchCreator
-	 * @param modelData data model
+	 * @param dataModel data model
 	 * @param pricingProblem pricing problem
 	 */
-	public AbstractBranchCreator(T modelData, V pricingProblem){
-		this(modelData, Collections.singletonList(pricingProblem));
+	public AbstractBranchCreator(T dataModel, V pricingProblem){
+		this(dataModel, Collections.singletonList(pricingProblem));
 	}
 
 	/**
 	 * Creates a new BranchCreator
-	 * @param modelData data model
+	 * @param dataModel data model
 	 * @param pricingProblems pricing problems
 	 */
-	public AbstractBranchCreator(T modelData, List<V> pricingProblems){
-		this.modelData=modelData;
+	public AbstractBranchCreator(T dataModel, List<V> pricingProblems){
+		this.dataModel = dataModel;
 		this.pricingProblems=pricingProblems;
 	}
 

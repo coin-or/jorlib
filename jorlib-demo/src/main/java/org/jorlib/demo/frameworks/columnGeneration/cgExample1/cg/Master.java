@@ -118,9 +118,9 @@ public class Master extends AbstractMaster<CuttingStock, CuttingPattern, Pricing
 			obj= cplex.addMinimize();
 			
 			//Define constraints
-			satisfyDemandConstr=new IloRange[modelData.nrFinals];
-			for(int i=0; i<modelData.nrFinals; i++)
-				satisfyDemandConstr[i]= cplex.addRange(modelData.demandForFinals[i], modelData.demandForFinals[i], "satisfyDemandFinal_"+i);
+			satisfyDemandConstr=new IloRange[dataModel.nrFinals];
+			for(int i=0; i< dataModel.nrFinals; i++)
+				satisfyDemandConstr[i]= cplex.addRange(dataModel.demandForFinals[i], dataModel.demandForFinals[i], "satisfyDemandFinal_"+i);
 			
 			//Define a container for the variables
 		} catch (IloException e) {
@@ -147,7 +147,7 @@ public class Master extends AbstractMaster<CuttingStock, CuttingPattern, Pricing
 			IloColumn iloColumn= cplex.column(obj,1);
 		
 			//Register column with demand constraint
-			for(int i=0; i<modelData.nrFinals; i++)
+			for(int i=0; i< dataModel.nrFinals; i++)
 				iloColumn=iloColumn.and(cplex.column(satisfyDemandConstr[i], column.yieldVector[i]));
 			
 			//Create the variable and store it

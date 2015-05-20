@@ -20,10 +20,7 @@
  */
 package org.jorlib.io.tspLibReader;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,23 +141,34 @@ public class TSPLibInstance {
 	 */
 	public TSPLibInstance(File file) throws IOException {
 		this();
-		load(file);
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		load(reader);
+	}
+
+	/**
+	 * Constructs a TSPLIB problem instance from the specified TSPLIB file.
+	 *
+	 * @param inputStream inputStream to the TSPLIB file defining the problem
+	 * @throws IOException if an I/O error occurred while loading the TSPLIB
+	 *         file
+	 */
+	public TSPLibInstance(InputStream inputStream) throws IOException {
+		this();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+		load(reader);
 	}
 	
 	/**
 	 * Loads a problem instance from the specified TSPLIB file.
 	 * 
-	 * @param file the TSPLIB file defining the problem
+	 * @param reader input stream to a TSPLIB file defining the problem
 	 * @throws IOException if an I/O error occurred while loading the TSPLIB
 	 *         file
 	 */
-	public void load(File file) throws IOException {
-		BufferedReader reader = null;
+	public void load(BufferedReader reader) throws IOException {
 		String line = null;
 		
 		try {
-			reader = new BufferedReader(new FileReader(file));
-			
 			while ((line = reader.readLine()) != null) {
 				line = line.trim();
 				
@@ -281,12 +289,13 @@ public class TSPLibInstance {
 	 * condition holds.
 	 * 
 	 * @param file the file containing a solution to this TSPLIB problem
-	 *        instance
+	 *             instance
 	 * @throws IOException if an I/O error occurred while loading the tour
 	 */
 	public void addTour(File file) throws IOException {
 		TSPLibInstance problem = new TSPLibInstance();
-		problem.load(file);
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		problem.load(reader);
 		
 		if (problem.getDataType().equals(DataType.TOUR)) {
 			tours.addAll(problem.getTours());
@@ -294,7 +303,29 @@ public class TSPLibInstance {
 			throw new IllegalArgumentException("not a tour file");
 		}
 	}
-	
+
+	/**
+	 * Adds a solution to this TSPLIB problem instance that is defined in a
+	 * separate file.  This method does not verify that the solution is a
+	 * valid tour for this problem instance; the caller must ensure this
+	 * condition holds.
+	 *
+	 * @param inputStream inputStream to the file containing a solution to this TSPLIB problem
+	 *        instance
+	 * @throws IOException if an I/O error occurred while loading the tour
+	 */
+	public void addTour(InputStream inputStream) throws IOException {
+		TSPLibInstance problem = new TSPLibInstance();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+		problem.load(reader);
+
+		if (problem.getDataType().equals(DataType.TOUR)) {
+			tours.addAll(problem.getTours());
+		} else {
+			throw new IllegalArgumentException("not a tour file");
+		}
+	}
+
 	/**
 	 * Returns the name of this problem instance.
 	 * 

@@ -110,10 +110,10 @@ public class PricingProblemManager<T, U extends AbstractColumn<T, V>, V extends 
 	 * @throws TimeLimitExceededException exception thrown when timelimit is exceeded.
 	 */
 	public List<U> solvePricingProblems(int solverID) throws TimeLimitExceededException{
-		PricingProblemBundle<T, U, V> bunddle=pricingProblemBundles.get(solverID);
+		PricingProblemBundle<T, U, V> bundle=pricingProblemBundles.get(solverID);
 		
 		//1. schedule pricing problems
-		for(PricingProblemSolver<T, U, V> solverInstance : bunddle.solverInstances){
+		for(PricingProblemSolver<T, U, V> solverInstance : bundle.solverInstances){
 			Future<Void> f=executor.submit(solverInstance);
         	futures.add(f);
 		}
@@ -136,7 +136,7 @@ public class PricingProblemManager<T, U extends AbstractColumn<T, V>, V extends 
 		
 		//3. Collect and return results
 		List<U> newColumns=new ArrayList<>();
-		for(PricingProblemSolver<T, U, V> solverInstance : bunddle.solverInstances){
+		for(PricingProblemSolver<T, U, V> solverInstance : bundle.solverInstances){
 			newColumns.addAll(solverInstance.getColumns());
 		}
 		

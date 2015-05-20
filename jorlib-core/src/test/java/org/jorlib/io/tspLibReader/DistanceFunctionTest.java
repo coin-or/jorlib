@@ -22,6 +22,7 @@ package org.jorlib.io.tspLibReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -38,32 +39,29 @@ public class DistanceFunctionTest {
 
 	@Test
 	public void testPCB442() throws IOException, URISyntaxException{
-		File file=new File("./data/tspLib/tsp/pcb442.tsp");
-		if(file.exists()){
-			TSPLibInstance problem = new TSPLibInstance(file);
-			problem.addTour(TSPLibTour.createCanonicalTour(problem.getDimension()));
-			Assert.assertEquals(221440, problem.getTours().get(0).distance(problem), 0.5);
-		}
+		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("./tspLib/tsp/pcb442.tsp");
+		TSPLibInstance problem = new TSPLibInstance(inputStream);
+		problem.addTour(TSPLibTour.createCanonicalTour(problem.getDimension()));
+		Assert.assertEquals(221440, problem.getTours().get(0).distance(problem), 0.5);
+		inputStream.close();
 	}
 
 	@Test
 	public void testGR666() throws IOException, URISyntaxException {
-		File file=new File("./data/tspLib/tsp/gr666.tsp");
-		if(file.exists()){
-			TSPLibInstance problem = new TSPLibInstance(file);
-			problem.addTour(TSPLibTour.createCanonicalTour(problem.getDimension()));
-			Assert.assertEquals(423710, problem.getTours().get(0).distance(problem), 0.5);
-		}
+		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("./tspLib/tsp/gr666.tsp");
+		TSPLibInstance problem = new TSPLibInstance(inputStream);
+		problem.addTour(TSPLibTour.createCanonicalTour(problem.getDimension()));
+		Assert.assertEquals(423710, problem.getTours().get(0).distance(problem), 0.5);
+		inputStream.close();
 	}
 
 	@Test
 	public void testATT532() throws IOException, URISyntaxException {
-		File file=new File("./data/tspLib/tsp/att532.tsp");
-		if(file.exists()){
-			TSPLibInstance problem = new TSPLibInstance(file);
-			problem.addTour(TSPLibTour.createCanonicalTour(problem.getDimension()));
-			Assert.assertEquals(309636, problem.getTours().get(0).distance(problem), 0.5);
-		}
+		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("./tspLib/tsp/att532.tsp");
+		TSPLibInstance problem = new TSPLibInstance(inputStream);
+		problem.addTour(TSPLibTour.createCanonicalTour(problem.getDimension()));
+		Assert.assertEquals(309636, problem.getTours().get(0).distance(problem), 0.5);
+		inputStream.close();
 	}
 	
 }

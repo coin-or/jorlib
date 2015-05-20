@@ -37,61 +37,61 @@ import java.util.EventListener;
 public interface BAPListener extends EventListener {
     /**
      * Method invoked when branch and price is started
-     * @param startBAPEvent
+     * @param startEvent startEvent
      */
-    public void startBAP(StartBAPEvent startBAPEvent);
+    void startBAP(StartEvent startEvent);
 
     /**
      * Method invoked when branch and price is finished (either the optimal solution has been found, or the process is terminated due to a time limit)
-     * @param startBAPEvent
+     * @param finishEvent finishEvent
      */
-    public void stopBAP(StopBAPEvent startBAPEvent);
+    void finishBAP(FinishEvent finishEvent);
 
     /**
      * Method invoked when a node is pruned, for example because the node's lower bound exceeds the best known feasible integer solution (upper bound)
-     * @param pruneNodeEvent
+     * @param pruneNodeEvent pruneNodeEvent
      */
-    public void pruneNode(PruneNodeEvent pruneNodeEvent);
+    void pruneNode(PruneNodeEvent pruneNodeEvent);
 
     /**
      * Method invoked when a node is infeasible, i.e. no solution to its master problem exists
-     * @param nodeIsInfeasibleEvent
+     * @param nodeIsInfeasibleEvent nodeIsInfeasibleEvent
      */
-    public void nodeIsInfeasible(NodeIsInfeasibleEvent nodeIsInfeasibleEvent);
+    void nodeIsInfeasible(NodeIsInfeasibleEvent nodeIsInfeasibleEvent);
 
     /**
      * Method invoked when the node is an integer node
-     * @param nodeIsIntegerEvent
+     * @param nodeIsIntegerEvent nodeIsIntegerEvent
      */
-    public void nodeIsInteger(NodeIsIntegerEvent nodeIsIntegerEvent);
+    void nodeIsInteger(NodeIsIntegerEvent nodeIsIntegerEvent);
 
     /**
      * Method invoked when the node has a fractional solution (branching is required)
-     * @param nodeIsFractionalEvent
+     * @param nodeIsFractionalEvent nodeIsFractionalEvent
      */
-    public void nodeIsFractional(NodeIsFractionalEvent nodeIsFractionalEvent);
+    void nodeIsFractional(NodeIsFractionalEvent nodeIsFractionalEvent);
 
     /**
      * Method invoked when the branch and price process starts processing a new node
-     * @param processingNextNodeEvent
+     * @param processingNextNodeEvent processingNextNodeEvent
      */
-    public void processNextNode(ProcessingNextNodeEvent processingNextNodeEvent);
+    void processNextNode(ProcessingNextNodeEvent processingNextNodeEvent);
 
     /**
      * Method invoked when the branch and price process finishes processing a node
-     * @param finishCGEvent
+     * @param finishProcessingNodeEvent finishProcessingNodeEvent
      */
-    public void finishedColumnGenerationForNode(FinishCGEvent finishCGEvent);
+    void finishedColumnGenerationForNode(FinishProcessingNodeEvent finishProcessingNodeEvent);
 
     /**
      * Method invoked when the branch and price process is terminated due to a time out
-     * @param timeOutEvent
+     * @param timeLimitExceededEvent timeLimitExceededEvent
      */
-    public void timeOut(TimeOutEvent timeOutEvent);
+    void timeLimitExceeded(TimeLimitExceededEvent timeLimitExceededEvent);
 
     /**
      * Method invoked when branch and price created new branches in the branch and price tree
-     * @param branchEvent
+     * @param branchEvent branchEvent
      */
-    public void branchCreated(BranchEvent branchEvent);
+    void branchCreated(BranchEvent branchEvent);
 }

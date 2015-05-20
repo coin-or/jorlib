@@ -62,7 +62,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	protected final Configuration config=Configuration.getConfiguration();
 
 	/** Data model **/
-	protected final T modelData;
+	protected final T dataModel;
 	/** Pricing Problems **/
 	protected final List<V> pricingProblems;
 	/** Data object which stores data from the Master Problem **/
@@ -72,11 +72,11 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 
 	/**
 	 * Creates a new Master Problem
-	 * @param modelData data model
+	 * @param dataModel data model
 	 * @param pricingProblems pricing problems
 	 */
-	public AbstractMaster(T modelData, List<V> pricingProblems){
-		this.modelData=modelData;
+	public AbstractMaster(T dataModel, List<V> pricingProblems){
+		this.dataModel = dataModel;
 		this.pricingProblems=pricingProblems;
 		masterData=this.buildModel();
 		cutHandler=new CutHandler<>();
@@ -85,21 +85,21 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 
 	/**
 	 * Creates a new Master Problem
-	 * @param modelData data model
+	 * @param dataModel data model
 	 * @param pricingProblem pricing problem
 	 */
-	public AbstractMaster(T modelData, V pricingProblem){
-		this(modelData, Collections.singletonList(pricingProblem));
+	public AbstractMaster(T dataModel, V pricingProblem){
+		this(dataModel, Collections.singletonList(pricingProblem));
 	}
 
 	/**
 	 * Creates a new Master Problem
-	 * @param modelData data model
+	 * @param dataModel data model
 	 * @param pricingProblems pricing problems
 	 * @param cutHandler Reference to a cut handler
 	 */
-	public AbstractMaster(T modelData, List<V> pricingProblems, CutHandler<T,W> cutHandler){
-		this.modelData=modelData;
+	public AbstractMaster(T dataModel, List<V> pricingProblems, CutHandler<T,W> cutHandler){
+		this.dataModel = dataModel;
 		this.pricingProblems=pricingProblems;
 		this.cutHandler=cutHandler;
 		masterData=this.buildModel();
@@ -108,12 +108,12 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 
 	/**
 	 * Creates a new Master Problem
-	 * @param modelData data model
+	 * @param dataModel data model
 	 * @param pricingProblem pricing problem
 	 * @param cutHandler Reference to a cut handler
 	 */
-	public AbstractMaster(T modelData, V pricingProblem, CutHandler<T,W> cutHandler){
-		this(modelData, Collections.singletonList(pricingProblem), cutHandler);
+	public AbstractMaster(T dataModel, V pricingProblem, CutHandler<T,W> cutHandler){
+		this(dataModel, Collections.singletonList(pricingProblem), cutHandler);
 	}
 
 	/**
@@ -175,12 +175,10 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	* @return true if cuts were added to the master problem, false otherwise
 	*/
 	public boolean hasNewCuts(){
-		logger.debug("Checking for cuts");
 		boolean hasNewCuts=false;
 		if(cutHandler != null){
 			hasNewCuts=cutHandler.generateCuts();
 		}
-		logger.debug("Cuts found: {}", hasNewCuts);
 		return hasNewCuts;
 	}
 	
@@ -232,14 +230,6 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	 * @return solution consisting of non-zero columns
 	 */
 	public abstract List<U> getSolution();
-	
-	/**
-	 * Verifies whether a particular solution is an integer solution.
-	 * @return Return true if the solution derived by the master problem is integer
-	 */
-	public boolean solutionIsInteger(){
-		throw new UnsupportedOperationException("Not implemented. You should override this function");
-	}
 	
 	/**
 	 * To compute a lower bound on the optimal solution of the relaxed master problem (assuming that the master problem is a minimization problem), multiple components

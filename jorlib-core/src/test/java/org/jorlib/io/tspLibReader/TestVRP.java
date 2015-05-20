@@ -22,6 +22,7 @@ package org.jorlib.io.tspLibReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -69,20 +70,13 @@ public class TestVRP {
 	
 	@Test
 	public void testLoad() throws IOException {
-		File directory = new File("./data/tspLib/vrp/");
-		if(!directory.exists()){
-			System.out.println("Skipping TestVRP unit tests: VRP data not available");
-			return;
-		}
-		
 		for (String instance : instances) {
-			File instanceData = new File(directory, instance + ".vrp");
-			
-			if (instanceData.exists()) {
-				TSPLibInstance problem = new TSPLibInstance(instanceData);
-				Assert.assertEquals(DataType.CVRP, problem.getDataType());
-			}else
-				System.out.println("Skipping TestVRP unit test for instance: "+instanceData.getName()+" - File does not exist");
+			InputStream inputStream = getClass().getClassLoader().getResourceAsStream("./tspLib/vrp/"+instance+".vrp");
+			if(inputStream == null)
+				Assert.fail("Cannot find problem instance!");
+			TSPLibInstance problem = new TSPLibInstance(inputStream);
+			Assert.assertEquals(DataType.CVRP, problem.getDataType());
+			inputStream.close();
 		}
 	}
 

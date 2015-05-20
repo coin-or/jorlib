@@ -128,12 +128,12 @@ public class SimpleBAPLogger implements BAPListener{
     }
 
     @Override
-    public void startBAP(StartBAPEvent startBAPEvent) {
+    public void startBAP(StartEvent startEvent) {
         this.writeLine("BAPNodeID \t parentNodeID \t globalUB \t nodeLB \t nodeValue \t cgIterations \t t_master \t t_pricing \t nrGenColumns \t solutionStatus \t nodesInQueue");
     }
 
     @Override
-    public void stopBAP(StopBAPEvent startBAPEvent) {
+    public void finishBAP(FinishEvent finishEvent) {
         try {
             writer.close();
         } catch (IOException e) {
@@ -176,17 +176,17 @@ public class SimpleBAPLogger implements BAPListener{
     }
 
     @Override
-    public void finishedColumnGenerationForNode(FinishCGEvent finishCGEvent) {
-        this.lowerBoundNode=finishCGEvent.nodeBound;
-        this.nodeValue=finishCGEvent.nodeValue;
-        this.cgIterations=finishCGEvent.numberOfCGIterations;
-        this.timeSolvingMaster=finishCGEvent.masterSolveTime;
-        this.timeSolvingPricing=finishCGEvent.pricingSolveTime;
-        this.nrGeneratedColumns=finishCGEvent.nrGeneratedColumns;
+    public void finishedColumnGenerationForNode(FinishProcessingNodeEvent finishProcessingNodeEvent) {
+        this.lowerBoundNode= finishProcessingNodeEvent.nodeBound;
+        this.nodeValue= finishProcessingNodeEvent.nodeValue;
+        this.cgIterations= finishProcessingNodeEvent.numberOfCGIterations;
+        this.timeSolvingMaster= finishProcessingNodeEvent.masterSolveTime;
+        this.timeSolvingPricing= finishProcessingNodeEvent.pricingSolveTime;
+        this.nrGeneratedColumns= finishProcessingNodeEvent.nrGeneratedColumns;
     }
 
     @Override
-    public void timeOut(TimeOutEvent timeOutEvent){
+    public void timeLimitExceeded(TimeLimitExceededEvent timeLimitExceededEvent){
         this.nodeStatus =NodeResultStatus.INCONCLUSIVE;
         this.constructAndWriteLine();
     }
