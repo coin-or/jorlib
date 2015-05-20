@@ -26,8 +26,6 @@
  */
 package org.jorlib.demo.alg.knapsack.separation;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -35,7 +33,6 @@ import java.util.stream.Collectors;
 import org.jorlib.alg.knapsack.BinaryKnapsack;
 import org.jorlib.alg.knapsack.KnapsackAlgorithm;
 import org.jorlib.alg.knapsack.separation.LiftedCoverInequalitySeparator;
-import org.junit.Assert;
 
 /**
  * Demo class for the Lifted Cover Inequality Separator implementation

@@ -1,0 +1,15 @@
+org/jorlib/io/tspLibReader/DistanceFunctionTest.class
+org/jorlib/io/tspLibReader/EdgeTest.class
+org/jorlib/io/AllIOTests.class
+org/jorlib/alg/knapsack/separation/LiftedCoverInequalitySeparatorTest.class
+org/jorlib/io/tspLibReader/TourTest.class
+org/jorlib/io/tspLibReader/TestATSP.class
+org/jorlib/alg/AllAlgTests.class
+org/jorlib/io/tspLibReader/TestVRP.class
+org/jorlib/alg/packing/circlePacking/SmallestEnclosingCircleCalculatorTest.class
+org/jorlib/AllTests.class
+org/jorlib/alg/tsp/separation/SubtourSeparatorTest.class
+org/jorlib/io/tspLibReader/TestTSP.class
+org/jorlib/alg/knapsack/KnapsackTest.class
+org/jorlib/io/tspLibReader/TestHCP.class
+org/jorlib/io/tspLibReader/TestSOP.class

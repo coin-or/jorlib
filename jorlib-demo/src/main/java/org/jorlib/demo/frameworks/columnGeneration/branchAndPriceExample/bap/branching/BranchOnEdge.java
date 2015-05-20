@@ -113,11 +113,11 @@ public class BranchOnEdge extends AbstractBranchCreator<TSP, Matching, PricingPr
     protected List<BAPNode<TSP,Matching>> getBranches(BAPNode<TSP,Matching> parentNode, List<Matching> solution, List<Inequality> cuts) {
         //Branch 1: remove the edge:
         RemoveEdge branchingDecision1=new RemoveEdge(pricingProblemForMatching, edgeForBranching);
-        BAPNode node2=this.createBranch(parentNode, branchingDecision1, solution, cuts);
+        BAPNode<TSP,Matching> node2=this.createBranch(parentNode, branchingDecision1, solution, cuts);
 
         //Branch 2: fix the edge:
         FixEdge branchingDecision2=new FixEdge(pricingProblemForMatching, edgeForBranching);
-        BAPNode node1=this.createBranch(parentNode, branchingDecision2, solution, cuts);
+        BAPNode<TSP,Matching> node1=this.createBranch(parentNode, branchingDecision2, solution, cuts);
 
         return Arrays.asList(node1,node2);
     }
