@@ -60,6 +60,15 @@ public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T, V>,V e
 	/**
 	 * Creates a new BranchCreator
 	 * @param modelData data model
+	 * @param pricingProblem pricing problem
+	 */
+	public AbstractBranchCreator(T modelData, V pricingProblem){
+		this(modelData, Collections.singletonList(pricingProblem));
+	}
+
+	/**
+	 * Creates a new BranchCreator
+	 * @param modelData data model
 	 * @param pricingProblems pricing problems
 	 */
 	public AbstractBranchCreator(T modelData, List<V> pricingProblems){

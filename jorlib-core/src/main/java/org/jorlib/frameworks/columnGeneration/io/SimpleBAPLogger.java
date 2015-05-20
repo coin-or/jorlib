@@ -136,7 +136,6 @@ public class SimpleBAPLogger implements BAPListener{
     public void stopBAP(StopBAPEvent startBAPEvent) {
         try {
             writer.close();
-            System.out.println("logger closed");
         } catch (IOException e) {
             e.printStackTrace();
         }
