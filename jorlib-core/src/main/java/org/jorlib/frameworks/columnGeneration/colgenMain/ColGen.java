@@ -399,7 +399,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	}
 
 	/**
-	 * Inner Class which notifies BAPListeners
+	 * Inner Class which notifies CGListeners
 	 */
 	protected class CGNotifier {
 		/**

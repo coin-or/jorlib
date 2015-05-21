@@ -72,16 +72,16 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 	 * @return Returns true if a violated inequality has been found
 	 */
 	@Override
-	public boolean generateInqualities() {
+	public List<Inequality> generateInqualities() {
 		//Check for violated subtours. When found, generate an inequality
 		separator.separateSubtour(masterData.edgeValueMap);
 		if(separator.hasSubtour()){
 			Set<Integer> cutSet=separator.getCutSet();
 			SubtourInequality inequality=new SubtourInequality(this, cutSet);
 			this.addCut(inequality);
-			return true;
+			return Collections.singletonList(inequality);
 		}
-		return false;
+		return Collections.emptyList();
 	}
 
 	/**

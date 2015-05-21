@@ -52,6 +52,9 @@ public class Configuration {
 		CUTSENABLED = true;
 		EXPORT_MODEL=false;
 		EXPORT_MASTER_DIR="./output/masterLP/";
+
+		//Cut handling
+		QUICK_RETURN_AFTER_CUTS_FOUND=true;
 	}
 
 	/**
@@ -67,6 +70,9 @@ public class Configuration {
 		CUTSENABLED=Boolean.valueOf(properties.getProperty("CUTSENABLED"));
 		EXPORT_MODEL=Boolean.valueOf(properties.getProperty("EXPORT_MODEL"));
 		EXPORT_MASTER_DIR=properties.getProperty("EXPORT_MODEL_DIR");
+
+		//Cut handling
+		QUICK_RETURN_AFTER_CUTS_FOUND=Boolean.valueOf(properties.getProperty("QUICK_RETURN_AFTER_CUTS_FOUND"));
 	}
 	
 	/**
@@ -114,5 +120,16 @@ public class Configuration {
 	public final  boolean EXPORT_MODEL; 
 	/** Define export directory for master models. Default: ./output/masterLP/ **/
 	public final String EXPORT_MASTER_DIR;
-	
+
+
+	/**
+	 * Cut handling
+	 */
+
+	/**
+	 * The cutHandler invokes the cutGenerators one by one to generate cuts. When a particular cutGenerator does not yield any cuts,
+	 * the cutHandler will move on to the next registered cutGenerator. When quickReturnAfterCutsFound is set to true, the cutHandler
+	 * will return as soon as any cuts have been found. When set to false, all cutGenerators will be invoked.
+	 */
+	public final boolean QUICK_RETURN_AFTER_CUTS_FOUND;
 }

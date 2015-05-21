@@ -26,14 +26,14 @@
  */
 package org.jorlib.frameworks.columnGeneration.master.cutGeneration;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling.CHListener;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling.FinishGeneratingCutsEvent;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling.StartGeneratingCutsEvent;
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
+import org.jorlib.frameworks.columnGeneration.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,13 +49,18 @@ public class CutHandler<T extends ModelInterface,W extends MasterData>{
 
 	/** Logger for this class **/
 	protected final Logger logger = LoggerFactory.getLogger(CutHandler.class);
+	/** Configuration file for this class **/
+	protected final Configuration config=Configuration.getConfiguration();
 
 	/** Set of CutGenerators **/
 	protected Set<CutGenerator<T,W>> cutGenerators;
+	/** Helper class which notifies CHListeners **/
+	CHNotifier notifier;
 
 	/** Creates a new CutHandler **/
 	public CutHandler(){
 		cutGenerators=new LinkedHashSet<>();
+		notifier=new CHNotifier();
 	}
 	
 	
@@ -93,13 +98,15 @@ public class CutHandler<T extends ModelInterface,W extends MasterData>{
 	 * @return true if cuts have been found
 	 */
 	public boolean generateCuts(){
-		boolean foundCut=false;
+		List<Inequality> separatedInequalities=new ArrayList<>();
+		notifier.fireStartGeneratingCutsEvent();
 		for(CutGenerator<T,W> cutGen: cutGenerators){
-			foundCut = cutGen.generateInqualities();
-			if(foundCut)
+			separatedInequalities.addAll(cutGen.generateInqualities());
+			if(config.QUICK_RETURN_AFTER_CUTS_FOUND && !separatedInequalities.isEmpty())
 				break;
 		}
-		return foundCut;
+		notifier.fireFinishCGEvent(separatedInequalities);
+		return !separatedInequalities.isEmpty();
 	}
 	
 	/**
@@ -108,7 +115,7 @@ public class CutHandler<T extends ModelInterface,W extends MasterData>{
 	 * @param cuts Collection of inequalities
 	 */
 	public void addCuts(Collection<Inequality> cuts){
-		System.out.println("Cuthandler: Added initial cuts: "+cuts.size());
+		System.out.println("Cuthandler: Added initial cuts: " + cuts.size());
 		for(Inequality cut : cuts){
 			if(!this.cutGenerators.contains(cut.maintainingGenerator))
 				throw new RuntimeException("Attempt to add cut failed. CutGenerator for this type of cuts is not registered with the cut handler!");
@@ -134,6 +141,81 @@ public class CutHandler<T extends ModelInterface,W extends MasterData>{
 	public void close(){
 		for(CutGenerator<T,W> cutGen : cutGenerators){
 			cutGen.close();
+		}
+	}
+
+	/**
+	 * Adds a CHlistener
+	 * @param listener listener
+	 */
+	public void addListener(CHListener listener) {
+		notifier.addListener(listener);
+	}
+
+	/**
+	 * Removes a CHlistener
+	 * @param listener listener
+	 */
+	public void removeListener(CHListener listener) {
+		notifier.removeListener(listener);
+	}
+
+	/**
+	 * Inner Class which notifies CHListeners
+	 */
+	protected class CHNotifier {
+		/**
+		 * Listeners
+		 */
+		private Set<CHListener> listeners;
+
+		/**
+		 * Creates a new BAPNotifier
+		 */
+		public CHNotifier() {
+			listeners = new LinkedHashSet<>();
+		}
+
+		/**
+		 * Adds a listener
+		 *
+		 * @param listener listener
+		 */
+		public void addListener(CHListener listener) {
+			this.listeners.add(listener);
+		}
+
+		/**
+		 * Removes a listener
+		 *
+		 * @param listener listener
+		 */
+		public void removeListener(CHListener listener) {
+			this.listeners.remove(listener);
+		}
+
+		/**
+		 * Fires a StartEvent to indicate the start of the column generation procedure
+		 */
+		protected void fireStartGeneratingCutsEvent() {
+			StartGeneratingCutsEvent startGeneratingCutsEvent = null;
+			for (CHListener listener : listeners) {
+				if (startGeneratingCutsEvent == null)
+					startGeneratingCutsEvent = new StartGeneratingCutsEvent(CutHandler.this);
+				listener.startGeneratingCuts(startGeneratingCutsEvent);
+			}
+		}
+
+		/**
+		 * Fires a FinishEvent to indicate that the column generation procedure is finished
+		 */
+		protected void fireFinishCGEvent(List<Inequality> separatedInequalities) {
+			FinishGeneratingCutsEvent finishGeneratingCutsEvent = null;
+			for (CHListener listener : listeners) {
+				if (finishGeneratingCutsEvent == null)
+					finishGeneratingCutsEvent = new FinishGeneratingCutsEvent(CutHandler.this, Collections.unmodifiableList(separatedInequalities));
+				listener.finishGeneratingCuts(finishGeneratingCutsEvent);
+			}
 		}
 	}
 }
