@@ -118,6 +118,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 
 	/**
 	 * Build the master problem
+	 * @return a MasterData object
 	 */
 	protected abstract W buildModel();
 
@@ -141,7 +142,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	
 	/**
 	 * Get the reduced cost information required for a particular pricingProblem. The pricing problem often looks like:
-	 * a_1x_1+a_2x_2+...+a_nx_n <= b, where a_i are dual variables, and b some constant. The dual information is stored in
+	 * {@literal a_1x_1+a_2x_2+...+a_nx_n <= b}, where a_i are dual variables, and b some constant. The dual information is stored in
 	 * the PricingProblem object.
 	 *
 	 * @param pricingProblem Object in which the dual information required to solve the pricing problems is stored.
@@ -150,6 +151,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	
 	/**
 	 * Returns the objective value of the current master problem.
+	 * @return objective value of master problem
 	 */
 	public double getObjective(){
 		return masterData.objectiveValue;
@@ -194,6 +196,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	/**
 	 * Returns all the cuts in the master model
 	 * A handle to a cutHandler must have been provided in the constructor of this class
+	 * @return a list of inequalities
 	 */
 	public List<AbstractInequality> getCuts(){
 		return cutHandler.getCuts();
@@ -234,6 +237,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	/**
 	 * To compute a lower bound on the optimal solution of the relaxed master problem (assuming that the master problem is a minimization problem), multiple components
 	 * are required, including information from the master problem. This function returns that information.
+	 * @return value originating from the master problem which is required to calculate a bound on the optimal objective of the master problem
 	 */
 	public double getLowerBoundComponent(){
 		throw new UnsupportedOperationException("Not implemented. You should override this function");

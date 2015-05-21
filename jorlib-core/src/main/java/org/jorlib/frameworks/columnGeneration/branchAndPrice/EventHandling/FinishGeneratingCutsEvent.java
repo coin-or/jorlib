@@ -43,6 +43,7 @@ public class FinishGeneratingCutsEvent extends EventObject{
     /**
      * Creates a new FinishGeneratingCutsEvent
      * @param source Generator of the event
+     * @param separatedInequalities List of newly separated inqualities
      */
     public FinishGeneratingCutsEvent(Object source, List<AbstractInequality> separatedInequalities){
         super(source);

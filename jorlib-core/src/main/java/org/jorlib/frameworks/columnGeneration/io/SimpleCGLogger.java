@@ -74,6 +74,7 @@ public class SimpleCGLogger implements CGListener{
 
     /**
      * Create a new logger which writes its output the the file specified
+     * @param colGen Column generation instance for which this logger is created
      * @param outputFile file to redirect the output to.
      */
     public SimpleCGLogger(ColGen colGen, File outputFile){

@@ -67,6 +67,7 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 	/**
 	 * Create a new master problem
 	 * @param modelData model data
+	 * @param pricingProblems list of pricing problems
 	 * @param cutHandler cut handler
 	 */
 	public Master(TSP modelData, List<PricingProblemByColor> pricingProblems, CutHandler<TSP, TSPMasterData> cutHandler) {
@@ -114,7 +115,7 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 	 * Solve the master problem
 	 * @param timeLimit Future point in time by which the solve procedure must be completed
 	 * @return true if the master problem has been solved
-	 * @throws TimeLimitExceededException
+	 * @throws TimeLimitExceededException TimeLimitExceededException
 	 */
 	@Override
 	protected boolean solveMasterProblem(long timeLimit)	throws TimeLimitExceededException {

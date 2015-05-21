@@ -33,7 +33,7 @@ import com.google.common.collect.HashBiMap;
 
 /**
  * Bidirectional map. Contains several methods to get lists/arrays of the keys/values which allow deterministic iteration ordering.
- * This class is more flexible than Guava's BiMap<K,V> or Oracle's LinkedHashMap<K,V>. The map cannot hold duplicate keys!
+ * This class is more flexible than Guava's {@code BiMap<K,V>} or Oracle's {@code LinkedHashMap<K,V>}. The map cannot hold duplicate keys!
  * 
  * @author Joris Kinable
  * @version 13-4-2015
@@ -155,7 +155,7 @@ public class OrderedBiMap<K,V> extends AbstractMap<K, V>{
 	}
 	
 	/**
-	 * Creates an inverted BiMap<V,K>
+	 * Creates an inverted {@code BiMap<V,K>}
 	 * @return inverted map
 	 */
 	public BiMap<V,K> inverse(){

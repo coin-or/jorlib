@@ -343,6 +343,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	
 	/**
 	 * Returns the objective value of the best solution found
+	 * @return the objective of the best integer solution found during the Branch-and-Price search
 	 */
 	public int getObjective(){
 		return this.bestObjective;
@@ -358,6 +359,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	
 	/**
 	 * Returns whether the solution is optimal, i.e. the entire tree branch-and-price tree has been processed
+	 * @return {@code true} if the problem instance has been solved to optimality. ({@code getBound} and {@code getObjective} methods must yield the same value.
 	 */
 	public boolean isOptimal(){
 		return isOptimal;
@@ -365,6 +367,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	
 	/**
 	 * Returns lower bound on the optimal solution
+	 * @return Returns the best bound on the optimal solution
 	 */
 	public double getBound(){
 		return this.lowerBoundOnObjective;
@@ -372,37 +375,43 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	
 	/**
 	 * Returns the number of processed nodes
+	 * @return the number of nodes processed
 	 */
 	public int getNumberOfProcessedNodes(){
 		return nodesProcessed;
 	}
 	
 	/**
-	 * Total time spend on solving master problems
+	 * Total time spent on solving master problems
+	 * @return total time spent on solving master problems
 	 */
 	public long getMasterSolveTime(){
 		return timeSolvingMaster;
 	}
 	/**
-	 * Total time spend on solving pricing problems
+	 * Total time spent on solving pricing problems
+	 * @return total time spent on solving pricing problems
 	 */
 	public long getPricingSolveTime(){
 		return timeSolvingPricing;
 	}
 	/**
 	 * Counts how many columns have been generated over the entire branch and price tree
+	 * @return returns total number of columns generated (summed over all processed nodes)
 	 */
 	public int getTotalGeneratedColumns(){
 		return totalGeneratedColumns;
 	}
 	/**
 	 * Counts how many column generation iterations have been made over the entire branch and price tree
+	 * @return returns the total number of column generation iterations (summed over all processed nodes)
 	 **/
 	public int getTotalNrIterations(){
 		return totalNrIterations;
 	}
 	/**
-	 * Returns the best solution found (converts the columns to a solution object)
+	 * Returns the best solution found
+	 * @return Returns the columns corresponding with the best solution.
 	 */
 	public List<U> getSolution(){
 		return bestSolution;
@@ -411,7 +420,8 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	/**
 	 * Create an artificial solution which satisfies the node's master problem and hence constitutes a feasible initial solution.
 	 * The columns are not necessary feasible or meet the definition of a column; it is undesirable that these columns end up in a final solution.
-	 * To prevent them from ending up in a final solution, a high cost is associated with them.  
+	 * To prevent them from ending up in a final solution, a high cost is associated with them.
+	 * @return List of columns constituting the artificial solution
 	 */
 	protected abstract List<U> generateArtificialSolution();
 

@@ -96,7 +96,7 @@ public abstract class AbstractPricingProblemSolver<T,U extends AbstractColumn<T,
 	/**
 	 * Solves the pricing problem. The method invokes generateNewColumns internally and stores the generated columns in an internal
 	 * list.
-	 * @throws TimeLimitExceededException
+	 * @throws TimeLimitExceededException TimeLimitExceededException
 	 */
 	protected void solve() throws TimeLimitExceededException{
 		columns.addAll(this.generateNewColumns());
@@ -111,6 +111,7 @@ public abstract class AbstractPricingProblemSolver<T,U extends AbstractColumn<T,
 	
 	/**
 	 * Returns the name of the pricing problem
+	 * @return name of the solver
 	 */
 	public String getName(){
 		return this.name;
@@ -118,6 +119,7 @@ public abstract class AbstractPricingProblemSolver<T,U extends AbstractColumn<T,
 	
 	/**
 	 * Set time limit (future point in time). A TimeLimitExceededException is thrown when this time limit is exceeded.
+	 * @param timeLimit future point in time ({@code System.currentTimeMillis() + runtime})
 	 */
 	public void setTimeLimit(long timeLimit){
 		this.timeLimit=timeLimit;
@@ -140,6 +142,7 @@ public abstract class AbstractPricingProblemSolver<T,U extends AbstractColumn<T,
 	
 	/**
 	 * Returns an upperbound on the most negative reduced cost column whenever available.
+	 * @return upper bound on the pricing problem (assuming that the pricing problem is a maximization problem
 	 */
 	public double getUpperbound(){
 		throw new UnsupportedOperationException("Not implemented");

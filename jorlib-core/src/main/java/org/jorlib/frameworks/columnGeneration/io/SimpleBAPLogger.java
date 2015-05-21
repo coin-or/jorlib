@@ -78,6 +78,7 @@ public class SimpleBAPLogger implements BAPListener{
 
     /**
      * Create a new logger which writes its output the the file specified
+     * @param branchAndPrice Branch-and-Price instance for which this logger is created.
      * @param outputFile file to redirect the output to.
      */
     public SimpleBAPLogger(AbstractBranchAndPrice branchAndPrice, File outputFile){

@@ -42,6 +42,7 @@ public class StartMasterEvent extends EventObject{
     /**
      * Creates a new StartMasterEvent
      * @param source Generator of the event
+     * @param columnGenerationIteration column generation iteration during which this event was fired
      */
     public StartMasterEvent(Object source, int columnGenerationIteration){
         super(source);

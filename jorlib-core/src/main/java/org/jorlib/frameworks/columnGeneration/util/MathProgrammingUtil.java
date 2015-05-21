@@ -41,6 +41,7 @@ public class MathProgrammingUtil {
 	/**
 	 * Returns the nearest rounded double. Throws an exception if the nearest double is further away than a given constant
 	 * @param value value to be rounded
+	 * @return rounded double
 	 */
 	public static double doubleToRoundedDouble(double value){
 		double result= Math.round(value);
@@ -53,6 +54,7 @@ public class MathProgrammingUtil {
 	/**
 	 * Returns the nearest rounded int. Throws an exception if the nearest int is further away than a given constant
 	 * @param value value to be rounded
+	 * @return integer represented by the double
 	 */
 	public static int doubleToInt(double value){
 		int result= (int)Math.round(value);
@@ -65,6 +67,7 @@ public class MathProgrammingUtil {
 	/**
 	 * Returns true if the variable is +/- 1, false if the variable is +/- 0, and throws an error otherwise
 	 * @param value value to be rounded
+	 * @return boolean value represented by the double
 	 */
 	public static boolean doubleToBoolean(double value){
 		if(Math.abs(1-value) < config.PRECISION ){
@@ -79,6 +82,7 @@ public class MathProgrammingUtil {
 	/**
 	 * Returns true if variable is fractional, i.e more than epsilon away from the nearest int value, false otherwise.
 	 * @param value to be checked
+	 * @return {@code true} when the provided double is fractional
 	 */
 	public static boolean isFractional(double value){
 		return Math.abs(value-Math.round(value)) > config.PRECISION;

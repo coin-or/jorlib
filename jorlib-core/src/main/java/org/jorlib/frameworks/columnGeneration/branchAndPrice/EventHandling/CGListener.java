@@ -72,7 +72,7 @@ public interface CGListener extends EventListener {
      * Method invoked when CG finished the pricing problem
      * @param finishPricingEvent finishPricingEvent
      */
-    <U extends AbstractColumn<?, ?>> void finishPricing(FinishPricingEvent finishPricingEvent);
+    void finishPricing(FinishPricingEvent finishPricingEvent);
 
     /**
      * Method invoked when the column generation process is terminated due to a time out

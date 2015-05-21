@@ -40,13 +40,13 @@ import org.jorlib.alg.knapsack.KnapsackAlgorithm;
 /**
  * This class calculates both Lifted and Minimal Cover inequalities for binary knapsack constraints.
  * The algorithms used to separate violated inequalities are provided in: 
- * Nemhauser, G.L., Wolsey, L.A., Integer and combinatorial optimization. 1999, John Wiley & Sons
- * Given a knapsack constraint: \sum_i a_i x_i <= b where x_i are binary variables, b a positive integer and a_i integer coefficients.
+ * {@literal Nemhauser, G.L., Wolsey, L.A., Integer and combinatorial optimization. 1999, John Wiley & Sons}
+ * Given a knapsack constraint: {@code \sum_i a_i x_i <= b} where x_i are binary variables, b a positive integer and a_i integer coefficients.
  * Let N be the set of variables in the knapsack constraint.
  * For a given assignment of values to the variables, this class computes two types of violated cover inequalities:
- * 1. Minimal covers: \sum_{j\in C} \leq |C|-1, where C\subseteq N, \sum_{j\in C} a_i >b
- * 2. Lifted covers: \sum_{j\in N\setminus C} \alpha_jx_j + \sum_{j\in C2} \gamma_jx_j + \sum_{j\in C1} x_j \leq |C1|-1+\sum_{j\in C2}\gamma_j, where
- *    C1 \cap C2= \emptyset, C1 \cup C2= C, C a minimal cover as defined above.
+ * 1. Minimal covers: {@code \sum_{j\in C} \leq |C|-1, where C\subseteq N, \sum_{j\in C} a_i >b}
+ * 2. Lifted covers: {@code \sum_{j\in N\setminus C} \alpha_jx_j + \sum_{j\in C2} \gamma_jx_j + \sum_{j\in C1} x_j \leq |C1|-1+\sum_{j\in C2}\gamma_j}, where
+ *    {@code C1 \cap C2= \emptyset}, {@code C1 \cup C2= C}, {@code C} a minimal cover as defined above.
  *    
  * NOTE: Separating violated Lifted Cover Inequalities is NP-hard. Hence we rely on lifting and a separation heuristic. 
  * First we attempt to find a violated Lifted Cover inequality with C2=\emptyset. If we can't find such an inequality, we set C2 to:
@@ -98,6 +98,7 @@ public class LiftedCoverInequalitySeparator {
 	/**
 	 * Given a knapsack constraint: \sum_{i=0}^n a_ix_i \leq b This method separates minimal Cover Inequalities, i.e. it will search for a valid cover
 	 * \sum_{i\in C} x_i \leq |C|-1 which is violated by the current variable values
+	 * @param nrVars number of variables in the knapsack constraint
 	 * @param knapsackCoefficients a_i
 	 * @param b right hand side of the knapsack constraint
 	 * @param variableValues values of the x_i variables
@@ -115,6 +116,7 @@ public class LiftedCoverInequalitySeparator {
 	 * Given a knapsack constraint: \sum_{i=0}^n a_ix_i \leq b This method separates Lifted Cover Inequalities, i.e. it will search for a valid lifted cover inequality
 	 * \sum_{j\in N\setminus C} \alpha_jx_j + \sum_{j\in C2} \gamma_jx_j + \sum_{j\in C1} x_j \leq |C1|-1+\sum_{j\in C2}\gamma_j which is violated by the current
 	 *  variable values, where C1 \cap C2= \emptyset, C1 \cup C2= C, C a minimal cover
+	 * @param nrVars number of variables in the knapsack constraint
 	 * @param knapsackCoefficients a_i
 	 * @param b right hand side of the knapsack constraint
 	 * @param variableValues values of the x_i variables
@@ -317,7 +319,7 @@ public class LiftedCoverInequalitySeparator {
 	/**** Minimal cover functions ****/
 	
 	/**
-	 * @return Indicates whether a cover inequality exists, i.e. returns whether \sum_i a_i > b. You should NOT ask for a minimal or lifted cover if this function returns false!
+	 * @return Indicates whether a cover inequality exists, i.e. returns whether {@code \sum_i a_i > b}. You should NOT ask for a minimal or lifted cover if this function returns false!
 	 */
 	public boolean coverInequalityExists(){
 		return coverInequalityExists;
@@ -331,20 +333,20 @@ public class LiftedCoverInequalitySeparator {
 	}
 	
 	/**
-	 * @return Returns an boolean array indicating which variables belong to the minimal cover inequality C: \sum_{i\in C} x_i <= |C|-1, i.e. minimalCover[i] is true if
+	 * @return Returns an boolean array indicating which variables belong to the minimal cover inequality C: {@code\sum_{i\in C} x_i <= |C|-1}, i.e. minimalCover[i] is true if
 	 * variable i is in the cover.  
 	 */
 	public boolean[] getMinimalCoverMask(){
 		return minimalCover;
 	}
 	/**
-	 * @return Returns true if the cover inequality \sum_{i\in C} x_i <= |C|-1 is violated
+	 * @return Returns true if the cover inequality {@code\sum_{i\in C} x_i <= |C|-1} is violated
 	 */
 	public boolean isMinimalCoverViolated(){
 		return minimalCoverIsViolated;
 	}
 	/**
-	 * @return Returns evaluation of the LHS of the cover. If the cover is violated, than LHS>RHS
+	 * @return Returns evaluation of the LHS of the cover. If the cover is violated, than {@code LHS>RHS}
 	 */
 	public double getMinimalCoverLHS(){
 		double value=0;
@@ -368,7 +370,7 @@ public class LiftedCoverInequalitySeparator {
 		return liftedCoverCoefficients;
 	}
 	/**
-	 * @return Returns evaluation of the LHS of the cover. If the cover is violated, than LHS>RHS
+	 * @return Returns evaluation of the LHS of the cover. If the cover is violated, than {@code LHS>RHS}
 	 */
 	public double getLiftedCoverLHS(){
 		return liftedCoverLHS;

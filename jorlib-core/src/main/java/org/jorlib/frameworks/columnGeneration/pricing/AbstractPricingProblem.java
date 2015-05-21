@@ -78,7 +78,7 @@ public abstract class AbstractPricingProblem<T> implements BranchingDecisionList
 
 	/**
 	 * Store dual information in the dualCosts array and dualConstant variable. The pricing problem often looks like:
-	 * a_1x_1+a_2x_2+...+a_nx_n <= b, where a_i are dual variables, and b some constant. The dualCosts array would hold the
+	 * {@code a_1x_1+a_2x_2+...+a_nx_n <= b}, where a_i are dual variables, and b some constant. The dualCosts array would hold the
 	 * a_i values whereas b is stored in the dualConstant variable
 	 *
 	 * @param dualCosts dual values

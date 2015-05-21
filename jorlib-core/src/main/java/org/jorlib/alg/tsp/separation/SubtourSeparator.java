@@ -38,10 +38,10 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 /**
  * This class separates subtours. These subtours may be used to generate Dantzig Fulkerson Johnson (DFJ) subtour elimination constraints.
  * Let G(V,E) be a undirected graph with vertex set V, edge set E. A valid TSP solution (i.e. a solution without subtours) should satisfy
- * the following constraint: \sum_{e\in \delta{S}} x_e >=2 for all S\subset V, S \noteq \emptyset. Here \delta{S}\subset E is the set of
+ * the following constraint: {@code \sum_{e\in \delta{S}} x_e >=2} for all S\subset V, S \noteq \emptyset. Here \delta{S}\subset E is the set of
  * edges where each edge has exactly one endpoint in S, and one endpoint in V\setminus S. x_e is a binary variable indicating
  * whether edge e\in E is used in the TSP solution. Obviously, if there is a set S'\subset V, S' \noteq \emptyset such that
- * \sum_{e\in \delta{S'}} x_e <2, then there is a subtour through the vertices in set S'. It may be the case that multiple subtours exist
+ * {@code \sum_{e\in \delta{S'}} x_e <2}, then there is a subtour through the vertices in set S'. It may be the case that multiple subtours exist
  * within a fractional TSP solution. This class identifies the subtour with the highest amount of violation, i.e 
  * \min_{S\subset V, S \noteq \emptyset} \sum_{e\in \delta{S}} x_e
  * 
@@ -50,7 +50,7 @@ import org.jgrapht.graph.SimpleWeightedGraph;
  * drive from one city to the other in a particular direction.
  * Note2: To separate the subtours, we rely on the StoerWagnerMinimumCut implementation from the JgraphT package. 
  * 		This implementation deterministically computes the minimum cut in a graph in O(|V||E| + |V|log|V|) time, see
- * 		M. Stoer and F. Wagner, "A Simple Min-Cut Algorithm", Journal of the ACM, volume 44, number 4. pp 585-591, 1997. 
+ * 		{@literal M. Stoer and F. Wagner, "A Simple Min-Cut Algorithm", Journal of the ACM, volume 44, number 4. pp 585-591, 1997.}
  * 
  * WARNING: if the input graph is modified, i.e. edges or vertices are added/removed then the behavior of this class is undefined!
  * 			A new instance should of this class should be made if this happens! A future extension of this class could add a graph
@@ -76,7 +76,7 @@ public class SubtourSeparator<V, E> {
 	/**
 	 * This method instantiates the Subtour Separator. The input can be any type of graph: directed, undirected, or mixed,
 	 * complete or incomplete, weighted or without weights. Internally, this class converts the given graph to a undirected graph. 
-	 * Multiple edges between two vertices i,j, for example two direct arc <i,j> and <j,i> are aggregated into in undirected edge (i,j).
+	 * Multiple edges between two vertices i,j, for example two direct arc (i,j) and (j,i)) are aggregated into in undirected edge (i,j).
 	 * WARNING: if the input graph is modified, i.e. edges or vertices are added/removed then the behavior of this class is undefined!
 	 * 			A new instance should of this class should be made if this happens!
 	 * @param inputGraph input graph
@@ -135,7 +135,7 @@ public class SubtourSeparator<V, E> {
 	
 	/**
 	 * 
-	 * @return Returns the set S' where \sum_{e\in \delta{S'}} x_e <2, S'\subset V, S' \noteq \emptyset
+	 * @return Returns the set S' where {@code \sum_{e\in \delta{S'}} x_e <2, S'\subset V, S' \noteq \emptyset}
 	 */
 	public Set<V> getCutSet(){
 		return cutSet;

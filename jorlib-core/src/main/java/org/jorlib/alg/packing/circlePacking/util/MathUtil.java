@@ -147,6 +147,10 @@ public class MathUtil {
 	  
 	/**
 	* Test whether 2 decimals are equal, given a certain precision
+	 * @param b1 first BigDecimal
+	 * @param b2 second BigDecimal
+	 * @param precision precision
+	 * @return true if the two BigDecimals are equal (given a certain precision)
 	*/
 	public static boolean equals(BigDecimal b1, BigDecimal b2, double precision){
 		//|b1-b2|<=precision
@@ -155,6 +159,9 @@ public class MathUtil {
 	  
 	/**
 	* Divides two BigDecimals
+	 * @param b1 numerator
+	 * @param b2 denominator
+	 * @return b1 divided by b2
 	*/
 	public static BigDecimal divide(BigDecimal b1, BigDecimal b2){
 		return b1.divide(b2,25, RoundingMode.HALF_UP);
@@ -162,6 +169,8 @@ public class MathUtil {
 	  
 	/**
 	* Transforms an array of doubles into an array of BigDecimals
+	 * @param array array to be transformed
+	 * @return array of BigDecimals
 	*/
 	public static BigDecimal[] doubleToBigDecimalArray(double[] array){
 		BigDecimal[] result=new BigDecimal[array.length];

@@ -100,7 +100,7 @@ public class SubtourInequalityGenerator extends AbstractCutGenerator<TSP, TSPMas
 					//Test how many edges in the matching enter/leave the cutSet (edges with exactly one endpoint in the cutSet)
 					int crossings=0;
 					for(DefaultWeightedEdge edge: matching.edges){
-						if(subtourInequality.cutSet.contains(modelData.getEdgeSource(edge)) ^ subtourInequality.cutSet.contains(modelData.getEdgeTarget(edge)))
+						if(subtourInequality.cutSet.contains(dataModel.getEdgeSource(edge)) ^ subtourInequality.cutSet.contains(dataModel.getEdgeTarget(edge)))
 							crossings++;
 					}
 					if(crossings>0){

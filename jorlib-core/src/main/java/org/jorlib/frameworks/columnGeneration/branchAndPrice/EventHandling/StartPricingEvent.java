@@ -42,6 +42,7 @@ public class StartPricingEvent extends EventObject{
     /**
      * Creates a new StartPricingEvent
      * @param source Generator of the event
+     * @param columnGenerationIteration column generation iteration during which this event was fired
      */
     public StartPricingEvent(Object source, int columnGenerationIteration){
         super(source);

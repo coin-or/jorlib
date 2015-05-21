@@ -46,6 +46,7 @@ public class StartEvent extends EventObject{
      * Creates a new StartEvent
      * @param source Generator of the event
      * @param instanceName Name of the instance being solved
+     * @param upperBound Best available integer solution at the start of the Branch-and-Price or Column generation procedure
      */
     public StartEvent(Object source, String instanceName, int upperBound){
         super(source);

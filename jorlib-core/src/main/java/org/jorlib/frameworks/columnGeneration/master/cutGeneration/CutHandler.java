@@ -105,7 +105,7 @@ public class CutHandler<T extends ModelInterface,W extends MasterData>{
 			if(config.QUICK_RETURN_AFTER_CUTS_FOUND && !separatedInequalities.isEmpty())
 				break;
 		}
-		notifier.fireFinishCGEvent(separatedInequalities);
+		notifier.fireFinishGeneratingCutsEvent(separatedInequalities);
 		return !separatedInequalities.isEmpty();
 	}
 	
@@ -195,7 +195,7 @@ public class CutHandler<T extends ModelInterface,W extends MasterData>{
 		}
 
 		/**
-		 * Fires a StartEvent to indicate the start of the column generation procedure
+		 * Fires a StartGeneratingCutsEvent to indicate that the cut handler starts generating inequalities
 		 */
 		protected void fireStartGeneratingCutsEvent() {
 			StartGeneratingCutsEvent startGeneratingCutsEvent = null;
@@ -207,9 +207,10 @@ public class CutHandler<T extends ModelInterface,W extends MasterData>{
 		}
 
 		/**
-		 * Fires a FinishEvent to indicate that the column generation procedure is finished
+		 * Fires a FinishGeneratingCutsEvent to indicate that that the cut handler finished generating inequalities
+		 * @param separatedInequalities list of newly separated inequalities which have been generated
 		 */
-		protected void fireFinishCGEvent(List<AbstractInequality> separatedInequalities) {
+		protected void fireFinishGeneratingCutsEvent(List<AbstractInequality> separatedInequalities) {
 			FinishGeneratingCutsEvent finishGeneratingCutsEvent = null;
 			for (CHListener listener : listeners) {
 				if (finishGeneratingCutsEvent == null)

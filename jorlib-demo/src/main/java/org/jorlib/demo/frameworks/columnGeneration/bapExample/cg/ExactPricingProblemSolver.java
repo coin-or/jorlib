@@ -107,7 +107,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<TSP,
 	/**
 	 * Main method which solves the pricing problem.
 	 * @return List of columns (matchings) with negative reduced cost.
-	 * @throws TimeLimitExceededException
+	 * @throws TimeLimitExceededException TimeLimitExceededException
 	 */
 	@Override
 	protected List<Matching> generateNewColumns()throws TimeLimitExceededException {

@@ -87,9 +87,9 @@ public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T, V>,V e
 	}
 
 	/**
-	 * Main method of this class which performs the branching. The method first invokes canPerformBranching(List<U> solution)
+	 * Main method of this class which performs the branching. The method first invokes {@code canPerformBranching(List<U> solution)}
 	 * to check whether branches can be created. If the latter returns true, the method
-	 * createBranch(BAPNode<T,U> parentNode, B branchingDecision, List<U> solution, List<AbstractInequality> inequalities) is invoked.
+	 * {@code createBranch(BAPNode<T,U> parentNode, B branchingDecision, List<U> solution, List<AbstractInequality> inequalities)} is invoked.
 	 * @param parentNode Node on which we branch
 	 * @param solution Fractional solution
 	 * @param cuts Valid inequalities active at the parent node

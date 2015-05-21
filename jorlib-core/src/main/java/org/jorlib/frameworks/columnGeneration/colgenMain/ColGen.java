@@ -81,7 +81,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	/** The Colgen procedure is terminated if objective exceeds upperBound. The Upperbound is set equal to the best incumbent INTEGER solution. Do NOT confuse with the objective field
 	 * which is a DOUBLE **/
 	protected int upperBound=Integer.MAX_VALUE;
-	/** Lower bound on the objective value. If lowerbound > upperBound, this node can be pruned.**/
+	/** Lower bound on the objective value. If {@code lowerbound > upperBound}, this node can be pruned.**/
 	protected double lowerBound=0;
 	/** Total number of column generation iterations. **/
 	protected int nrOfColGenIterations=0;
@@ -190,7 +190,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	 * 3. The lower bound (rounded up) exceeds the upper bound (best integer solution provided in the Constructor).
 	 * 4. The objective of the master problem is zero (zero is assumed to be a natural lower bound)
 	 * 5. The lower bound exceeds the objective of the master problem.
-	 * @param timeLimit Future point in time (ms) by which the procedure should be finished. Should be defined as: System.currentTimeMilis()+<desired runtime>
+	 * @param timeLimit Future point in time (ms) by which the procedure should be finished. Should be defined as: {@code System.currentTimeMilis()+<desired runtime>}
 	 * @throws TimeLimitExceededException Exception is thrown when time limit is exceeded
 	 */
 	public void solve(long timeLimit) throws TimeLimitExceededException{
@@ -289,6 +289,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	 * solve() method was invoked!
 	 * 
 	 * @param solver solver which was used to solve the pricing problem during the last invocation
+	 * @return lower bound on the optimal master problem solution
 	 */
 	protected double calculateLowerBound(Class<? extends AbstractPricingProblemSolver<T, U, V>> solver){
 		//This method is not implemented as it is problem dependent. Override this method.
@@ -369,6 +370,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	
 	/**
 	 * Returns true if the lower bound exceeds the upper bound
+	 * @return true if the lower bound exceeds the upper bound
 	 */
 	protected boolean thisNodeCanBePruned(){
 		return Math.ceil(lowerBound) > upperBound;

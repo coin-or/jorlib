@@ -48,6 +48,10 @@ public class FinishMasterEvent extends EventObject{
     /**
      * Creates a new FinishMasterEvent
      * @param source Generator of the event
+     * @param columnGenerationIteration column generation iteration during which this event was fired
+     * @param objective objective of master problem
+     * @param upperBound best available integer solution (upper bound)
+     * @param lowerBound best available bound on master problem (lower bound)
      */
     public FinishMasterEvent(Object source, int columnGenerationIteration, double objective, int upperBound, double lowerBound){
         super(source);
