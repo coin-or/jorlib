@@ -49,12 +49,6 @@ public interface CGListener extends EventListener {
     void finishCG(FinishEvent finishEvent);
 
     /**
-     * Method invoked when column generation finishes its computations
-     * @param finishProcessingNodeEvent finishProcessingNodeEvent
-     */
-    void finishedCGComputations(FinishProcessingNodeEvent finishProcessingNodeEvent);
-
-    /**
      * Method invoked when CG starts solving the master
      * @param startMasterEvent startMasterEvent
      */

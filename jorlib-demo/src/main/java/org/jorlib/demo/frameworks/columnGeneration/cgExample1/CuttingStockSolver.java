@@ -26,6 +26,7 @@
  */
 package org.jorlib.demo.frameworks.columnGeneration.cgExample1;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.jorlib.demo.frameworks.columnGeneration.cgExample1.cg.Master;
 import org.jorlib.demo.frameworks.columnGeneration.cgExample1.cg.PricingProblem;
 import org.jorlib.demo.frameworks.columnGeneration.cgExample1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
+import org.jorlib.frameworks.columnGeneration.io.SimpleCGLogger;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
 
@@ -65,12 +67,15 @@ public class CuttingStockSolver {
 		//Define an upper bound (stronger is better). In this case we simply sum the demands, i.e. cut each final from its own raw (Rather poor initial solution).
 		int upperBound=IntStream.of(modelData.demandForFinals).sum();
 
-		//OPTIONAL: Create a set of initial columns.
+		//Create a set of initial columns.
 		List<CuttingPattern> initSolution=this.getInitialSolution(pricingProblem);
 
 		//Create a column generation instance
 		ColGen<CuttingStock, CuttingPattern, PricingProblem> cg=new ColGen<>(modelData, master, pricingProblem, solvers, initSolution, upperBound);
-		
+
+		//OPTIONAL: add a logger
+		SimpleCGLogger logger=new SimpleCGLogger(cg, new File("./output/cuttingStock.log"));
+
 		//Solve the problem through column generation
 		try {
 			cg.solve(System.currentTimeMillis()+1000L);

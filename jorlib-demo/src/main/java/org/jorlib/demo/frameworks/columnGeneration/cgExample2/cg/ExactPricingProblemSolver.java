@@ -24,26 +24,21 @@
  * -------
  *
  */
-package org.jorlib.demo.frameworks.columnGeneration.bapExample.cg;
+package org.jorlib.demo.frameworks.columnGeneration.cgExample2.cg;
 
-import ilog.concert.IloException;
-import ilog.concert.IloIntVar;
-import ilog.concert.IloLinearIntExpr;
-import ilog.concert.IloLinearNumExpr;
-import ilog.concert.IloObjective;
+import ilog.concert.*;
 import ilog.cplex.IloCplex;
-
-import java.util.*;
-
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.bap.branching.branchingDecisions.FixEdge;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.bap.branching.branchingDecisions.RemoveEdge;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.model.TSP;
-import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample2.model.TSP;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
+
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -187,47 +182,4 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 	public void close() {
 		cplex.end();
 	}
-
-	/**
-	 * Listen to branching decisions. The pricing problem is changed by the branching decisions.
-	 * @param bd BranchingDecision
-	 */
-	@Override
-	public void branchingDecisionPerformed(BranchingDecision bd) {
-		try {
-			if(bd instanceof FixEdge){
-				FixEdge fixEdgeDecision = (FixEdge) bd;
-				if(fixEdgeDecision.pricingProblem == this.pricingProblem)
-					vars.get(fixEdgeDecision.edge).setLB(1); //Ensure that any column returned contains this edge.
-			}else if(bd instanceof RemoveEdge){
-				RemoveEdge removeEdgeDecision= (RemoveEdge) bd;
-				if(removeEdgeDecision.pricingProblem == this.pricingProblem)
-					vars.get(removeEdgeDecision.edge).setUB(0); //Ensure that any column returned does NOT contain this edge.
-			}
-		} catch (IloException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * When the branch and price algorithm backtracks, branching decisions are reversed.
-	 * @param bd BranchingDecision
-	 */
-	@Override
-	public void branchingDecisionRewinded(BranchingDecision bd) {
-		try {
-			if(bd instanceof FixEdge){
-				FixEdge fixEdgeDecision = (FixEdge) bd;
-				if(fixEdgeDecision.pricingProblem == this.pricingProblem)
-					vars.get(fixEdgeDecision.edge).setLB(0); //Reset the LB to its original value
-			}else if(bd instanceof RemoveEdge){
-				RemoveEdge removeEdgeDecision= (RemoveEdge) bd;
-				if(removeEdgeDecision.pricingProblem == this.pricingProblem)
-					vars.get(removeEdgeDecision.edge).setUB(1); //Reset the UB to its original value
-			}
-		} catch (IloException e) {
-			e.printStackTrace();
-		}
-	}
-
 }

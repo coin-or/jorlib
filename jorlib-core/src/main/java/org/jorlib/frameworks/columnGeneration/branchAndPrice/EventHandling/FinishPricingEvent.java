@@ -40,7 +40,7 @@ import java.util.List;
 public class FinishPricingEvent extends EventObject{
 
     /** List of new columns, or empty list if no new columns could be found by the pricing problem**/
-    List<? extends AbstractColumn<?, ?>> columns;
+    public List<? extends AbstractColumn<?, ?>> columns;
     /** Objective value of the master problem **/
     public final double objective;
     /** Integer Upper bound on the master problem (i.e. a feasible integer solution) **/

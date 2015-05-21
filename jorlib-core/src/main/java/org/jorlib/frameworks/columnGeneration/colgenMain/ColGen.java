@@ -117,15 +117,15 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 		master.addColumns(initSolution);
 
 		//Generate the pricing problem instances
-		List<PricingProblemBundle<T, U, V>> pricingProblemBunddles=new ArrayList<>();
+		Map<Class<? extends PricingProblemSolver<T, U, V>>, PricingProblemBundle<T, U, V>> pricingProblemBundles=new HashMap<>();
 		for(Class<? extends PricingProblemSolver<T, U, V>> solverClass : solvers){
 			DefaultPricingProblemSolverFactory<T, U, V> factory=new DefaultPricingProblemSolverFactory<>(solverClass, dataModel);
 			PricingProblemBundle<T, U, V> bundle=new PricingProblemBundle<>(solverClass, pricingProblems, factory);
-			pricingProblemBunddles.add(bundle);
+			pricingProblemBundles.put(solverClass, bundle);
 		}
 		
 		//Create a pricing problem manager for parallel execution of the pricing problems
-		pricingProblemManager=new PricingProblemManager<>(pricingProblems, pricingProblemBunddles);
+		pricingProblemManager=new PricingProblemManager<>(pricingProblems, pricingProblemBundles);
 		//Create a new notifier
 		notifier=new CGNotifier();
 	}
@@ -220,7 +220,6 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 				//Check whether there are cuts. Otherwise potentially an infeasible integer solution (e.g. TSP solution with subtours) might be returned.
 				if(config.CUTSENABLED && master.hasNewCuts()){  
 					hasNewCuts=true;
-					nrOfColGenIterations--;
 					continue;
 				}else
 					break;
@@ -239,7 +238,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			
 			//Solve pricing problems in the order of the pricing algorithms
 			notifier.fireStartPricingEvent();
-			for(int solver=0; solver<solvers.size(); solver++){
+			for(Class<? extends PricingProblemSolver<T, U, V>> solver : solvers){
 				newColumns=pricingProblemManager.solvePricingProblems(solver);
 				foundNewColumns=!newColumns.isEmpty();
 				
@@ -289,13 +288,13 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	 * NOTE2: When calling this method, it is guaranteed that the master problem has not been changed (no columns or inequalities are added) since the last time its
 	 * solve() method was invoked!
 	 * 
-	 * @param solverID id of last invoked solver: solvers.get(solverID)
+	 * @param solver solver which was used to solve the pricing problem during the last invocation
 	 */
-	protected double calculateLowerBound(int solverID){
+	protected double calculateLowerBound(Class<? extends PricingProblemSolver<T, U, V>> solver){
 		//This method is not implemented as it is problem dependent. Override this method.
 		//The following methods are at your disposal (see documentation):
 		//double master.getLowerboundComponent()
-		//double[] pricingProblemManager.getUpperBound()
+		//double[] pricingProblemManager.getUpperBound(solver)
 		return 0;
 	}
 	
@@ -384,6 +383,22 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	}
 
 	/**
+	 * Adds a CGlistener
+	 * @param listener listener
+	 */
+	public void addCGEventListener(CGListener listener) {
+		notifier.addListener(listener);
+	}
+
+	/**
+	 * Removes a listener
+	 * @param listener listener
+	 */
+	public void removeCGEventListener(CGListener listener) {
+		notifier.removeListener(listener);
+	}
+
+	/**
 	 * Inner Class which notifies BAPListeners
 	 */
 	protected class CGNotifier {
@@ -401,7 +416,6 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 
 		/**
 		 * Adds a listener
-		 *
 		 * @param listener listener
 		 */
 		public void addListener(CGListener listener) {
@@ -410,7 +424,6 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 
 		/**
 		 * Removes a listener
-		 *
 		 * @param listener listener
 		 */
 		public void removeListener(CGListener listener) {

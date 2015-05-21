@@ -139,21 +139,21 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		graphManipulator=new GraphManipulator(rootNode);
 		
 		//Initialize pricing algorithms
-		List<PricingProblemBundle<T, U, V>> pricingProblemBunddles=new ArrayList<>();
+		Map<Class<? extends PricingProblemSolver<T, U, V>>, PricingProblemBundle<T, U, V>> pricingProblemBundles=new HashMap<>();
 		for(Class<? extends PricingProblemSolver<T, U, V>> solverClass : solvers){
 			DefaultPricingProblemSolverFactory<T, U, V> factory=new DefaultPricingProblemSolverFactory<>(solverClass, dataModel);
 			PricingProblemBundle<T, U, V> bunddle=new PricingProblemBundle<>(solverClass, pricingProblems, factory);
-			pricingProblemBunddles.add(bunddle);
+			pricingProblemBundles.put(solverClass, bunddle);
 		}
 		
 		//Create a pricing problem manager for parallel execution of the pricing problems
-		pricingProblemManager=new PricingProblemManager<>(pricingProblems, pricingProblemBunddles);
+		pricingProblemManager=new PricingProblemManager<>(pricingProblems, pricingProblemBundles);
 		
 		//Add the master problem and the pricing problem solver instances as BranchingDecisionListeners
 		this.addBranchingDecisionListener(master);
 		for(V pricingProblem : pricingProblems)
 			this.addBranchingDecisionListener(pricingProblem);
-		for(PricingProblemBundle<T, U, V> bunddle : pricingProblemBunddles){
+		for(PricingProblemBundle<T, U, V> bunddle : pricingProblemBundles.values()){
 			for(PricingProblemSolver solverInstance : bunddle.solverInstances)
 				this.addBranchingDecisionListener(solverInstance);
 		}
