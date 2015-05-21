@@ -36,8 +36,8 @@ import org.jorlib.demo.frameworks.columnGeneration.cgExample2.cg.Matching;
 import org.jorlib.demo.frameworks.columnGeneration.cgExample2.cg.PricingProblemByColor;
 import org.jorlib.demo.frameworks.columnGeneration.cgExample2.cg.master.TSPMasterData;
 import org.jorlib.demo.frameworks.columnGeneration.cgExample2.model.TSP;
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutGenerator;
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractCutGenerator;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,7 +52,7 @@ import java.util.Set;
  * @version 13-4-2015
  *
  */
-public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData> {
+public class SubtourInequalityGenerator extends AbstractCutGenerator<TSP, TSPMasterData> {
 
 	//We use the subtour separator provided in jORLib
 	private final SubtourSeparator<Integer, DefaultWeightedEdge> separator;
@@ -62,7 +62,7 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 	 * @param modelData data model
 	 */
 	public SubtourInequalityGenerator(TSP modelData) {
-		super(modelData);
+		super(modelData, "subtourIneqGenerator");
 		
 		//Create a subtour separator
 		separator=new SubtourSeparator<>(modelData);
@@ -73,7 +73,7 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 	 * @return Returns true if a violated inequality has been found
 	 */
 	@Override
-	public List<Inequality> generateInqualities() {
+	public List<AbstractInequality> generateInqualities() {
 		//Check for violated subtours. When found, generate an inequality
 		separator.separateSubtour(masterData.edgeValueMap);
 		if(separator.hasSubtour()){
@@ -119,12 +119,12 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 
 	/**
 	 * Add a subtour inequality to the master problem
-	 * @param cut Inequality
+	 * @param cut AbstractInequality
 	 */
 	@Override
-	public void addCut(Inequality cut) {
+	public void addCut(AbstractInequality cut) {
 		if(!(cut instanceof SubtourInequality))
-			throw new IllegalArgumentException("This CutGenerator can ONLY add SubtourInequalities");
+			throw new IllegalArgumentException("This AbstractCutGenerator can ONLY add SubtourInequalities");
 		SubtourInequality subtourInequality=(SubtourInequality) cut;
 		this.addCut(subtourInequality);
 	}
@@ -134,7 +134,7 @@ public class SubtourInequalityGenerator extends CutGenerator<TSP, TSPMasterData>
 	 * @return Retuns a list of inequalities that have been generated.
 	 */
 	@Override
-	public List<Inequality> getCuts() {
+	public List<AbstractInequality> getCuts() {
 		return new ArrayList<>(masterData.subtourInequalities.keySet());
 	}
 

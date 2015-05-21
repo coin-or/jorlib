@@ -37,7 +37,7 @@ import org.junit.Assert;
 import junit.framework.TestCase;
 
 /**
- * Test class for Lifted Cover Inequality Separator implementation
+ * Test class for Lifted Cover AbstractInequality Separator implementation
  * @author Joris Kinable
  * @since April 8, 2015
  * 

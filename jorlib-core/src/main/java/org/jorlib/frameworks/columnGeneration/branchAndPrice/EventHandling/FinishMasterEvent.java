@@ -36,6 +36,8 @@ import java.util.EventObject;
  */
 public class FinishMasterEvent extends EventObject{
 
+    /** Indicates which iteration we are at in the column generation procedure **/
+    public final int columnGenerationIteration;
     /** Objective value of the master problem **/
     public final double objective;
     /** Integer Upper bound on the master problem (i.e. a feasible integer solution) **/
@@ -47,8 +49,9 @@ public class FinishMasterEvent extends EventObject{
      * Creates a new FinishMasterEvent
      * @param source Generator of the event
      */
-    public FinishMasterEvent(Object source, double objective, int upperBound, double lowerBound){
+    public FinishMasterEvent(Object source, int columnGenerationIteration, double objective, int upperBound, double lowerBound){
         super(source);
+        this.columnGenerationIteration=columnGenerationIteration;
         this.objective=objective;
         this.upperBound=upperBound;
         this.lowerBound=lowerBound;

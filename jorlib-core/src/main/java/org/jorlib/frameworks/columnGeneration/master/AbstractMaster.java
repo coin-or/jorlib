@@ -36,7 +36,7 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
@@ -187,7 +187,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	 * A handle to a cutHandler must have been provided in the constructor of this class
 	 * @param cuts cuts to be added
 	 */
-	public void addCuts(Collection<Inequality> cuts){
+	public void addCuts(Collection<AbstractInequality> cuts){
 		cutHandler.addCuts(cuts);
 	}
 	
@@ -195,7 +195,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	 * Returns all the cuts in the master model
 	 * A handle to a cutHandler must have been provided in the constructor of this class
 	 */
-	public List<Inequality> getCuts(){
+	public List<AbstractInequality> getCuts(){
 		return cutHandler.getCuts();
 	}
 	

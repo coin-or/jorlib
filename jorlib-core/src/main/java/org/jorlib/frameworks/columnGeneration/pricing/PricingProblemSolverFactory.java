@@ -46,5 +46,5 @@ public interface PricingProblemSolverFactory<T,U extends AbstractColumn<T, V>, V
 	 * @param pricingProblem pricing problem
 	 * @return A new solver instance
 	 */
-	PricingProblemSolver<T, U, V> createSolverInstance(V pricingProblem);
+	AbstractPricingProblemSolver<T, U, V> createSolverInstance(V pricingProblem);
 }

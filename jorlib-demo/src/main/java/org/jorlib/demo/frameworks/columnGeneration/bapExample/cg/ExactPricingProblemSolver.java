@@ -41,7 +41,7 @@ import org.jorlib.demo.frameworks.columnGeneration.bapExample.bap.branching.bran
 import org.jorlib.demo.frameworks.columnGeneration.bapExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
@@ -54,7 +54,7 @@ import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
  * @version 13-4-2015
  *
  */
-public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matching, PricingProblemByColor>{
+public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<TSP, Matching, PricingProblemByColor> {
 
 	private IloCplex cplex; //Cplex instance.
 	private IloObjective obj; //Objective function
@@ -151,11 +151,10 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<TSP, Matchin
 						}
 					}
 					Matching column=new Matching("exactPricing", false, pricingProblem, matching, succ, cost);
-					logger.debug("Generated new column for pricing: {}:\n{}",pricingProblem.color.name(),column);
 					newPatterns.add(column);
 				}else{
-					Object[] o={pricingProblem.color.name(), objective, pricingProblem.dualConstant*-1};
-					logger.debug("No columns for pricing problem {}. Objective: {} dual constant: {}",o);
+//					Object[] o={pricingProblem.color.name(), objective, pricingProblem.dualConstant*-1};
+//					logger.debug("No columns for pricing problem {}. Objective: {} dual constant: {}",o);
 				}
 			}
 			

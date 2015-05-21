@@ -40,7 +40,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 public final class  DefaultPricingProblemSolverFactory<T,U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T>> implements PricingProblemSolverFactory<T,U,V>{
 
 	/** The solver (class)**/
-	private final Class<? extends PricingProblemSolver<T, U, V>> solverClass;
+	private final Class<? extends AbstractPricingProblemSolver<T, U, V>> solverClass;
 
 	/** Data model **/
 	private final T dataModel;
@@ -52,7 +52,7 @@ public final class  DefaultPricingProblemSolverFactory<T,U extends AbstractColum
 	 * @param solverClass The solver for which this factory produces instances
 	 * @param dataModel The data model
 	 */
-	public DefaultPricingProblemSolverFactory(Class<? extends PricingProblemSolver<T, U, V>> solverClass, T dataModel){
+	public DefaultPricingProblemSolverFactory(Class<? extends AbstractPricingProblemSolver<T, U, V>> solverClass, T dataModel){
 		this.solverClass=solverClass;
 		this.dataModel=dataModel;
 	}
@@ -63,13 +63,13 @@ public final class  DefaultPricingProblemSolverFactory<T,U extends AbstractColum
 	 * @param pricingProblem The pricing problem for which a new solver instance must be created
 	 * @return A new solver instance
 	 */
-	public PricingProblemSolver<T, U, V> createSolverInstance(V pricingProblem){
+	public AbstractPricingProblemSolver<T, U, V> createSolverInstance(V pricingProblem){
 
 		Class<?>[] cArg = new Class[2]; //Our constructor has 2 arguments
 		cArg[0] = dataModel.getClass(); //First argument is of type T
 		cArg[1] = pricingProblem.getClass(); //Second argument has the type of the pricing problem
 		
-		PricingProblemSolver<T, U, V> solverInstance=null; //Create the new instance
+		AbstractPricingProblemSolver<T, U, V> solverInstance=null; //Create the new instance
 		try {
 			solverInstance=solverClass.getDeclaredConstructor(cArg).newInstance(dataModel, pricingProblem);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {

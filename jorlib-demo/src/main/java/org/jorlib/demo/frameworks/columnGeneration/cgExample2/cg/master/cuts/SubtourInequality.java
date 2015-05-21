@@ -26,8 +26,8 @@
  */
 package org.jorlib.demo.frameworks.columnGeneration.cgExample2.cg.master.cuts;
 
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutGenerator;
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractCutGenerator;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 
 import java.util.Set;
 
@@ -39,12 +39,12 @@ import java.util.Set;
  * @version 13-4-2015
  *
  */
-public class SubtourInequality extends Inequality{
+public class SubtourInequality extends AbstractInequality {
 
 	/** Vertices in the cut set **/
 	public final Set<Integer> cutSet;
 	
-	public SubtourInequality(CutGenerator maintainingGenerator, Set<Integer> cutSet) {
+	public SubtourInequality(AbstractCutGenerator maintainingGenerator, Set<Integer> cutSet) {
 		super(maintainingGenerator);
 		this.cutSet=cutSet;
 	}

@@ -26,7 +26,7 @@
  */
 package org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling;
 
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 
 import java.util.EventObject;
 import java.util.List;
@@ -39,12 +39,12 @@ import java.util.List;
  */
 public class FinishGeneratingCutsEvent extends EventObject{
 
-    public final List<Inequality> separatedInequalities;
+    public final List<AbstractInequality> separatedInequalities;
     /**
      * Creates a new FinishGeneratingCutsEvent
      * @param source Generator of the event
      */
-    public FinishGeneratingCutsEvent(Object source, List<Inequality> separatedInequalities){
+    public FinishGeneratingCutsEvent(Object source, List<AbstractInequality> separatedInequalities){
         super(source);
         this.separatedInequalities=separatedInequalities;
     }

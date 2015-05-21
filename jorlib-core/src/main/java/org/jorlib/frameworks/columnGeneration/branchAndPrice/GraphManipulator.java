@@ -69,8 +69,8 @@ public class GraphManipulator {
 	 * @param nextNode The next node to be solved
 	 */
 	public void next(BAPNode<?,?> nextNode){
-		logger.debug("Previous node: {}, history: {}", previousNode.nodeID, previousNode.rootPath);
-		logger.debug("Next node: {}, history: {}, nrBranchingDec: {}", nextNode.nodeID, nextNode.rootPath);
+		logger.trace("Previous node: {}, history: {}", previousNode.nodeID, previousNode.rootPath);
+		logger.trace("Next node: {}, history: {}, nrBranchingDec: {}", nextNode.nodeID, nextNode.rootPath);
 		
 		//1. Revert state of the data structures back to the first mutual ancestor of <previousNode> and <nextNode>
 		//1a. Find the number of mutual ancestors.
@@ -80,24 +80,24 @@ public class GraphManipulator {
 				break;
 			mutualNodesOnPath++;
 		}
-		logger.debug("number of mutualNodesOnPath: {}", mutualNodesOnPath);
+		logger.trace("number of mutualNodesOnPath: {}", mutualNodesOnPath);
 		
 		//1b. revert until the first mutual ancestor
 		while(changeHistory.size() > mutualNodesOnPath-1){
-			logger.debug("Reverting 1 branch lvl");
+			logger.trace("Reverting 1 branch lvl");
 			BranchingDecision bd=changeHistory.pop();
 			//Revert the branching decision!
 			this.rewindBranchingDecision(bd);
 		}
 		// 2. Modify the data structures by performing the branching decisions which lead from the first mutual ancestor to the nextNode.
 		// The Branching Decisions are stored in the changeHistory
-		logger.debug("Next node nrBranchingDec: {}, changeHist.size: {}", nextNode.branchingDecisions.size(), changeHistory.size());
+		logger.trace("Next node nrBranchingDec: {}, changeHist.size: {}", nextNode.branchingDecisions.size(), changeHistory.size());
 		for(int i=changeHistory.size(); i< nextNode.branchingDecisions.size(); i++){
 			//Get the next branching decision and add it to the changeHistory
 			BranchingDecision bd=nextNode.branchingDecisions.get(i);
 			changeHistory.add(bd);
 			//Execute the decision
-			logger.debug("BAP exec branchingDecision: {}",bd);
+			logger.trace("BAP exec branchingDecision: {}", bd);
 			this.performBranchingDecision(bd);
 		}
 		this.previousNode=nextNode;

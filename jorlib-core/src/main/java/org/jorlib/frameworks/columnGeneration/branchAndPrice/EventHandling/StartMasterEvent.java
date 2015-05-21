@@ -36,11 +36,15 @@ import java.util.EventObject;
  */
 public class StartMasterEvent extends EventObject{
 
+    /** Indicates which iteration we are at in the column generation procedure **/
+    public final int columnGenerationIteration;
+
     /**
      * Creates a new StartMasterEvent
      * @param source Generator of the event
      */
-    public StartMasterEvent(Object source){
+    public StartMasterEvent(Object source, int columnGenerationIteration){
         super(source);
+        this.columnGenerationIteration=columnGenerationIteration;
     }
 }

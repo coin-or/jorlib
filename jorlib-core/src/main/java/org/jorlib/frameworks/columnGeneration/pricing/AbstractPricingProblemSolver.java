@@ -11,7 +11,7 @@
  *
  */
 /* -----------------
- * PricingProblemSolver.java
+ * AbstractPricingProblemSolver.java
  * -----------------
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
@@ -48,10 +48,10 @@ import org.slf4j.LoggerFactory;
  * @param <U> type of column
  * @param <V> type of pricing problem
  */
-public abstract class PricingProblemSolver<T,U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T>> implements Callable<Void>, BranchingDecisionListener{
+public abstract class AbstractPricingProblemSolver<T,U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T>> implements Callable<Void>, BranchingDecisionListener{
 
 	/** Logger for this class **/
-	protected final Logger logger = LoggerFactory.getLogger(PricingProblemSolver.class);
+	protected final Logger logger = LoggerFactory.getLogger(AbstractPricingProblemSolver.class);
 	/** Configuration file **/
 	protected final Configuration config=Configuration.getConfiguration();
 
@@ -75,7 +75,7 @@ public abstract class PricingProblemSolver<T,U extends AbstractColumn<T, V>, V e
 	 * @param dataModel data model
 	 * @param pricingProblem pricing problem
 	 */
-	public PricingProblemSolver(T dataModel, V pricingProblem){
+	public AbstractPricingProblemSolver(T dataModel, V pricingProblem){
 		this.dataModel=dataModel;
 		this.pricingProblem=pricingProblem;
 		this.columns=new ArrayList<>();

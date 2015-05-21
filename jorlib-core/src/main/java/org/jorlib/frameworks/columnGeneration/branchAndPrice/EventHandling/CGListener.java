@@ -26,6 +26,8 @@
  */
 package org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling;
 
+import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
+
 import java.util.EventListener;
 
 /**
@@ -70,7 +72,7 @@ public interface CGListener extends EventListener {
      * Method invoked when CG finished the pricing problem
      * @param finishPricingEvent finishPricingEvent
      */
-    void finishPricing(FinishPricingEvent finishPricingEvent);
+    <U extends AbstractColumn<?, ?>> void finishPricing(FinishPricingEvent finishPricingEvent);
 
     /**
      * Method invoked when the column generation process is terminated due to a time out

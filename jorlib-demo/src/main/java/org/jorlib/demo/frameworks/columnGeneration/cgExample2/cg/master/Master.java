@@ -100,7 +100,6 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 		Map<PricingProblemByColor, OrderedBiMap<Matching, IloNumVar>> varMap=new LinkedHashMap<>();
 		for(PricingProblemByColor pricingProblem : pricingProblems)
 			varMap.put(pricingProblem, new OrderedBiMap<>());
-		logger.info("Finished building master");
 
 		//Create a new data object which will store information from the master. This object automatically be passed to the CutHandler class.
 		return new TSPMasterData(cplex, pricingProblems, varMap);
@@ -130,7 +129,6 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 			}else{
 				masterData.objectiveValue=masterData.cplex.getObjValue();
 			}
-			logger.debug("Finished solving master");
 		} catch (IloException e) {
 			e.printStackTrace();
 		}

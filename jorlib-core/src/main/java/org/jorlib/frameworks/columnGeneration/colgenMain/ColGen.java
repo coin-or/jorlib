@@ -32,12 +32,12 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling.*;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemBundle;
 import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemManager;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.pricing.DefaultPricingProblemSolverFactory;
 import org.jorlib.frameworks.columnGeneration.util.Configuration;
 import org.slf4j.Logger;
@@ -70,7 +70,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	/** Pricing problems **/
 	protected final List<V> pricingProblems;
 	/** Solvers for the pricing problems **/
-	protected final List<Class<? extends PricingProblemSolver<T, U, V>>> solvers;
+	protected final List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers;
 	/** Manages parallel execution of pricing problems **/
 	protected final PricingProblemManager<T,U, V> pricingProblemManager;
 	/** Helper class which notifies CGListeners **/
@@ -106,7 +106,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	public ColGen(T dataModel, 
 					AbstractMaster<T, U, V, ? extends MasterData> master,
 					List<V> pricingProblems,
-					List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
+					List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
 					List<U> initSolution,
 					int upperBound){
 		this.dataModel=dataModel;
@@ -117,8 +117,8 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 		master.addColumns(initSolution);
 
 		//Generate the pricing problem instances
-		Map<Class<? extends PricingProblemSolver<T, U, V>>, PricingProblemBundle<T, U, V>> pricingProblemBundles=new HashMap<>();
-		for(Class<? extends PricingProblemSolver<T, U, V>> solverClass : solvers){
+		Map<Class<? extends AbstractPricingProblemSolver<T, U, V>>, PricingProblemBundle<T, U, V>> pricingProblemBundles=new HashMap<>();
+		for(Class<? extends AbstractPricingProblemSolver<T, U, V>> solverClass : solvers){
 			DefaultPricingProblemSolverFactory<T, U, V> factory=new DefaultPricingProblemSolverFactory<>(solverClass, dataModel);
 			PricingProblemBundle<T, U, V> bundle=new PricingProblemBundle<>(solverClass, pricingProblems, factory);
 			pricingProblemBundles.put(solverClass, bundle);
@@ -142,7 +142,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	public ColGen(T dataModel, 
 			AbstractMaster<T, U, V, ? extends MasterData> master,
 			V pricingProblem,
-			List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
+			List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
 			List<U> initSolution,
 			int upperBound){
 		this(dataModel, master, Collections.singletonList(pricingProblem), solvers, initSolution, upperBound);
@@ -161,7 +161,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	public ColGen(T dataModel, 
 			AbstractMaster<T, U, V, ? extends MasterData> master,
 			List<V> pricingProblems,
-			List<Class<? extends PricingProblemSolver<T, U, V>>> solvers,
+			List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
 			PricingProblemManager<T,U, V> pricingProblemManager,
 			List<U> initSolution,
 			int upperBound){
@@ -238,7 +238,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			
 			//Solve pricing problems in the order of the pricing algorithms
 			notifier.fireStartPricingEvent();
-			for(Class<? extends PricingProblemSolver<T, U, V>> solver : solvers){
+			for(Class<? extends AbstractPricingProblemSolver<T, U, V>> solver : solvers){
 				newColumns=pricingProblemManager.solvePricingProblems(solver);
 				foundNewColumns=!newColumns.isEmpty();
 				
@@ -290,7 +290,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	 * 
 	 * @param solver solver which was used to solve the pricing problem during the last invocation
 	 */
-	protected double calculateLowerBound(Class<? extends PricingProblemSolver<T, U, V>> solver){
+	protected double calculateLowerBound(Class<? extends AbstractPricingProblemSolver<T, U, V>> solver){
 		//This method is not implemented as it is problem dependent. Override this method.
 		//The following methods are at your disposal (see documentation):
 		//double master.getLowerboundComponent()
@@ -363,7 +363,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	/**
 	 * @return Returns all cuts generated for the master problem
 	 */
-	public List<Inequality> getCuts(){
+	public List<AbstractInequality> getCuts(){
 		return master.getCuts();
 	}
 	
@@ -461,7 +461,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			StartMasterEvent startMasterEvent =null;
 			for(CGListener listener : listeners){
 				if(startMasterEvent ==null)
-					startMasterEvent =new StartMasterEvent(ColGen.this);
+					startMasterEvent =new StartMasterEvent(ColGen.this, nrOfColGenIterations);
 				listener.startMaster(startMasterEvent);
 			}
 		}
@@ -473,7 +473,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			FinishMasterEvent finishMasterEvent =null;
 			for(CGListener listener : listeners){
 				if(finishMasterEvent ==null)
-					finishMasterEvent =new FinishMasterEvent(ColGen.this, objective, upperBound, lowerBound);
+					finishMasterEvent =new FinishMasterEvent(ColGen.this, nrOfColGenIterations, objective, upperBound, lowerBound);
 				listener.finishMaster(finishMasterEvent);
 			}
 		}
@@ -485,7 +485,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			StartPricingEvent startPricingEvent =null;
 			for(CGListener listener : listeners){
 				if(startPricingEvent ==null)
-					startPricingEvent =new StartPricingEvent(ColGen.this);
+					startPricingEvent =new StartPricingEvent(ColGen.this, nrOfColGenIterations);
 				listener.startPricing(startPricingEvent);
 			}
 		}
@@ -498,7 +498,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			FinishPricingEvent finishPricingEvent =null;
 			for(CGListener listener : listeners){
 				if(finishPricingEvent ==null)
-					finishPricingEvent =new FinishPricingEvent(ColGen.this, Collections.unmodifiableList(newColumns), objective, upperBound, lowerBound);
+					finishPricingEvent =new FinishPricingEvent(ColGen.this, nrOfColGenIterations, Collections.unmodifiableList(newColumns), objective, upperBound, lowerBound);
 				listener.finishPricing(finishPricingEvent);
 			}
 		}

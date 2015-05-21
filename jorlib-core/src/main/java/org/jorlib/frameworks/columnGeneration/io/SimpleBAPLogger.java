@@ -80,7 +80,7 @@ public class SimpleBAPLogger implements BAPListener{
      * Create a new logger which writes its output the the file specified
      * @param outputFile file to redirect the output to.
      */
-    public <B extends AbstractBranchAndPrice> SimpleBAPLogger(B branchAndPrice, File outputFile){
+    public SimpleBAPLogger(AbstractBranchAndPrice branchAndPrice, File outputFile){
         try {
             writer=new BufferedWriter(new FileWriter(outputFile));
         } catch (IOException e) {

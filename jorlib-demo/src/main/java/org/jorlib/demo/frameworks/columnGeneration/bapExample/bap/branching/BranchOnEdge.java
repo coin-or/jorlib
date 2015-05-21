@@ -34,7 +34,7 @@ import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.PricingProblemB
 import org.jorlib.demo.frameworks.columnGeneration.bapExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
 import java.util.*;
@@ -110,7 +110,7 @@ public class BranchOnEdge extends AbstractBranchCreator<TSP, Matching, PricingPr
      * @return List of child nodes
      */
     @Override
-    protected List<BAPNode<TSP,Matching>> getBranches(BAPNode<TSP,Matching> parentNode, List<Matching> solution, List<Inequality> cuts) {
+    protected List<BAPNode<TSP,Matching>> getBranches(BAPNode<TSP,Matching> parentNode, List<Matching> solution, List<AbstractInequality> cuts) {
         //Branch 1: remove the edge:
         RemoveEdge branchingDecision1=new RemoveEdge(pricingProblemForMatching, edgeForBranching);
         BAPNode<TSP,Matching> node2=this.createBranch(parentNode, branchingDecision1, solution, cuts);

@@ -76,7 +76,7 @@ public class SimpleCGLogger implements CGListener{
      * Create a new logger which writes its output the the file specified
      * @param outputFile file to redirect the output to.
      */
-    public <C extends ColGen> SimpleCGLogger(C colGen, File outputFile){
+    public SimpleCGLogger(ColGen colGen, File outputFile){
         try {
             writer=new BufferedWriter(new FileWriter(outputFile));
         } catch (IOException e) {

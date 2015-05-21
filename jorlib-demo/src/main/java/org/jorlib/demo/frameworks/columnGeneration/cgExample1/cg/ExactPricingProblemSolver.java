@@ -36,7 +36,7 @@ import java.util.List;
 
 import org.jorlib.demo.frameworks.columnGeneration.cgExample1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
 /**
@@ -46,7 +46,7 @@ import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
  * @author Joris Kinable
  * @version 13-4-2015
  */
-public class ExactPricingProblemSolver extends PricingProblemSolver<CuttingStock, CuttingPattern, PricingProblem> {
+public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<CuttingStock, CuttingPattern, PricingProblem> {
 
 	private IloCplex cplex; //Cplex instance.
 	private IloObjective obj; //Objective function
@@ -113,7 +113,6 @@ public class ExactPricingProblemSolver extends PricingProblemSolver<CuttingStock
 					for(int i=0; i<dataModel.nrFinals; i++)
 						pattern[i]= MathProgrammingUtil.doubleToInt(values[i]);
 					CuttingPattern column=new CuttingPattern("exactPricing", false, pattern, pricingProblem);
-					logger.debug("Generated new column for pricing:\n{}",column);
 					newPatterns.add(column);
 				}
 			}

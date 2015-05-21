@@ -31,7 +31,7 @@ import java.util.List;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 
 /**
  * Class which models a single node in the branch and price tree
@@ -51,7 +51,7 @@ public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 	/** Columns used to initialize the master problem **/
 	protected final List<U> columns;
 	/** Valid inequalities used to initialize the master problem of this node **/
-	protected final List<Inequality> inequalities;
+	protected final List<AbstractInequality> inequalities;
 	/** Bound on the optimum solution of this node. If the bound of this node exceeds the best incumbent int solution, this node will be pruned. **/
 	protected double bound;
 
@@ -64,7 +64,7 @@ public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 	 * @param bound Bound on the optimum solution of this node. If the bound of this node exceeds the best incumbent int solution, this node will be pruned. The bound may be inherited from the parent.
 	 * @param branchingDecisions List of branching decisions that lead to this node.
 	 */
-	public BAPNode(int nodeID, List<Integer> rootPath, List<U> columns, List<Inequality> inequalities, double bound, List<BranchingDecision> branchingDecisions){
+	public BAPNode(int nodeID, List<Integer> rootPath, List<U> columns, List<AbstractInequality> inequalities, double bound, List<BranchingDecision> branchingDecisions){
 		this.nodeID=nodeID;
 		this.columns=columns;
 		this.inequalities=inequalities;

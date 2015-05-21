@@ -32,8 +32,8 @@ import java.util.List;
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 
 /**
- * Each pricing problem (PricingProblem) is solved by some algorithm (PricingProblemSolver). This class is a container which holds
- * all instance of a particular PricingProblemSolver. Typically, there exists an instance for each pricing problem.
+ * Each pricing problem (PricingProblem) is solved by some algorithm (AbstractPricingProblemSolver). This class is a container which holds
+ * all instance of a particular AbstractPricingProblemSolver. Typically, there exists an instance for each pricing problem.
  * The instances are produced by a PricingProblemSolverFactory. This class takes a solver, list of pricing problems and a solverFactory
  * and it produces the necessary solver instances.
  * 
@@ -44,19 +44,19 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 public final class PricingProblemBundle<T, U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T>> {
 
 	/** The solver (class) **/
-	public final Class<? extends PricingProblemSolver<T, U, V>> pricingSolver;
+	public final Class<? extends AbstractPricingProblemSolver<T, U, V>> pricingSolver;
 
 	/** The solver instances. The number of instances equals the number of pricing problems **/
-	public final List<PricingProblemSolver<T, U, V>> solverInstances;
+	public final List<AbstractPricingProblemSolver<T, U, V>> solverInstances;
 	
 	/**
-	 * Each pricing problem (PricingProblem) is solved by some algorithm (PricingProblemSolver). This class is a container which holds
-	 * a single instance of a PricingProblemSolver for *each* PricingProblem. The instances are produced by a PricingProblemSolverFactory
+	 * Each pricing problem (PricingProblem) is solved by some algorithm (AbstractPricingProblemSolver). This class is a container which holds
+	 * a single instance of a AbstractPricingProblemSolver for *each* PricingProblem. The instances are produced by a PricingProblemSolverFactory
 	 * @param pricingSolver The solver
 	 * @param pricingProblems List of pricing problems
 	 * @param solverFactory Factory to produce Solver Instances of the type of the pricingSolver.
 	 */
-	public PricingProblemBundle(Class<? extends PricingProblemSolver<T, U, V>> pricingSolver, 
+	public PricingProblemBundle(Class<? extends AbstractPricingProblemSolver<T, U, V>> pricingSolver,
 			List<V> pricingProblems, 
 			PricingProblemSolverFactory<T, U, V> solverFactory){
 		this.pricingSolver=pricingSolver;

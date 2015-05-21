@@ -39,8 +39,9 @@ import org.jorlib.demo.frameworks.columnGeneration.cgExample1.cg.PricingProblem;
 import org.jorlib.demo.frameworks.columnGeneration.cgExample1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
 import org.jorlib.frameworks.columnGeneration.io.SimpleCGLogger;
+import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 
 /**
  * Simple solver class which solves the Cutting Stock Problem through Column Generation.
@@ -62,7 +63,7 @@ public class CuttingStockSolver {
 		Master master=new Master(modelData, pricingProblem);
 
 		//Define which solvers to use
-		List<Class<? extends PricingProblemSolver<CuttingStock, CuttingPattern, PricingProblem>>> solvers= Collections.singletonList(ExactPricingProblemSolver.class);
+		List<Class<? extends AbstractPricingProblemSolver<CuttingStock, CuttingPattern, PricingProblem>>> solvers= Collections.singletonList(ExactPricingProblemSolver.class);
 
 		//Define an upper bound (stronger is better). In this case we simply sum the demands, i.e. cut each final from its own raw (Rather poor initial solution).
 		int upperBound=IntStream.of(modelData.demandForFinals).sum();
@@ -72,6 +73,9 @@ public class CuttingStockSolver {
 
 		//Create a column generation instance
 		ColGen<CuttingStock, CuttingPattern, PricingProblem> cg=new ColGen<>(modelData, master, pricingProblem, solvers, initSolution, upperBound);
+
+		//OPTIONAL: add a debugger
+		SimpleDebugger debugger=new SimpleDebugger(cg);
 
 		//OPTIONAL: add a logger
 		SimpleCGLogger logger=new SimpleCGLogger(cg, new File("./output/cuttingStock.log"));
@@ -83,6 +87,7 @@ public class CuttingStockSolver {
 			e.printStackTrace();
 		}
 		//Print solution:
+		System.out.println("================ Solution ================");
 		List<CuttingPattern> solution=cg.getSolution();
 		System.out.println("CG terminated with objective: "+cg.getObjective());
 		System.out.println("Number of iterations: "+cg.getNumberOfIterations());

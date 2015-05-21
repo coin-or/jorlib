@@ -26,6 +26,7 @@
  */
 package org.jorlib.demo.frameworks.columnGeneration.bapExample;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -41,8 +42,10 @@ import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.master.cuts.Sub
 import org.jorlib.demo.frameworks.columnGeneration.bapExample.model.MatchingColor;
 import org.jorlib.demo.frameworks.columnGeneration.bapExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
+import org.jorlib.frameworks.columnGeneration.io.SimpleBAPLogger;
+import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.io.tspLibReader.TSPLibTour;
 
 /**
@@ -70,7 +73,7 @@ public class TSPSolver {
 		if(tsp.N % 2 == 1)
 			throw new RuntimeException("This solver can only solve TSP instances with an even number of vertices!");
 
-		//Create a cutHandler, then create a Subtour Inequality Generator and add it to the handler 
+		//Create a cutHandler, then create a Subtour AbstractInequality Generator and add it to the handler
 		CutHandler<TSP, TSPMasterData> cutHandler=new CutHandler<>();
 		SubtourInequalityGenerator cutGen=new SubtourInequalityGenerator(tsp);
 		cutHandler.addCutGenerator(cutGen);
@@ -84,7 +87,7 @@ public class TSPSolver {
 		Master master=new Master(tsp, pricingProblems, cutHandler);
 		
 		//Define which solvers to use
-		List<Class<? extends PricingProblemSolver<TSP, Matching, PricingProblemByColor>>> solvers= Collections.singletonList(ExactPricingProblemSolver.class);
+		List<Class<? extends AbstractPricingProblemSolver<TSP, Matching, PricingProblemByColor>>> solvers= Collections.singletonList(ExactPricingProblemSolver.class);
 		
 		//OPTIONAL: Get an initial solution and use it as an upper bound
 		TSPLibTour initTour=TSPLibTour.createCanonicalTour(tsp.N); //Feasible solution
@@ -97,14 +100,18 @@ public class TSPSolver {
 		//Create a branch and price instance
 		BranchAndPrice bap=new BranchAndPrice(tsp, master, pricingProblems, solvers, branchCreators, tourLength, initSolution);
 
+		//OPTIONAL: Attach a debugger
+		SimpleDebugger debugger=new SimpleDebugger(bap, cutHandler, true);
+
 		//OPTIONAL: Attach a logger to the branch and price procedure.
-//		SimpleBAPLogger logger=new SimpleBAPLogger(bap, new File("./output/tsp.log"));
+		SimpleBAPLogger logger=new SimpleBAPLogger(bap, new File("./output/tsp.log"));
 
 		//Solve the TSP problem through branch and price
 		bap.runBranchAndPrice(System.currentTimeMillis()+8000000L);
 
 		
 		//Print solution:
+		System.out.println("================ Solution ================");
 		System.out.println("BAP terminated with objective: "+bap.getObjective());
 		System.out.println("Total Number of iterations: "+bap.getTotalNrIterations());
 		System.out.println("Total Number of processed nodes: "+bap.getNumberOfProcessedNodes());
@@ -123,15 +130,15 @@ public class TSPSolver {
 
 		//Clean up:
 		bap.close(); //Close master and pricing problems
-		cutHandler.close(); //Close the cut handler. The close() call is propagated to all registered CutGenerator classes
+		cutHandler.close(); //Close the cut handler. The close() call is propagated to all registered AbstractCutGenerator classes
 	}
 
 	public static void main(String[] args) throws IOException {
 		//TSPLib instances, see http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
-		TSP tsp= new TSP("./data/tspLib/tsp/burma14.tsp"); //Optimal: 3323
+//		TSP tsp= new TSP("./data/tspLib/tsp/burma14.tsp"); //Optimal: 3323
 //		TSP tsp= new TSP("./data/tspLib/tsp/ulysses16.tsp"); //Optimal: 6859
 //		TSP tsp= new TSP("./data/tspLib/tsp/ulysses22.tsp"); //Optimal: 7013
-//		TSP tsp= new TSP("./data/tspLib/tsp/gr24.tsp"); //Optimal: 1272
+		TSP tsp= new TSP("./data/tspLib/tsp/gr24.tsp"); //Optimal: 1272
 //		TSP tsp= new TSP("./data/tspLib/tsp/fri26.tsp"); //Optimal: 937
 //		TSP tsp= new TSP("./data/tspLib/tsp/dantzig42.tsp"); //Optimal: 699
 //		TSP tsp= new TSP("./data/tspLib/tsp/swiss42.tsp"); //Optimal: 1273

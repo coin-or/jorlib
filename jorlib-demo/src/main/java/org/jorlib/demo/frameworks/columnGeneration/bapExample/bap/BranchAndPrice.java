@@ -32,7 +32,7 @@ import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.master.Master;
 import org.jorlib.demo.frameworks.columnGeneration.bapExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +48,7 @@ public class BranchAndPrice extends AbstractBranchAndPrice<TSP,Matching, Pricing
     public BranchAndPrice(TSP modelData,
                           Master master,
                           List<PricingProblemByColor> pricingProblems,
-                          List<Class<? extends PricingProblemSolver<TSP, Matching, PricingProblemByColor>>> solvers,
+                          List<Class<? extends AbstractPricingProblemSolver<TSP, Matching, PricingProblemByColor>>> solvers,
                           List<? extends AbstractBranchCreator<TSP, Matching, PricingProblemByColor>> branchCreators,
                           int upperBoundOnObjective,
                           List<Matching> initialSolution){

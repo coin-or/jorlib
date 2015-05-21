@@ -11,7 +11,7 @@
  *
  */
 /* -----------------
- * Inequality.java
+ * AbstractInequality.java
  * -----------------
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
@@ -34,16 +34,16 @@ package org.jorlib.frameworks.columnGeneration.master.cutGeneration;
  * @version 13-4-2015
  *
  */
-public abstract class Inequality {
+public abstract class AbstractInequality {
 
-	/** Reference to the CutGenerator which generates inequalities of the type that extends this class **/
-	public final CutGenerator maintainingGenerator;
+	/** Reference to the AbstractCutGenerator which generates inequalities of the type that extends this class **/
+	public final AbstractCutGenerator maintainingGenerator;
 
 	/**
 	 * Creates a new inequality
-	 * @param maintainingGenerator Reference to the CutGenerator which generates inequalities of the type that extends this class
+	 * @param maintainingGenerator Reference to the AbstractCutGenerator which generates inequalities of the type that extends this class
 	 */
-	public Inequality(CutGenerator maintainingGenerator){
+	public AbstractInequality(AbstractCutGenerator maintainingGenerator){
 		this.maintainingGenerator=maintainingGenerator;
 	}
 

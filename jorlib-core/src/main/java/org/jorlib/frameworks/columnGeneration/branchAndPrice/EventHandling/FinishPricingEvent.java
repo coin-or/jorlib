@@ -39,8 +39,10 @@ import java.util.List;
  */
 public class FinishPricingEvent extends EventObject{
 
+    /** Indicates which iteration we are at in the column generation procedure **/
+    public final int columnGenerationIteration;
     /** List of new columns, or empty list if no new columns could be found by the pricing problem**/
-    public List<? extends AbstractColumn<?, ?>> columns;
+    public List<?  extends AbstractColumn<?, ?>> columns;
     /** Objective value of the master problem **/
     public final double objective;
     /** Integer Upper bound on the master problem (i.e. a feasible integer solution) **/
@@ -55,8 +57,9 @@ public class FinishPricingEvent extends EventObject{
      * @param upperBound upper bound (best integer solution)
      * @param lowerBound lower bound on the objective value
      */
-    public FinishPricingEvent(Object source, List<? extends AbstractColumn<?, ?>> columns, double objective, int upperBound, double lowerBound){
+    public <U  extends AbstractColumn<?, ?>> FinishPricingEvent(Object source, int columnGenerationIteration, List<U> columns, double objective, int upperBound, double lowerBound){
         super(source);
+        this.columnGenerationIteration=columnGenerationIteration;
         this.columns=columns;
         this.objective=objective;
         this.upperBound=upperBound;

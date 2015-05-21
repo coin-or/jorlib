@@ -27,7 +27,7 @@
 package org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions;
 
 import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.Inequality;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 
 /**
@@ -54,6 +54,6 @@ public interface BranchingDecision<T,U extends AbstractColumn<T, ? extends Abstr
 	 * @param inequality inequality
 	 * @return true if the inequality is feasible, false otherwise
 	 */
-	boolean inEqualityIsCompatibleWithBranchingDecision(Inequality inequality);
+	boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality inequality);
 	
 }

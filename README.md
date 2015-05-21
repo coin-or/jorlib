@@ -16,7 +16,7 @@ jORLib is a Java class library that provides implementations for Operations Rese
 
 A copy of the [GPLv3](LICENSE) is included in the download.
 
-Please note that JGraphT is distributed WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Please note that jORLib is distributed WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 Please refer to the license for details.
 
@@ -28,7 +28,7 @@ The package `org.jorlib.demo` includes small demo applications to help you get s
 
 ## Documentation ##
 
-Will be included later....
+Link to documentation will be included soon....
 
 ## Dependencies ##
 
@@ -50,6 +50,9 @@ Your contributions are highly welcome. Literally anything related to OR will be 
 -Readers/parsers for common IO such as TSPLib instances
 -etc
 If you add improvements to jORLib please send them to us as pull requests on github. We will add them to the next release so that everyone can enjoy them. You might also benefit from it: others may fix bugs in your source files or may continue to enhance them.
+
+## Using jORLib ##
+If you are using jORLib in your work, you are cordially invited to drop a note on our mailing lists (), describing your work and what you used jORLib for. This will give us a better understanding of how the Library is used and what people\'s interests are. Feel free to report any issues, feature requests, etc on our issue tracker on Github (https://github.com/jkinable/jorlib/issues).
 
 ## Thanks ##
 

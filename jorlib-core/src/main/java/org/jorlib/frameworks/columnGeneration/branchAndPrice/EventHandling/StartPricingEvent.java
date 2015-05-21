@@ -36,11 +36,15 @@ import java.util.EventObject;
  */
 public class StartPricingEvent extends EventObject{
 
+    /** Indicates which iteration we are at in the column generation procedure **/
+    public final int columnGenerationIteration;
+
     /**
      * Creates a new StartPricingEvent
      * @param source Generator of the event
      */
-    public StartPricingEvent(Object source){
+    public StartPricingEvent(Object source, int columnGenerationIteration){
         super(source);
+        this.columnGenerationIteration=columnGenerationIteration;
     }
 }

@@ -26,24 +26,21 @@
  */
 package org.jorlib.demo.frameworks.columnGeneration.cgExample2;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.bap.BranchAndPrice;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.bap.branching.BranchOnEdge;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.ExactPricingProblemSolver;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.Matching;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.PricingProblemByColor;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.master.Master;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.master.TSPMasterData;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.master.cuts.SubtourInequalityGenerator;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.model.MatchingColor;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.model.TSP;
-import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample2.cg.ExactPricingProblemSolver;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample2.cg.Matching;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample2.cg.PricingProblemByColor;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample2.cg.master.Master;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample2.cg.master.TSPMasterData;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample2.cg.master.cuts.SubtourInequalityGenerator;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample2.model.MatchingColor;
+import org.jorlib.demo.frameworks.columnGeneration.cgExample2.model.TSP;
 import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
 import org.jorlib.frameworks.columnGeneration.io.SimpleCGLogger;
+import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
-import org.jorlib.frameworks.columnGeneration.pricing.PricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.io.tspLibReader.TSPLibTour;
 
 import java.io.File;
@@ -75,7 +72,7 @@ public class TSPCGSolver {
 		if(tsp.N % 2 == 1)
 			throw new RuntimeException("This solver can only solve TSP instances with an even number of vertices!");
 
-		//Create a cutHandler, then create a Subtour Inequality Generator and add it to the handler 
+		//Create a cutHandler, then create a Subtour AbstractInequality Generator and add it to the handler
 		CutHandler<TSP, TSPMasterData> cutHandler=new CutHandler<>();
 		SubtourInequalityGenerator cutGen=new SubtourInequalityGenerator(tsp);
 		cutHandler.addCutGenerator(cutGen);
@@ -89,7 +86,7 @@ public class TSPCGSolver {
 		Master master=new Master(tsp, pricingProblems, cutHandler);
 		
 		//Define which solvers to use
-		List<Class<? extends PricingProblemSolver<TSP, Matching, PricingProblemByColor>>> solvers= Collections.singletonList(ExactPricingProblemSolver.class);
+		List<Class<? extends AbstractPricingProblemSolver<TSP, Matching, PricingProblemByColor>>> solvers= Collections.singletonList(ExactPricingProblemSolver.class);
 		
 		//Create an initial solution and use it as an upper bound
 		TSPLibTour initTour=TSPLibTour.createCanonicalTour(tsp.N); //Feasible solution
@@ -98,6 +95,9 @@ public class TSPCGSolver {
 
 		//Create a column generation instance
 		ColGen<TSP, Matching, PricingProblemByColor> cg=new ColGen<>(tsp, master, pricingProblems, solvers, initSolution, tourLength);
+
+		//OPTIONAL: add a debugger
+		SimpleDebugger debugger=new SimpleDebugger(cg, cutHandler);
 
 		//OPTIONAL: add a logger
 		SimpleCGLogger logger=new SimpleCGLogger(cg, new File("./output/tspCG.log"));
@@ -109,6 +109,7 @@ public class TSPCGSolver {
 			e.printStackTrace();
 		}
 		//Print solution:
+		System.out.println("================ Solution ================");
 		List<Matching> solution=cg.getSolution();
 		System.out.println("CG terminated with objective: "+cg.getObjective());
 		System.out.println("Number of iterations: "+cg.getNumberOfIterations());

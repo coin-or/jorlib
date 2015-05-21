@@ -118,7 +118,7 @@ public class LiftedCoverInequalitySeparator {
 	 * @param knapsackCoefficients a_i
 	 * @param b right hand side of the knapsack constraint
 	 * @param variableValues values of the x_i variables
-	 * @param performDownLifting When set to true, additional effort is performed to find a violated Lifted Cover Inequality. When this value is false, C2 will be an empty set.
+	 * @param performDownLifting When set to true, additional effort is performed to find a violated Lifted Cover AbstractInequality. When this value is false, C2 will be an empty set.
 	 * 
 	 */
 	public void separateLiftedCover(int nrVars, int[] knapsackCoefficients, int b, double[] variableValues, boolean performDownLifting){
