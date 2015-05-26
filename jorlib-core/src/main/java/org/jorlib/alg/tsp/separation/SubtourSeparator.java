@@ -37,20 +37,20 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 
 /**
  * This class separates subtours. These subtours may be used to generate Dantzig Fulkerson Johnson (DFJ) subtour elimination constraints.
- * Let G(V,E) be a undirected graph with vertex set V, edge set E. A valid TSP solution (i.e. a solution without subtours) should satisfy
- * the following constraint: {@code \sum_{e\in \delta{S}} x_e >=2} for all S\subset V, S \noteq \emptyset. Here \delta{S}\subset E is the set of
- * edges where each edge has exactly one endpoint in S, and one endpoint in V\setminus S. x_e is a binary variable indicating
- * whether edge e\in E is used in the TSP solution. Obviously, if there is a set S'\subset V, S' \noteq \emptyset such that
+ * Let {@code G(V,E)} be a undirected graph with vertex set {@code V}, edge set {@code E}. A valid TSP solution (i.e. a solution without subtours) should satisfy
+ * the following constraint: {@code \sum_{e\in \delta{S}} x_e >=2} for all {@code S\subset V, S \noteq \emptyset}. Here {@code \delta{S}\subset E} is the set of
+ * edges where each edge has exactly one endpoint in {@code S}, and one endpoint in {@code V\setminus S}. {@code x_e} is a binary variable indicating
+ * whether edge {@code e\in E} is used in the TSP solution. Obviously, if there is a set {@code S'\subset V, S' \noteq \emptyset} such that
  * {@code \sum_{e\in \delta{S'}} x_e <2}, then there is a subtour through the vertices in set S'. It may be the case that multiple subtours exist
  * within a fractional TSP solution. This class identifies the subtour with the highest amount of violation, i.e 
- * \min_{S\subset V, S \noteq \emptyset} \sum_{e\in \delta{S}} x_e
+ * {@code \min_{S\subset V, S \noteq \emptyset} \sum_{e\in \delta{S}} x_e}<br><p>
  * 
  * Note: the graph must be provided as a JgraphT graph. The graph representing the problem can be directed, undirected, or mixed,
  * complete or incomplete, weighted or without weights. The directed graphs are often useful to model cases where a vehicle can only
- * drive from one city to the other in a particular direction.
+ * drive from one city to the other in a particular direction.<p>
  * Note2: To separate the subtours, we rely on the StoerWagnerMinimumCut implementation from the JgraphT package. 
- * 		This implementation deterministically computes the minimum cut in a graph in O(|V||E| + |V|log|V|) time, see
- * 		{@literal M. Stoer and F. Wagner, "A Simple Min-Cut Algorithm", Journal of the ACM, volume 44, number 4. pp 585-591, 1997.}
+ * 		This implementation deterministically computes the minimum cut in a graph in {@code O(|V||E| + |V|log|V|)} time, see
+ * 		{@literal M. Stoer and F. Wagner, "A Simple Min-Cut Algorithm", Journal of the ACM, volume 44, number 4. pp 585-591, 1997.}<p>
  * 
  * WARNING: if the input graph is modified, i.e. edges or vertices are added/removed then the behavior of this class is undefined!
  * 			A new instance should of this class should be made if this happens! A future extension of this class could add a graph
@@ -62,7 +62,7 @@ import org.jgrapht.graph.SimpleWeightedGraph;
  */
 public class SubtourSeparator<V, E> {
 
-	/** Precision **/
+	/** Precision 0.000001**/
 	public static final double PRECISION=0.000001;
 	
 	//Solution
@@ -120,22 +120,24 @@ public class SubtourSeparator<V, E> {
 	}
 
 	/**
-	 * @return Returns whether a subtour exists in the fractional TSP solution
+	 * Returns whether a subtour exists in the fractional TSP solution
+	 * @return whether a subtour exists in the fractional TSP solution
 	 */
 	public boolean hasSubtour(){
 		return hasSubtour;
 	}
 	
 	/**
-	 * @return Returns \sum_{e\in \delta{S'}} x_e for the separated subtour through S'.
+	 * Returns \sum_{e\in \delta{S'}} x_e for the separated subtour through S'.
+	 * @return \sum_{e\in \delta{S'}} x_e for the separated subtour through S'.
 	 */
 	public double getCutValue(){
 		return minCutValue;
 	}
 	
 	/**
-	 * 
-	 * @return Returns the set S' where {@code \sum_{e\in \delta{S'}} x_e <2, S'\subset V, S' \noteq \emptyset}
+	 * Returns the set S' where {@code \sum_{e\in \delta{S'}} x_e <2, S'\subset V, S' \noteq \emptyset}
+	 * @return the set S' where {@code \sum_{e\in \delta{S'}} x_e <2, S'\subset V, S' \noteq \emptyset}
 	 */
 	public Set<V> getCutSet(){
 		return cutSet;

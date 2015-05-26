@@ -157,7 +157,7 @@ public class Master extends AbstractMaster<CuttingStock, CuttingPattern, Pricing
 	}
 
 	/**
-	 * Return the solution, i.e. columns with non-zero values in the cplex problem
+	 * Return the solution, i.e columns with non-zero values in the cplex problem
 	 */
 	@Override
 	public List<CuttingPattern> getSolution() {

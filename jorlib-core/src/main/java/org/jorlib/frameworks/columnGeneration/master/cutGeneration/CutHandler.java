@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The CutHandler is a manager class which maintains various CutGenerators to generate cuts of different types.
+ * The CutHandler is a manager class which maintains various {@link AbstractCutGenerator}(s) to generate cuts of different types.
  * 
  * @author Joris Kinable
  * @version 13-4-2015

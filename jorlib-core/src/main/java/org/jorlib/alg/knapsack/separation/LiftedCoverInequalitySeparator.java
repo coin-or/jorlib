@@ -38,19 +38,19 @@ import org.jorlib.alg.knapsack.KnapsackAlgorithm;
 
 
 /**
- * This class calculates both Lifted and Minimal Cover inequalities for binary knapsack constraints.
- * The algorithms used to separate violated inequalities are provided in: 
+ * This class calculates both Lifted and Minimal Cover inequalities for binary knapsack constraints.<p>
+ * The algorithms used to separate violated inequalities are provided in:<br>
  * {@literal Nemhauser, G.L., Wolsey, L.A., Integer and combinatorial optimization. 1999, John Wiley & Sons}
- * Given a knapsack constraint: {@code \sum_i a_i x_i <= b} where x_i are binary variables, b a positive integer and a_i integer coefficients.
- * Let N be the set of variables in the knapsack constraint.
+ * Given a knapsack constraint: {@code \sum_i a_i x_i <= b} where {@code x_i} are binary variables, {@code b} a positive integer and {@code a_i} integer coefficients.
+ * Let {@code N} be the set of variables in the knapsack constraint.
  * For a given assignment of values to the variables, this class computes two types of violated cover inequalities:
- * 1. Minimal covers: {@code \sum_{j\in C} \leq |C|-1, where C\subseteq N, \sum_{j\in C} a_i >b}
+ * 1. Minimal covers: {@code \sum_{j\in C} \leq |C|-1}, where {@code C\subseteq N, \sum_{j\in C} a_i >b}
  * 2. Lifted covers: {@code \sum_{j\in N\setminus C} \alpha_jx_j + \sum_{j\in C2} \gamma_jx_j + \sum_{j\in C1} x_j \leq |C1|-1+\sum_{j\in C2}\gamma_j}, where
- *    {@code C1 \cap C2= \emptyset}, {@code C1 \cup C2= C}, {@code C} a minimal cover as defined above.
+ *    {@code C1 \cap C2= \emptyset}, {@code C1 \cup C2= C}, {@code C} a minimal cover as defined above.<p>
  *    
  * NOTE: Separating violated Lifted Cover Inequalities is NP-hard. Hence we rely on lifting and a separation heuristic. 
- * First we attempt to find a violated Lifted Cover inequality with C2=\emptyset. If we can't find such an inequality, we set C2 to:
- * C2={k}, k=arg max_{j\in C}a_j variableValue[j], and C1=C\setminus C2, and retry.
+ * First we attempt to find a violated Lifted Cover inequality with {@code C2=\emptyset}. If we can't find such an inequality, we set {@code C2} to:
+ * {@code C2={k}, k=arg max_{j\in C}a_j variableValue[j]}, and {@code C1=C\setminus C2}, and retry.<br><br>
  * 
  * Note: The precision of the calculations are accurate up to 0.000001.
  *  
@@ -319,13 +319,15 @@ public class LiftedCoverInequalitySeparator {
 	/**** Minimal cover functions ****/
 	
 	/**
-	 * @return Indicates whether a cover inequality exists, i.e. returns whether {@code \sum_i a_i > b}. You should NOT ask for a minimal or lifted cover if this function returns false!
+	 * Indicates whether a cover inequality exists, i.e returns whether {@code \sum_i a_i > b}. You should NOT ask for a minimal or lifted cover if this function returns false!
+	 * @return Indicates whether a cover inequality exists, i.e returns whether {@code \sum_i a_i > b}. You should NOT ask for a minimal or lifted cover if this function returns false!
 	 */
 	public boolean coverInequalityExists(){
 		return coverInequalityExists;
 	}
 	
 	/**
+	 * Returns C: the variables that are in the minimal cover
 	 * @return Returns C: the variables that are in the minimal cover
 	 */
 	public Set<Integer> getMinimalCover(){
@@ -333,20 +335,24 @@ public class LiftedCoverInequalitySeparator {
 	}
 	
 	/**
-	 * @return Returns an boolean array indicating which variables belong to the minimal cover inequality C: {@code\sum_{i\in C} x_i <= |C|-1}, i.e. minimalCover[i] is true if
+	 * Returns an boolean array indicating which variables belong to the minimal cover inequality C: {@code\sum_{i\in C} x_i <= |C|-1}, i.e. minimalCover[i] is true if
+	 * variable i is in the cover.
+	 * @return an boolean array indicating which variables belong to the minimal cover inequality C: {@code\sum_{i\in C} x_i <= |C|-1}, i.e. minimalCover[i] is true if
 	 * variable i is in the cover.  
 	 */
 	public boolean[] getMinimalCoverMask(){
 		return minimalCover;
 	}
 	/**
+	 * Returns true if the cover inequality {@code\sum_{i\in C} x_i <= |C|-1} is violated
 	 * @return Returns true if the cover inequality {@code\sum_{i\in C} x_i <= |C|-1} is violated
 	 */
 	public boolean isMinimalCoverViolated(){
 		return minimalCoverIsViolated;
 	}
 	/**
-	 * @return Returns evaluation of the LHS of the cover. If the cover is violated, than {@code LHS>RHS}
+	 * Returns evaluation of the LHS of the cover. If the cover is violated, than {@code LHS>RHS}
+	 * @return evaluation of the LHS of the cover. If the cover is violated, than {@code LHS>RHS}
 	 */
 	public double getMinimalCoverLHS(){
 		double value=0;
@@ -355,6 +361,7 @@ public class LiftedCoverInequalitySeparator {
 		return value;
 	}
 	/**
+	 * returns the RHS of the minimal cover inequality
 	 * @return returns the RHS of the minimal cover inequality
 	 */
 	public int getMinimalCoverRHS(){
@@ -364,25 +371,29 @@ public class LiftedCoverInequalitySeparator {
 	/**** Lifted cover functions ****/
 	
 	/**
-	 * @return returns an array of alpha coefficients of the lifted cover inequality
+	 * Returns an array of alpha coefficients of the lifted cover inequality
+	 * @return an array of alpha coefficients of the lifted cover inequality
 	 */
 	public int[] getLiftedCoverCoefficients(){
 		return liftedCoverCoefficients;
 	}
 	/**
-	 * @return Returns evaluation of the LHS of the cover. If the cover is violated, than {@code LHS>RHS}
+	 * Returns evaluation of the LHS of the cover. If the cover is violated, than {@code LHS>RHS}
+	 * @return evaluation of the LHS of the cover. If the cover is violated, than {@code LHS>RHS}
 	 */
 	public double getLiftedCoverLHS(){
 		return liftedCoverLHS;
 	}
 	/**
-	 * @return returns the RHS of the lifted cover inequality
+	 * Returns the RHS of the lifted cover inequality
+	 * @return the RHS of the lifted cover inequality
 	 */
 	public int getLiftedCoverRHS(){
 		return liftedCoverRHS;
 	}
 	/**
-	 * @return Returns true if the lifted cover inequality is violated
+	 * Returns true if the lifted cover inequality is violated
+	 * @return true if the lifted cover inequality is violated
 	 */
 	public boolean isLiftedCoverViolated(){
 		return liftedCoverIsViolated;

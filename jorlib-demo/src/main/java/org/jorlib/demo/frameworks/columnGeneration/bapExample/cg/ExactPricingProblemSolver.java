@@ -132,7 +132,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<TSP,
 				this.pricingProblemInfeasible=false;
 				this.objective=cplex.getObjValue();
 				
-				if(objective >= -pricingProblem.dualConstant+config.PRECISION){ //Generate new column if it has negative reduced cost
+				if(objective >= -pricingProblem.dualCost +config.PRECISION){ //Generate new column if it has negative reduced cost
 					DefaultWeightedEdge[] edges=vars.getKeysAsArray(new DefaultWeightedEdge[vars.size()]); //Get the variable values
 					IloIntVar[] edgeVarsArray=vars.getValuesAsArray(new IloIntVar[vars.size()]);
 					double[] values=cplex.getValues(edgeVarsArray);
@@ -153,7 +153,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<TSP,
 					Matching column=new Matching("exactPricing", false, pricingProblem, matching, succ, cost);
 					newPatterns.add(column);
 				}else{
-//					Object[] o={pricingProblem.color.name(), objective, pricingProblem.dualConstant*-1};
+//					Object[] o={pricingProblem.color.name(), objective, pricingProblem.dualCost*-1};
 //					logger.debug("No columns for pricing problem {}. Objective: {} dual constant: {}",o);
 				}
 			}

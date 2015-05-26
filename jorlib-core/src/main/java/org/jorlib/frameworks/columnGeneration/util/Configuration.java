@@ -26,6 +26,9 @@
  */
 package org.jorlib.frameworks.columnGeneration.util;
 
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractCutGenerator;
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
+
 import java.util.Properties;
 
 /**
@@ -127,7 +130,7 @@ public class Configuration {
 	 */
 
 	/**
-	 * The cutHandler invokes the cutGenerators one by one to generate cuts. When a particular cutGenerator does not yield any cuts,
+	 * The {@link CutHandler} invokes the {@link AbstractCutGenerator}(s) one by one to generate cuts. When a particular cutGenerator does not yield any cuts,
 	 * the cutHandler will move on to the next registered cutGenerator. When quickReturnAfterCutsFound is set to true, the cutHandler
 	 * will return as soon as any cuts have been found. When set to false, all cutGenerators will be invoked.
 	 */

@@ -59,7 +59,7 @@ public class MasterData<T, U extends AbstractColumn<T, V>, V extends AbstractPri
 	protected final Map<V, OrderedBiMap<U, X>> varMap;
 
 	/**
-	 * Creates a new MasterDta object
+	 * Creates a new MasterData object
 	 * @param varMap A double map which stores the variables. The first key is the pricing problem, the second key is a column and the value is a variable object, e.g. an IloNumVar in cplex.
 	 */
 	public MasterData(Map<V, OrderedBiMap<U, X>> varMap){
@@ -114,7 +114,7 @@ public class MasterData<T, U extends AbstractColumn<T, V>, V extends AbstractPri
 	}
 
 	/**
-	 * Returns a mapping of the columns to their variables. WARNING: extreme care must be taken when modifying this mapping outside of teh MasterData class!
+	 * Returns a mapping of the columns to their variables. WARNING: extreme care must be taken when modifying this mapping outside of the MasterData class!
 	 * @return Mapping of columns to variables
 	 * @throws UnsupportedOperationException if the number of pricing problems does not equal one
 	 */

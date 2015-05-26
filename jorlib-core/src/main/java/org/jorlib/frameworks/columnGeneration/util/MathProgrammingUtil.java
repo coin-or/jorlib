@@ -39,7 +39,8 @@ public class MathProgrammingUtil {
 	private static final Configuration config=Configuration.getConfiguration();
 
 	/**
-	 * Returns the nearest rounded double. Throws an exception if the nearest double is further away than a given constant
+	 * Returns the nearest rounded double. Throws an exception if the nearest double is further away than a given constant, where the constant equals PRECISION as specified in
+	 * {@link Configuration}.
 	 * @param value value to be rounded
 	 * @return rounded double
 	 */
@@ -52,7 +53,8 @@ public class MathProgrammingUtil {
 	}
 	
 	/**
-	 * Returns the nearest rounded int. Throws an exception if the nearest int is further away than a given constant
+	 * Returns the nearest rounded int. Throws an exception if the nearest int is further away than a given constant, where the constant equals PRECISION as specified in
+	 * {@link Configuration}.
 	 * @param value value to be rounded
 	 * @return integer represented by the double
 	 */
@@ -65,7 +67,8 @@ public class MathProgrammingUtil {
 	}
 	
 	/**
-	 * Returns true if the variable is +/- 1, false if the variable is +/- 0, and throws an error otherwise
+	 * Returns true if the variable is +/- 1, false if the variable is +/- 0, and throws an error if the value is more than PRECISION away from either 0 or 1, where PRECISION
+	 * is specified in {@link Configuration}.
 	 * @param value value to be rounded
 	 * @return boolean value represented by the double
 	 */
@@ -80,7 +83,8 @@ public class MathProgrammingUtil {
 	}
 	
 	/**
-	 * Returns true if variable is fractional, i.e more than epsilon away from the nearest int value, false otherwise.
+	 * Returns true if variable is fractional, i.e more than PRECISION away from the nearest int value, false otherwise, where PRECISION
+	 * is specified in {@link Configuration}.
 	 * @param value to be checked
 	 * @return {@code true} when the provided double is fractional
 	 */

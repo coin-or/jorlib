@@ -92,28 +92,32 @@ public class OrderedBiMap<K,V> extends AbstractMap<K, V>{
 	}
 	
 	/**
-	 * @return returns whether the key is contained in the map. Runtime: O(1)
+	 * Returns whether the key is contained in the map. Runtime: O(1)
+	 * @return whether the key is contained in the map. Runtime: O(1)
 	 */
 	public boolean containsKey(Object key){
 		return biMap.containsKey(key);
 	}
 	
 	/**
-	 * @return Returns a set view of the map.
+	 * Returns a set view of the map.
+	 * @return a set view of the map.
 	 */
 	public Set<K> keySet(){
 		return biMap.keySet();
 	}
 	
 	/**
-	 * @return Returns an unmodifiable list of the keys. Convenient for deterministic iterations
+	 * Returns an unmodifiable list of the keys. Convenient for deterministic iterations
+	 * @return an unmodifiable list of the keys. Convenient for deterministic iterations
 	 */
 	public List<K> keyList(){
 		return Collections.unmodifiableList(keys);
 	}
 	
 	/**
-	 * @return Returns an unmodifiable Collection of the values. Convenient for deterministic iterations
+	 * Returns an unmodifiable Collection of the values. Convenient for deterministic iterations
+	 * @return an unmodifiable Collection of the values. Convenient for deterministic iterations
 	 */
 	public Collection<V> values(){
 		return Collections.unmodifiableCollection(values);
@@ -139,7 +143,8 @@ public class OrderedBiMap<K,V> extends AbstractMap<K, V>{
 	}
 
 	/**
-	 * @return Returns the entrySet
+	 * Returns the entrySet
+	 * @return the entrySet
 	 */
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
@@ -148,6 +153,7 @@ public class OrderedBiMap<K,V> extends AbstractMap<K, V>{
 	
 	/**
 	 * Returns the size of the map
+	 * @return the size of the map
 	 */
 	@Override
 	public int size(){

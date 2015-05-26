@@ -51,10 +51,10 @@ import java.util.*;
  * A column generation solution to the Traveling Salesman Problem.
  * Each TSP solution on a graph with an even number of vertices can be seen as the union of two edge disjoint perfect matchings.
  * As a result, the TSP problem can be solved by selecting two edge disjoint matchings which comply with the well-known
- * DFJ subtour elimination constraints. The pricing problems amount to generating these matchings.
+ * DFJ subtour elimination constraints. The pricing problems amount to generating these matchings.<p>
  * 
  * The ideas in this example are loosely based on the work Kinable, J. "Decomposition approaches for optimization problems, 
- * chapter: "The balanced TSP problem". 2014
+ * chapter: "The balanced TSP problem". 2014<p>
  * 
  * Note: this is an example class to demonstrate features of the Column Generation framework. This class is not
  * intended as a high-performance TSP solver!

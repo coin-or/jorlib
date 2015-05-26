@@ -54,7 +54,7 @@ public class SimpleBAPLogger implements BAPListener{
     protected int globalUB;
     /** Lower bound on the BAP node **/
     protected double lowerBoundNode;
-    /** What to do with the node, i.e. prune (based on obj), Infeasible, Integer, Fractional, or Inconclusive if the nodeStatus could not be determined (e.g. due to time limit) **/
+    /** What to do with the node, i.e prune (based on obj), Infeasible, Integer, Fractional, or Inconclusive if the nodeStatus could not be determined (e.g. due to time limit) **/
     protected NodeResultStatus nodeStatus;
     /** Number of nodes currently in the queue **/
     protected int nodesInQueue;

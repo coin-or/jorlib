@@ -33,7 +33,7 @@ import java.util.Set;
 
 /**
  * Class representing a subtour inequality: The number of edges entering/leaving the
- * cutSet must at least 2, otherwise there is a subtour within the cutSet
+ * cutSet must at be least 2, otherwise there is a subtour within the cutSet
  *
  * @author Joris Kinable
  * @version 13-4-2015

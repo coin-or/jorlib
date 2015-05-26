@@ -34,8 +34,8 @@ package org.jorlib.frameworks.columnGeneration.model;
  */
 public interface ModelInterface {
     /**
-     * Returns the name of the model instance
-     * @return the name of the model instance
+     * Returns the name of the data model
+     * @return the name of the data model
      */
     String getName();
 }

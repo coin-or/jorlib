@@ -56,7 +56,7 @@ public abstract class AbstractPricingProblem<T> implements BranchingDecisionList
 	public double[] dualCosts;
 
 	/** Variable containing dual information coming from the master problem **/
-	public double dualConstant;
+	public double dualCost;
 
 	/**
 	 * Create a new Pricing Problem
@@ -77,16 +77,16 @@ public abstract class AbstractPricingProblem<T> implements BranchingDecisionList
 	}
 
 	/**
-	 * Store dual information in the dualCosts array and dualConstant variable. The pricing problem often looks like:
-	 * {@code a_1x_1+a_2x_2+...+a_nx_n <= b}, where a_i are dual variables, and b some constant. The dualCosts array would hold the
-	 * a_i values whereas b is stored in the dualConstant variable
+	 * Store dual information in the dualCosts array and dualCost variable. The pricing problem often looks like:
+	 * {@code a_1x_1+a_2x_2+...+a_nx_n <= b}, where {@code a_i} are dual variables, and {@code b} some constant. The dualCosts array would hold the
+	 * {@code a_i} values whereas {@code b} is stored in the dualCost variable
 	 *
 	 * @param dualCosts dual values
-	 * @param dualConstant dual value
+	 * @param dualCost dual value
 	 */
-	public void initPricingProblem(double[] dualCosts, double dualConstant){
+	public void initPricingProblem(double[] dualCosts, double dualCost){
 		this.dualCosts =dualCosts;
-		this.dualConstant=dualConstant;
+		this.dualCost =dualCost;
 	}
 	
 	public String toString(){

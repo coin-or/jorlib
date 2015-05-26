@@ -158,6 +158,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	}
 	
 	/**
+	 * Returns the number of times the master problem has been solved
 	 * @return Returns the number of times the master problem has been solved
 	 */
 	public int getIterationCount(){
@@ -165,6 +166,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	}
 
 	/**
+	 * Returns true if the master problem has been solved to optimality
 	 * @return Returns true if the master problem has been solved to optimality
 	 */
 	public boolean isOptimal(){
@@ -194,7 +196,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	}
 	
 	/**
-	 * Returns all the cuts in the master model
+	 * Returns all the cuts in the master model.
 	 * A handle to a cutHandler must have been provided in the constructor of this class
 	 * @return a list of inequalities
 	 */

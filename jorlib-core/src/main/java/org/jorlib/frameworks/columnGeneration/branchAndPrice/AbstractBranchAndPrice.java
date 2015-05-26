@@ -335,7 +335,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 
 	/**
 	 * Returns a unique node ID. The internal nodeCounter is incremented by one each time this method is invoked.
-	 * @return returns a unique node ID, thereby guaranteeing that none of the nodes in the branch-and-price tree have this ID.
+	 * @return returns a unique node ID for the purpose of creating new BAPNodes, thereby guaranteeing that none of the nodes in the branch-and-price tree have this ID.
 	 */
 	protected int getUniqueNodeID(){
 		return  nodeCounter++;
@@ -358,7 +358,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	}
 	
 	/**
-	 * Returns whether the solution is optimal, i.e. the entire tree branch-and-price tree has been processed
+	 * Returns whether the solution is optimal, that is, whether the entire branch-and-price tree has been processed
 	 * @return {@code true} if the problem instance has been solved to optimality. ({@code getBound} and {@code getObjective} methods must yield the same value.
 	 */
 	public boolean isOptimal(){
@@ -489,7 +489,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	}
 
 	/**
-	 * Adds a BAPListener
+	 * Adds a CGListener
 	 * @param listener listener
 	 */
 	public void addColumnGenerationEventListener(CGListener listener){
@@ -497,7 +497,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	}
 
 	/**
-	 * Removes a BAPListener
+	 * Removes a CGListener
 	 * @param listener listener
 	 */
 	public void removeColumnGenerationEventListener(CGListener listener){

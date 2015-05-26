@@ -40,25 +40,25 @@ import org.jorlib.alg.packing.circlePacking.util.MathUtil;
 /**
  * For a given set of circles C, this class calculates the smallest enclosing circle which encloses all the circles in set C. The 
  * circles in C can have varying radii. To emphasize, this class does *NOT* perform circle packing. It merely computes the smallest enclosing
- * circle around a set of circles which have already been fixed.
+ * circle around a set of circles which have already been fixed.<p>
  * 
- * The implementation of this class is based on: 
- * "A randomized incremental algorithm" in:
- * Xu, S. Freund, R.M. Sun, J. Solution methodologies for the Smallest Enclosing Circle Problem.
- * Computational Optimization and Applications, volumne 25, issue 1-3, pp283-292, 2003
+ * The implementation of this class is based on:<br>
+ * "A randomized incremental algorithm" in:<br>
+ * Xu, S. Freund, R.M. Sun, J. Solution methodologies for the Smallest Enclosing Circle Problem.<br>
+ * Computational Optimization and Applications, volumne 25, issue 1-3, pp283-292, 2003<p>
  * 
  * Calculating the exact size of the smallest enclosing circle can be computationally expensive. This class also offers an approximation of
  * this value. The approximated radius is guaranteed to be larger or equal to the exact radius. The tighter the circles are packed, the more
- * accurate the approximation becomes.
+ * accurate the approximation becomes.<p>
  * 
  * Examples for circle packing are given here:
- * 		http://mathworld.wolfram.com/CirclePacking.html
- * 		http://en.wikipedia.org/wiki/Circle_packing_in_a_circle
- * 		http://www.packomania.com/
+ * 		{@link http://mathworld.wolfram.com/CirclePacking.html}
+ * 		{@link http://en.wikipedia.org/wiki/Circle_packing_in_a_circle}
+ * 		{@link http://www.packomania.com/}
  * 
  * Note from the author: In the aforementioned paper by Xu et. al several methods are compared. The authors report to obtain their
  * best results with their Quadratic programming approach, but we obtained better results with their 'Randomized incremental algorithm'.
- * Further experimenting may be required to determine the fastest method.
+ * Further experimenting may be required to determine the fastest method.<p>
  * 
  * To limit the impact caused by rounding issues, this class uses BigDecimals for added precision.
  * 
@@ -164,7 +164,7 @@ public class SmallestEnclosingCircleCalculator {
 	
 	/**
 	 * Given are a set of old circles, a circular container which encloses these circles and a new circle. This method tests whether the new
-	 * circle fits into the existing container. If yet, the method returns. If now, the method increases the size of the container such that
+	 * circle fits into the existing container. If yes, the method returns. If not, the method increases the size of the container such that
 	 * it encloses both the old circles and the new circle. Calculations are performed in an efficient way, thereby starting from the old container.
 	 * It is much cheaper to invoke this method when a new circle is added, than to invoke the calcContainer(...) method.
 	 * @param posCircleToAdd: the position of the circle that is being added in the xCors/yCors/radii vectors

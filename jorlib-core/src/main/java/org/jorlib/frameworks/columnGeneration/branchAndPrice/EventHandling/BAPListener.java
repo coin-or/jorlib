@@ -54,7 +54,7 @@ public interface BAPListener extends EventListener {
     void pruneNode(PruneNodeEvent pruneNodeEvent);
 
     /**
-     * Method invoked when a node is infeasible, i.e. no solution to its master problem exists
+     * Method invoked when a node is infeasible, i.e no solution to its master problem exists
      * @param nodeIsInfeasibleEvent nodeIsInfeasibleEvent
      */
     void nodeIsInfeasible(NodeIsInfeasibleEvent nodeIsInfeasibleEvent);

@@ -104,7 +104,7 @@ public class GraphManipulator {
 	}
 	
 	/**
-	 * Revert all currently active branching decisions, thereby restoring all data structures to their original state (i.e. the state they were in at the root node)
+	 * Revert all currently active branching decisions, thereby restoring all data structures to their original state (i.e the state they were in at the root node)
 	 */
 	public void restore(){
 		while(!changeHistory.isEmpty()){

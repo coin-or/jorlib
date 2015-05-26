@@ -27,7 +27,7 @@
 package org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions;
 
 /**
- * Interface defining a BranchingDecision Listener. Every BranchingDecision listeners are informed about branching
+ * Interface defining a BranchingDecision Listener. Every BranchingDecision listener is informed about branching
  * decisions which are executed.
  *
  * @author Joris Kinable

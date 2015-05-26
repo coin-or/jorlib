@@ -26,10 +26,12 @@
  */
 package org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling;
 
+import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
+
 import java.util.EventListener;
 
 /**
- * Listener for events coming from the CutHandler
+ * Listener for events coming from the {@link CutHandler}
  *
  * @author Joris Kinable
  * @version 20-5-2015

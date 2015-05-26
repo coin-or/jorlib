@@ -34,10 +34,10 @@ import java.util.Queue;
 /**
  * Memory efficient Branch and bound implementation of knapsack. 
  * 
- * Solves the problem:
- * {@code max \sum_i c_i x_i
- * s.t. \sum_i a_i x_i <= b
- * x_i binary}
+ * Solves the problem:<br>
+ * {@code max \sum_i c_i x_i}<br>
+ * {@code s.t. \sum_i a_i x_i <= b}<br>
+ * {@code x_i binary}<br>
  * 
  * The implementation is memory efficient: it does not rely on large matrices.
  * The knapsack problem is solved as a binary tree problem. Each level of the tree corresponds to a specific item. Each time we branch on a particular node, two child-nodes 
@@ -183,18 +183,21 @@ public class BinaryKnapsack implements KnapsackAlgorithm{
 	}
 	
 	/**
+	 * Get the value of the knapsack
 	 * @return Get the value of the knapsack
 	 */
 	public double getKnapsackValue(){
 		return knapsackValue;
 	}
 	/**
+	 * Get the total weight of the knapsack
 	 * @return Get the total weight of the knapsack
 	 */
 	public int getKnapsackWeight(){
 		return knapsackWeight;
 	}
 	/**
+	 * Get the items in the knapsack
 	 * @return Get the items in the knapsack
 	 */
 	public boolean[] getKnapsackItems(){

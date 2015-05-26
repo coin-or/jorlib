@@ -77,7 +77,7 @@ public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T, V>,V e
 	}
 
 	/**
-	 * Registers the branch and price Problem for which this class creates branches.
+	 * Registers the Branch-and-Price problem for which this class creates branches.
 	 * @param bap Branch and price class
 	 */
 	protected void registerBAP(AbstractBranchAndPrice bap){

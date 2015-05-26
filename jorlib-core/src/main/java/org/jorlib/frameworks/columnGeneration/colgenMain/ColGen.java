@@ -73,7 +73,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	protected final List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers;
 	/** Manages parallel execution of pricing problems **/
 	protected final PricingProblemManager<T,U, V> pricingProblemManager;
-	/** Helper class which notifies CGListeners **/
+	/** Helper class which notifies {@link CGListener} **/
 	protected final CGNotifier notifier;
 	
 	/** Objective value of column generation procedure **/
@@ -300,6 +300,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	}
 	
 	/**
+	 * Returns the objective value of the column generation procedure
 	 * @return Returns the objective value of the column generation procedure
 	 */
 	public double getObjective(){
@@ -334,6 +335,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	}
 
 	/**
+	 * Returns how much time was spent on solving the master problem
 	 * @return Returns how much time was spent on solving the master problem
 	 */
 	public long getMasterSolveTime(){
@@ -341,6 +343,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	}
 
 	/**
+	 * Returns how much time was spent on solving the pricing problems
 	 * @return Returns how much time was spent on solving the pricing problems
 	 */
 	public long getPricingSolveTime(){
@@ -348,6 +351,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	}
 
 	/**
+	 * Returns how many columns have been generated in total
 	 * @return Returns how many columns have been generated in total
 	 */
 	public int getNrGeneratedColumns(){
@@ -355,6 +359,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	}
 
 	/**
+	 * Returns the solution maintained by the master problem
 	 * @return Returns the solution maintained by the master problem
 	 */
 	public List<U> getSolution(){
@@ -362,6 +367,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	}
 	
 	/**
+	 * Returns all cuts generated for the master problem
 	 * @return Returns all cuts generated for the master problem
 	 */
 	public List<AbstractInequality> getCuts(){
