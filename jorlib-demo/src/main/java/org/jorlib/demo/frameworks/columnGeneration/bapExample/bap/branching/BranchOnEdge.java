@@ -102,8 +102,10 @@ public class BranchOnEdge extends AbstractBranchCreator<TSP, Matching, PricingPr
 
     /**
      * Create the branches:
-     *   -branch 1: edge {@code edgeForBranching} must be used by {@code PricingProblemByColor},
-     *   -branch 2: edge {@code edgeForBranching} may NOT used by {@code PricingProblemByColor},
+     * <ol>
+     * <li>branch 1: edge {@code edgeForBranching} must be used by {@code PricingProblemByColor},</li>
+     * <li>branch 2: edge {@code edgeForBranching} may NOT used by {@code PricingProblemByColor},</li>
+     * </ol>
      * @param parentNode Fractional node on which we branch
      * @param solution fractional solution
      * @param cuts Valid inequalities active at the parent node

@@ -181,15 +181,17 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	 * Solve the Column Generation problem. First the master problem is solved. Next the pricing problems(s) is (are) solved. To solve the pricing problems, the pricing
 	 * solvers are invoked one by one in a hierarchical fashion. First the first solver is invoked to solve the pricing problems. Any new columns generated are immediately returned.
 	 * If it fails to find columns, the next solver is invoked and so on. If the pricing problem discovers new columns, they are added to the master problem and the method continues
-	 * with the next column generation iteration.
+	 * with the next column generation iteration.<br>
 	 * If no new columns are found, the method checks for violated inequalities. If there are violated inequalities, they are added to the master problem and the method continues with the
-	 * next column generation iteration.
+	 * next column generation iteration.<br>
 	 * The solve procedure terminates under any of the following conditions:
-	 * 1. the solvers could not identify additional columns
-	 * 2. Time limit exceeded
-	 * 3. The lower bound (rounded up) exceeds the upper bound (best integer solution provided in the Constructor).
-	 * 4. The objective of the master problem is zero (zero is assumed to be a natural lower bound)
-	 * 5. The lower bound exceeds the objective of the master problem.
+	 * <ol>
+	 * <li>the solvers could not identify additional columns</li>
+	 * <li>Time limit exceeded</li>
+	 * <li>The lower bound (rounded up) exceeds the upper bound (best integer solution provided in the Constructor).</li>
+	 * <li>The objective of the master problem is zero (zero is assumed to be a natural lower bound)</li>
+	 * <li>The lower bound exceeds the objective of the master problem.</li>
+	 * </ol>
 	 * @param timeLimit Future point in time (ms) by which the procedure should be finished. Should be defined as: {@code System.currentTimeMilis()+<desired runtime>}
 	 * @throws TimeLimitExceededException Exception is thrown when time limit is exceeded
 	 */
