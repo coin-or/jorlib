@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is used to separate valid inequalities. It can access data from the the master problem through a
- * {@link MasterData} object. Each time inequalities have to be separated, the generateInequalities() method is invoked. Given
+ * {@link MasterData} object. Each time inequalities have to be separated, the {@link #generateInqualities() generateInqualities} method is invoked. Given
  * the data from the master, the AbstractCutGenerator can then check whether there are any violated inequalities.
  * Typically, one wants to store any inequalities generated for a particular master problem in the corresponding MasterData object
  * such that the master problem has access to the inequalities.

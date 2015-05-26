@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Main class defining the Column Generation procedure. It keeps track of all the data structures. Its solve() method is the core of this class.
+ * Main class defining the Column Generation procedure. It keeps track of all the data structures. Its {@link #solve(long timeLimit) solve} method is the core of this class.
  * Assumptions: the Master problem is a minimization problem. The optimal solution with non-fractional variable values has an integer objective value.
  *
  * @param <T> The data model
@@ -283,12 +283,17 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	
 	/**
 	 * Compute lower bound on the optimal objective value attainable by the the current master problem. The bound is based on both dual variables from the master,
-	 * as well as the optimal pricing problem solutions.
+	 * as well as the optimal pricing problem solutions.<br>
 	 * The parameter specifies which solver was last invoked to solve the pricing problems. This method is invoked immediately after solving the pricing problem.
-	 * Returns the best lower bound for the current master.
+	 * Returns the best lower bound for the current master.<br>
+	 * This method is not implemented as it is problem dependent. Override this method. The following methods are at your disposal (see documentation):
+	 * <ul>
+	 * <li>{@link AbstractMaster#getLowerBoundComponent()} for the master problem</li>
+	 * <li>{@link PricingProblemManager#getBoundsOnPricingProblems(Class)}  method for the pricing problems</li>
+	 * </ul>
 	 * NOTE: This method is not implemented by default.
 	 * NOTE2: When calling this method, it is guaranteed that the master problem has not been changed (no columns or inequalities are added) since the last time its
-	 * solve() method was invoked!
+	 * {@link #solve(long timeLimit) solve} method was invoked!
 	 * 
 	 * @param solver solver which was used to solve the pricing problem during the last invocation
 	 * @return lower bound on the optimal master problem solution
@@ -330,7 +335,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	/**
 	 * Returns the total runtime
 	 * @return Returns how much time it took to solve the column generation problem. This time equals:
-	 * getMasterSolveTime()+getPricingSolveTime()+(small amount of overhead).
+	 * {@link #getMasterSolveTime()}+{@link #getPricingSolveTime()}+(small amount of overhead).
 	 */
 	public long getRuntime(){
 		return colGenSolveTime;

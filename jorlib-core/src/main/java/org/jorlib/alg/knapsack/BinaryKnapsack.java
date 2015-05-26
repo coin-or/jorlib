@@ -44,7 +44,7 @@ import java.util.Queue;
  * are created, reflecting whether the item at the level of the child nodes is selected, or not. As a result, at most 2^n nodes, where n is the number of items, are created.
  * In practice, the number of generated nodes is significantly smaller, as the number of items one can choose depends on the knapsack weight. Furthermore, the search tree is pruned using
  * bounds.<p>
- * Consider replacing this implementation by a faster one such as MT2
+ * Consider replacing this implementation by a faster one such as MT2<br><br>
  * 
  * NOTE: All item weights, as well as the maxKnapsackWeight have to be integers. The item weights can be fractional, both positive and negative. Obviously, since this is a
  * maximization problem, items with a value smaller or equal to 0 are never selected.

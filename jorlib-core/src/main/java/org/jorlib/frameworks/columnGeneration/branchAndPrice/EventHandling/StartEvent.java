@@ -29,7 +29,7 @@ package org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling;
 import java.util.EventObject;
 
 /**
- * Event generated when branch and price or column generation is started
+ * Event generated when Branch-and-Price or column generation is started
  *
  * @author Joris Kinable
  * @version 5-5-2015

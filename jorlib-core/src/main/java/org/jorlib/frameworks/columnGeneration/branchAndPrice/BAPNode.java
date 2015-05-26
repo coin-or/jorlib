@@ -34,7 +34,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 
 /**
- * Class which models a single node in the branch and price tree
+ * Class which models a single node in the Branch-and-Price tree
  *
  * @author Joris Kinable
  * @version 5-5-2015

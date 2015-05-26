@@ -209,7 +209,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<TSP,
 	}
 
 	/**
-	 * When the branch and price algorithm backtracks, branching decisions are reversed.
+	 * When the Branch-and-Price algorithm backtracks, branching decisions are reversed.
 	 * @param bd BranchingDecision
 	 */
 	@Override

@@ -44,10 +44,12 @@ import org.jorlib.alg.knapsack.KnapsackAlgorithm;
  * Given a knapsack constraint: {@code \sum_i a_i x_i <= b} where {@code x_i} are binary variables, {@code b} a positive integer and {@code a_i} integer coefficients.
  * Let {@code N} be the set of variables in the knapsack constraint.
  * For a given assignment of values to the variables, this class computes two types of violated cover inequalities:
- * 1. Minimal covers: {@code \sum_{j\in C} \leq |C|-1}, where {@code C\subseteq N, \sum_{j\in C} a_i >b}
- * 2. Lifted covers: {@code \sum_{j\in N\setminus C} \alpha_jx_j + \sum_{j\in C2} \gamma_jx_j + \sum_{j\in C1} x_j \leq |C1|-1+\sum_{j\in C2}\gamma_j}, where
- *    {@code C1 \cap C2= \emptyset}, {@code C1 \cup C2= C}, {@code C} a minimal cover as defined above.<p>
- *    
+ * <ol>
+ * <li>Minimal covers: {@code \sum_{j\in C} \leq |C|-1}, where {@code C\subseteq N, \sum_{j\in C} a_i >b}</li>
+ * <li>Lifted covers: {@code \sum_{j\in N\setminus C} \alpha_jx_j + \sum_{j\in C2} \gamma_jx_j + \sum_{j\in C1} x_j \leq |C1|-1+\sum_{j\in C2}\gamma_j}, where
+ *    {@code C1 \cap C2= \emptyset}, {@code C1 \cup C2= C}, {@code C} a minimal cover as defined above.</li>
+ * </ol><br>
+ *
  * NOTE: Separating violated Lifted Cover Inequalities is NP-hard. Hence we rely on lifting and a separation heuristic. 
  * First we attempt to find a violated Lifted Cover inequality with {@code C2=\emptyset}. If we can't find such an inequality, we set {@code C2} to:
  * {@code C2={k}, k=arg max_{j\in C}a_j variableValue[j]}, and {@code C1=C\setminus C2}, and retry.<br><br>
@@ -66,14 +68,14 @@ public class LiftedCoverInequalitySeparator {
 	/** Knapsack solver used by the separator **/
 	private final KnapsackAlgorithm knapsackAlgorithm;
 	
-	/** Knapsack constraint \sum_{i=0}^n a_ix_i \leq b **/
+	/** Knapsack constraint {@code \sum_{i=0}^n a_ix_i \leq b} **/
 	private int nrVars; //Number of variables
 	private int[] knapsackCoefficients;
 	private int b;
 	private double[] variableValues;
 	
 	/** COVER INEQUALITIES **/
-	private boolean coverInequalityExists; //Indicates whether a cover inequality exists. If \sum_i a_i \leq b, then no cover exists and hence no inequality can be generated.
+	private boolean coverInequalityExists; //Indicates whether a cover inequality exists. If {@code \sum_i a_i \leq b}, then no cover exists and hence no inequality can be generated.
 	
 	/** Minimal cover **/
 	private int minimalCoverRHS; //Right hand side of the minimal cover inequality
@@ -96,8 +98,8 @@ public class LiftedCoverInequalitySeparator {
 	}
 	
 	/**
-	 * Given a knapsack constraint: \sum_{i=0}^n a_ix_i \leq b This method separates minimal Cover Inequalities, i.e. it will search for a valid cover
-	 * \sum_{i\in C} x_i \leq |C|-1 which is violated by the current variable values
+	 * Given a knapsack constraint: {@code \sum_{i=0}^n a_ix_i \leq b} This method separates minimal Cover Inequalities, i.e it will search for a valid cover
+	 * {@code \sum_{i\in C} x_i \leq |C|-1} which is violated by the current variable values
 	 * @param nrVars number of variables in the knapsack constraint
 	 * @param knapsackCoefficients a_i
 	 * @param b right hand side of the knapsack constraint
@@ -113,9 +115,9 @@ public class LiftedCoverInequalitySeparator {
 	}
 	
 	/**
-	 * Given a knapsack constraint: \sum_{i=0}^n a_ix_i \leq b This method separates Lifted Cover Inequalities, i.e. it will search for a valid lifted cover inequality
-	 * \sum_{j\in N\setminus C} \alpha_jx_j + \sum_{j\in C2} \gamma_jx_j + \sum_{j\in C1} x_j \leq |C1|-1+\sum_{j\in C2}\gamma_j which is violated by the current
-	 *  variable values, where C1 \cap C2= \emptyset, C1 \cup C2= C, C a minimal cover
+	 * Given a knapsack constraint: {@code \sum_{i=0}^n a_ix_i \leq b} This method separates Lifted Cover Inequalities, i.e it will search for a valid lifted cover inequality
+	 * {@code \sum_{j\in N\setminus C} \alpha_jx_j + \sum_{j\in C2} \gamma_jx_j + \sum_{j\in C1} x_j \leq |C1|-1+\sum_{j\in C2}\gamma_j} which is violated by the current
+	 *  variable values, where {@code C1 \cap C2= \emptyset, C1 \cup C2= C, C} a minimal cover
 	 * @param nrVars number of variables in the knapsack constraint
 	 * @param knapsackCoefficients a_i
 	 * @param b right hand side of the knapsack constraint
@@ -146,18 +148,18 @@ public class LiftedCoverInequalitySeparator {
 	
 	/**
 	 * Compute a minimal cover by solving:
-	 * S=min \sum_{i=0}^n (1-variableValues[i]) z_i
-	 *    s.t. \sum_{i=0}^n a_iz_i \geq b+1
-	 *    z_i binary
+	 * {@code S=min \sum_{i=0}^n (1-variableValues[i]) z_i}<br>
+	 *    {@code s.t. \sum_{i=0}^n a_iz_i \geq b+1} <br>
+	 *    {@code z_i binary}<br><br>
 	 *    
-	 * if S<1, the cover is violated.
+	 * if {@code S<1}, the cover is violated.<br><br>
 	 * 
-	 * Note: Instead of solving the above problem, we transform it into a knapsack problem by substituting z_i=1-y_i, i.e. we solve:
-	 * max  \sum_{i=0}^n (1-variableValues[i])y_i - \sum_{i=0}^n (1-variableValues[i])
-	 * s.t. \sum_{i=0}^n a_i y_i \leq \sum_{i=0}^n a_i -b-1
-	 *      y_i binary
+	 * Note: Instead of solving the above problem, we transform it into a knapsack problem by substituting {@code z_i=1-y_i}, i.e. we solve:<br>
+	 * {@code max  \sum_{i=0}^n (1-variableValues[i])y_i - \sum_{i=0}^n (1-variableValues[i])}<br>
+	 * {@code s.t. \sum_{i=0}^n a_i y_i \leq \sum_{i=0}^n a_i -b-1}<br>
+	 *      {@code y_i binary}<br><br>
 	 *      
-	 * The desired z_i values can be obtained: z_i=1-y_i
+	 * The desired z_i values can be obtained: {@code z_i=1-y_i}
 	 * 
 	 */
 	private void computeMinimalCover(){

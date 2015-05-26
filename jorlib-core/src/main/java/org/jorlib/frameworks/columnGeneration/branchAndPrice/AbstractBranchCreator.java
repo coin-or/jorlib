@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Given a fractional solution obtained after solving a node in the branch and price tree, this class creates a number
+ * Given a fractional solution obtained after solving a node in the Branch-and-Price tree, this class creates a number
  * of branches, thereby spawning 2 or more child nodes.
  *
  * @author Joris Kinable
@@ -54,7 +54,7 @@ public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T, V>,V e
 	protected final T dataModel;
 	/** Pricing problems **/
 	protected final List<V> pricingProblems;
-	/** Branch and Price class **/
+	/** Branch-and-Price class **/
 	protected AbstractBranchAndPrice bap=null;
 
 	/**
@@ -78,18 +78,18 @@ public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T, V>,V e
 
 	/**
 	 * Registers the Branch-and-Price problem for which this class creates branches.
-	 * @param bap Branch and price class
+	 * @param bap Branch-and-Price class
 	 */
 	protected void registerBAP(AbstractBranchAndPrice bap){
 		if(this.bap != null)
-			throw new RuntimeException("This class can only be associated with a Branch and Price problem once!");
+			throw new RuntimeException("This class can only be associated with a Branch-and-Price problem once!");
 		this.bap=bap;
 	}
 
 	/**
-	 * Main method of this class which performs the branching. The method first invokes {@code canPerformBranching(List<U> solution)}
+	 * Main method of this class which performs the branching. The method first invokes {@link #canPerformBranching(List) canPerformBranching}
 	 * to check whether branches can be created. If the latter returns true, the method
-	 * {@code createBranch(BAPNode<T,U> parentNode, B branchingDecision, List<U> solution, List<AbstractInequality> inequalities)} is invoked.
+	 * {@link #createBranch(BAPNode, BranchingDecision, List, List)} is invoked.
 	 * @param parentNode Node on which we branch
 	 * @param solution Fractional solution
 	 * @param cuts Valid inequalities active at the parent node

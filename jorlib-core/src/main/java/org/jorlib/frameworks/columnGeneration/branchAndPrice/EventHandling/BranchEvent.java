@@ -33,7 +33,7 @@ import java.util.EventObject;
 import java.util.List;
 
 /**
- * Event invoked when new branches are created in the branch and price tree
+ * Event invoked when new branches are created in the Branch-and-Price tree
  *
  * @author Joris Kinable
  * @version 5-5-2015

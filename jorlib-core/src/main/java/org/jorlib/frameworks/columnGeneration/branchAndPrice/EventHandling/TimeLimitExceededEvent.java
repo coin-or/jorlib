@@ -31,7 +31,7 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
 import java.util.EventObject;
 
 /**
- * Event generated when branch and price or column generation is terminated due to a time out
+ * Event generated when Branch-and-Price or column generation is terminated due to a time out
  *
  * @author Joris Kinable
  * @version 5-5-2015

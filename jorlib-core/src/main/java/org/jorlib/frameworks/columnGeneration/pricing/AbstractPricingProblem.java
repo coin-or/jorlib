@@ -103,7 +103,7 @@ public abstract class AbstractPricingProblem<T> implements BranchingDecisionList
 	}
 
 	/**
-	 * Method invoked when a branching decision is reversed due to backtracking in the branch and price tree
+	 * Method invoked when a branching decision is reversed due to backtracking in the Branch-and-Price tree
 	 * @param bd branching decision
 	 */
 	@Override

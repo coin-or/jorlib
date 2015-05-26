@@ -40,7 +40,7 @@ import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 import java.util.*;
 
 /**
- * Class which creates new branches in the branch and price tree. This particular class branches on an edge. More precisely,
+ * Class which creates new branches in the Branch-and-Price tree. This particular class branches on an edge. More precisely,
  * the class checks whether there is a fractional edge in the red resp. blue matchings. The edge with a fractional value
  * closest to 0.5 is selected for branching.
  *

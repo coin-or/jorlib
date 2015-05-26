@@ -97,16 +97,16 @@ public class TSPSolver {
 		//Define Branch creators
 		List<? extends AbstractBranchCreator<TSP, Matching, PricingProblemByColor>> branchCreators= Collections.singletonList(new BranchOnEdge(tsp, pricingProblems));
 
-		//Create a branch and price instance
+		//Create a Branch-and-Price instance
 		BranchAndPrice bap=new BranchAndPrice(tsp, master, pricingProblems, solvers, branchCreators, tourLength, initSolution);
 
 		//OPTIONAL: Attach a debugger
 		SimpleDebugger debugger=new SimpleDebugger(bap, cutHandler, true);
 
-		//OPTIONAL: Attach a logger to the branch and price procedure.
+		//OPTIONAL: Attach a logger to the Branch-and-Price procedure.
 		SimpleBAPLogger logger=new SimpleBAPLogger(bap, new File("./output/tsp.log"));
 
-		//Solve the TSP problem through branch and price
+		//Solve the TSP problem through Branch-and-Price
 		bap.runBranchAndPrice(System.currentTimeMillis()+8000000L);
 
 		

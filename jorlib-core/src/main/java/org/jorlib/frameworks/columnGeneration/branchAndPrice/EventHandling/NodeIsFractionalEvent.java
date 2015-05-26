@@ -31,7 +31,7 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
 import java.util.EventObject;
 
 /**
- * Event generated when a branch and price node is fractional
+ * Event generated when a Branch-and-Price node is fractional
  *
  * @author Joris Kinable
  * @version 5-5-2015

@@ -38,7 +38,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Branch and price class
+ * Branch-and-Price class
  *
  * @author Joris Kinable
  * @version 22-4-2015

@@ -37,7 +37,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 /**
- * Simple class which logs events from the Branch and Price class
+ * Simple class which logs events from the Branch-and-Price class
  *
  * @author Joris Kinable
  * @version 5-5-2015

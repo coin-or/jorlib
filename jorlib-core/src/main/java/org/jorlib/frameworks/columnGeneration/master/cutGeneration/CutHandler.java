@@ -93,11 +93,11 @@ public class CutHandler<T extends ModelInterface,W extends MasterData>{
 	}
 	
 	/**
-	 * Generates cuts for the master problem of the column generation model, by invoking the generateInequalities() method for each
+	 * Generates cuts for the master problem of the column generation model, by invoking the {@link AbstractCutGenerator#generateInqualities() generateInequalities} method for each
 	 * of the registered cut generators. Returns as soon as a single cut has been found!
 	 * @return true if cuts have been found
 	 */
-	public boolean generateCuts(){
+	public boolean generateInequalities(){
 		List<AbstractInequality> separatedInequalities=new ArrayList<>();
 		notifier.fireStartGeneratingCutsEvent();
 		for(AbstractCutGenerator<T,W> cutGen: cutGenerators){

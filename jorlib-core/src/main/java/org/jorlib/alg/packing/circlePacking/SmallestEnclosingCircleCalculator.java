@@ -31,7 +31,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -52,10 +51,12 @@ import org.jorlib.alg.packing.circlePacking.util.MathUtil;
  * accurate the approximation becomes.<p>
  * 
  * Examples for circle packing are given here:
- * 		{@link http://mathworld.wolfram.com/CirclePacking.html}
- * 		{@link http://en.wikipedia.org/wiki/Circle_packing_in_a_circle}
- * 		{@link http://www.packomania.com/}
- * 
+ * <ul>
+ * <li><a href="http://mathworld.wolfram.com/CirclePacking.html">http://mathworld.wolfram.com/CirclePacking.html</a></li>
+ * <li><a href="http://en.wikipedia.org/wiki/Circle_packing_in_a_circle">http://en.wikipedia.org/wiki/Circle_packing_in_a_circle</a></li>
+ * <li><a href="http://www.packomania.com/">http://www.packomania.com/</a></li>
+ * </ul>
+ *
  * Note from the author: In the aforementioned paper by Xu et. al several methods are compared. The authors report to obtain their
  * best results with their Quadratic programming approach, but we obtained better results with their 'Randomized incremental algorithm'.
  * Further experimenting may be required to determine the fastest method.<p>
@@ -90,12 +91,12 @@ public class SmallestEnclosingCircleCalculator {
 	 * Given a set of circles identified by their x-coordinates, y-coordinates and radii, this method *approximates*
 	 * the smallest enclosing circle which encloses all the circles provided. The circles may overlap and can be of
 	 * any size. The approximation is calculated as follows. Let N be the number of circles, x_i, y_i, r_i resp the x coordinate,
-	 * y coordinate, and radius of circles i.
+	 * y coordinate, and radius of circles i.<br><br>
 	 * 
-	 * xAVG=\frac{\sum_i x_i}{N}
-	 * yAVG=\frac{\sum_i y_i}{N}
+	 * {@code xAVG=\frac{\sum_i x_i}{N}}<br>
+	 * {@code yAVG=\frac{\sum_i y_i}{N}}<br><br>
 	 * 
-	 * R=max_i \sqrt((xAVG-x_i)^2+(yAVG-y_i)^2)+r_i
+	 * {@code R=max_i \sqrt((xAVG-x_i)^2+(yAVG-y_i)^2)+r_i}<br><br>
 	 * 
 	 * The container will have its center at (xAVG,yAVG) and has radius R. The denser the packing of the circles, the more accurate
 	 * the approximation of the container will be. This method is computationally cheap, fast and accurate. The approximated radius

@@ -50,7 +50,7 @@ public final class PricingProblemBundle<T, U extends AbstractColumn<T, V>, V ext
 	public final List<AbstractPricingProblemSolver<T, U, V>> solverInstances;
 	
 	/**
-	 * Each pricing problem (PricingProblem) is solved by some algorithm (AbstractPricingProblemSolver). This class is a container which holds
+	 * Each pricing problem ({@link AbstractPricingProblem}) is solved by some algorithm ({@link AbstractPricingProblemSolver}). This class is a container which holds
 	 * a single instance of a AbstractPricingProblemSolver for *each* PricingProblem. The instances are produced by a PricingProblemSolverFactory
 	 * @param pricingSolver The solver
 	 * @param pricingProblems List of pricing problems

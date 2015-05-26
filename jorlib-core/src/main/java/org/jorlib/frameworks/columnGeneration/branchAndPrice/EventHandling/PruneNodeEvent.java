@@ -31,7 +31,7 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
 import java.util.EventObject;
 
 /**
- * Event generated when branch and price prunes a node in the search tree
+ * Event generated when Branch-and-Price prunes a node in the search tree
  *
  * @author Joris Kinable
  * @version 5-5-2015

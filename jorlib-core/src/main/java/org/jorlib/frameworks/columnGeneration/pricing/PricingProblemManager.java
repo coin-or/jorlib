@@ -66,7 +66,7 @@ public class PricingProblemManager<T, U extends AbstractColumn<T, V>, V extends 
 
 	/**
 	 * Map of tasks which can be invoked in parallel to calculate bounds on the pricing problems
-	 * Every solver instance is mapped to a callable function which executes getUpperBound() on the solver.
+	 * Every solver instance is mapped to a callable function which executes {@link AbstractPricingProblemSolver<T,U,V>.#getUpperBound() getUpperBound} on the solver.
 	 */
 	private final Map<AbstractPricingProblemSolver<T, U, V>, Callable<Double>> ppBoundTasks;
 
@@ -143,8 +143,8 @@ public class PricingProblemManager<T, U extends AbstractColumn<T, V>, V extends 
 	}
 	
 	/**
-	 * Invokes pricingSolver.getUpperBound() in parallel for all pricing problems defined.
-	 * @param solver the solver on which getUpperBound() is invoked.
+	 * Invokes {@link AbstractPricingProblemSolver#getUpperbound()}  getUpperBound} in parallel for all pricing problems defined.
+	 * @param solver the solver on which {@link AbstractPricingProblemSolver#getUpperbound()}  getUpperBound} is invoked.
 	 * @return array containing the bounds calculated for each pricing problem
 	 */
 	public double[] getBoundsOnPricingProblems(Class<? extends AbstractPricingProblemSolver<T, U, V>> solver){

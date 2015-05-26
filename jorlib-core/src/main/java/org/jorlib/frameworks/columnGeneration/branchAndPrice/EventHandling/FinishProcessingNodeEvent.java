@@ -31,7 +31,7 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
 import java.util.EventObject;
 
 /**
- * Event generated when branch and price finished the computations for a given node
+ * Event generated when Branch-and-Price finished the computations for a given node
  *
  * @author Joris Kinable
  * @version 5-5-2015

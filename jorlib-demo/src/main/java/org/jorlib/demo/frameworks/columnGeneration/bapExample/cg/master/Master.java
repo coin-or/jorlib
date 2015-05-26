@@ -291,7 +291,7 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 	}
 
 	/**
-	 * Undo branching decisions during backtracking in the branch and price tree
+	 * Undo branching decisions during backtracking in the Branch-and-Price tree
 	 * @param bd Branching decision
 	 */
 	@Override

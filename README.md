@@ -28,7 +28,7 @@ The package `org.jorlib.demo` includes small demo applications to help you get s
 
 ## Documentation ##
 
-Link to documentation will be included soon....
+Extensive javadocs can be found for each version on the [release page](https://github.com/jkinable/jorlib/releases)
 
 ## Dependencies ##
 

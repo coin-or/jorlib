@@ -31,7 +31,7 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
 import java.util.EventObject;
 
 /**
- * Event generated when branch and price node has an integer solution
+ * Event generated when Branch-and-Price node has an integer solution
  *
  * @author Joris Kinable
  * @version 5-5-2015

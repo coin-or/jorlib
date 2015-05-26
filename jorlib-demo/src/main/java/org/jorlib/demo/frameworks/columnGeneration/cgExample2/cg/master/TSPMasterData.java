@@ -44,9 +44,11 @@ import java.util.Map;
 
 /**
  * Container which stores information coming from the master problem. It contains:
- * -a reference to the cplex model
- * -a list of pricing problems
- * -a mapping of subtour inequalities to the constraints in the cplex model
+ * <ul>
+ * <li>a reference to the cplex model</li>
+ * <li>a list of pricing problems</li>
+ * <li>a mapping of subtour inequalities to the constraints in the cplex model</li>
+ * </ul>
  *
  * @author Joris Kinable
  * @version 13-4-2015

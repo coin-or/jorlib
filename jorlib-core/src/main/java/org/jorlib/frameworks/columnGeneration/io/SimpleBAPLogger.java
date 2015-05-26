@@ -37,7 +37,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 /**
- * Simple class which logs events from the Branch and Price class
+ * Simple class which logs events from the Branch-and-Price class
  *
  * @author Joris Kinable
  * @version 5-5-2015
@@ -46,7 +46,7 @@ public class SimpleBAPLogger implements BAPListener{
     protected BufferedWriter writer;
     protected NumberFormat formatter;
 
-    /** Branch and price node ID of node currently being solved**/
+    /** Branch-and-Price node ID of node currently being solved**/
     protected int bapNodeID;
     /** Parent node ID, -1 if root node **/
     protected int parentNodeID;

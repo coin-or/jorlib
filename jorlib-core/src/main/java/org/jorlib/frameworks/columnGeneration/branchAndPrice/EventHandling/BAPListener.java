@@ -29,20 +29,20 @@ package org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling;
 import java.util.EventListener;
 
 /**
- * Listener for Branch and price events
+ * Listener for Branch-and-Price events
  *
  * @author Joris Kinable
  * @version 5-5-2015
  */
 public interface BAPListener extends EventListener {
     /**
-     * Method invoked when branch and price is started
+     * Method invoked when Branch-and-Price is started
      * @param startEvent startEvent
      */
     void startBAP(StartEvent startEvent);
 
     /**
-     * Method invoked when branch and price is finished (either the optimal solution has been found, or the process is terminated due to a time limit)
+     * Method invoked when Branch-and-Price is finished (either the optimal solution has been found, or the process is terminated due to a time limit)
      * @param finishEvent finishEvent
      */
     void finishBAP(FinishEvent finishEvent);
@@ -72,25 +72,25 @@ public interface BAPListener extends EventListener {
     void nodeIsFractional(NodeIsFractionalEvent nodeIsFractionalEvent);
 
     /**
-     * Method invoked when the branch and price process starts processing a new node
+     * Method invoked when the Branch-and-Price process starts processing a new node
      * @param processingNextNodeEvent processingNextNodeEvent
      */
     void processNextNode(ProcessingNextNodeEvent processingNextNodeEvent);
 
     /**
-     * Method invoked when the branch and price process finishes processing a node
+     * Method invoked when the Branch-and-Price process finishes processing a node
      * @param finishProcessingNodeEvent finishProcessingNodeEvent
      */
     void finishedColumnGenerationForNode(FinishProcessingNodeEvent finishProcessingNodeEvent);
 
     /**
-     * Method invoked when the branch and price process is terminated due to a time out
+     * Method invoked when the Branch-and-Price process is terminated due to a time out
      * @param timeLimitExceededEvent timeLimitExceededEvent
      */
     void timeLimitExceeded(TimeLimitExceededEvent timeLimitExceededEvent);
 
     /**
-     * Method invoked when branch and price created new branches in the branch and price tree
+     * Method invoked when Branch-and-Price created new branches in the Branch-and-Price tree
      * @param branchEvent branchEvent
      */
     void branchCreated(BranchEvent branchEvent);
