@@ -11,7 +11,7 @@
  *
  */
 /* -----------------
- * TSPSolver.java
+ * BAPTSPTest.java
  * -----------------
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *

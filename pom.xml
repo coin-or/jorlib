@@ -129,7 +129,7 @@
 				  <version>2.9.1</version>
 				  <configuration>
 				    <show>protected</show>
-				    <windowtitle>Jave Operations Research Library</windowtitle>
+				    <windowtitle>Java Operations Research Library</windowtitle>
 				  </configuration>
 				</plugin>
 				

@@ -11,7 +11,7 @@
  *
  */
 /* -----------------
- * AllTests.java
+ * AllAlgTests.java
  * -----------------
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
@@ -24,11 +24,9 @@
  * -------
  *
  */
-package org.jorlib;
+package org.jorlib.frameworks;
 
-import org.jorlib.alg.AllAlgTests;
-import org.jorlib.frameworks.AllFrameworksTests;
-import org.jorlib.io.AllIOTests;
+import org.jorlib.frameworks.columnGeneration.tsp.BAPTSPTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -40,11 +38,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	AllAlgTests.class,
-	AllIOTests.class,
-	AllFrameworksTests.class
+	//BAPTSPTest.class
 })
 
-public class AllTests {
-
+public class AllFrameworksTests {
 }

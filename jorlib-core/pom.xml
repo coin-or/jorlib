@@ -46,11 +46,12 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.1</version>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>cplex</groupId>
 			<artifactId>cplex</artifactId>
 			<version>12.6.1</version>
-		</dependency>
+			<scope>test</scope>
+		      </dependency>-->
 	</dependencies>
     <build>
         <plugins>

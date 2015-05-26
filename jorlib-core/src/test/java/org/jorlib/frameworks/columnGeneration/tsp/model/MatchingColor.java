@@ -11,7 +11,7 @@
  *
  */
 /* -----------------
- * AllTests.java
+ * MatchingColor.java
  * -----------------
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
@@ -24,27 +24,14 @@
  * -------
  *
  */
-package org.jorlib;
-
-import org.jorlib.alg.AllAlgTests;
-import org.jorlib.frameworks.AllFrameworksTests;
-import org.jorlib.io.AllIOTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+package org.jorlib.frameworks.columnGeneration.tsp.model;
 
 /**
- * A TestSuite for all tests in this package.
- *
+ * 
  * @author Joris Kinable
- * @since April 8, 2015
+ * @version 13-4-2015
+ *
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	AllAlgTests.class,
-	AllIOTests.class,
-	AllFrameworksTests.class
-})
-
-public class AllTests {
-
+public enum MatchingColor {
+	RED, BLUE
 }

@@ -24,31 +24,39 @@
  * -------
  *
  */
-package org.jorlib.demo.frameworks.columnGeneration.bapExample;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
+package org.jorlib.frameworks.columnGeneration.tsp;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.bap.BranchAndPrice;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.bap.branching.BranchOnEdge;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.ExactPricingProblemSolver;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.Matching;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.PricingProblemByColor;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.master.Master;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.master.TSPMasterData;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.master.cuts.SubtourInequalityGenerator;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.model.MatchingColor;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.io.SimpleBAPLogger;
 import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.tsp.bap.BranchAndPrice;
+import org.jorlib.frameworks.columnGeneration.tsp.bap.branching.BranchOnEdge;
+import org.jorlib.frameworks.columnGeneration.tsp.cg.ExactPricingProblemSolver;
+import org.jorlib.frameworks.columnGeneration.tsp.cg.Matching;
+import org.jorlib.frameworks.columnGeneration.tsp.cg.PricingProblemByColor;
+import org.jorlib.frameworks.columnGeneration.tsp.cg.master.Master;
+import org.jorlib.frameworks.columnGeneration.tsp.cg.master.TSPMasterData;
+import org.jorlib.frameworks.columnGeneration.tsp.cg.master.cuts.SubtourInequalityGenerator;
+import org.jorlib.frameworks.columnGeneration.tsp.model.MatchingColor;
+import org.jorlib.frameworks.columnGeneration.tsp.model.TSP;
 import org.jorlib.io.tspLibReader.TSPLibTour;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
+ * This class tests the Branch-and-Price framework by solving a number of TSP instances through column generation.
+ * This class does NOT test individual methods of the framework; it only tests the entire framework.<br><br>
+ *
  * A column generation solution to the Traveling Salesman Problem.
  * Each TSP solution on a graph with an even number of vertices can be seen as the union of two edge disjoint perfect matchings.
  * As a result, the TSP problem can be solved by selecting two edge disjoint matchings which comply with the well-known
@@ -57,19 +65,47 @@ import org.jorlib.io.tspLibReader.TSPLibTour;
  * The ideas in this example are loosely based on the work Kinable, J. "Decomposition approaches for optimization problems, 
  * chapter: "The balanced TSP problem". 2014<p>
  * 
- * Note: this is an example class to demonstrate features of the Column Generation framework. This class is not
- * intended as a high-performance TSP solver!
- * 
  * @author Joris Kinable
  * @version 13-4-2015
  *
  */
-public class TSPSolver {
+public class BAPTSPTest {
 
-	private final TSP tsp;
+	private static Map<String, Integer> instances;
 
-	public TSPSolver(TSP tsp){
-		this.tsp=tsp;
+	@BeforeClass
+	public static void initializeInstances() {
+		instances = new LinkedHashMap<>();
+		instances.put("burma14", 3323);
+		instances.put("ulysses16", 6859);
+		instances.put("ulysses22", 7013);
+		instances.put("gr24", 1272);
+		instances.put("fri26", 937);
+		instances.put("dantzig42", 699);
+		instances.put("swiss42", 1273);
+//		instances.put("att48", 10628);
+	}
+
+	@AfterClass
+	public static void freeInstances() {
+		instances = null;
+	}
+
+	@Test
+	public void testBAPFrameworkThroughTSP() throws IOException {
+		for(String instance : instances.keySet()){
+			InputStream inputStream = getClass().getClassLoader().getResourceAsStream("./tspLib/tsp/"+instance+".tsp");
+			if(inputStream == null)
+				Assert.fail("Cannot find problem instance!");
+			TSP tsp =new TSP(inputStream);
+			int solution=this.solveTSPInstance(tsp);
+			System.out.println("Solution for : "+instance+" is: "+solution);
+			Assert.assertEquals(solution, instances.get(instance).intValue());
+			inputStream.close();
+		}
+	}
+
+	private int solveTSPInstance(TSP tsp){
 		if(tsp.N % 2 == 1)
 			throw new RuntimeException("This solver can only solve TSP instances with an even number of vertices!");
 
@@ -85,14 +121,14 @@ public class TSPSolver {
 
 		//Create the master problem
 		Master master=new Master(tsp, pricingProblems, cutHandler);
-		
+
 		//Define which solvers to use
 		List<Class<? extends AbstractPricingProblemSolver<TSP, Matching, PricingProblemByColor>>> solvers= Collections.singletonList(ExactPricingProblemSolver.class);
-		
-		//OPTIONAL: Get an initial solution and use it as an upper bound
+
+		//Get an initial solution and use it as an upper bound
 		TSPLibTour initTour=TSPLibTour.createCanonicalTour(tsp.N); //Feasible solution
 		int tourLength=tsp.getTourLength(initTour); //Upper bound (Stronger is better)
-		List<Matching> initSolution=this.convertTourToColumns(initTour, pricingProblems); //Create a set of initial columns.
+		List<Matching> initSolution=this.convertTourToColumns(tsp, initTour, pricingProblems); //Create a set of initial columns.
 
 		//Define Branch creators
 		List<? extends AbstractBranchCreator<TSP, Matching, PricingProblemByColor>> branchCreators= Collections.singletonList(new BranchOnEdge(tsp, pricingProblems));
@@ -100,52 +136,24 @@ public class TSPSolver {
 		//Create a Branch-and-Price instance
 		BranchAndPrice bap=new BranchAndPrice(tsp, master, pricingProblems, solvers, branchCreators, tourLength, initSolution);
 
-		//OPTIONAL: Attach a debugger
-		SimpleDebugger debugger=new SimpleDebugger(bap, cutHandler, true);
-
-		//OPTIONAL: Attach a logger to the Branch-and-Price procedure.
-		SimpleBAPLogger logger=new SimpleBAPLogger(bap, new File("./output/tsp.log"));
-
 		//Solve the TSP problem through Branch-and-Price
 		bap.runBranchAndPrice(System.currentTimeMillis()+8000000L);
 
-		
-		//Print solution:
-		System.out.println("================ Solution ================");
-		System.out.println("BAP terminated with objective: "+bap.getObjective());
-		System.out.println("Total Number of iterations: "+bap.getTotalNrIterations());
-		System.out.println("Total Number of processed nodes: "+bap.getNumberOfProcessedNodes());
-		System.out.println("Total Time spent on master problems: "+bap.getMasterSolveTime()+" Total time spent on pricing problems: "+bap.getPricingSolveTime());
-		if(bap.hasSolution()) {
-			System.out.println("Solution is optimal: "+bap.isOptimal());
-			System.out.println("Columns (only non-zero columns are returned):");
-			List<Matching> solution = bap.getSolution();
-			for (Matching column : solution)
-				System.out.println(column);
 
-			TSPLibTour tour = this.convertColumnsToTour(solution);
-			System.out.println("Best tour found: " + tour);
-			System.out.println("Tour length: " + tsp.getTourLength(tour));
+		//Get the solution
+		int solution=-1;
+		if(bap.hasSolution()) {
+			assert(bap.isOptimal());
+			solution = bap.getObjective();
 		}
 
 		//Clean up:
 		bap.close(); //Close master and pricing problems
 		cutHandler.close(); //Close the cut handler. The close() call is propagated to all registered AbstractCutGenerator classes
+
+		return solution;
 	}
 
-	public static void main(String[] args) throws IOException {
-		//TSPLib instances, see http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
-//		TSP tsp= new TSP("./data/tspLib/tsp/burma14.tsp"); //Optimal: 3323
-//		TSP tsp= new TSP("./data/tspLib/tsp/ulysses16.tsp"); //Optimal: 6859
-//		TSP tsp= new TSP("./data/tspLib/tsp/ulysses22.tsp"); //Optimal: 7013
-		TSP tsp= new TSP("./data/tspLib/tsp/gr24.tsp"); //Optimal: 1272
-//		TSP tsp= new TSP("./data/tspLib/tsp/fri26.tsp"); //Optimal: 937
-//		TSP tsp= new TSP("./data/tspLib/tsp/dantzig42.tsp"); //Optimal: 699
-//		TSP tsp= new TSP("./data/tspLib/tsp/swiss42.tsp"); //Optimal: 1273
-//		TSP tsp= new TSP("./data/tspLib/tsp/att48.tsp"); //Optimal: 10628
-
-		new TSPSolver(tsp);
-	}
 
 
 	//------------------ Helper methods -----------------
@@ -156,7 +164,7 @@ public class TSPSolver {
 	 * @param pricingProblems pricing problems
 	 * @return List of columns
 	 */
-	private List<Matching> convertTourToColumns(TSPLibTour tour, List<PricingProblemByColor> pricingProblems) {
+	private List<Matching> convertTourToColumns(TSP tsp, TSPLibTour tour, List<PricingProblemByColor> pricingProblems) {
 		List<Set<DefaultWeightedEdge>> matchings=new ArrayList<>();
 		matchings.add(new LinkedHashSet<>());
 		matchings.add(new LinkedHashSet<>());
@@ -171,8 +179,8 @@ public class TSPSolver {
 		}
 
 		List<Matching> initSolution=new ArrayList<>();
-		initSolution.add(this.buildMatching(pricingProblems.get(0), matchings.get(0)));
-		initSolution.add(this.buildMatching(pricingProblems.get(1), matchings.get(1)));
+		initSolution.add(this.buildMatching(tsp, pricingProblems.get(0), matchings.get(0)));
+		initSolution.add(this.buildMatching(tsp, pricingProblems.get(1), matchings.get(1)));
 		return initSolution;
 	}
 
@@ -182,7 +190,7 @@ public class TSPSolver {
 	 * @param edges List of edges constituting the matching
 	 * @return Matching
 	 */
-	private Matching buildMatching(PricingProblemByColor pricingProblem, Set<DefaultWeightedEdge> edges) {
+	private Matching buildMatching(TSP tsp, PricingProblemByColor pricingProblem, Set<DefaultWeightedEdge> edges) {
 		int[] succ=new int[tsp.N];
 
 		int cost=0;
@@ -192,20 +200,6 @@ public class TSPSolver {
 			cost+=tsp.getEdgeWeight(edge);
 		}
 		return new Matching("init", false, pricingProblem, edges, succ, cost);
-	}
-
-	/**
-	 * Converts a set of matchings (columns) back to a TSPLib tour
-	 * @param columns list of columns
-	 * @return a TSPLibTour
-	 */
-	private TSPLibTour convertColumnsToTour(List<Matching> columns){
-		int[] nodes=new int[tsp.N];
-		nodes[0]=0;
-		for(int i=1; i<tsp.N; i++){
-			nodes[i]=columns.get(i%2).succ[nodes[i-1]];
-		}
-		return TSPLibTour.createTour(nodes);
 	}
 }
 
