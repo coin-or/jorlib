@@ -26,8 +26,6 @@
  */
 package org.jorlib.demo.alg.knapsack.separation;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -35,10 +33,9 @@ import java.util.stream.Collectors;
 import org.jorlib.alg.knapsack.BinaryKnapsack;
 import org.jorlib.alg.knapsack.KnapsackAlgorithm;
 import org.jorlib.alg.knapsack.separation.LiftedCoverInequalitySeparator;
-import org.junit.Assert;
 
 /**
- * Demo class for the Lifted Cover Inequality Separator implementation
+ * Demo class for the Lifted Cover AbstractInequality Separator implementation
  * @author Joris Kinable
  * @since April 8, 2015
  * 
@@ -66,7 +63,7 @@ public class LiftedCoverInequalitySeparatorDemo {
 		System.out.println("Cover inequality exists: "+separator.coverInequalityExists());
 		
 		//If the cover inequality exists we can check whether there is a violated minimal cover:
-		System.out.println("Has violated Cover Inequality: "+separator.isMinimalCoverViolated());
+		System.out.println("Has violated Cover AbstractInequality: "+separator.isMinimalCoverViolated());
 		//Get the minimal cover inequality:
 		Set<Integer> coverSet=separator.getMinimalCover(); //Get the indices of the variables that occur in the cover
 		//Print the cover inequality in a fancy way
@@ -90,7 +87,7 @@ public class LiftedCoverInequalitySeparatorDemo {
 		//First check whether a cover inequality exists. NOTE this is not a guarantee that there exists a *violated* cover inequality!
 		System.out.println("Cover inequality exists: "+separator.coverInequalityExists());
 		//If the cover inequality exists we can check whether there is a violated minimal cover:
-		System.out.println("Has violated Cover Inequality: "+separator.isMinimalCoverViolated());
+		System.out.println("Has violated Cover AbstractInequality: "+separator.isMinimalCoverViolated());
 		
 		
 		System.out.println("Has violated lifted cover inequality: "+separator.isLiftedCoverViolated());

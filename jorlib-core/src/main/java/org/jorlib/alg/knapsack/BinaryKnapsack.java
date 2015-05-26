@@ -34,17 +34,17 @@ import java.util.Queue;
 /**
  * Memory efficient Branch and bound implementation of knapsack. 
  * 
- * Solves the problem:
- * max \sum_i c_i x_i
- * s.t. \sum_i a_i x_i <= b
- * x_i binary
+ * Solves the problem:<br>
+ * {@code max \sum_i c_i x_i}<br>
+ * {@code s.t. \sum_i a_i x_i <= b}<br>
+ * {@code x_i binary}<br>
  * 
  * The implementation is memory efficient: it does not rely on large matrices.
  * The knapsack problem is solved as a binary tree problem. Each level of the tree corresponds to a specific item. Each time we branch on a particular node, two child-nodes 
  * are created, reflecting whether the item at the level of the child nodes is selected, or not. As a result, at most 2^n nodes, where n is the number of items, are created.
  * In practice, the number of generated nodes is significantly smaller, as the number of items one can choose depends on the knapsack weight. Furthermore, the search tree is pruned using
- * bounds. 
- * Consider replacing this implementation by a faster one such as MT2
+ * bounds.<p>
+ * Consider replacing this implementation by a faster one such as MT2<br><br>
  * 
  * NOTE: All item weights, as well as the maxKnapsackWeight have to be integers. The item weights can be fractional, both positive and negative. Obviously, since this is a
  * maximization problem, items with a value smaller or equal to 0 are never selected.
@@ -69,7 +69,6 @@ public class BinaryKnapsack implements KnapsackAlgorithm{
 	/**
 	 * Calculates a greedy solution for the knapsack problem. This solution is a valid lower bound and is used for pruning.
 	 * @param itemOrder Order in which the items are considered by the greedy algorithm. The items are sorted ascending, based on their value/weight ratio
-	 * @return
 	 */
 	private void getGreedyKnapsackSolution(Integer[] itemOrder){
 		double value=0;
@@ -93,8 +92,8 @@ public class BinaryKnapsack implements KnapsackAlgorithm{
 	 * Solve the knapsack problem.
 	 * @param nrItems nr of items in the knapsack
 	 * @param maxKnapsackWeight max size/weight of the knapsack
-	 * @param itemValues
-	 * @param itemWeights
+	 * @param itemValues item values
+	 * @param itemWeights item weights
 	 * @return The value of the knapsack solution
 	 */
 	public double solveKnapsackProblem(int nrItems, int maxKnapsackWeight, double[] itemValues, int[] itemWeights){
@@ -107,7 +106,7 @@ public class BinaryKnapsack implements KnapsackAlgorithm{
 		this.knapsackValue=0;
 		this.knapsackWeight=0;
 		
-		Queue<KnapsackNode> queue=new PriorityQueue<KnapsackNode>();
+		Queue<KnapsackNode> queue=new PriorityQueue<>();
 		
 		//Define the order in which items will be processed. The items are sorted based on their value/weight ratio, thereby considering proportionally more valuable items first.
 		Integer[] itemOrder=new Integer[nrItems];
@@ -184,18 +183,21 @@ public class BinaryKnapsack implements KnapsackAlgorithm{
 	}
 	
 	/**
+	 * Get the value of the knapsack
 	 * @return Get the value of the knapsack
 	 */
 	public double getKnapsackValue(){
 		return knapsackValue;
 	}
 	/**
+	 * Get the total weight of the knapsack
 	 * @return Get the total weight of the knapsack
 	 */
 	public int getKnapsackWeight(){
 		return knapsackWeight;
 	}
 	/**
+	 * Get the items in the knapsack
 	 * @return Get the items in the knapsack
 	 */
 	public boolean[] getKnapsackItems(){

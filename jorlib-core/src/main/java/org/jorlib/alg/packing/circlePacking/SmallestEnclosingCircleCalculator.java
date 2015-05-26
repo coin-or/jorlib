@@ -11,7 +11,7 @@
  *
  */
 /* -----------------
- * AllAlgTest.java
+ * AllAlgTests.java
  * -----------------
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
@@ -31,7 +31,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,25 +39,27 @@ import org.jorlib.alg.packing.circlePacking.util.MathUtil;
 /**
  * For a given set of circles C, this class calculates the smallest enclosing circle which encloses all the circles in set C. The 
  * circles in C can have varying radii. To emphasize, this class does *NOT* perform circle packing. It merely computes the smallest enclosing
- * circle around a set of circles which have already been fixed.
+ * circle around a set of circles which have already been fixed.<p>
  * 
- * The implementation of this class is based on: 
- * "A randomized incremental algorithm" in:
- * Xu, S. Freund, R.M. Sun, J. Solution methodologies for the Smallest Enclosing Circle Problem.
- * Computational Optimization and Applications, volumne 25, issue 1-3, pp283-292, 2003
+ * The implementation of this class is based on:<br>
+ * "A randomized incremental algorithm" in:<br>
+ * Xu, S. Freund, R.M. Sun, J. Solution methodologies for the Smallest Enclosing Circle Problem.<br>
+ * Computational Optimization and Applications, volumne 25, issue 1-3, pp283-292, 2003<p>
  * 
  * Calculating the exact size of the smallest enclosing circle can be computationally expensive. This class also offers an approximation of
  * this value. The approximated radius is guaranteed to be larger or equal to the exact radius. The tighter the circles are packed, the more
- * accurate the approximation becomes.
+ * accurate the approximation becomes.<p>
  * 
  * Examples for circle packing are given here:
- * 		http://mathworld.wolfram.com/CirclePacking.html
- * 		http://en.wikipedia.org/wiki/Circle_packing_in_a_circle
- * 		http://www.packomania.com/
- * 
+ * <ul>
+ * <li><a href="http://mathworld.wolfram.com/CirclePacking.html">http://mathworld.wolfram.com/CirclePacking.html</a></li>
+ * <li><a href="http://en.wikipedia.org/wiki/Circle_packing_in_a_circle">http://en.wikipedia.org/wiki/Circle_packing_in_a_circle</a></li>
+ * <li><a href="http://www.packomania.com/">http://www.packomania.com/</a></li>
+ * </ul>
+ *
  * Note from the author: In the aforementioned paper by Xu et. al several methods are compared. The authors report to obtain their
  * best results with their Quadratic programming approach, but we obtained better results with their 'Randomized incremental algorithm'.
- * Further experimenting may be required to determine the fastest method.
+ * Further experimenting may be required to determine the fastest method.<p>
  * 
  * To limit the impact caused by rounding issues, this class uses BigDecimals for added precision.
  * 
@@ -72,7 +73,7 @@ public class SmallestEnclosingCircleCalculator {
 	//Enable/disable debugging output
 	public static final boolean DEBUG=false;
 	
-	//Precision parameter
+	/** Precision parameter **/
 	public static final double PRECISION=0.000001;
 		
 		
@@ -90,12 +91,12 @@ public class SmallestEnclosingCircleCalculator {
 	 * Given a set of circles identified by their x-coordinates, y-coordinates and radii, this method *approximates*
 	 * the smallest enclosing circle which encloses all the circles provided. The circles may overlap and can be of
 	 * any size. The approximation is calculated as follows. Let N be the number of circles, x_i, y_i, r_i resp the x coordinate,
-	 * y coordinate, and radius of circles i.
+	 * y coordinate, and radius of circles i.<br><br>
 	 * 
-	 * xAVG=\frac{\sum_i x_i}{N}
-	 * yAVG=\frac{\sum_i y_i}{N}
+	 * {@code xAVG=\frac{\sum_i x_i}{N}}<br>
+	 * {@code yAVG=\frac{\sum_i y_i}{N}}<br><br>
 	 * 
-	 * R=max_i \sqrt((xAVG-x_i)^2+(yAVG-y_i)^2)+r_i
+	 * {@code R=max_i \sqrt((xAVG-x_i)^2+(yAVG-y_i)^2)+r_i}<br><br>
 	 * 
 	 * The container will have its center at (xAVG,yAVG) and has radius R. The denser the packing of the circles, the more accurate
 	 * the approximation of the container will be. This method is computationally cheap, fast and accurate. The approximated radius
@@ -146,7 +147,7 @@ public class SmallestEnclosingCircleCalculator {
 		this.radii=MathUtil.doubleToBigDecimalArray(radii);
 		this.n=xCors.length;
 		
-		List<Integer> C=new ArrayList<Integer>();
+		List<Integer> C=new ArrayList<>();
 		for(int i=0; i<n; i++)
 			C.add(i);
 		List<Integer> B=Collections.emptyList();
@@ -164,7 +165,7 @@ public class SmallestEnclosingCircleCalculator {
 	
 	/**
 	 * Given are a set of old circles, a circular container which encloses these circles and a new circle. This method tests whether the new
-	 * circle fits into the existing container. If yet, the method returns. If now, the method increases the size of the container such that
+	 * circle fits into the existing container. If yes, the method returns. If not, the method increases the size of the container such that
 	 * it encloses both the old circles and the new circle. Calculations are performed in an efficient way, thereby starting from the old container.
 	 * It is much cheaper to invoke this method when a new circle is added, than to invoke the calcContainer(...) method.
 	 * @param posCircleToAdd: the position of the circle that is being added in the xCors/yCors/radii vectors
@@ -184,12 +185,12 @@ public class SmallestEnclosingCircleCalculator {
 			this.radii=MathUtil.doubleToBigDecimalArray(radii);
 			this.n=xCors.length;
 			
-			List<Integer> C=new ArrayList<Integer>();
+			List<Integer> C=new ArrayList<>();
 			for(int i=0; i<n; i++){
 				if(i!=posCircleToAdd)
 					C.add(i);
 			}
-			List<Integer> B=new ArrayList<Integer>(); 
+			List<Integer> B=new ArrayList<>();
 			B.add(posCircleToAdd); //The new circle must be on the edge of the container
 			
 			Disk dNew=this.miniCircle(C, B);
@@ -246,18 +247,18 @@ public class SmallestEnclosingCircleCalculator {
 			
 		}else{
 			int c=C.get(0);
-			List<Integer> Cnew=new ArrayList<Integer>(C);
+			List<Integer> Cnew=new ArrayList<>(C);
 			Cnew.remove(0);
 			D=this.miniCircle(Cnew, B);
 			if(!D.circleIsContained(xCors[c], yCors[c], radii[c])){ //A new corner point has been found
 				if(B.size()<= 1){
-					Cnew=new ArrayList<Integer>(C);
-					List<Integer> Bnew=new ArrayList<Integer>(B);
+					Cnew=new ArrayList<>(C);
+					List<Integer> Bnew=new ArrayList<>(B);
 					Cnew.remove(Cnew.indexOf(c));
 					Bnew.add(c);
 					D=this.miniCircle(Cnew, Bnew);
 				}else{
-					List<Integer> Bnew=new ArrayList<Integer>(B);
+					List<Integer> Bnew=new ArrayList<>(B);
 					Bnew.add(c);
 					D=this.getDiskThreeTangentCircles(Bnew);
 				}
@@ -464,12 +465,11 @@ public class SmallestEnclosingCircleCalculator {
 		BigDecimal r2=(b.negate().subtract(MathUtil.sqrt(d, MathContext.DECIMAL128))).divide(BigDecimal.valueOf(2).multiply(a),25, RoundingMode.HALF_UP);
 		
 		if(DEBUG) System.out.println("r1: "+r1+" r2: "+r2);
-	
-		BigDecimal r=r2;
-		BigDecimal xCor=c1.subtract(r.multiply(c2)); //c1-r*c2;
-		BigDecimal yCor=c4.subtract(r.multiply(c5)); //c4-r*c5;
+
+		BigDecimal xCor=c1.subtract(r2.multiply(c2)); //c1-r*c2;
+		BigDecimal yCor=c4.subtract(r2.multiply(c5)); //c4-r*c5;
 		
-		Disk D=new Disk(xCor, yCor, r);
+		Disk D=new Disk(xCor, yCor, r2);
 		if(DEBUG) System.out.println("Disk: "+D);
 		if(VALIDATORS_ENABLED) this.validateGetDiskThreeTangentCircles(B, D);
 		return D;
@@ -554,10 +554,7 @@ public class SmallestEnclosingCircleCalculator {
 		 * @return true if this circle fully encloses the given circle
 		 */
 		public boolean circleIsContained(BigDecimal x_i, BigDecimal y_i, BigDecimal radix){
-			if(MathUtil.sqrt((this.x.subtract(x_i)).pow(2).add((this.y.subtract(y_i)).pow(2)),MathContext.DECIMAL128).add(radix).compareTo(this.R.add(BigDecimal.valueOf(PRECISION)))<=0)
-				return true;
-			else
-				return false;	
+			return MathUtil.sqrt((this.x.subtract(x_i)).pow(2).add((this.y.subtract(y_i)).pow(2)), MathContext.DECIMAL128).add(radix).compareTo(this.R.add(BigDecimal.valueOf(PRECISION))) <= 0;
 		}
 		
 		public String toString(){

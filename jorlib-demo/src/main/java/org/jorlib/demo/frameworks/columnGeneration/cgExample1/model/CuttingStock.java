@@ -11,7 +11,7 @@
  *
  */
 /* -----------------
- * AllAlgTest.java
+ * CuttingStock.java
  * -----------------
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
@@ -24,28 +24,26 @@
  * -------
  *
  */
-package org.jorlib.alg;
+package org.jorlib.demo.frameworks.columnGeneration.cgExample1.model;
 
-import org.jorlib.alg.knapsack.*;
-import org.jorlib.alg.knapsack.separation.*;
-import org.jorlib.alg.packing.circlePacking.SmallestEnclosingCircleCalculatorTest;
-import org.jorlib.alg.tsp.separation.SubtourSeparatorTest;
-import org.junit.runner.*;
-import org.junit.runners.*;
+import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
 
 /**
- * A TestSuite for all tests in this package.
- *
+ * Define a Cutting Stock problem
+ * 
  * @author Joris Kinable
- * @since April 8, 2015
+ * @version 13-4-2015
+ *
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	KnapsackTest.class,
-	LiftedCoverInequalitySeparatorTest.class,
-	SmallestEnclosingCircleCalculatorTest.class,
-	SubtourSeparatorTest.class
-})
+public class CuttingStock implements ModelInterface{
 
-public class AllAlgTest {
+	public final int nrFinals=4; //Number of different finals
+	public final int rollWidth=100; //Width of the raws
+	public final int[] finals={45, 36, 31, 14}; //Size of the finals
+	public final int[] demandForFinals={97, 610, 395, 211}; //Requested quantity of each final
+
+	@Override
+	public String getName() {
+		return "CuttingStockExample";
+	}
 }

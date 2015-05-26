@@ -43,9 +43,8 @@ public class MathUtil {
 	/**
 	 * Returns the correctly rounded square root of a positive BigDecimal. 
 	 * Source (publicly available): http://iteror.org/big/Retro/blog/sec/archive20070915_295396.html
-	 * NOTE: this method is writtend by Frans Lelieveld, 28 September 2007.
-	 * NO CONTACT information for the author of this method could be found. It is unclear whether we are allowed to
-	 * use this code in this library. Please advise.
+	 * NOTE: this method is written by Frans Lelieveld, 28 September 2007. Permission has been granted by Frans
+	 * Lelieveld to use this method in jORLib.
 	 * 
 	 * The algorithm for taking the square root of a BigDecimal is most
 	 * critical for the speed of your application. This method performs the fast
@@ -83,8 +82,8 @@ public class MathUtil {
 		
 		
 		// Iteration variables, for the square root x and the reciprocal v
-		BigDecimal x = null, e = null;              // initial x:  x0 ~ sqrt()
-		BigDecimal v = null, g = null;              // initial v:  v0 = 1/(2*x)
+		BigDecimal x, e;              // initial x:  x0 ~ sqrt()
+		BigDecimal v, g;              // initial v:  v0 = 1/(2*x)
 		
 		// Estimate the square root with the foremost 62 bits of squarD
 		BigInteger bi = squarD.unscaledValue();     // bi and scale are a tandem
@@ -114,7 +113,7 @@ public class MathUtil {
 		
 		
 		// Collect iteration precisions beforehand
-		ArrayList<Integer> nPrecs = new ArrayList<Integer>();
+		ArrayList<Integer> nPrecs = new ArrayList<>();
 		
 		assert nInit > 3 : "Never ending loop!";                // assume nInit = 16 <= prec
 		
@@ -148,6 +147,10 @@ public class MathUtil {
 	  
 	/**
 	* Test whether 2 decimals are equal, given a certain precision
+	 * @param b1 first BigDecimal
+	 * @param b2 second BigDecimal
+	 * @param precision precision
+	 * @return true if the two BigDecimals are equal (given a certain precision)
 	*/
 	public static boolean equals(BigDecimal b1, BigDecimal b2, double precision){
 		//|b1-b2|<=precision
@@ -156,6 +159,9 @@ public class MathUtil {
 	  
 	/**
 	* Divides two BigDecimals
+	 * @param b1 numerator
+	 * @param b2 denominator
+	 * @return b1 divided by b2
 	*/
 	public static BigDecimal divide(BigDecimal b1, BigDecimal b2){
 		return b1.divide(b2,25, RoundingMode.HALF_UP);
@@ -163,6 +169,8 @@ public class MathUtil {
 	  
 	/**
 	* Transforms an array of doubles into an array of BigDecimals
+	 * @param array array to be transformed
+	 * @return array of BigDecimals
 	*/
 	public static BigDecimal[] doubleToBigDecimalArray(double[] array){
 		BigDecimal[] result=new BigDecimal[array.length];
