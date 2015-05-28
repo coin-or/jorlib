@@ -39,7 +39,7 @@ import java.util.Map;
  * @author Joris Kinable
  * @version 11-5-2015
  */
-public class CuttingStockMasterData extends MasterData<CuttingStock, CuttingPattern, PricingProblem, IloNumVar>{
+public final class CuttingStockMasterData extends MasterData<CuttingStock, CuttingPattern, PricingProblem, IloNumVar>{
 
     public CuttingStockMasterData(Map<PricingProblem, OrderedBiMap<CuttingPattern, IloNumVar>> varMap) {
         super(varMap);

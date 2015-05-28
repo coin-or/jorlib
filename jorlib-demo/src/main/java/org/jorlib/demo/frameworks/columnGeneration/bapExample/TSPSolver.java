@@ -64,7 +64,7 @@ import org.jorlib.io.tspLibReader.TSPLibTour;
  * @version 13-4-2015
  *
  */
-public class TSPSolver {
+public final class TSPSolver {
 
 	private final TSP tsp;
 
@@ -92,7 +92,7 @@ public class TSPSolver {
 		//OPTIONAL: Get an initial solution and use it as an upper bound
 		TSPLibTour initTour=TSPLibTour.createCanonicalTour(tsp.N); //Feasible solution
 		int tourLength=tsp.getTourLength(initTour); //Upper bound (Stronger is better)
-		List<Matching> initSolution=this.convertTourToColumns(initTour, pricingProblems); //Create a set of initial columns.
+		List<Matching> initSolution=this.convertTourToColumns(initTour, pricingProblems); //Create a set of initial initialColumns.
 
 		//Define Branch creators
 		List<? extends AbstractBranchCreator<TSP, Matching, PricingProblemByColor>> branchCreators= Collections.singletonList(new BranchOnEdge(tsp, pricingProblems));
@@ -118,7 +118,7 @@ public class TSPSolver {
 		System.out.println("Total Time spent on master problems: "+bap.getMasterSolveTime()+" Total time spent on pricing problems: "+bap.getPricingSolveTime());
 		if(bap.hasSolution()) {
 			System.out.println("Solution is optimal: "+bap.isOptimal());
-			System.out.println("Columns (only non-zero columns are returned):");
+			System.out.println("Columns (only non-zero initialColumns are returned):");
 			List<Matching> solution = bap.getSolution();
 			for (Matching column : solution)
 				System.out.println(column);
@@ -151,10 +151,10 @@ public class TSPSolver {
 	//------------------ Helper methods -----------------
 
 	/**
-	 * Converts a TSPLib tour to a set of columns: A column for every pricing problem is created
+	 * Converts a TSPLib tour to a set of initialColumns: A column for every pricing problem is created
 	 * @param tour tour
 	 * @param pricingProblems pricing problems
-	 * @return List of columns
+	 * @return List of initialColumns
 	 */
 	private List<Matching> convertTourToColumns(TSPLibTour tour, List<PricingProblemByColor> pricingProblems) {
 		List<Set<DefaultWeightedEdge>> matchings=new ArrayList<>();
@@ -195,8 +195,8 @@ public class TSPSolver {
 	}
 
 	/**
-	 * Converts a set of matchings (columns) back to a TSPLib tour
-	 * @param columns list of columns
+	 * Converts a set of matchings (initialColumns) back to a TSPLib tour
+	 * @param columns list of initialColumns
 	 * @return a TSPLibTour
 	 */
 	private TSPLibTour convertColumnsToTour(List<Matching> columns){

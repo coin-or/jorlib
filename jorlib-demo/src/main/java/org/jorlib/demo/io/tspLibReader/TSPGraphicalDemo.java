@@ -17,7 +17,7 @@ import org.jorlib.io.tspLibReader.TSPLibTour;
  * @author David Hadka
  *
  */
-public class TSPGraphicalDemo {
+public final class TSPGraphicalDemo {
 
 	public static void main(String[] args) throws IOException {
 		TSPLibInstance problem = new TSPLibInstance(new File("./data/tspLib/tsp/gr120.tsp"));

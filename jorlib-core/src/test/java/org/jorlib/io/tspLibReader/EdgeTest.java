@@ -29,7 +29,7 @@ import org.junit.Test;
  * 
  * @author David Hadka
  */
-public class EdgeTest {
+public final class EdgeTest {
 	
 	@Test
 	public void testHasEndpoint() {

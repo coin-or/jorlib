@@ -35,7 +35,7 @@ import org.junit.Test;
  * 
  * @author David Hadka
  */
-public class TestTSP {
+public final class TestTSP {
 	
 	private static Map<String, Integer> instances;
 	

@@ -48,7 +48,7 @@ public class Configuration {
 	 */
 	protected Configuration(){
 		//Global params
-		MAXTHREADS = 3;
+		MAXTHREADS = 4;
 		PRECISION=0.000001;
 		
 		//CG & Branch-and-price params
@@ -61,21 +61,23 @@ public class Configuration {
 	}
 
 	/**
-	 * Use configuration from file
+	 * Use configuration from file. The properties file can contain one or more of the fields mentioned. Fields not included
+	 * in the properties file will default to their default values.
 	 * @param properties properties in file
 	 */
 	protected Configuration(Properties properties){
+
 		//Global params
-		MAXTHREADS=Integer.valueOf(properties.getProperty("MAXTHREADS"));
-		PRECISION=Double.valueOf(properties.getProperty("PRECISION"));
+		MAXTHREADS=(properties.containsKey("MAXTHREADS") ? Integer.valueOf(properties.getProperty("MAXTHREADS")) : 4);
+		PRECISION=(properties.containsKey("PRECISION") ? Double.valueOf(properties.getProperty("PRECISION")) : 0.000001);
 		
 		//CG & Branch-and-price params
-		CUTSENABLED=Boolean.valueOf(properties.getProperty("CUTSENABLED"));
-		EXPORT_MODEL=Boolean.valueOf(properties.getProperty("EXPORT_MODEL"));
-		EXPORT_MASTER_DIR=properties.getProperty("EXPORT_MODEL_DIR");
+		CUTSENABLED=(properties.containsKey("CUTSENABLED") ? Boolean.valueOf(properties.getProperty("CUTSENABLED")) : true );
+		EXPORT_MODEL=(properties.containsKey("EXPORT_MODEL") ? Boolean.valueOf(properties.getProperty("EXPORT_MODEL")) : false);
+		EXPORT_MASTER_DIR=(properties.containsKey("EXPORT_MODEL_DIR") ? properties.getProperty("EXPORT_MODEL_DIR") : "./output/masterLP/");
 
 		//Cut handling
-		QUICK_RETURN_AFTER_CUTS_FOUND=Boolean.valueOf(properties.getProperty("QUICK_RETURN_AFTER_CUTS_FOUND"));
+		QUICK_RETURN_AFTER_CUTS_FOUND=(properties.containsKey("QUICK_RETURN_AFTER_CUTS_FOUND") ? Boolean.valueOf(properties.getProperty("QUICK_RETURN_AFTER_CUTS_FOUND")) : true);
 	}
 	
 	/**
@@ -106,7 +108,7 @@ public class Configuration {
 	 * Global parameters
 	 */
 
-	/** Number of threads used by the column generationo procedure. Default: 3**/
+	/** Number of threads used by the column generationo procedure. Default: 4**/
 	public final int MAXTHREADS;
 
 	/** Precision parameter. DONT CHANGE THIS IF YOU ARE USING CPLEX! Default: 0.000001**/
@@ -117,7 +119,7 @@ public class Configuration {
 	 * Column generation & Branch-and-price configuration
 	 */
 
-	/** Enable/Disable generation of cuts in master problem. Default: true **/
+	/** Enable/Disable generation of inequalities in master problem. Default: true **/
 	public final boolean CUTSENABLED; 
 	/** Define whether master problem should be written to .lp file. Default: false **/
 	public final  boolean EXPORT_MODEL; 
@@ -130,9 +132,9 @@ public class Configuration {
 	 */
 
 	/**
-	 * The {@link CutHandler} invokes the {@link AbstractCutGenerator}(s) one by one to generate cuts. When a particular cutGenerator does not yield any cuts,
+	 * The {@link CutHandler} invokes the {@link AbstractCutGenerator}(s) one by one to generate inequalities. When a particular cutGenerator does not yield any inequalities,
 	 * the cutHandler will move on to the next registered cutGenerator. When quickReturnAfterCutsFound is set to true, the cutHandler
-	 * will return as soon as any cuts have been found. When set to false, all cutGenerators will be invoked.
+	 * will return as soon as any inequalities have been found. When set to false, all cutGenerators will be invoked. Default: true
 	 */
 	public final boolean QUICK_RETURN_AFTER_CUTS_FOUND;
 }

@@ -36,7 +36,7 @@ import org.junit.Test;
  * 
  * @author David Hadka
  */
-public class TestHCP {
+public final class TestHCP {
 	
 	private static Set<String> instances;
 	

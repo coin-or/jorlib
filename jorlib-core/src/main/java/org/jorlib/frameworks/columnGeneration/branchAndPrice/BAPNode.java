@@ -27,6 +27,8 @@
 package org.jorlib.frameworks.columnGeneration.branchAndPrice;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
@@ -41,36 +43,49 @@ import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequ
  */
 public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 
+	//Data before solving the node:
+
 	/** Unique node ID **/
 	public final int nodeID;
-
 	/** Sequence of the IDs of the nodes encountered while walking from the root of the BAP tree to this node. rootPath[0]=0, rootPath[last(rootPath)]=this.nodeID **/
 	protected final List<Integer> rootPath;
 	/** List of branching decisions that lead to this node. **/
 	protected final List<BranchingDecision> branchingDecisions;
 	/** Columns used to initialize the master problem **/
-	protected final List<U> columns;
-	/** Valid inequalities used to initialize the master problem of this node **/
-	protected final List<AbstractInequality> inequalities;
-	/** Bound on the optimum solution of this node. If the bound of this node exceeds the best incumbent int solution, this node will be pruned. **/
+	protected final List<U> initialColumns;
+	/** Valid initialInequalities used to initialize the master problem of this node **/
+	protected final List<AbstractInequality> initialInequalities;
+
+
+	//Data after solving the node:
+	/** Objective value of the master problem after solving this node. **/
+	protected double objective;
+	/** Bound on the optimum solution of this node. If the bound of this node exceeds the best incumbent int solution, this node will be pruned.
+	 * If this node is solved to optimality, this.objective and this.bound must be equal **/
 	protected double bound;
+	/** List of initialColumns constituting the solution after solving this node; Typically, only non-zero initialColumns are stored **/
+	protected final List<U> solution;
+	/** List of initialInequalities in the master problem after solving this node **/
+	protected final List<AbstractInequality> inequalities;
 
 	/**
 	 * Creates a new BAPNode
 	 * @param nodeID ID of the Node
 	 * @param rootPath Sequence of the IDs of the nodes encountered while walking from the root of the BAP tree to this node. rootPath[0]=0, rootPath[last(rootPath)]=this.nodeID
-	 * @param columns Columns used to initialize the master problem
-	 * @param inequalities Valid inequalities used to initialize the master problem of this node
+	 * @param initialColumns Columns used to initialize the master problem
+	 * @param initialInequalities Valid initialInequalities used to initialize the master problem of this node
 	 * @param bound Bound on the optimum solution of this node. If the bound of this node exceeds the best incumbent int solution, this node will be pruned. The bound may be inherited from the parent.
 	 * @param branchingDecisions List of branching decisions that lead to this node.
 	 */
-	public BAPNode(int nodeID, List<Integer> rootPath, List<U> columns, List<AbstractInequality> inequalities, double bound, List<BranchingDecision> branchingDecisions){
+	public BAPNode(int nodeID, List<Integer> rootPath, List<U> initialColumns, List<AbstractInequality> initialInequalities, double bound, List<BranchingDecision> branchingDecisions){
 		this.nodeID=nodeID;
-		this.columns=columns;
-		this.inequalities=inequalities;
+		this.initialColumns = initialColumns;
+		this.initialInequalities = initialInequalities;
 		this.branchingDecisions=branchingDecisions;
 		this.rootPath=rootPath;
 		this.bound=bound;
+		this.solution=new ArrayList<>();
+		this.inequalities =new ArrayList<>();
 	}
 
 	/**
@@ -94,6 +109,34 @@ public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 			return null;
 		else
 			return branchingDecisions.get(branchingDecisions.size()-1);
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public double getObjective(){
+		return objective;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public double getBound(){
+		return bound;
+	}
+
+	/**
+	 * Returns the list containing the solution of this node.
+	 * @return the list containing the solution of this node.
+	 */
+	public List<U> getSolution(){
+		return Collections.unmodifiableList(solution);
+	}
+
+	public List<AbstractInequality> getInequalities(){
+		return Collections.unmodifiableList(inequalities);
 	}
 
 	public String toString(){

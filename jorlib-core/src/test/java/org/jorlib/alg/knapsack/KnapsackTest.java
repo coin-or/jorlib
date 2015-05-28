@@ -36,7 +36,7 @@ import org.junit.Assert;
  * @since April 8, 2015
  * 
  */
-public class KnapsackTest extends TestCase {
+public final class KnapsackTest extends TestCase {
 
 	public void testKnapsack1(){
 		double[] itemValues={15,10,9,5};

@@ -49,7 +49,7 @@ import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolv
  * @author Joris Kinable
  * @version 13-4-2015
  */
-public class CuttingStockSolver {
+public final class CuttingStockSolver {
 
 	private final CuttingStock modelData;
 	
@@ -68,7 +68,7 @@ public class CuttingStockSolver {
 		//Define an upper bound (stronger is better). In this case we simply sum the demands, i.e. cut each final from its own raw (Rather poor initial solution).
 		int upperBound=IntStream.of(modelData.demandForFinals).sum();
 
-		//Create a set of initial columns.
+		//Create a set of initial initialColumns.
 		List<CuttingPattern> initSolution=this.getInitialSolution(pricingProblem);
 
 		//Create a column generation instance
@@ -92,7 +92,7 @@ public class CuttingStockSolver {
 		System.out.println("CG terminated with objective: "+cg.getObjective());
 		System.out.println("Number of iterations: "+cg.getNumberOfIterations());
 		System.out.println("Time spent on master: "+cg.getMasterSolveTime()+" time spent on pricing: "+cg.getPricingSolveTime());
-		System.out.println("Columns (only non-zero columns are returned):");
+		System.out.println("Columns (only non-zero initialColumns are returned):");
 		for(CuttingPattern column : solution)
 			System.out.println(column);
 		

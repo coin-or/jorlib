@@ -40,7 +40,7 @@ import org.jorlib.alg.knapsack.separation.LiftedCoverInequalitySeparator;
  * @since April 8, 2015
  * 
  */
-public class LiftedCoverInequalitySeparatorDemo {
+public final class LiftedCoverInequalitySeparatorDemo {
 
 	public static void main(String[] args){
 		//Define a knapsack algorithm and the LiftedCoverInequalitySeparator

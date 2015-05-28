@@ -37,7 +37,7 @@ import org.junit.Test;
  * 
  * @author David Hadka
  */
-public class TestATSP {
+public final class TestATSP {
 	
 	private static Set<String> instances;
 	

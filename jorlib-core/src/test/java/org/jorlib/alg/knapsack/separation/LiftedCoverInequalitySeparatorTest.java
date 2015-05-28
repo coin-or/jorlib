@@ -42,7 +42,7 @@ import junit.framework.TestCase;
  * @since April 8, 2015
  * 
  */
-public class LiftedCoverInequalitySeparatorTest extends TestCase {
+public final class LiftedCoverInequalitySeparatorTest extends TestCase {
 	
 	private final KnapsackAlgorithm knapsackAlgorithm;
 	private final LiftedCoverInequalitySeparator separator;

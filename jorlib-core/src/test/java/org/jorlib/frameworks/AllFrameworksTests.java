@@ -26,7 +26,6 @@
  */
 package org.jorlib.frameworks;
 
-import org.jorlib.frameworks.columnGeneration.tsp.BAPTSPTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -41,5 +40,5 @@ import org.junit.runners.Suite;
 	//BAPTSPTest.class
 })
 
-public class AllFrameworksTests {
+public final class AllFrameworksTests {
 }

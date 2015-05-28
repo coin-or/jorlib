@@ -35,7 +35,7 @@ import org.junit.Test;
  * 
  * @author David Hadka
  */
-public class DistanceFunctionTest {
+public final class DistanceFunctionTest {
 
 	@Test
 	public void testPCB442() throws IOException, URISyntaxException{

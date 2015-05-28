@@ -39,13 +39,13 @@ import java.util.EventListener;
 public interface CHListener extends EventListener {
 
     /**
-     * Method invoked when cuts are being separated
+     * Method invoked when inequalities are being separated
      * @param startGenerateCutsEvent startGenerateCutsEvent
      */
     void startGeneratingCuts(StartGeneratingCutsEvent startGenerateCutsEvent);
 
     /**
-     * Method invoked when cuts have been separated
+     * Method invoked when inequalities have been separated
      * @param finishGenerateCutsEvent finishGenerateCutsEvent
      */
     void finishGeneratingCuts(FinishGeneratingCutsEvent finishGenerateCutsEvent);

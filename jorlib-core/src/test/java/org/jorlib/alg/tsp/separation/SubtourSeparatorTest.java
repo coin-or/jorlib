@@ -46,7 +46,7 @@ import junit.framework.TestCase;
  * @since April 9, 2015
  *
  */
-public class SubtourSeparatorTest extends TestCase{
+public final class SubtourSeparatorTest extends TestCase{
 
 	public static final double PRECISION=0.000001;
 	

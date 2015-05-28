@@ -45,13 +45,13 @@ import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequ
 
 
 /**
- * Checks for violated subtour inequalities in the master problem. Any violated inqualities are added to the master problem.
+ * Checks for violated subtour initialInequalities in the master problem. Any violated inqualities are added to the master problem.
  *
  * @author Joris Kinable
  * @version 13-4-2015
  *
  */
-public class SubtourInequalityGenerator extends AbstractCutGenerator<TSP, TSPMasterData> {
+public final class SubtourInequalityGenerator extends AbstractCutGenerator<TSP, TSPMasterData> {
 
 	//We use the subtour separator provided in jORLib
 	private final SubtourSeparator<Integer, DefaultWeightedEdge> separator;
@@ -68,7 +68,7 @@ public class SubtourInequalityGenerator extends AbstractCutGenerator<TSP, TSPMas
 	}
 
 	/**
-	 * Generate inequalities using the data originating from the master problem
+	 * Generate initialInequalities using the data originating from the master problem
 	 * @return Returns true if a violated inequality has been found
 	 */
 	@Override
@@ -94,7 +94,7 @@ public class SubtourInequalityGenerator extends AbstractCutGenerator<TSP, TSPMas
 		//Create the inequality in cplex
 		try {
 			IloLinearNumExpr expr=masterData.cplex.linearNumExpr();
-			//Register the columns with this constraint.
+			//Register the initialColumns with this constraint.
 			for(PricingProblemByColor pricingProblem : masterData.pricingProblems){
 				for(Matching matching: masterData.getColumnsForPricingProblemAsList(pricingProblem)){
 					//Test how many edges in the matching enter/leave the cutSet (edges with exactly one endpoint in the cutSet)
@@ -129,8 +129,8 @@ public class SubtourInequalityGenerator extends AbstractCutGenerator<TSP, TSPMas
 	}
 
 	/**
-	 * Retuns a list of inequalities that have been generated.
-	 * @return Retuns a list of inequalities that have been generated.
+	 * Retuns a list of initialInequalities that have been generated.
+	 * @return Retuns a list of initialInequalities that have been generated.
 	 */
 	@Override
 	public List<AbstractInequality> getCuts() {

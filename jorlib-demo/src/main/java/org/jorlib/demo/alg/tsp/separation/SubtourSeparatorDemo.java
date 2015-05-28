@@ -44,7 +44,7 @@ import org.jorlib.alg.tsp.separation.SubtourSeparator;
  * @since April 9, 2015
  *
  */
-public class SubtourSeparatorDemo {
+public final class SubtourSeparatorDemo {
 	
 	/**
 	 * Example on undirected graph

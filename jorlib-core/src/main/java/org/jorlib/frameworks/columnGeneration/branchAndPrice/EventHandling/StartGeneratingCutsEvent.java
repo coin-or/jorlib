@@ -29,7 +29,7 @@ package org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling;
 import java.util.EventObject;
 
 /**
- * Event generated when the cut handler starts separating violated inequalities
+ * Event generated when the cut handler starts separating violated initialInequalities
  *
  * @author Joris Kinable
  * @version 5-5-2015

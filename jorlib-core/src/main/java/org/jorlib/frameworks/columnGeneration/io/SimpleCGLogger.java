@@ -62,13 +62,13 @@ public class SimpleCGLogger implements CGListener{
     //Pricing Problem
     /** Counts how much time is spent on solving the pricing problem at iteration it **/
     protected long timeSolvingPricing;
-    /** Total number of generated columns during iteration it **/
+    /** Total number of generated initialColumns during iteration it **/
     protected int nrGeneratedColumns;
-    /** Solver which produced new columns during iteration it **/
+    /** Solver which produced new initialColumns during iteration it **/
     protected String pricingSolver;
 
     /** Boolean indicating whether the pricing problem has been solved after solving the master problem. In some cases,
-     * cuts are added to master problem, after which the master is resolved while skipping the pricing problem.
+     * inequalities are added to master problem, after which the master is resolved while skipping the pricing problem.
      */
     boolean pricingProblemHasBeenSkipped=false;
 

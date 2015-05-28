@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  *
  * @param <T> Type of data model
  * @param <V> Type of pricing problem
- * @param <U> Type of columns
+ * @param <U> Type of initialColumns
  * @param <W> Type of Master Data
  */
 public abstract class AbstractMaster<T extends ModelInterface, U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T>, W extends MasterData<T,U,V,?>> implements BranchingDecisionListener{
@@ -174,9 +174,9 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	}
 	
 	/**
-	* Method which can be invoked externally to check whether the current master problem solution violates any cuts.
+	* Method which can be invoked externally to check whether the current master problem solution violates any inequalities.
 	* A handle to a cutHandler must have been provided when constructing the master problem
-	* @return true if cuts were added to the master problem, false otherwise
+	* @return true if inequalities were added to the master problem, false otherwise
 	*/
 	public boolean hasNewCuts(){
 		boolean hasNewCuts=false;
@@ -187,18 +187,18 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	}
 	
 	/**
-	 * Adds cuts to this master.
+	 * Adds inequalities to this master.
 	 * A handle to a cutHandler must have been provided in the constructor of this class
-	 * @param cuts cuts to be added
+	 * @param cuts inequalities to be added
 	 */
 	public void addCuts(Collection<AbstractInequality> cuts){
 		cutHandler.addCuts(cuts);
 	}
 	
 	/**
-	 * Returns all the cuts in the master model.
+	 * Returns all the inequalities in the master model.
 	 * A handle to a cutHandler must have been provided in the constructor of this class
-	 * @return a list of inequalities
+	 * @return a list of initialInequalities
 	 */
 	public List<AbstractInequality> getCuts(){
 		return cutHandler.getCuts();
@@ -211,8 +211,8 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	public abstract void addColumn(U column);
 
 	/**
-	 * Add a initial solution (list of columns)
-	 * @param columns initial set of columns
+	 * Add a initial solution (list of initialColumns)
+	 * @param columns initial set of initialColumns
 	 */
 	public void addColumns(List<U> columns){
 		for(U column : columns){
@@ -221,18 +221,18 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	}
 
 	/**
-	 * Returns all columns generated for the provided pricing problem.
+	 * Returns all initialColumns generated for the provided pricing problem.
 	 * @param pricingProblem Pricing problem
-	 * @return Set of columns
+	 * @return Set of initialColumns
 	 */
 	public Set<U> getColumns(V pricingProblem){
 		return masterData.getColumnsForPricingProblem(pricingProblem);
 	}
 
 	/**
-	 * After the master problem has been solved, a solution has to be returned, consisting of a set of columns selected by the master problem, i.e the columns with a
+	 * After the master problem has been solved, a solution has to be returned, consisting of a set of initialColumns selected by the master problem, i.e the initialColumns with a
 	 * non-zero value.
-	 * @return solution consisting of non-zero columns
+	 * @return solution consisting of non-zero initialColumns
 	 */
 	public abstract List<U> getSolution();
 	

@@ -35,7 +35,7 @@ import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
  * @version 13-4-2015
  *
  */
-public class CuttingStock implements ModelInterface{
+public final class CuttingStock implements ModelInterface{
 
 	public final int nrFinals=4; //Number of different finals
 	public final int rollWidth=100; //Width of the raws

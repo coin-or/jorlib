@@ -38,7 +38,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
  * @author Joris Kinable
  * @version 13-4-2015
  */
-public class CuttingPattern extends AbstractColumn<CuttingStock, PricingProblem> {
+public final class CuttingPattern extends AbstractColumn<CuttingStock, PricingProblem> {
 
 	/** Denotes the number of times each final is cut out of the raw. **/
 	public final int[] yieldVector;

@@ -46,7 +46,7 @@ import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
  * @author Joris Kinable
  * @version 13-4-2015
  */
-public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<CuttingStock, CuttingPattern, PricingProblem> {
+public final class ExactPricingProblemSolver extends AbstractPricingProblemSolver<CuttingStock, CuttingPattern, PricingProblem> {
 
 	private IloCplex cplex; //Cplex instance.
 	private IloObjective obj; //Objective function

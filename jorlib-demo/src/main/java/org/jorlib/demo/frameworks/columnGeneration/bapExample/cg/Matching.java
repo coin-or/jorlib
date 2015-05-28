@@ -41,7 +41,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.AbstractColumn;
  * @version 13-4-2015
  *
  */
-public class Matching extends AbstractColumn<TSP, PricingProblemByColor> {
+public final class Matching extends AbstractColumn<TSP, PricingProblemByColor> {
 
 	/** Edges in the matching **/
 	public final Set<DefaultWeightedEdge> edges;

@@ -11,7 +11,7 @@ import org.jorlib.io.tspLibReader.TSPLibInstance;
  * @since April 24, 2015
  *
  */
-public class TSPDemo {
+public final class TSPDemo {
 
 	public TSPDemo() throws IOException{
 		//Read a TSP instance from the TSPLib, as well as a TSP tour 

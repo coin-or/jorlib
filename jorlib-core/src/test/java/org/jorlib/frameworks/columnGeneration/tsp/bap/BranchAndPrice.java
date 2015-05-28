@@ -43,7 +43,7 @@ import java.util.List;
  * @author Joris Kinable
  * @version 22-4-2015
  */
-public class BranchAndPrice extends AbstractBranchAndPrice<TSP,Matching, PricingProblemByColor> {
+public final class BranchAndPrice extends AbstractBranchAndPrice<TSP,Matching, PricingProblemByColor> {
 
     public BranchAndPrice(TSP modelData,
                           Master master,
@@ -71,7 +71,7 @@ public class BranchAndPrice extends AbstractBranchAndPrice<TSP,Matching, Pricing
 
     /**
      * Checks whether the given solution is integer
-     * @param solution List of columns forming the solution
+     * @param solution List of initialColumns forming the solution
      * @return true if the solution is an integer solution
      */
     @Override

@@ -34,7 +34,6 @@ import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.PricingProblemB
 import org.jorlib.demo.frameworks.columnGeneration.bapExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columnGeneration.util.MathProgrammingUtil;
 
 import java.util.*;
@@ -47,7 +46,7 @@ import java.util.*;
  * @author Joris Kinable
  * @version 22-4-2015
  */
-public class BranchOnEdge extends AbstractBranchCreator<TSP, Matching, PricingProblemByColor>{
+public final class BranchOnEdge extends AbstractBranchCreator<TSP, Matching, PricingProblemByColor>{
 
     private DefaultWeightedEdge edgeForBranching=null; //Edge to branch on
     private PricingProblemByColor pricingProblemForMatching=null; //Edge is fractional in red or blue matching
@@ -107,19 +106,17 @@ public class BranchOnEdge extends AbstractBranchCreator<TSP, Matching, PricingPr
      * <li>branch 2: edge {@code edgeForBranching} may NOT used by {@code PricingProblemByColor},</li>
      * </ol>
      * @param parentNode Fractional node on which we branch
-     * @param solution fractional solution
-     * @param cuts Valid inequalities active at the parent node
      * @return List of child nodes
      */
     @Override
-    protected List<BAPNode<TSP,Matching>> getBranches(BAPNode<TSP,Matching> parentNode, List<Matching> solution, List<AbstractInequality> cuts) {
+    protected List<BAPNode<TSP,Matching>> getBranches(BAPNode<TSP,Matching> parentNode) {
         //Branch 1: remove the edge:
         RemoveEdge branchingDecision1=new RemoveEdge(pricingProblemForMatching, edgeForBranching);
-        BAPNode<TSP,Matching> node2=this.createBranch(parentNode, branchingDecision1, solution, cuts);
+        BAPNode<TSP,Matching> node2=this.createBranch(parentNode, branchingDecision1, parentNode.getSolution(), parentNode.getInequalities());
 
         //Branch 2: fix the edge:
         FixEdge branchingDecision2=new FixEdge(pricingProblemForMatching, edgeForBranching);
-        BAPNode<TSP,Matching> node1=this.createBranch(parentNode, branchingDecision2, solution, cuts);
+        BAPNode<TSP,Matching> node1=this.createBranch(parentNode, branchingDecision2, parentNode.getSolution(), parentNode.getInequalities());
 
         return Arrays.asList(node1,node2);
     }

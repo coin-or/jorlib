@@ -34,7 +34,7 @@ import org.jorlib.alg.packing.circlePacking.SmallestEnclosingCircleCalculator;
  * @since April 9, 2015
  *
  */
-public class SmallestEnclosingCircleCalculatorDemo {
+public final class SmallestEnclosingCircleCalculatorDemo {
 	public static void main(String[] args){
 		
 		//Define some circles. In this example we define 3 circles

@@ -47,5 +47,5 @@ import org.junit.runners.*;
 	SubtourSeparatorTest.class
 })
 
-public class AllAlgTests {
+public final class AllAlgTests {
 }

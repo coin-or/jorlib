@@ -45,7 +45,7 @@ import java.io.InputStream;
  * @version 13-4-2015
  * 
  */
-public class TSP extends SimpleWeightedGraph<Integer,DefaultWeightedEdge> implements ModelInterface{
+public final class TSP extends SimpleWeightedGraph<Integer,DefaultWeightedEdge> implements ModelInterface{
 
 	/** Number of vertices **/
 	public final int N;

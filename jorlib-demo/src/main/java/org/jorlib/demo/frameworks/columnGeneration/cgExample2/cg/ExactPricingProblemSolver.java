@@ -49,7 +49,7 @@ import java.util.Set;
  * @version 13-4-2015
  *
  */
-public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<TSP, Matching, PricingProblemByColor> {
+public final class ExactPricingProblemSolver extends AbstractPricingProblemSolver<TSP, Matching, PricingProblemByColor> {
 
 	private IloCplex cplex; //Cplex instance.
 	private IloObjective obj; //Objective function
@@ -101,7 +101,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<TSP,
 
 	/**
 	 * Main method which solves the pricing problem.
-	 * @return List of columns (matchings) with negative reduced cost.
+	 * @return List of initialColumns (matchings) with negative reduced cost.
 	 * @throws TimeLimitExceededException TimeLimitExceededException
 	 */
 	@Override
@@ -149,7 +149,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<TSP,
 					newPatterns.add(column);
 				}else{
 //					Object[] o={pricingProblem.color.name(), objective, pricingProblem.dualCost*-1};
-//					logger.debug("No columns for pricing problem {}. Objective: {} dual constant: {}",o);
+//					logger.debug("No initialColumns for pricing problem {}. Objective: {} dual constant: {}",o);
 				}
 			}
 			

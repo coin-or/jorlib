@@ -55,5 +55,5 @@ import org.junit.runners.Suite;
 	TourTest.class
 })
 
-public class AllIOTests {
+public final class AllIOTests {
 }

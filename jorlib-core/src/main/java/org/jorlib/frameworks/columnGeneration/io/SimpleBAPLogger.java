@@ -72,7 +72,7 @@ public class SimpleBAPLogger implements BAPListener{
     //Pricing Problem
     /** Counts how much time is spend on solving pricing problems **/
     protected long timeSolvingPricing;
-    /** Total number of generated columns by the pricing problems **/
+    /** Total number of generated initialColumns by the pricing problems **/
     protected int nrGeneratedColumns;
 
 

@@ -45,6 +45,6 @@ import org.junit.runners.Suite;
 	AllFrameworksTests.class
 })
 
-public class AllTests {
+public final class AllTests {
 
 }

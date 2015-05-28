@@ -38,7 +38,7 @@ import org.jorlib.frameworks.columnGeneration.tsp.model.TSP;
  * @author Joris Kinable
  * @version 22-4-2015
  */
-public class RemoveEdge implements BranchingDecision<TSP,Matching> {
+public final class RemoveEdge implements BranchingDecision<TSP,Matching> {
 
     /** Pricing problem **/
     public final PricingProblemByColor pricingProblem;

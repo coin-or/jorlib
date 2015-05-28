@@ -39,7 +39,7 @@ import java.util.Set;
  * @version 13-4-2015
  *
  */
-public class SubtourInequality extends AbstractInequality {
+public final class SubtourInequality extends AbstractInequality {
 
 	/** Vertices in the cut set **/
 	public final Set<Integer> cutSet;

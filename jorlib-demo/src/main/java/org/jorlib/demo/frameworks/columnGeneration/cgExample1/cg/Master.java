@@ -51,7 +51,7 @@ import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
  * @version 13-4-2015
  *
  */
-public class Master extends AbstractMaster<CuttingStock, CuttingPattern, PricingProblem, CuttingStockMasterData> {
+public final class Master extends AbstractMaster<CuttingStock, CuttingPattern, PricingProblem, CuttingStockMasterData> {
 
 	IloCplex cplex; //Cplex instance
 	private IloObjective obj; //Objective function
@@ -88,7 +88,7 @@ public class Master extends AbstractMaster<CuttingStock, CuttingPattern, Pricing
 		Map<PricingProblem,OrderedBiMap<CuttingPattern, IloNumVar>> varMap=new LinkedHashMap<>();
 		varMap.put(pricingProblems.get(0),new OrderedBiMap<>());
 
-		//Return a new data object which will hold data from the Master Problem. Since we are not working with cuts in this example,
+		//Return a new data object which will hold data from the Master Problem. Since we are not working with inequalities in this example,
 		//we can simply return the default.
 		return new CuttingStockMasterData(varMap);
 	}
@@ -157,7 +157,7 @@ public class Master extends AbstractMaster<CuttingStock, CuttingPattern, Pricing
 	}
 
 	/**
-	 * Return the solution, i.e columns with non-zero values in the cplex problem
+	 * Return the solution, i.e initialColumns with non-zero values in the cplex problem
 	 */
 	@Override
 	public List<CuttingPattern> getSolution() {

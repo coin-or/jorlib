@@ -63,7 +63,7 @@ import java.util.*;
  * @version 13-4-2015
  *
  */
-public class TSPCGSolver {
+public final class TSPCGSolver {
 
 	private final TSP tsp;
 
@@ -91,7 +91,7 @@ public class TSPCGSolver {
 		//Create an initial solution and use it as an upper bound
 		TSPLibTour initTour=TSPLibTour.createCanonicalTour(tsp.N); //Feasible solution
 		int tourLength=tsp.getTourLength(initTour); //Upper bound (Stronger is better)
-		List<Matching> initSolution=this.convertTourToColumns(initTour, pricingProblems); //Create a set of initial columns.
+		List<Matching> initSolution=this.convertTourToColumns(initTour, pricingProblems); //Create a set of initial initialColumns.
 
 		//Create a column generation instance
 		ColGen<TSP, Matching, PricingProblemByColor> cg=new ColGen<>(tsp, master, pricingProblems, solvers, initSolution, tourLength);
@@ -114,7 +114,7 @@ public class TSPCGSolver {
 		System.out.println("CG terminated with objective: "+cg.getObjective());
 		System.out.println("Number of iterations: "+cg.getNumberOfIterations());
 		System.out.println("Time spent on master: "+cg.getMasterSolveTime()+" time spent on pricing: "+cg.getPricingSolveTime());
-		System.out.println("Columns (only non-zero columns are returned):");
+		System.out.println("Columns (only non-zero initialColumns are returned):");
 		for(Matching column : solution)
 			System.out.println(column);
 
@@ -140,10 +140,10 @@ public class TSPCGSolver {
 	//------------------ Helper methods -----------------
 
 	/**
-	 * Converts a TSPLib tour to a set of columns: A column for every pricing problem is created
+	 * Converts a TSPLib tour to a set of initialColumns: A column for every pricing problem is created
 	 * @param tour tour
 	 * @param pricingProblems pricing problems
-	 * @return List of columns
+	 * @return List of initialColumns
 	 */
 	private List<Matching> convertTourToColumns(TSPLibTour tour, List<PricingProblemByColor> pricingProblems) {
 		List<Set<DefaultWeightedEdge>> matchings=new ArrayList<>();

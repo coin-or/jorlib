@@ -39,7 +39,7 @@ import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
  * @version 13-4-2015
  *
  */
-public class PricingProblemByColor extends AbstractPricingProblem<TSP> {
+public final class PricingProblemByColor extends AbstractPricingProblem<TSP> {
 	
 	/** Color of the matching group. Can be either Red or Blue **/
 	public final MatchingColor color;

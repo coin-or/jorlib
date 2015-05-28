@@ -38,7 +38,7 @@ import org.junit.Test;
  * 
  * @author David Hadka
  */
-public class TestVRP {
+public final class TestVRP {
 	
 	private static Set<String> instances;
 	

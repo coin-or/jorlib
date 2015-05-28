@@ -36,7 +36,6 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
-import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
 import org.jorlib.frameworks.columnGeneration.pricing.*;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
@@ -76,7 +75,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 
 	/** Stores the objective of the best (integer) solution, or an upper bound thereof **/
 	protected int bestObjective=Integer.MAX_VALUE;
-	/** List containing the columns corresponding to the best integer solution (empty list when no feasible solution has been found) **/
+	/** List containing the initialColumns corresponding to the best integer solution (empty list when no feasible solution has been found) **/
 	protected List<U> bestSolution=null;
 	/** Indicator whether the best solution is optimal **/
 	protected boolean isOptimal=false;
@@ -96,7 +95,9 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	protected long timeSolvingMaster=0;
 	/** Total time spent solving pricing problems **/
 	protected long timeSolvingPricing=0;
-	/** Counts how many columns have been generated over the entire Branch-and-Price tree **/
+	/** Total runtime **/
+	protected long runtime=0;
+	/** Counts how many initialColumns have been generated over the entire Branch-and-Price tree **/
 	protected int totalGeneratedColumns=0;
 	/** Counts how many column generation iterations have been made. **/
 	protected int totalNrIterations=0;
@@ -202,7 +203,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 								  List<? extends AbstractBranchCreator<T, U, V>> branchCreators,
 								  int upperBoundOnObjective){
 		this(dataModel, master, pricingProblems, solvers, branchCreators, upperBoundOnObjective, Collections.emptyList());
-		queue.peek().columns.addAll(this.generateArtificialSolution());
+		queue.peek().initialColumns.addAll(this.generateArtificialSolution());
 	}
 
 	/**
@@ -221,7 +222,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 								  List<? extends AbstractBranchCreator<T, U, V>> branchCreators,
 								  int upperBoundOnObjective){
 		this(dataModel, master, Collections.singletonList(pricingProblem), solvers, branchCreators, upperBoundOnObjective, Collections.emptyList());
-		queue.peek().columns.addAll(this.generateArtificialSolution());
+		queue.peek().initialColumns.addAll(this.generateArtificialSolution());
 	}
 
 	/**
@@ -231,6 +232,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	 */
 	public void runBranchAndPrice(long timeLimit){
 		notifier.fireStartBAPEvent(); //Signal start Branch-and-Price process
+		this.runtime=System.currentTimeMillis();
 		
 		processNextNode: while(!queue.isEmpty()){ //Start processing nodes until the queue is empty
 			BAPNode<T, U> bapNode = queue.poll();
@@ -246,31 +248,18 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 
 			//Generate artificial solution for this node to guarantee that the master problem is feasible
 			if(bapNode.nodeID != 0){
-				bapNode.columns.addAll(this.generateArtificialSolution());
+				bapNode.initialColumns.addAll(this.generateArtificialSolution());
 			}
 
-			ColGen<T,U,V> cg=null;
+			//Solve the next BAPNode
 			try {
-				cg = new ColGen<>(dataModel, master, pricingProblems, solvers, pricingProblemManager, bapNode.columns, bestObjective); //Solve the node
-				for(CGListener listener : columnGenerationEventListeners) cg.addCGEventListener(listener);
-				cg.solve(timeLimit);
+				this.solveBAPNode(bapNode, timeLimit);
 			} catch (TimeLimitExceededException e) {
 				queue.add(bapNode);
 				notifier.fireTimeOutEvent(bapNode);
 				break;
-			}finally{
-				//Update statistics
-				if(cg != null) {
-					timeSolvingMaster += cg.getMasterSolveTime();
-					timeSolvingPricing += cg.getPricingSolveTime();
-					totalNrIterations += cg.getNumberOfIterations();
-					totalGeneratedColumns += cg.getNrGeneratedColumns();
-					notifier.fireFinishCGEvent(bapNode, cg.getLowerBound(), cg.getObjective(), cg.getNumberOfIterations(), cg.getMasterSolveTime(), cg.getPricingSolveTime(), cg.getNrGeneratedColumns());
-				}
 			}
 
-			bapNode.bound=cg.getLowerBound(); //When node is solved to optimality, lowerBound equals the optimal solution of the column generation procedure
-			
 			//Check whether the node's bound exceeds the best integer solution, if so we can prune this node (no branching required)
 			if(bapNode.bound >= bestObjective){ //Do not bother to create a branch even though the node is fractional. Bound is worse than best solution
 				notifier.firePruneNodeEvent(bapNode, bapNode.bound);
@@ -278,11 +267,8 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 				continue;
 			}
 			
-			//Query the solution
-			List<U> solution= cg.getSolution();
-
-			//Check if node is infeasible, i.e. whether there are artifical columns in the solution. If so, ignore it and continue with the next node.
-			for(U column : solution){
+			//Check if node is infeasible, i.e. whether there are artifical initialColumns in the solution. If so, ignore it and continue with the next node.
+			for(U column : bapNode.solution){
 				if(column.isArtificialColumn) {
 					notifier.fireNodeIsInfeasibleEvent(bapNode);
 					nodesProcessed++;
@@ -291,19 +277,18 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			}
 
 			//If solution is integral, check whether it is better than the current best solution
-			if(this.isIntegralSolution(solution)){
-				int integerObjective=MathProgrammingUtil.doubleToInt(cg.getObjective());
+			if(this.isIntegralSolution(bapNode.solution)){
+				int integerObjective=MathProgrammingUtil.doubleToInt(bapNode.objective);
 				notifier.fireNodeIsIntegerEvent(bapNode, bapNode.bound, integerObjective);
 				if(integerObjective < this.bestObjective){
 					this.bestObjective= integerObjective;
-					this.bestSolution=solution;
+					this.bestSolution=bapNode.solution;
 				}
 			}else{ //We need to branch
-				notifier.fireNodeIsFractionalEvent(bapNode, bapNode.bound, cg.getObjective());
-				List<AbstractInequality> cuts=cg.getCuts();
+				notifier.fireNodeIsFractionalEvent(bapNode, bapNode.bound, bapNode.objective);
 				List<BAPNode<T, U>> newBranches=new ArrayList<>();
 				for(AbstractBranchCreator<T, U, V> bc : branchCreators){
-					newBranches.addAll(bc.branch(bapNode, solution, cuts));
+					newBranches.addAll(bc.branch(bapNode));
 					if(!newBranches.isEmpty()) break;
 				}
 				
@@ -331,7 +316,37 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			}
 		}
 		notifier.fireStopBAPEvent(); //Signal that BAP has been completed
+		this.runtime=System.currentTimeMillis()-runtime;
 	}
+
+	/**
+	 *
+	 * @param bapNode
+	 * @param timeLimit
+	 * @throws TimeLimitExceededException
+	 */
+	protected void solveBAPNode(BAPNode bapNode, long timeLimit) throws TimeLimitExceededException {
+		ColGen<T,U,V> cg=null;
+		try {
+			cg = new ColGen<>(dataModel, master, pricingProblems, solvers, pricingProblemManager, bapNode.initialColumns, bestObjective); //Solve the node
+			for(CGListener listener : columnGenerationEventListeners) cg.addCGEventListener(listener);
+			cg.solve(timeLimit);
+		}finally{
+			//Update statistics
+			if(cg != null) {
+				timeSolvingMaster += cg.getMasterSolveTime();
+				timeSolvingPricing += cg.getPricingSolveTime();
+				totalNrIterations += cg.getNumberOfIterations();
+				totalGeneratedColumns += cg.getNrGeneratedColumns();
+				notifier.fireFinishCGEvent(bapNode, cg.getLowerBound(), cg.getObjective(), cg.getNumberOfIterations(), cg.getMasterSolveTime(), cg.getPricingSolveTime(), cg.getNrGeneratedColumns());
+			}
+		}
+		bapNode.objective=cg.getObjective();
+		bapNode.bound=cg.getLowerBound(); //When node is solved to optimality, lowerBound equals the optimal solution of the column generation procedure
+		bapNode.solution.addAll(cg.getSolution());
+		bapNode.inequalities.addAll(cg.getCuts());
+	}
+
 
 	/**
 	 * Returns a unique node ID. The internal nodeCounter is incremented by one each time this method is invoked.
@@ -380,7 +395,15 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	public int getNumberOfProcessedNodes(){
 		return nodesProcessed;
 	}
-	
+
+	/**
+	 * Total time spent solving the Branch-and-Price problem.
+	 * @return total time spent solving the Branch-and-Price problem. This time should equal {@link #getMasterSolveTime()}+{@link #getPricingSolveTime()}+overhead due to branching;
+	 */
+	public long getSolveTime(){
+		return runtime;
+	}
+
 	/**
 	 * Total time spent on solving master problems
 	 * @return total time spent on solving master problems
@@ -396,8 +419,8 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		return timeSolvingPricing;
 	}
 	/**
-	 * Counts how many columns have been generated over the entire Branch-and-Price tree
-	 * @return returns total number of columns generated (summed over all processed nodes)
+	 * Counts how many initialColumns have been generated over the entire Branch-and-Price tree
+	 * @return returns total number of initialColumns generated (summed over all processed nodes)
 	 */
 	public int getTotalGeneratedColumns(){
 		return totalGeneratedColumns;
@@ -411,7 +434,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	}
 	/**
 	 * Returns the best solution found
-	 * @return Returns the columns corresponding with the best solution.
+	 * @return Returns the initialColumns corresponding with the best solution.
 	 */
 	public List<U> getSolution(){
 		return bestSolution;
@@ -419,15 +442,15 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	
 	/**
 	 * Create an artificial solution which satisfies the node's master problem and hence constitutes a feasible initial solution.
-	 * The columns are not necessary feasible or meet the definition of a column; it is undesirable that these columns end up in a final solution.
+	 * The initialColumns are not necessary feasible or meet the definition of a column; it is undesirable that these initialColumns end up in a final solution.
 	 * To prevent them from ending up in a final solution, a high cost is associated with them.
-	 * @return List of columns constituting the artificial solution
+	 * @return List of initialColumns constituting the artificial solution
 	 */
 	protected abstract List<U> generateArtificialSolution();
 
 	/**
 	 * Tests whether a given solution is an integer solution
-	 * @param solution List of columns forming the solution
+	 * @param solution List of initialColumns forming the solution
 	 * @return Returns true if solution is an integer solution, false otherwise
 	 */
 	protected abstract boolean isIntegralSolution(List<U> solution);
@@ -636,7 +659,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		 * @param numberOfCGIterations Number of Column Generation iterations it took to solve the node
 		 * @param masterSolveTime Total time spent on solving master problems for this node
 		 * @param pricingSolveTime Total time spent on solving pricing problems for this node
-		 * @param nrGeneratedColumns Total number of columns generated for this node
+		 * @param nrGeneratedColumns Total number of initialColumns generated for this node
 		 */
 		public void fireFinishCGEvent(BAPNode node, double nodeBound, double nodeValue, int numberOfCGIterations, long masterSolveTime, long pricingSolveTime, int nrGeneratedColumns){
 			FinishProcessingNodeEvent finishProcessingNodeEvent =null;

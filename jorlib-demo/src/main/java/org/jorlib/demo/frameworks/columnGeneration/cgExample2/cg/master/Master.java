@@ -210,7 +210,7 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 
 	/**
 	 * Gets the solution from the master problem
-	 * @return Returns all non-zero valued columns from the master problem
+	 * @return Returns all non-zero valued initialColumns from the master problem
 	 */
 	@Override
 	public List<Matching> getSolution() {
@@ -254,7 +254,7 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 	}
 
 	/**
-	 * Checks whether there are any violated inequalities, thereby invoking the cut handler
+	 * Checks whether there are any violated initialInequalities, thereby invoking the cut handler
 	 * @return true if violated inqualities have been found (and added to the master problem)
 	 */
 	@Override

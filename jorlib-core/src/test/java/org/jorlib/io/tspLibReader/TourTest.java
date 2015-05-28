@@ -31,7 +31,7 @@ import java.util.Arrays;
  * 
  * @author David Hadka
  */
-public class TourTest {
+public final class TourTest {
 	
 	@Test
 	public void testIsEquivalent1() {

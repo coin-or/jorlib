@@ -32,7 +32,7 @@ import java.util.EventObject;
 import java.util.List;
 
 /**
- * Event generated when the cut handler finished separating violated inequalities
+ * Event generated when the cut handler finished separating violated initialInequalities
  *
  * @author Joris Kinable
  * @version 5-5-2015

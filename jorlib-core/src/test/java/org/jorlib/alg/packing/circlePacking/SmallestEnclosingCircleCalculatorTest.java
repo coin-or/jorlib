@@ -39,7 +39,7 @@ import junit.framework.TestCase;
  * @since April 9, 2015
  *
  */
-public class SmallestEnclosingCircleCalculatorTest extends TestCase{
+public final class SmallestEnclosingCircleCalculatorTest extends TestCase{
 	
 	public static final double PRECISION=0.000001;
 

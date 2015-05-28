@@ -194,7 +194,7 @@ public class SimpleDebugger implements BAPListener, CGListener, CHListener{
 
     @Override
     public void finishPricing(FinishPricingEvent finishPricingEvent) {
-        logger.debug("Finished pricing ({} columns generated) -> CG objective: {}, CG bound: {}, CG best integer solution: {}", new Object[]{finishPricingEvent.columns.size(), finishPricingEvent.objective, finishPricingEvent.lowerBound, finishPricingEvent.upperBound});
+        logger.debug("Finished pricing ({} initialColumns generated) -> CG objective: {}, CG bound: {}, CG best integer solution: {}", new Object[]{finishPricingEvent.columns.size(), finishPricingEvent.objective, finishPricingEvent.lowerBound, finishPricingEvent.upperBound});
         for(AbstractColumn<?, ?> column : finishPricingEvent.columns){
             logger.debug(column.toString());
         }
@@ -223,7 +223,7 @@ public class SimpleDebugger implements BAPListener, CGListener, CHListener{
     public void finishGeneratingCuts(FinishGeneratingCutsEvent finishGenerateCutsEvent) {
         Map<AbstractCutGenerator, Integer> cutSummary=new LinkedHashMap<>();
         if(finishGenerateCutsEvent.separatedInequalities.isEmpty())
-            logger.debug("No cuts found!");
+            logger.debug("No inequalities found!");
         else{
             logger.debug("Cuts have been generated! Summary:");
             for(AbstractInequality inequality : finishGenerateCutsEvent.separatedInequalities){

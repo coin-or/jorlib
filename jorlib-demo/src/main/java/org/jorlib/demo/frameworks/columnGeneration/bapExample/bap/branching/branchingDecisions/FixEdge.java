@@ -38,7 +38,7 @@ import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequ
  * @author Joris Kinable
  * @version 22-4-2015
  */
-public class FixEdge implements BranchingDecision<TSP,Matching> {
+public final class FixEdge implements BranchingDecision<TSP,Matching> {
 
     /** Pricing problem **/
     public final PricingProblemByColor pricingProblem;
