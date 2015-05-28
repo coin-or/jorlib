@@ -197,7 +197,7 @@ public class CutHandler<T extends ModelInterface,W extends MasterData>{
 		/**
 		 * Fires a StartGeneratingCutsEvent to indicate that the cut handler starts generating initialInequalities
 		 */
-		protected void fireStartGeneratingCutsEvent() {
+		public void fireStartGeneratingCutsEvent() {
 			StartGeneratingCutsEvent startGeneratingCutsEvent = null;
 			for (CHListener listener : listeners) {
 				if (startGeneratingCutsEvent == null)
@@ -210,7 +210,7 @@ public class CutHandler<T extends ModelInterface,W extends MasterData>{
 		 * Fires a FinishGeneratingCutsEvent to indicate that that the cut handler finished generating initialInequalities
 		 * @param separatedInequalities list of newly separated initialInequalities which have been generated
 		 */
-		protected void fireFinishGeneratingCutsEvent(List<AbstractInequality> separatedInequalities) {
+		public void fireFinishGeneratingCutsEvent(List<AbstractInequality> separatedInequalities) {
 			FinishGeneratingCutsEvent finishGeneratingCutsEvent = null;
 			for (CHListener listener : listeners) {
 				if (finishGeneratingCutsEvent == null)

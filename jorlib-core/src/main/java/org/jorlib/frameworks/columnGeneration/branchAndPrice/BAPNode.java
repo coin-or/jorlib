@@ -64,9 +64,9 @@ public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 	 * If this node is solved to optimality, this.objective and this.bound must be equal **/
 	protected double bound;
 	/** List of initialColumns constituting the solution after solving this node; Typically, only non-zero initialColumns are stored **/
-	protected final List<U> solution;
+	protected List<U> solution;
 	/** List of initialInequalities in the master problem after solving this node **/
-	protected final List<AbstractInequality> inequalities;
+	protected List<AbstractInequality> inequalities;
 
 	/**
 	 * Creates a new BAPNode
@@ -87,6 +87,7 @@ public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 		this.solution=new ArrayList<>();
 		this.inequalities =new ArrayList<>();
 	}
+
 
 	/**
 	 * Returns the ID of its parent in the Branch-and-Price tree. For memory efficiency, no pointer to the ancestor is returned. As maintaining a link to every
@@ -109,6 +110,70 @@ public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 			return null;
 		else
 			return branchingDecisions.get(branchingDecisions.size()-1);
+	}
+
+	/**
+	 * Adds initial columns to this node. When the node is solved, these columns will be added to the master problem.
+	 * This method may be invoked multiple times to add additional columns.
+	 * @param additionalColumns columns to add to the initial solution.
+	 */
+	public void addInitialColumns(List<U> additionalColumns){
+		initialColumns.addAll(additionalColumns);
+	}
+
+	/**
+	 * Adds initial inequalities to this node. When the node is solved, these inequalities will be added to the master problem.
+	 * This method may be invoked multiple times to add additional inequalities.
+	 * @param additionalInequalities columns to add to the initial solution.
+	 */
+	public void addInitialInequalities(List<AbstractInequality> additionalInequalities){
+		inequalities.addAll(additionalInequalities);
+	}
+
+	/**
+	 *
+	 * @param objective
+	 */
+	public void setObjective(double objective){
+		this.objective=objective;
+	}
+
+	/**
+	 *
+	 * @param bound
+	 */
+	public void setBound(double bound){
+		this.bound=bound;
+	}
+
+	/**
+	 *
+	 * @param objective
+	 * @param bound
+	 * @param solution
+	 * @param inequalities
+	 */
+	public void storeSolution(double objective, double bound, List<U> solution, List<AbstractInequality> inequalities){
+		this.objective=objective;
+		this.bound=bound;
+		this.solution=solution;
+		this.inequalities=inequalities;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public List<U> getInitialColumns(){
+		return Collections.unmodifiableList(initialColumns);
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public List<AbstractInequality> getInitialInequalities(){
+		return Collections.unmodifiableList(initialInequalities);
 	}
 
 	/**

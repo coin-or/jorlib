@@ -248,7 +248,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 
 			//Generate artificial solution for this node to guarantee that the master problem is feasible
 			if(bapNode.nodeID != 0){
-				bapNode.initialColumns.addAll(this.generateArtificialSolution());
+				bapNode.addInitialColumns(this.generateArtificialSolution());
 			}
 
 			//Solve the next BAPNode
@@ -325,7 +325,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	 * @param timeLimit
 	 * @throws TimeLimitExceededException
 	 */
-	protected void solveBAPNode(BAPNode bapNode, long timeLimit) throws TimeLimitExceededException {
+	protected void solveBAPNode(BAPNode<T,U> bapNode, long timeLimit) throws TimeLimitExceededException {
 		ColGen<T,U,V> cg=null;
 		try {
 			cg = new ColGen<>(dataModel, master, pricingProblems, solvers, pricingProblemManager, bapNode.initialColumns, bestObjective); //Solve the node
@@ -341,10 +341,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 				notifier.fireFinishCGEvent(bapNode, cg.getLowerBound(), cg.getObjective(), cg.getNumberOfIterations(), cg.getMasterSolveTime(), cg.getPricingSolveTime(), cg.getNrGeneratedColumns());
 			}
 		}
-		bapNode.objective=cg.getObjective();
-		bapNode.bound=cg.getLowerBound(); //When node is solved to optimality, lowerBound equals the optimal solution of the column generation procedure
-		bapNode.solution.addAll(cg.getSolution());
-		bapNode.inequalities.addAll(cg.getCuts());
+		bapNode.storeSolution(cg.getObjective(), cg.getLowerBound(), cg.getSolution(), cg.getCuts());
 	}
 
 
