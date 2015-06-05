@@ -50,9 +50,10 @@ public final class BranchAndPrice extends AbstractBranchAndPrice<TSP,Matching, P
                           List<PricingProblemByColor> pricingProblems,
                           List<Class<? extends AbstractPricingProblemSolver<TSP, Matching, PricingProblemByColor>>> solvers,
                           List<? extends AbstractBranchCreator<TSP, Matching, PricingProblemByColor>> branchCreators,
-                          int upperBoundOnObjective,
+                          int objectiveInitialSolution,
                           List<Matching> initialSolution){
-        super(modelData, master, pricingProblems, solvers, branchCreators, upperBoundOnObjective, initialSolution);
+        super(modelData, master, pricingProblems, solvers, branchCreators, 0, objectiveInitialSolution);
+        this.warmStart(objectiveInitialSolution, initialSolution);
     }
 
     /**
@@ -64,8 +65,8 @@ public final class BranchAndPrice extends AbstractBranchAndPrice<TSP,Matching, P
      */
     @Override
     protected List<Matching> generateArtificialSolution() {
-        Matching matching1=new Matching("Artificial", true,	pricingProblems.get(0), bestSolution.get(0).edges,bestSolution.get(0).succ,bestObjective);
-        Matching matching2=new Matching("Artificial", true,	pricingProblems.get(1), bestSolution.get(1).edges,bestSolution.get(1).succ,bestObjective);
+        Matching matching1=new Matching("Artificial", true,	pricingProblems.get(0), incumbentSolution.get(0).edges, incumbentSolution.get(0).succ, objectiveIncumbentSolution);
+        Matching matching2=new Matching("Artificial", true,	pricingProblems.get(1), incumbentSolution.get(1).edges, incumbentSolution.get(1).succ, objectiveIncumbentSolution);
         return Arrays.asList(matching1, matching2);
     }
 

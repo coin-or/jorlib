@@ -69,15 +69,18 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	protected W masterData;
 	/** Handle to a cutHandler which performs separation **/
 	protected CutHandler<T,W> cutHandler;
+	/** Defines whether the master problem is a minimization or a maximization problem **/
+	protected final OptimizationSense optimizationSenseMaster;
 
 	/**
 	 * Creates a new Master Problem
 	 * @param dataModel data model
 	 * @param pricingProblems pricing problems
 	 */
-	public AbstractMaster(T dataModel, List<V> pricingProblems){
+	public AbstractMaster(T dataModel, List<V> pricingProblems, OptimizationSense optimizationSenseMaster){
 		this.dataModel = dataModel;
 		this.pricingProblems=pricingProblems;
+		this.optimizationSenseMaster=optimizationSenseMaster;
 		masterData=this.buildModel();
 		cutHandler=new CutHandler<>();
 		cutHandler.setMasterData(masterData);
@@ -88,8 +91,8 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	 * @param dataModel data model
 	 * @param pricingProblem pricing problem
 	 */
-	public AbstractMaster(T dataModel, V pricingProblem){
-		this(dataModel, Collections.singletonList(pricingProblem));
+	public AbstractMaster(T dataModel, V pricingProblem, OptimizationSense optimizationSenseMaster){
+		this(dataModel, Collections.singletonList(pricingProblem), optimizationSenseMaster);
 	}
 
 	/**
@@ -98,10 +101,11 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	 * @param pricingProblems pricing problems
 	 * @param cutHandler Reference to a cut handler
 	 */
-	public AbstractMaster(T dataModel, List<V> pricingProblems, CutHandler<T,W> cutHandler){
+	public AbstractMaster(T dataModel, List<V> pricingProblems, CutHandler<T,W> cutHandler, OptimizationSense optimizationSenseMaster){
 		this.dataModel = dataModel;
 		this.pricingProblems=pricingProblems;
 		this.cutHandler=cutHandler;
+		this.optimizationSenseMaster=optimizationSenseMaster;
 		masterData=this.buildModel();
 		cutHandler.setMasterData(masterData);
 	}
@@ -112,8 +116,8 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	 * @param pricingProblem pricing problem
 	 * @param cutHandler Reference to a cut handler
 	 */
-	public AbstractMaster(T dataModel, V pricingProblem, CutHandler<T,W> cutHandler){
-		this(dataModel, Collections.singletonList(pricingProblem), cutHandler);
+	public AbstractMaster(T dataModel, V pricingProblem, CutHandler<T,W> cutHandler, OptimizationSense optimizationSenseMaster){
+		this(dataModel, Collections.singletonList(pricingProblem), cutHandler, optimizationSenseMaster);
 	}
 
 	/**
@@ -148,7 +152,15 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	 * @param pricingProblem Object in which the dual information required to solve the pricing problems is stored.
 	 */
 	public abstract void initializePricingProblem(V pricingProblem);
-	
+
+	/**
+	 * Returns the optimization sense of the Master Problem (minimization or maximization).
+	 * @return the optimization sense of the Master Problem (minimization or maximization).
+	 */
+	public OptimizationSense getOptimizationSense(){
+		return this.optimizationSenseMaster;
+	}
+
 	/**
 	 * Returns the objective value of the current master problem.
 	 * @return objective value of master problem
@@ -211,8 +223,8 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	public abstract void addColumn(U column);
 
 	/**
-	 * Add a initial solution (list of initialColumns)
-	 * @param columns initial set of initialColumns
+	 * Add a initial solution (list of columns)
+	 * @param columns initial set of columns
 	 */
 	public void addColumns(List<U> columns){
 		for(U column : columns){
@@ -221,27 +233,27 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	}
 
 	/**
-	 * Returns all initialColumns generated for the provided pricing problem.
+	 * Returns all columns generated for the given pricing problem.
 	 * @param pricingProblem Pricing problem
-	 * @return Set of initialColumns
+	 * @return Set ofcolumns
 	 */
 	public Set<U> getColumns(V pricingProblem){
 		return masterData.getColumnsForPricingProblem(pricingProblem);
 	}
 
 	/**
-	 * After the master problem has been solved, a solution has to be returned, consisting of a set of initialColumns selected by the master problem, i.e the initialColumns with a
+	 * After the master problem has been solved, a solution has to be returned, consisting of a set of columns selected by the master problem, i.e the columns with a
 	 * non-zero value.
-	 * @return solution consisting of non-zero initialColumns
+	 * @return solution consisting of non-zero columns
 	 */
 	public abstract List<U> getSolution();
 	
 	/**
-	 * To compute a lower bound on the optimal solution of the relaxed master problem (assuming that the master problem is a minimization problem), multiple components
+	 * To compute a bound on the optimal solution of the relaxed master problem, multiple components
 	 * are required, including information from the master problem. This function returns that information.
 	 * @return value originating from the master problem which is required to calculate a bound on the optimal objective of the master problem
 	 */
-	public double getLowerBoundComponent(){
+	public double getBoundComponent(){
 		throw new UnsupportedOperationException("Not implemented. You should override this function");
 	}
 	/**

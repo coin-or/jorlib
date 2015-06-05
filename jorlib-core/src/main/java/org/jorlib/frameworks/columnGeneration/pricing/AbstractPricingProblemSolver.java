@@ -135,7 +135,7 @@ public abstract class AbstractPricingProblemSolver<T,U extends AbstractColumn<T,
 	}
 
 	/**
-	 * Method which sets the objective of the Pricing Problem. This method is invoked directly *before* the generatenewColumns() method is solved. It allows the user to update the pricing solver with fresh
+	 * Method which sets the objectiveMasterProblem of the Pricing Problem. This method is invoked directly *before* the generatenewColumns() method is solved. It allows the user to update the pricing solver with fresh
 	 * dual information coming from the master problem. Typically this information is stored inside the PricingProblem objects.
 	 */
 	protected abstract void setObjective();

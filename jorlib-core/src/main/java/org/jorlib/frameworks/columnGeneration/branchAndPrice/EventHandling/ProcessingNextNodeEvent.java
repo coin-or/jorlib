@@ -42,20 +42,20 @@ public class ProcessingNextNodeEvent extends EventObject{
     public final BAPNode node;
     /** Number of nodes currently waiting in the queue **/
     public final int nodesInQueue;
-    /** Best integer solution obtained so far **/
-    public final int globalUB;
+    /** Best integer solution obtained thus far **/
+    public final int objectiveIncumbentSolution;
 
     /**
      * Creates a new ProcessingNextNodeEvent
      * @param source Generator of the event
      * @param node Node which will be processed
      * @param nodesInQueue Number of nodes currently in the queue
-     * @param globalUB Best integer solution found thus far
+     * @param objectiveIncumbentSolution Best integer solution found thus far
      */
-    public ProcessingNextNodeEvent(Object source, BAPNode node, int nodesInQueue, int globalUB){
+    public ProcessingNextNodeEvent(Object source, BAPNode node, int nodesInQueue, int objectiveIncumbentSolution){
         super(source);
         this.node=node;
         this.nodesInQueue=nodesInQueue;
-        this.globalUB=globalUB;
+        this.objectiveIncumbentSolution=objectiveIncumbentSolution;
     }
 }

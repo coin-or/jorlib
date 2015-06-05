@@ -112,7 +112,7 @@ public final class TSPSolver {
 		
 		//Print solution:
 		System.out.println("================ Solution ================");
-		System.out.println("BAP terminated with objective: "+bap.getObjective());
+		System.out.println("BAP terminated with objectiveMasterProblem: "+bap.getObjective());
 		System.out.println("Total Number of iterations: "+bap.getTotalNrIterations());
 		System.out.println("Total Number of processed nodes: "+bap.getNumberOfProcessedNodes());
 		System.out.println("Total Time spent on master problems: "+bap.getMasterSolveTime()+" Total time spent on pricing problems: "+bap.getPricingSolveTime());
@@ -135,10 +135,10 @@ public final class TSPSolver {
 
 	public static void main(String[] args) throws IOException {
 		//TSPLib instances, see http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
-//		TSP tsp= new TSP("./data/tspLib/tsp/burma14.tsp"); //Optimal: 3323
+		TSP tsp= new TSP("./data/tspLib/tsp/burma14.tsp"); //Optimal: 3323
 //		TSP tsp= new TSP("./data/tspLib/tsp/ulysses16.tsp"); //Optimal: 6859
 //		TSP tsp= new TSP("./data/tspLib/tsp/ulysses22.tsp"); //Optimal: 7013
-		TSP tsp= new TSP("./data/tspLib/tsp/gr24.tsp"); //Optimal: 1272
+//		TSP tsp= new TSP("./data/tspLib/tsp/gr24.tsp"); //Optimal: 1272
 //		TSP tsp= new TSP("./data/tspLib/tsp/fri26.tsp"); //Optimal: 937
 //		TSP tsp= new TSP("./data/tspLib/tsp/dantzig42.tsp"); //Optimal: 699
 //		TSP tsp= new TSP("./data/tspLib/tsp/swiss42.tsp"); //Optimal: 1273

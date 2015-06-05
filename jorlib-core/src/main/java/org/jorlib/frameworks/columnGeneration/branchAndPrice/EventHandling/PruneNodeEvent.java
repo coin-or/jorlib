@@ -49,7 +49,7 @@ public class PruneNodeEvent extends EventObject{
      * Creates a new PruneNodeEvent
      * @param source Generator of the event
      * @param node ID of the node being pruned
-     * @param nodeBound Lower bound on the node
+     * @param nodeBound Bound on the node
      * @param bestIntegerSolution Best integer solution discovered thus far
      */
     public PruneNodeEvent(Object source, BAPNode node, double nodeBound, int bestIntegerSolution){

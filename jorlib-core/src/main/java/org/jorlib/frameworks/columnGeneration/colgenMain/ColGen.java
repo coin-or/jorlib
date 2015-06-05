@@ -32,6 +32,7 @@ import org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling.*;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
+import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
@@ -46,7 +47,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Main class defining the Column Generation procedure. It keeps track of all the data structures. Its {@link #solve(long timeLimit) solve} method is the core of this class.
- * Assumptions: the Master problem is a minimization problem. The optimal solution with non-fractional variable values has an integer objective value.
+ * Assumptions: the Master problem is a minimization problem. The optimal solution with non-fractional variable values has an integer objectiveMasterProblem value.
  *
  * @param <T> The data model
  * @param <U> Type of column
@@ -75,14 +76,17 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	protected final PricingProblemManager<T,U, V> pricingProblemManager;
 	/** Helper class which notifies {@link CGListener} **/
 	protected final CGNotifier notifier;
-	
+
+	/** Defines whether the master problem is a minimization or a maximization problem **/
+	protected final OptimizationSense optimizationSenseMaster;
 	/** Objective value of column generation procedure **/
-	protected double objective;
-	/** The Colgen procedure is terminated if objective exceeds upperBound. The Upperbound is set equal to the best incumbent INTEGER solution. Do NOT confuse with the objective field
-	 * which is a DOUBLE **/
-	protected int upperBound=Integer.MAX_VALUE;
-	/** Lower bound on the objective value. If {@code lowerbound > upperBound}, this node can be pruned.**/
-	protected double lowerBound=0;
+	protected double objectiveMasterProblem;
+	/** The Colgen procedure is terminated if the bound on the best attainable solution to the master problem is worse than the
+	 * cutoffValue. Assuming that the master is a minimization problem, the Colgen procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}. Note that the cutoffValue is an INTEGER value.
+	 **/
+	protected int cutoffValue;
+	/** Bound on the best attainable objective value from the master problem. Assuming that the master is a minimization problem, the Colgen procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}.**/
+	protected double boundOnMasterObjective =0;
 	/** Total number of column generation iterations. **/
 	protected int nrOfColGenIterations=0;
 	/**Total time spent on the column generation procedure**/
@@ -91,7 +95,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	protected long masterSolveTime=0;
 	/** Total time spent on solving the pricing problem **/
 	protected long pricingSolveTime=0;
-	/** Total number of initialColumns generated and added to the master problem **/
+	/** Total number of columns generated and added to the master problem **/
 	protected int nrGeneratedColumns=0;
 	
 	/**
@@ -101,19 +105,20 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	 * @param pricingProblems pricing problems
 	 * @param solvers pricing problem solvers
 	 * @param initSolution initial solution
-	 * @param upperBound upper bound on solution. Column generation process is terminated if lower bound exceeds upper bound
+	 * @param cutoffValue cutoff Value. If the master is a minimization problem, the Colgen procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}. If the master is a maximization problem, the Colgen procedure is terminated if {@code floor(boundOnMasterObjective) <= cutoffValue}.
 	 */
 	public ColGen(T dataModel, 
 					AbstractMaster<T, U, V, ? extends MasterData> master,
 					List<V> pricingProblems,
 					List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
 					List<U> initSolution,
-					int upperBound){
+					int cutoffValue){
 		this.dataModel=dataModel;
 		this.master=master;
+		optimizationSenseMaster=master.getOptimizationSense();
 		this.pricingProblems=pricingProblems;
 		this.solvers=solvers;
-		this.upperBound=upperBound;
+		this.cutoffValue = cutoffValue;
 		master.addColumns(initSolution);
 
 		//Generate the pricing problem instances
@@ -137,15 +142,15 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	 * @param pricingProblem pricing problem
 	 * @param solvers pricing problem solvers
 	 * @param initSolution initial solution
-	 * @param upperBound upper bound on solution. Column generation process is terminated if lower bound exceeds upper bound
+	 * @param cutoffValue cutoff Value. If the master is a minimization problem, the Colgen procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}. If the master is a maximization problem, the Colgen procedure is terminated if {@code floor(boundOnMasterObjective) <= cutoffValue}.
 	 */
 	public ColGen(T dataModel, 
 			AbstractMaster<T, U, V, ? extends MasterData> master,
 			V pricingProblem,
 			List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
 			List<U> initSolution,
-			int upperBound){
-		this(dataModel, master, Collections.singletonList(pricingProblem), solvers, initSolution, upperBound);
+			int cutoffValue){
+		this(dataModel, master, Collections.singletonList(pricingProblem), solvers, initSolution, cutoffValue);
 	}
 
 	/**
@@ -156,7 +161,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	 * @param solvers pricing problem solvers
 	 * @param pricingProblemManager pricing problem manager
 	 * @param initSolution initial solution
-	 * @param upperBound upper bound on solution. Column generation process is terminated if lower bound exceeds upper bound
+	 * @param cutoffValue cutoff Value. If the master is a minimization problem, the Colgen procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}. If the master is a maximization problem, the Colgen procedure is terminated if {@code floor(boundOnMasterObjective) <= cutoffValue}.
 	 */
 	public ColGen(T dataModel, 
 			AbstractMaster<T, U, V, ? extends MasterData> master,
@@ -164,14 +169,15 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
 			PricingProblemManager<T,U, V> pricingProblemManager,
 			List<U> initSolution,
-			int upperBound){
+			int cutoffValue){
 		this.dataModel=dataModel;
 		this.master=master;
+		optimizationSenseMaster=master.getOptimizationSense();
 		this.pricingProblems=pricingProblems;
 		this.solvers=solvers;
 		this.pricingProblemManager=pricingProblemManager;
 		master.addColumns(initSolution);
-		this.upperBound=upperBound;
+		this.cutoffValue = cutoffValue;
 
 		//Create a new notifier
 		notifier=new CGNotifier();
@@ -179,18 +185,17 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	
 	/**
 	 * Solve the Column Generation problem. First the master problem is solved. Next the pricing problems(s) is (are) solved. To solve the pricing problems, the pricing
-	 * solvers are invoked one by one in a hierarchical fashion. First the first solver is invoked to solve the pricing problems. Any new initialColumns generated are immediately returned.
-	 * If it fails to find initialColumns, the next solver is invoked and so on. If the pricing problem discovers new initialColumns, they are added to the master problem and the method continues
+	 * solvers are invoked one by one in a hierarchical fashion. First the first solver is invoked to solve the pricing problems. Any new columns generated are immediately returned.
+	 * If it fails to find columns, the next solver is invoked and so on. If the pricing problem discovers new columns, they are added to the master problem and the method continues
 	 * with the next column generation iteration.<br>
-	 * If no new initialColumns are found, the method checks for violated initialInequalities. If there are violated initialInequalities, they are added to the master problem and the method continues with the
+	 * If no new columns are found, the method checks for violated initialInequalities. If there are violated initialInequalities, they are added to the master problem and the method continues with the
 	 * next column generation iteration.<br>
 	 * The solve procedure terminates under any of the following conditions:
 	 * <ol>
-	 * <li>the solvers could not identify additional initialColumns</li>
+	 * <li>the solver could not identify new columns</li>
 	 * <li>Time limit exceeded</li>
-	 * <li>The lower bound (rounded up) exceeds the upper bound (best integer solution provided in the Constructor).</li>
-	 * <li>The objective of the master problem is zero (zero is assumed to be a natural lower bound)</li>
-	 * <li>The lower bound exceeds the objective of the master problem.</li>
+	 * <li>The bound on the best attainable solution to the master problem is worse than the cutoff value. Assuming that the master is a minimization problem, the Colgen procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}</li>
+	 * <li>The solution to the master problem is provable optimal, i.e the bound on the best attainable solution to the master problem equals the solution of the master problem.</li>
 	 * </ol>
 	 * @param timeLimit Future point in time (ms) by which the procedure should be finished. Should be defined as: {@code System.currentTimeMilis()+<desired runtime>}
 	 * @throws TimeLimitExceededException Exception is thrown when time limit is exceeded
@@ -200,7 +205,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 		pricingProblemManager.setTimeLimit(timeLimit);
 		colGenSolveTime=System.currentTimeMillis();
 		
-		boolean foundNewColumns=false; //Identify whether the pricing problem generated new initialColumns
+		boolean foundNewColumns=false; //Identify whether the pricing problem generated new columns
 		boolean hasNewCuts; //Identify whether the master problem violates any valid initialInequalities
 		notifier.fireStartCGEvent();
 		do{
@@ -210,9 +215,8 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			//Solve the master
 			this.invokeMaster(timeLimit);
 
-			//if the objective of the master problem equals 0, we can stop generating initialColumns as 0 is a lower bound on the optimal solution.
-			//Alternatively, we can stop when the objective equals the lowerBound. We still need to check for violated initialInequalities though.
-			if(objective < config.PRECISION || Math.abs(objective-lowerBound)<config.PRECISION){
+			//We can stop when the objective equals the boundOnMasterObjective. We still need to check for violated initialInequalities though.
+			if(Math.abs(objectiveMasterProblem - boundOnMasterObjective)<config.PRECISION){
 				//Check whether there are inequalities. Otherwise potentially an infeasible integer solution (e.g. TSP solution with subtours) might be returned.
 				if(config.CUTSENABLED && master.hasNewCuts()){  
 					hasNewCuts=true;
@@ -224,7 +228,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			}
 			
 			//Solve the pricing problem
-			List<U> newColumns=this.invokePricingProblems(timeLimit); //List containing new initialColumns generated by the pricing problem
+			List<U> newColumns=this.invokePricingProblems(timeLimit); //List containing new columns generated by the pricing problem
 			foundNewColumns=!newColumns.isEmpty();
 
 			
@@ -233,7 +237,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 				notifier.fireTimeLimitExceededEvent();
 				throw new TimeLimitExceededException();
 			}
-			//Check for inequalities. This can only be done if the master problem hasn't changed (no initialColumns can be added).
+			//Check for inequalities. This can only be done if the master problem hasn't changed (no columns can be added).
 			if(config.CUTSENABLED && !foundNewColumns && !thisNodeCanBePruned()){
 				long time=System.currentTimeMillis();
 				hasNewCuts=master.hasNewCuts();
@@ -241,7 +245,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			}
 			
 		}while(foundNewColumns || hasNewCuts);
-		this.lowerBound=this.objective; //When solved to optimality, the lower bound equals the objective
+		this.boundOnMasterObjective =this.objectiveMasterProblem; //When solved to optimality, the bound on the master problem objective equals the objective value.
 		colGenSolveTime=System.currentTimeMillis()-colGenSolveTime;
 		notifier.fireFinishCGEvent();
 	}
@@ -250,7 +254,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 		notifier.fireStartMasterEvent();
 		long time=System.currentTimeMillis();
 		master.solve(timeLimit);
-		objective=master.getObjective();
+		objectiveMasterProblem =master.getObjective();
 		masterSolveTime+=(System.currentTimeMillis()-time);
 		notifier.fireFinishMasterEvent();
 	}
@@ -269,10 +273,10 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 		for(Class<? extends AbstractPricingProblemSolver<T, U, V>> solver : solvers){
 			newColumns=pricingProblemManager.solvePricingProblems(solver);
 
-			//Calculate a lower bound on the optimal solution of the master problem
-			this.lowerBound=Math.max(lowerBound,this.calculateLowerBound(solver));
+			//Calculate a bound on the optimal solution of the master problem
+			this.boundOnMasterObjective =Math.max(boundOnMasterObjective,this.calculateBoundOnMasterObjective(solver));
 
-			//Stop when we found new initialColumns
+			//Stop when we found new columns
 			if(!newColumns.isEmpty()){
 				break;
 			}
@@ -281,7 +285,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 
 		pricingSolveTime+=(System.currentTimeMillis()-time);
 		nrGeneratedColumns+=newColumns.size();
-		//Add initialColumns to the master problem
+		//Add columns to the master problem
 		if(!newColumns.isEmpty()){
 			for(U column : newColumns){
 				master.addColumn(column);
@@ -291,28 +295,27 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	}
 
 	/**
-	 * Compute lower bound on the optimal objective value attainable by the the current master problem. The bound is based on both dual variables from the master,
-	 * as well as the optimal pricing problem solutions.<br>
+	 * Compute bound on the optimal objective value attainable by the the current master problem. The bound may be based on both information from the master,
+	 * as well as information from the pricing problem solutions.<br>
 	 * The parameter specifies which solver was last invoked to solve the pricing problems. This method is invoked immediately after solving the pricing problem.
-	 * Returns the best lower bound for the current master.<br>
 	 * This method is not implemented as it is problem dependent. Override this method. The following methods are at your disposal (see documentation):
 	 * <ul>
-	 * <li>{@link AbstractMaster#getLowerBoundComponent()} for the master problem</li>
+	 * <li>{@link AbstractMaster#getBoundComponent()} for the master problem</li>
 	 * <li>{@link PricingProblemManager#getBoundsOnPricingProblems(Class)}  method for the pricing problems</li>
 	 * </ul>
 	 * NOTE: This method is not implemented by default.
-	 * NOTE2: When calling this method, it is guaranteed that the master problem has not been changed (no initialColumns or initialInequalities are added) since the last time its
+	 * NOTE2: When calling this method, it is guaranteed that the master problem has not been changed (no columns or initialInequalities are added) since the last time its
 	 * {@link #solve(long timeLimit) solve} method was invoked!
 	 * 
 	 * @param solver solver which was used to solve the pricing problem during the last invocation
-	 * @return lower bound on the optimal master problem solution
+	 * @return bound on the optimal master problem solution
 	 */
-	protected double calculateLowerBound(Class<? extends AbstractPricingProblemSolver<T, U, V>> solver){
+	protected double calculateBoundOnMasterObjective(Class<? extends AbstractPricingProblemSolver<T, U, V>> solver){
 		//This method is not implemented as it is problem dependent. Override this method.
 		//The following methods are at your disposal (see documentation):
 		//double master.getLowerboundComponent()
 		//double[] pricingProblemManager.getUpperBound(solver)
-		return 0;
+		return (optimizationSenseMaster == OptimizationSense.MINIMIZE ? -Double.MAX_VALUE : Double.MAX_VALUE);
 	}
 	
 	/**
@@ -320,18 +323,18 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	 * @return Returns the objective value of the column generation procedure
 	 */
 	public double getObjective(){
-		return objective;
+		return objectiveMasterProblem;
 	}
 
 	/**
-	 * Returns a lower bound on the objective of the column generation procedure. When the column generation procedure is solved to optimality,
-	 * getObjective() and getLowerBound() should return the same value. However, if the column generation procedure terminates for example due to
+	 * Returns a bound on the objective of the column generation procedure, i.e the strongest available bound on the optimal solution to the master problem.
+	 * When the column generation procedure is solved to optimality, getObjective() and getBound() should return the same value. However, if the column generation procedure terminates for example due to
 	 * a time limit exceeded exception, there may be a gap in between those values.
 	 * 
-	 * @return Returns a lower bound on the column generation objective
+	 * @return strongest available bound on the objective of the column generation procedure, i.e the strongest available bound on the optimal solution to the master problem.
 	 */
-	public double getLowerBound(){
-		return lowerBound;
+	public double getBound(){
+		return boundOnMasterObjective;
 	}
 
 	/**
@@ -367,8 +370,8 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	}
 
 	/**
-	 * Returns how many initialColumns have been generated in total
-	 * @return Returns how many initialColumns have been generated in total
+	 * Returns how many columns have been generated in total
+	 * @return Returns how many columns have been generated in total
 	 */
 	public int getNrGeneratedColumns(){
 		return nrGeneratedColumns;
@@ -391,11 +394,16 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	}
 	
 	/**
-	 * Returns true if the lower bound exceeds the upper bound
+	 * Returns true if the bound on the master problem is worse than the cutoff value. More precisely, if the master problem is a minimization problem, this method
+	 * returns true if {@code ceil(boundOnMasterObjective) >= cutoffValue}.  Alternatively, if the master problem is a maximization problem, this method returns true if
+	 * {@code floor(boundOnMasterObjective) <= cutoffValue}.
 	 * @return true if the lower bound exceeds the upper bound
 	 */
 	protected boolean thisNodeCanBePruned(){
-		return Math.ceil(lowerBound) > upperBound;
+		if(optimizationSenseMaster == OptimizationSense.MINIMIZE)
+			return Math.ceil(boundOnMasterObjective) >= cutoffValue;
+		else
+			return Math.floor(boundOnMasterObjective) <= cutoffValue;
 	}
 	
 	/**
@@ -461,7 +469,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			StartEvent startEvent =null;
 			for(CGListener listener : listeners){
 				if(startEvent ==null)
-					startEvent =new StartEvent(ColGen.this, dataModel.getName(), upperBound);
+					startEvent =new StartEvent(ColGen.this, dataModel.getName(), cutoffValue);
 				listener.startCG(startEvent);
 			}
 		}
@@ -497,7 +505,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			FinishMasterEvent finishMasterEvent =null;
 			for(CGListener listener : listeners){
 				if(finishMasterEvent ==null)
-					finishMasterEvent =new FinishMasterEvent(ColGen.this, nrOfColGenIterations, objective, upperBound, lowerBound);
+					finishMasterEvent =new FinishMasterEvent(ColGen.this, nrOfColGenIterations, objectiveMasterProblem, cutoffValue, boundOnMasterObjective);
 				listener.finishMaster(finishMasterEvent);
 			}
 		}
@@ -516,13 +524,13 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 
 		/**
 		 * Fires a FinishPricingEvent to indicate that the pricing problem has been solved
-		 * @param newColumns List of initialColumns which have been generated by the pricing problems
+		 * @param newColumns List of columns which have been generated by the pricing problems
 		 */
 		public void fireFinishPricingEvent(List<U> newColumns){
 			FinishPricingEvent finishPricingEvent =null;
 			for(CGListener listener : listeners){
 				if(finishPricingEvent ==null)
-					finishPricingEvent =new FinishPricingEvent(ColGen.this, nrOfColGenIterations, Collections.unmodifiableList(newColumns), objective, upperBound, lowerBound);
+					finishPricingEvent =new FinishPricingEvent(ColGen.this, nrOfColGenIterations, Collections.unmodifiableList(newColumns), objectiveMasterProblem, cutoffValue, boundOnMasterObjective);
 				listener.finishPricing(finishPricingEvent);
 			}
 		}

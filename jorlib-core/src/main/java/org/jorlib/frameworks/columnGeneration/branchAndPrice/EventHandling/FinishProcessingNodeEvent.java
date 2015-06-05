@@ -40,7 +40,7 @@ public class FinishProcessingNodeEvent extends EventObject{
 
     /** Node which has been solved **/
     public final BAPNode node;
-    /** Lower bound on the node after it is solved **/
+    /** Bound on the node after it is solved **/
     public final double nodeBound;
     /** Objective value of the node **/
     public final double nodeValue;
@@ -57,7 +57,7 @@ public class FinishProcessingNodeEvent extends EventObject{
      * Creates a new FinishProcessingNodeEvent
      * @param source Generator of this event
      * @param node node which has been solved
-     * @param nodeBound Lower bound on the node which has been solved
+     * @param nodeBound Bound on the node which has been solved
      * @param nodeValue Objective value of the node which has been solved. When solved to optimality, nodeBound and nodeValue should be equal
      * @param numberOfCGIterations Number of CG iterations it took to solve the node
      * @param masterSolveTime Total amount of time spent on solving the master problems

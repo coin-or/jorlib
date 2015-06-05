@@ -41,6 +41,7 @@ import java.util.Map;
 import org.jorlib.demo.frameworks.columnGeneration.cgExample1.model.CuttingStock;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
+import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
 /**
@@ -58,7 +59,7 @@ public final class Master extends AbstractMaster<CuttingStock, CuttingPattern, P
 	private IloRange[] satisfyDemandConstr; //Constraint
 	
 	public Master(CuttingStock modelData, PricingProblem pricingProblem) {
-		super(modelData, pricingProblem);
+		super(modelData, pricingProblem, OptimizationSense.MINIMIZE);
 	}
 
 	/**
@@ -71,7 +72,7 @@ public final class Master extends AbstractMaster<CuttingStock, CuttingPattern, P
 			cplex.setOut(null); //Disable cplex output
 			cplex.setParam(IloCplex.IntParam.Threads, config.MAXTHREADS); //Set number of threads that may be used by the cplex
 
-			//Define objective
+			//Define objectiveMasterProblem
 			obj= cplex.addMinimize();
 
 			//Define constraints
@@ -140,7 +141,7 @@ public final class Master extends AbstractMaster<CuttingStock, CuttingPattern, P
 	@Override
 	public void addColumn(CuttingPattern column) {
 		try {
-			//Register column with objective
+			//Register column with objectiveMasterProblem
 			IloColumn iloColumn= cplex.column(obj,1);
 		
 			//Register column with demand constraint

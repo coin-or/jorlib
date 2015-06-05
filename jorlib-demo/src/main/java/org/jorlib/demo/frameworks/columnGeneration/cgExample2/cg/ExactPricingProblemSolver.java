@@ -82,7 +82,7 @@ public final class ExactPricingProblemSolver extends AbstractPricingProblemSolve
 				IloIntVar var=cplex.boolVar("x_"+dataModel.getEdgeSource(edge)+"_"+dataModel.getEdgeTarget(edge));
 				vars.put(edge, var);
 			}
-			//Create the objective
+			//Create the objectiveMasterProblem
 			obj=cplex.addMaximize();
 			//Create the constraints:
 			//EXACTLY 1 edge must be selected from all edges incident to a particular vertex
@@ -148,7 +148,7 @@ public final class ExactPricingProblemSolver extends AbstractPricingProblemSolve
 					Matching column=new Matching("exactPricing", false, pricingProblem, matching, succ, cost);
 					newPatterns.add(column);
 				}else{
-//					Object[] o={pricingProblem.color.name(), objective, pricingProblem.dualCost*-1};
+//					Object[] o={pricingProblem.color.name(), objectiveMasterProblem, pricingProblem.dualCost*-1};
 //					logger.debug("No initialColumns for pricing problem {}. Objective: {} dual constant: {}",o);
 				}
 			}
@@ -160,7 +160,7 @@ public final class ExactPricingProblemSolver extends AbstractPricingProblemSolve
 	}
 
 	/**
-	 * Update the objective function of the pricing problem with the new pricing information (modified costs).
+	 * Update the objectiveMasterProblem function of the pricing problem with the new pricing information (modified costs).
 	 * The modified costs are stored in the pricing problem.
 	 */
 	@Override

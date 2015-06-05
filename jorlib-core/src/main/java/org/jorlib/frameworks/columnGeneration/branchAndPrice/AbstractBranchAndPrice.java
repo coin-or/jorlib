@@ -36,6 +36,7 @@ import org.jorlib.frameworks.columnGeneration.colgenMain.ColGen;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
+import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columnGeneration.model.ModelInterface;
 import org.jorlib.frameworks.columnGeneration.pricing.*;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
@@ -72,11 +73,13 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	protected List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers;
 	/** Pricing problem manager which solves pricing problems in parallel **/
 	protected final PricingProblemManager<T, U, V> pricingProblemManager;
+	/** Defines whether the master problem is a minimization or a maximization problem **/
+	protected final OptimizationSense optimizationSenseMaster;
 
-	/** Stores the objective of the best (integer) solution, or an upper bound thereof **/
-	protected int bestObjective=Integer.MAX_VALUE;
-	/** List containing the initialColumns corresponding to the best integer solution (empty list when no feasible solution has been found) **/
-	protected List<U> bestSolution=null;
+	/** Stores the objective of the best (integer) solution **/
+	protected int objectiveIncumbentSolution;
+	/** List containing the columns corresponding to the best integer solution (empty list when no feasible solution has been found) **/
+	protected List<U> incumbentSolution =null;
 	/** Indicator whether the best solution is optimal **/
 	protected boolean isOptimal=false;
 
@@ -87,8 +90,10 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	/** Counter used to provide a unique ID for each node (counter gets incremented each time a new node is created) **/
 	protected int nodeCounter=0;
 
+	/** Upper bound on the optimal solution **/
+	protected double upperBoundOnObjective=Double.MAX_VALUE;
 	/** Lower bound on the optimal solution **/
-	protected double lowerBoundOnObjective=0;
+	protected double lowerBoundOnObjective=-Double.MAX_VALUE;
 	/** Number of nodes fully explored **/
 	protected int nodesProcessed=0;
 	/** Total time spent solving master problems **/
@@ -97,7 +102,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	protected long timeSolvingPricing=0;
 	/** Total runtime **/
 	protected long runtime=0;
-	/** Counts how many initialColumns have been generated over the entire Branch-and-Price tree **/
+	/** Counts how many columns have been generated over the entire Branch-and-Price tree **/
 	protected int totalGeneratedColumns=0;
 	/** Counts how many column generation iterations have been made. **/
 	protected int totalNrIterations=0;
@@ -109,32 +114,31 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	 * @param pricingProblems pricing problems
 	 * @param solvers Pricing problem solvers
 	 * @param branchCreators Branch creators
+	 * @param lowerBoundOnObjective Lower bound on objective value
 	 * @param upperBoundOnObjective upper bound on the objective value
-	 * @param initialSolution initial solution
 	 */
 	public AbstractBranchAndPrice(T dataModel,
 								  AbstractMaster<T, U, V, ? extends MasterData> master,
 								  List<V> pricingProblems,
 								  List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
 								  List<? extends AbstractBranchCreator<T, U, V>> branchCreators,
-								  int upperBoundOnObjective,
-								  List<U> initialSolution){
+								  double lowerBoundOnObjective,
+								  double upperBoundOnObjective){
 		this.dataModel = dataModel;
 		this.master=master;
+		optimizationSenseMaster=master.getOptimizationSense();
 		this.branchCreators=branchCreators;
 		this.pricingProblems=pricingProblems;
 		this.solvers=solvers;
-		this.bestObjective=upperBoundOnObjective;
-		this.bestSolution=new ArrayList<>(initialSolution);
 		queue =new PriorityQueue<>(new DFSbapNodeComparator());
+		this.lowerBoundOnObjective=lowerBoundOnObjective;
+		this.upperBoundOnObjective=upperBoundOnObjective;
 		
 		//Create the root node
 		List<Integer> rootPath=new ArrayList<>();
 		int nodeID=nodeCounter++;
 		rootPath.add(nodeID);
-		List<U> rootNodeColumns=new ArrayList<>();
-		rootNodeColumns.addAll(initialSolution);
-		BAPNode<T,U> rootNode=new BAPNode<>(nodeID, rootPath, rootNodeColumns, new ArrayList<>(), 0, Collections.emptyList());
+		BAPNode<T,U> rootNode=new BAPNode<>(nodeID, rootPath, new ArrayList<>(), new ArrayList<>(), 0, Collections.emptyList());
 		queue.add(rootNode);
 		graphManipulator=new GraphManipulator(rootNode);
 		
@@ -174,45 +178,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	 * @param pricingProblem Pricing problem
 	 * @param solvers Pricing problem solvers
 	 * @param branchCreators Branch creators
-	 * @param upperBoundOnObjective Upper bound on objective value
-	 * @param initialSolution Initial solution
-	 */
-	public AbstractBranchAndPrice(T dataModel,
-								  AbstractMaster<T, U, V, ? extends MasterData> master,
-								  V pricingProblem,
-								  List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
-								  List<? extends AbstractBranchCreator<T, U, V>> branchCreators,
-								  int upperBoundOnObjective,
-								  List<U> initialSolution){
-		this(dataModel, master, Collections.singletonList(pricingProblem), solvers, branchCreators, upperBoundOnObjective, initialSolution);
-	}
-
-	/**
-	 * Creates a new Branch-and-Price instance, thereby initializing the data structures, and the root node.
-	 * @param dataModel Data model
-	 * @param master Master problem
-	 * @param pricingProblems Pricing problems
-	 * @param solvers Pricing problem solvers
-	 * @param branchCreators Branch creators
-	 * @param upperBoundOnObjective Upper bound on objective value
-	 */
-	public AbstractBranchAndPrice(T dataModel,
-								  AbstractMaster<T, U, V, ? extends MasterData> master,
-								  List<V> pricingProblems,
-								  List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
-								  List<? extends AbstractBranchCreator<T, U, V>> branchCreators,
-								  int upperBoundOnObjective){
-		this(dataModel, master, pricingProblems, solvers, branchCreators, upperBoundOnObjective, Collections.emptyList());
-		queue.peek().initialColumns.addAll(this.generateArtificialSolution());
-	}
-
-	/**
-	 * Creates a new Branch-and-Price instance, thereby initializing the data structures, and the root node.
-	 * @param dataModel Data model
-	 * @param master Master problem
-	 * @param pricingProblem Pricing problem
-	 * @param solvers Pricing problem solvers
-	 * @param branchCreators Branch creators
+	 * @param lowerBoundOnObjective Lower bound on objective value
 	 * @param upperBoundOnObjective Upper bound on objective value
 	 */
 	public AbstractBranchAndPrice(T dataModel,
@@ -220,9 +186,27 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 								  V pricingProblem,
 								  List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
 								  List<? extends AbstractBranchCreator<T, U, V>> branchCreators,
-								  int upperBoundOnObjective){
-		this(dataModel, master, Collections.singletonList(pricingProblem), solvers, branchCreators, upperBoundOnObjective, Collections.emptyList());
-		queue.peek().initialColumns.addAll(this.generateArtificialSolution());
+								  double lowerBoundOnObjective,
+								  double upperBoundOnObjective){
+		this(dataModel, master, Collections.singletonList(pricingProblem), solvers, branchCreators, lowerBoundOnObjective, upperBoundOnObjective);
+	}
+
+	/**
+	 * Provide an initial solution. This solution will be used as an initial set of columns for the master problem of the root node
+	 * @param objectiveInitialSolution objective value of the initial solution
+	 * @param initialSolution columns constituting the initial solution
+	 */
+	public void warmStart(int objectiveInitialSolution, List<U> initialSolution){
+		BAPNode rootNode=queue.peek();
+		if(rootNode.nodeID != 0)
+			throw new RuntimeException("This method can only be invoked at the start of the Branch-and-Price procedure, before runBranchAndPrice is invoked");
+		rootNode.addInitialColumns(initialSolution);
+		this.objectiveIncumbentSolution=objectiveInitialSolution;
+		this.incumbentSolution=new ArrayList<>(initialSolution);
+		if(optimizationSenseMaster==OptimizationSense.MINIMIZE)
+			this.upperBoundOnObjective=objectiveInitialSolution;
+		else
+			this.lowerBoundOnObjective=objectiveInitialSolution;
 	}
 
 	/**
@@ -233,13 +217,19 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	public void runBranchAndPrice(long timeLimit){
 		notifier.fireStartBAPEvent(); //Signal start Branch-and-Price process
 		this.runtime=System.currentTimeMillis();
-		
-		while(!queue.isEmpty()){ //Start processing nodes until the queue is empty
+
+		//Check whether an initial solution is provided, if not, add an artificial solution
+		if(queue.peek().getInitialColumns().isEmpty())
+			queue.peek().addInitialColumns(this.generateArtificialSolution());
+
+		//Start processing nodes until the queue is empty
+		while(!queue.isEmpty()){
 			BAPNode<T, U> bapNode = queue.poll();
 			notifier.fireNextNodeEvent(bapNode);
 
-			//Prune this node if the bound exceeds the best found solution (minimization problem). Since all solutions are integral, we may round upwards
-			if(Math.ceil(bapNode.bound) >= bestObjective){
+			//Prune this node if its bound is worse than the best found solution. Since all solutions are integral, we may round up/down, depending on the optimization sense
+			if(optimizationSenseMaster == OptimizationSense.MINIMIZE && Math.ceil(bapNode.bound) >= upperBoundOnObjective ||
+					optimizationSenseMaster == OptimizationSense.MAXIMIZE && Math.floor(bapNode.bound) <= lowerBoundOnObjective	){
 				notifier.firePruneNodeEvent(bapNode, bapNode.bound);
 				continue;
 			}
@@ -260,14 +250,14 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 				break;
 			}
 
-			//Check whether the node's bound exceeds the best integer solution, if so we can prune this node (no branching required)
-			if(bapNode.bound >= bestObjective){ //Do not bother to create a branch even though the node is fractional. Bound is worse than best solution
+			//Prune this node if its bound is worse than the best found solution. Since all solutions are integral, we may round up/down, depending on the optimization sense
+			if(optimizationSenseMaster == OptimizationSense.MINIMIZE && Math.ceil(bapNode.bound) >= upperBoundOnObjective ||
+					optimizationSenseMaster == OptimizationSense.MAXIMIZE && Math.floor(bapNode.bound) <= lowerBoundOnObjective	){
 				notifier.firePruneNodeEvent(bapNode, bapNode.bound);
-				nodesProcessed++;
 				continue;
 			}
 			
-			//Check whether the node is infeasible, i.e. whether there are artifical initialColumns in the solution. If so, ignore it and continue with the next node.
+			//Check whether the node is infeasible, i.e. whether there are artifical columns in the solution. If so, ignore it and continue with the next node.
 			if(this.isInfeasibleSolution(bapNode.solution)){
 				notifier.fireNodeIsInfeasibleEvent(bapNode);
 				nodesProcessed++;
@@ -278,9 +268,14 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			if(this.isIntegralSolution(bapNode.solution)){
 				int integerObjective=MathProgrammingUtil.doubleToInt(bapNode.objective);
 				notifier.fireNodeIsIntegerEvent(bapNode, bapNode.bound, integerObjective);
-				if(integerObjective < this.bestObjective){
-					this.bestObjective= integerObjective;
-					this.bestSolution=bapNode.solution;
+				if(optimizationSenseMaster == OptimizationSense.MINIMIZE && integerObjective < this.upperBoundOnObjective){
+					this.objectiveIncumbentSolution = integerObjective;
+					this.upperBoundOnObjective = integerObjective;
+					this.incumbentSolution =bapNode.solution;
+				}else if(optimizationSenseMaster == OptimizationSense.MAXIMIZE && integerObjective > this.lowerBoundOnObjective){
+					this.objectiveIncumbentSolution = integerObjective;
+					this.lowerBoundOnObjective = integerObjective;
+					this.incumbentSolution =bapNode.solution;
 				}
 			}else{ //We need to branch
 				notifier.fireNodeIsFractionalEvent(bapNode, bapNode.bound, bapNode.objective);
@@ -303,14 +298,19 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		
 		//Update statistics
 		if(queue.isEmpty()){ //Problem solved to optimality
-			if(this.hasSolution())
-				lowerBoundOnObjective=this.bestObjective;
 			this.isOptimal=true;
 		}else{ //Problem NOT solved to optimality
 			this.isOptimal=false;
-			lowerBoundOnObjective= queue.peek().bound;
-			for(BAPNode bapNode : queue){
-				lowerBoundOnObjective=Math.min(lowerBoundOnObjective, bapNode.bound);
+			if(optimizationSenseMaster == OptimizationSense.MINIMIZE) {
+				lowerBoundOnObjective = queue.peek().bound;
+				for (BAPNode bapNode : queue) {
+					lowerBoundOnObjective = Math.min(lowerBoundOnObjective, bapNode.bound);
+				}
+			}else{
+				upperBoundOnObjective = queue.peek().bound;
+				for (BAPNode bapNode : queue) {
+					upperBoundOnObjective = Math.max(upperBoundOnObjective, bapNode.bound);
+				}
 			}
 		}
 		notifier.fireStopBAPEvent(); //Signal that BAP has been completed
@@ -318,15 +318,15 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	}
 
 	/**
-	 *
-	 * @param bapNode
-	 * @param timeLimit
+	 * Solve a given Branch-and-Price node
+	 * @param bapNode node in Branch-and-Price tree
+	 * @param timeLimit future point in time by which the method must be finished
 	 * @throws TimeLimitExceededException
 	 */
 	protected void solveBAPNode(BAPNode<T,U> bapNode, long timeLimit) throws TimeLimitExceededException {
 		ColGen<T,U,V> cg=null;
 		try {
-			cg = new ColGen<>(dataModel, master, pricingProblems, solvers, pricingProblemManager, bapNode.initialColumns, bestObjective); //Solve the node
+			cg = new ColGen<>(dataModel, master, pricingProblems, solvers, pricingProblemManager, bapNode.initialColumns, objectiveIncumbentSolution); //Solve the node
 			for(CGListener listener : columnGenerationEventListeners) cg.addCGEventListener(listener);
 			cg.solve(timeLimit);
 		}finally{
@@ -336,10 +336,10 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 				timeSolvingPricing += cg.getPricingSolveTime();
 				totalNrIterations += cg.getNumberOfIterations();
 				totalGeneratedColumns += cg.getNrGeneratedColumns();
-				notifier.fireFinishCGEvent(bapNode, cg.getLowerBound(), cg.getObjective(), cg.getNumberOfIterations(), cg.getMasterSolveTime(), cg.getPricingSolveTime(), cg.getNrGeneratedColumns());
+				notifier.fireFinishCGEvent(bapNode, cg.getBound(), cg.getObjective(), cg.getNumberOfIterations(), cg.getMasterSolveTime(), cg.getPricingSolveTime(), cg.getNrGeneratedColumns());
 			}
 		}
-		bapNode.storeSolution(cg.getObjective(), cg.getLowerBound(), cg.getSolution(), cg.getCuts());
+		bapNode.storeSolution(cg.getObjective(), cg.getBound(), cg.getSolution(), cg.getCuts());
 	}
 
 	/**
@@ -355,7 +355,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	 * @return the objective of the best integer solution found during the Branch-and-Price search
 	 */
 	public int getObjective(){
-		return this.bestObjective;
+		return this.objectiveIncumbentSolution;
 	}
 	
 	/**
@@ -363,7 +363,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	 * @return true if a feasible solution has been found
 	 */
 	public boolean hasSolution(){
-		return !bestSolution.isEmpty();
+		return !incumbentSolution.isEmpty();
 	}
 	
 	/**
@@ -375,11 +375,12 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	}
 	
 	/**
-	 * Returns lower bound on the optimal solution
-	 * @return Returns the best bound on the optimal solution
+	 * Returns strongest available bound on the objective function. If the problem is a minimization problem, the strongest available lower bound is returned,
+	 * if the problem is a maximization problem, the strongest available upper bound is returned
+	 * @return Returns the best bound on the optimal solution (upper bound if the master is a maximization problem, a lower bound if the master is a minimization problem)
 	 */
 	public double getBound(){
-		return this.lowerBoundOnObjective;
+		return (optimizationSenseMaster == OptimizationSense.MINIMIZE ? this.lowerBoundOnObjective : this.upperBoundOnObjective);
 	}
 	
 	/**
@@ -413,8 +414,8 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		return timeSolvingPricing;
 	}
 	/**
-	 * Counts how many initialColumns have been generated over the entire Branch-and-Price tree
-	 * @return returns total number of initialColumns generated (summed over all processed nodes)
+	 * Counts how many columns have been generated over the entire Branch-and-Price tree
+	 * @return returns total number of columns generated (summed over all processed nodes)
 	 */
 	public int getTotalGeneratedColumns(){
 		return totalGeneratedColumns;
@@ -428,17 +429,17 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	}
 	/**
 	 * Returns the best solution found
-	 * @return Returns the initialColumns corresponding with the best solution.
+	 * @return Returns the columns corresponding with the best solution.
 	 */
 	public List<U> getSolution(){
-		return bestSolution;
+		return incumbentSolution;
 	}
 	
 	/**
 	 * Create an artificial solution which satisfies the node's master problem and hence constitutes a feasible initial solution.
-	 * The initialColumns are not necessary feasible or meet the definition of a column; it is undesirable that these initialColumns end up in a final solution.
+	 * The columns are not necessary feasible or meet the definition of a column; it is undesirable that these columns end up in a final solution.
 	 * To prevent them from ending up in a final solution, a high cost is associated with them.
-	 * @return List of initialColumns constituting the artificial solution
+	 * @return List of columns constituting the artificial solution
 	 */
 	protected abstract List<U> generateArtificialSolution();
 
@@ -571,7 +572,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			StartEvent startEvent =null;
 			for(BAPListener listener : listeners){
 				if(startEvent ==null)
-					startEvent =new StartEvent(AbstractBranchAndPrice.this, dataModel.getName(), bestObjective);
+					startEvent =new StartEvent(AbstractBranchAndPrice.this, dataModel.getName(), objectiveIncumbentSolution);
 				listener.startBAP(startEvent);
 			}
 		}
@@ -640,7 +641,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			PruneNodeEvent pruneNodeEvent=null;
 			for(BAPListener listener : listeners){
 				if(pruneNodeEvent==null)
-					pruneNodeEvent=new PruneNodeEvent(AbstractBranchAndPrice.this, node, nodeBound, bestObjective);
+					pruneNodeEvent=new PruneNodeEvent(AbstractBranchAndPrice.this, node, nodeBound, objectiveIncumbentSolution);
 				listener.pruneNode(pruneNodeEvent);
 			}
 		}
@@ -653,7 +654,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			ProcessingNextNodeEvent processingNextNodeEvent=null;
 			for(BAPListener listener : listeners){
 				if(processingNextNodeEvent==null)
-					processingNextNodeEvent=new ProcessingNextNodeEvent(AbstractBranchAndPrice.this, node, queue.size(), bestObjective);
+					processingNextNodeEvent=new ProcessingNextNodeEvent(AbstractBranchAndPrice.this, node, queue.size(), objectiveIncumbentSolution);
 				listener.processNextNode(processingNextNodeEvent);
 			}
 		}
@@ -666,7 +667,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		 * @param numberOfCGIterations Number of Column Generation iterations it took to solve the node
 		 * @param masterSolveTime Total time spent on solving master problems for this node
 		 * @param pricingSolveTime Total time spent on solving pricing problems for this node
-		 * @param nrGeneratedColumns Total number of initialColumns generated for this node
+		 * @param nrGeneratedColumns Total number of columns generated for this node
 		 */
 		public void fireFinishCGEvent(BAPNode node, double nodeBound, double nodeValue, int numberOfCGIterations, long masterSolveTime, long pricingSolveTime, int nrGeneratedColumns){
 			FinishProcessingNodeEvent finishProcessingNodeEvent =null;

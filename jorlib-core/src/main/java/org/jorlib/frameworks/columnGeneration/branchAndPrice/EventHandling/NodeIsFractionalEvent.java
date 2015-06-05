@@ -39,7 +39,7 @@ import java.util.EventObject;
 public class NodeIsFractionalEvent extends EventObject{
     /** Node which is fractional **/
     public final BAPNode node;
-    /** Lower bound of this node **/
+    /** Bound of this node **/
     public final double nodeBound;
     /** Objective value of this node **/
     public final double nodeValue;
@@ -48,7 +48,7 @@ public class NodeIsFractionalEvent extends EventObject{
      * Creates a new NodeIsFractionalEvent
      * @param source Generator of the event
      * @param node Node which has a fractional solution
-     * @param nodeBound Lower bound on the solution
+     * @param nodeBound Bound on the solution
      * @param nodeValue Objective value of the node. nodeBound and nodeValue are equal when the node is solved to optimality
      */
     public NodeIsFractionalEvent(Object source, BAPNode node, double nodeBound, double nodeValue){

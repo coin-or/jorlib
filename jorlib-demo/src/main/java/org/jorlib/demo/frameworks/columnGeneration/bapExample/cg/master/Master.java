@@ -46,6 +46,7 @@ import org.jorlib.demo.frameworks.columnGeneration.bapExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
 import org.jorlib.frameworks.columnGeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
+import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 
@@ -71,7 +72,7 @@ public final class Master extends AbstractMaster<TSP, Matching, PricingProblemBy
 	 * @param cutHandler cut handler
 	 */
 	public Master(TSP modelData, List<PricingProblemByColor> pricingProblems, CutHandler<TSP, TSPMasterData> cutHandler) {
-		super(modelData, pricingProblems, cutHandler);
+		super(modelData, pricingProblems, cutHandler, OptimizationSense.MINIMIZE);
 	}
 
 	/**
@@ -87,7 +88,7 @@ public final class Master extends AbstractMaster<TSP, Matching, PricingProblemBy
 			cplex.setOut(null); //Disable cplex output
 			cplex.setParam(IloCplex.IntParam.Threads,config.MAXTHREADS); //Set number of threads that may be used by the master
 
-			//Define objective
+			//Define objectiveMasterProblem
 			obj=cplex.addMinimize();
 
 			//Define constraints
@@ -149,7 +150,7 @@ public final class Master extends AbstractMaster<TSP, Matching, PricingProblemBy
 	public void addColumn(Matching column) {
 		MatchingColor matchingColor= column.associatedPricingProblem.color;
 		try{
-			//Register column with objective
+			//Register column with objectiveMasterProblem
 			IloColumn iloColumn=masterData.cplex.column(obj,column.cost);
 			//Register column with exactlyOneRedMatching/exactlyOneBlueMatching constr
 			if(matchingColor==MatchingColor.RED){

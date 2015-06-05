@@ -40,24 +40,24 @@ public class FinishMasterEvent extends EventObject{
     public final int columnGenerationIteration;
     /** Objective value of the master problem **/
     public final double objective;
-    /** Integer Upper bound on the master problem (i.e. a feasible integer solution) **/
-    public final int upperBound;
-    /** Lower bound on the objective value **/
-    public final double lowerBound;
+    /** Cutoff value: Column Generation is terminated when the bound on the Master Objective is worse than the cutoff value **/
+    public final int cutoffValue;
+    /** Best available bound on the master objective **/
+    public final double boundOnMasterObjective;
 
     /**
      * Creates a new FinishMasterEvent
      * @param source Generator of the event
      * @param columnGenerationIteration column generation iteration during which this event was fired
-     * @param objective objective of master problem
-     * @param upperBound best available integer solution (upper bound)
-     * @param lowerBound best available bound on master problem (lower bound)
+     * @param objective objectiveMasterProblem of master problem
+     * @param cutoffValue best available integer solution
+     * @param boundOnMasterObjective best available bound on master problem
      */
-    public FinishMasterEvent(Object source, int columnGenerationIteration, double objective, int upperBound, double lowerBound){
+    public FinishMasterEvent(Object source, int columnGenerationIteration, double objective, int cutoffValue, double boundOnMasterObjective){
         super(source);
         this.columnGenerationIteration=columnGenerationIteration;
         this.objective=objective;
-        this.upperBound=upperBound;
-        this.lowerBound=lowerBound;
+        this.cutoffValue=cutoffValue;
+        this.boundOnMasterObjective=boundOnMasterObjective;
     }
 }

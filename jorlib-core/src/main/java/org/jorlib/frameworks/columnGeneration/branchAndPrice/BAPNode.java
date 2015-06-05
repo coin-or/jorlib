@@ -74,7 +74,7 @@ public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 	 * @param rootPath Sequence of the IDs of the nodes encountered while walking from the root of the BAP tree to this node. rootPath[0]=0, rootPath[last(rootPath)]=this.nodeID
 	 * @param initialColumns Columns used to initialize the master problem
 	 * @param initialInequalities Valid initialInequalities used to initialize the master problem of this node
-	 * @param bound Bound on the optimum solution of this node. If the bound of this node exceeds the best incumbent int solution, this node will be pruned. The bound may be inherited from the parent.
+	 * @param bound Bound on the optimum solution of this node. If the bound of this node exceeds the best incumbent integer solution, this node will be pruned. The bound may be inherited from the parent.
 	 * @param branchingDecisions List of branching decisions that lead to this node.
 	 */
 	public BAPNode(int nodeID, List<Integer> rootPath, List<U> initialColumns, List<AbstractInequality> initialInequalities, double bound, List<BranchingDecision> branchingDecisions){
@@ -131,27 +131,27 @@ public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 	}
 
 	/**
-	 *
-	 * @param objective
+	 * After the node has been solved, this method is used to record the objective of the solution
+	 * @param objective solution objective
 	 */
 	public void setObjective(double objective){
 		this.objective=objective;
 	}
 
 	/**
-	 *
-	 * @param bound
+	 * After the node has been solved, this method is used to record the bound on the objective value of this node.
+	 * @param bound bound on the objective value of this node
 	 */
 	public void setBound(double bound){
 		this.bound=bound;
 	}
 
 	/**
-	 *
-	 * @param objective
-	 * @param bound
-	 * @param solution
-	 * @param inequalities
+	 * After the node has been solved, this method is used to store the solution
+	 * @param objective objective value of the node
+	 * @param bound bound on the objective value
+	 * @param solution columns constituting the solution
+	 * @param inequalities inequalities generated while solving this node
 	 */
 	public void storeSolution(double objective, double bound, List<U> solution, List<AbstractInequality> inequalities){
 		this.objective=objective;
@@ -161,49 +161,59 @@ public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 	}
 
 	/**
-	 *
-	 * @return
+	 * Returns a set of columns which are used to initialize the master problem when this node is being solved.These columns are usually
+	 * inherited from the parent of this node.
+	 * @return a set of columns which are used to initialize the master problem when this node is being solved.
 	 */
 	public List<U> getInitialColumns(){
 		return Collections.unmodifiableList(initialColumns);
 	}
 
 	/**
-	 *
-	 * @return
+	 * Returns a set of inequalities which are used to initialize the master problem when this node is being solved. These inequalities are usually
+	 * inherited from the parent of this node.
+	 * @return a set of inequalities which are used to initialize the master problem when this node is being solved.
 	 */
 	public List<AbstractInequality> getInitialInequalities(){
 		return Collections.unmodifiableList(initialInequalities);
 	}
 
 	/**
-	 *
-	 * @return
+	 * Gets the objective value of this node. This method only makes sense after the node has been solved.
+	 * @return the objective value of this node.
 	 */
 	public double getObjective(){
 		return objective;
 	}
 
 	/**
-	 *
-	 * @return
+	 * Gets the bound on the objective value of this node.
+	 * @return the bound on the objective value of this node.
 	 */
 	public double getBound(){
 		return bound;
 	}
 
 	/**
-	 * Returns the list containing the solution of this node.
-	 * @return the list containing the solution of this node.
+	 * Returns a list of columns constituting the solution of this node.
+	 * @return a list of columns constituting the solution of this node.
 	 */
 	public List<U> getSolution(){
 		return Collections.unmodifiableList(solution);
 	}
 
+	/**
+	 * Returns a list of inequalities which are in the Master problem after this node has been solved.
+	 * @return a list of inequalities which are in the Master problem after this node has been solved.
+	 */
 	public List<AbstractInequality> getInequalities(){
 		return Collections.unmodifiableList(inequalities);
 	}
 
+	/**
+	 * Textual description of the node.
+	 * @return Textual description of the node.
+	 */
 	public String toString(){
 		return "BAP node: "+nodeID;
 	}

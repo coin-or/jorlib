@@ -51,9 +51,9 @@ public class SimpleBAPLogger implements BAPListener{
     /** Parent node ID, -1 if root node **/
     protected int parentNodeID;
     /** Best integer solution **/
-    protected int globalUB;
-    /** Lower bound on the BAP node **/
-    protected double lowerBoundNode;
+    protected int objectiveIncumbentSolution;
+    /** Bound on the BAP node **/
+    protected double nodeBound;
     /** What to do with the node, i.e prune (based on obj), Infeasible, Integer, Fractional, or Inconclusive if the nodeStatus could not be determined (e.g. due to time limit) **/
     protected NodeResultStatus nodeStatus;
     /** Number of nodes currently in the queue **/
@@ -111,8 +111,8 @@ public class SimpleBAPLogger implements BAPListener{
     protected void reset(){
         bapNodeID=-1;
         parentNodeID=-1;
-        globalUB=-1;
-        lowerBoundNode=-1;
+        objectiveIncumbentSolution =-1;
+        nodeBound =-1;
         cgIterations=0;
         timeSolvingMaster=0;
         nodeValue=-1;
@@ -125,12 +125,12 @@ public class SimpleBAPLogger implements BAPListener{
      * Construct a single line in the log file, and write it to the output file
      */
     protected void constructAndWriteLine(){
-        this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + globalUB + "\t" + lowerBoundNode + "\t" + formatter.format(nodeValue) + "\t" + cgIterations + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nrGeneratedColumns + "\t" + nodeStatus + "\t" + nodesInQueue);
+        this.writeLine(String.valueOf(bapNodeID) + "\t" + parentNodeID + "\t" + objectiveIncumbentSolution + "\t" + nodeBound + "\t" + formatter.format(nodeValue) + "\t" + cgIterations + "\t" + timeSolvingMaster + "\t" + timeSolvingPricing + "\t" + nrGeneratedColumns + "\t" + nodeStatus + "\t" + nodesInQueue);
     }
 
     @Override
     public void startBAP(StartEvent startEvent) {
-        this.writeLine("BAPNodeID \t parentNodeID \t globalUB \t nodeLB \t nodeValue \t cgIterations \t t_master \t t_pricing \t nrGenColumns \t solutionStatus \t nodesInQueue");
+        this.writeLine("BAPNodeID \t parentNodeID \t objectiveIncumbentSolution \t nodeBound \t nodeValue \t cgIterations \t t_master \t t_pricing \t nrGenColumns \t solutionStatus \t nodesInQueue");
     }
 
     @Override
@@ -145,7 +145,7 @@ public class SimpleBAPLogger implements BAPListener{
     @Override
     public void pruneNode(PruneNodeEvent pruneNodeEvent) {
         this.nodeStatus =NodeResultStatus.PRUNED;
-        this.lowerBoundNode=pruneNodeEvent.nodeBound;
+        this.nodeBound =pruneNodeEvent.nodeBound;
         this.constructAndWriteLine();
     }
 
@@ -172,13 +172,13 @@ public class SimpleBAPLogger implements BAPListener{
         this.reset();
         this.bapNodeID=processingNextNodeEvent.node.nodeID;
         this.parentNodeID=processingNextNodeEvent.node.getParentID();
-        this.globalUB=processingNextNodeEvent.globalUB;
+        this.objectiveIncumbentSolution =processingNextNodeEvent.objectiveIncumbentSolution;
         this.nodesInQueue=processingNextNodeEvent.nodesInQueue;
     }
 
     @Override
     public void finishedColumnGenerationForNode(FinishProcessingNodeEvent finishProcessingNodeEvent) {
-        this.lowerBoundNode= finishProcessingNodeEvent.nodeBound;
+        this.nodeBound = finishProcessingNodeEvent.nodeBound;
         this.nodeValue= finishProcessingNodeEvent.nodeValue;
         this.cgIterations= finishProcessingNodeEvent.numberOfCGIterations;
         this.timeSolvingMaster= finishProcessingNodeEvent.masterSolveTime;

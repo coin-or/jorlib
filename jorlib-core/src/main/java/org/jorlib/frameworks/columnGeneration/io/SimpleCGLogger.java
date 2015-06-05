@@ -54,10 +54,10 @@ public class SimpleCGLogger implements CGListener{
     protected long timeSolvingMaster;
     /** Objective of master problem at the end of iteration it **/
     protected double objective;
-    /** Best integer solution at the end of iteration it **/
-    protected int upperBound;
-    /** Lower bound at the end of iteration it **/
-    protected double lowerBound;
+    /** Cutoff value **/
+    protected int cutoffValue;
+    /** Bound on the objective at the end of iteration it **/
+    protected double boundOnMasterObjective;
 
     //Pricing Problem
     /** Counts how much time is spent on solving the pricing problem at iteration it **/
@@ -107,8 +107,8 @@ public class SimpleCGLogger implements CGListener{
     protected void reset(){
         cgIteration++;
         objective=-1;
-        upperBound=-1;
-        lowerBound=-1;
+        cutoffValue =-1;
+        boundOnMasterObjective =-1;
         timeSolvingMaster=0;
         timeSolvingPricing=0;
         nrGeneratedColumns=0;
@@ -119,12 +119,12 @@ public class SimpleCGLogger implements CGListener{
      * Construct a single line in the log file, and write it to the output file
      */
     protected void constructAndWriteLine(){
-        this.writeLine(String.valueOf(cgIteration) + "\t" + formatter.format(lowerBound) + "\t" + formatter.format(objective) + "\t" + upperBound + "\t"  + timeSolvingMaster + "\t" + timeSolvingPricing + "\t"+ nrGeneratedColumns + "\t" + pricingSolver);
+        this.writeLine(String.valueOf(cgIteration) + "\t" + formatter.format(boundOnMasterObjective) + "\t" + formatter.format(objective) + "\t" + cutoffValue + "\t"  + timeSolvingMaster + "\t" + timeSolvingPricing + "\t"+ nrGeneratedColumns + "\t" + pricingSolver);
     }
 
     @Override
     public void startCG(StartEvent startEvent) {
-        this.writeLine("iteration \t lowerBound \t objective \t upperBound \t t_master \t t_pricing \t nrGenColumns \t pricingSolver");
+        this.writeLine("iteration \t boundOnMasterObjective \t objectiveMasterProblem \t cutoffValue \t t_master \t t_pricing \t nrGenColumns \t pricingSolver");
     }
 
     @Override
@@ -149,8 +149,8 @@ public class SimpleCGLogger implements CGListener{
     public void finishMaster(FinishMasterEvent finishMasterEvent) {
         timeSolvingMaster=System.currentTimeMillis()-timeSolvingMaster;
         objective=finishMasterEvent.objective;
-        lowerBound=finishMasterEvent.lowerBound;
-        upperBound=finishMasterEvent.upperBound;
+        boundOnMasterObjective =finishMasterEvent.boundOnMasterObjective;
+        cutoffValue =finishMasterEvent.cutoffValue;
         pricingProblemHasBeenSkipped=true;
     }
 
@@ -164,8 +164,8 @@ public class SimpleCGLogger implements CGListener{
     public void finishPricing(FinishPricingEvent finishPricingEvent) {
         timeSolvingPricing=System.currentTimeMillis()-timeSolvingPricing;
         objective=finishPricingEvent.objective;
-        lowerBound=finishPricingEvent.lowerBound;
-        upperBound=finishPricingEvent.upperBound;
+        boundOnMasterObjective =finishPricingEvent.boundOnMasterObjective;
+        cutoffValue =finishPricingEvent.cutoffValue;
         nrGeneratedColumns=finishPricingEvent.columns.size();
         if(nrGeneratedColumns > 0)
             pricingSolver=finishPricingEvent.columns.get(0).creator;

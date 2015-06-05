@@ -120,8 +120,8 @@ public class SimpleDebugger implements BAPListener, CGListener, CHListener{
     @Override
     public void startBAP(StartEvent startEvent) {
         instanceName=startEvent.instanceName;
-        bestIntegerSolution=startEvent.upperBound;
-        logger.debug("BAP solving {} - Initial upper bound: {}", instanceName, startEvent.upperBound);
+        bestIntegerSolution=startEvent.objectiveIncumbentSolution;
+        logger.debug("BAP solving {} - Initial solution: {}", instanceName, startEvent.objectiveIncumbentSolution);
     }
 
     @Override
@@ -164,8 +164,8 @@ public class SimpleDebugger implements BAPListener, CGListener, CHListener{
     public void startCG(StartEvent startEvent) {
         if(colGen != null){
             instanceName=startEvent.instanceName;
-            bestIntegerSolution=startEvent.upperBound;
-            logger.debug("CG solving {} - Initial upper bound: {}", instanceName, startEvent.upperBound);
+            bestIntegerSolution=startEvent.objectiveIncumbentSolution;
+            logger.debug("CG solving {} - Initial upper bound: {}", instanceName, startEvent.objectiveIncumbentSolution);
         }
     }
 
@@ -184,7 +184,7 @@ public class SimpleDebugger implements BAPListener, CGListener, CHListener{
 
     @Override
     public void finishMaster(FinishMasterEvent finishMasterEvent) {
-        logger.debug("Finished master -> CG objective: {}, CG bound: {}, CG best integer solution: {}", new Object[]{finishMasterEvent.objective, finishMasterEvent.lowerBound, finishMasterEvent.upperBound});
+        logger.debug("Finished master -> CG objectiveMasterProblem: {}, CG bound: {}, CG cutoff: {}", new Object[]{finishMasterEvent.objective, finishMasterEvent.boundOnMasterObjective, finishMasterEvent.cutoffValue});
     }
 
     @Override
@@ -194,7 +194,7 @@ public class SimpleDebugger implements BAPListener, CGListener, CHListener{
 
     @Override
     public void finishPricing(FinishPricingEvent finishPricingEvent) {
-        logger.debug("Finished pricing ({} initialColumns generated) -> CG objective: {}, CG bound: {}, CG best integer solution: {}", new Object[]{finishPricingEvent.columns.size(), finishPricingEvent.objective, finishPricingEvent.lowerBound, finishPricingEvent.upperBound});
+        logger.debug("Finished pricing ({} initialColumns generated) -> CG objectiveMasterProblem: {}, CG bound: {}, CG cutoff: {}", new Object[]{finishPricingEvent.columns.size(), finishPricingEvent.objective, finishPricingEvent.boundOnMasterObjective, finishPricingEvent.cutoffValue});
         for(AbstractColumn<?, ?> column : finishPricingEvent.columns){
             logger.debug(column.toString());
         }
