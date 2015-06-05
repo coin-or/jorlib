@@ -32,6 +32,7 @@ import org.jorlib.demo.frameworks.columnGeneration.bapExample.cg.master.Master;
 import org.jorlib.demo.frameworks.columnGeneration.bapExample.model.TSP;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 
 import java.util.Arrays;
@@ -71,13 +72,13 @@ public final class BranchAndPrice extends AbstractBranchAndPrice<TSP,Matching, P
     }
 
     /**
-     * Checks whether the given solution is integer
-     * @param solution List of initialColumns forming the solution
+     * Checks whether the given node is integer
+     * @param node Node in the Branch-and-Price tree
      * @return true if the solution is an integer solution
      */
     @Override
-    protected boolean isIntegralSolution(List<Matching> solution) {
-        return solution.size()==pricingProblems.size();
+    protected boolean isIntegerNode(BAPNode<TSP,Matching> node) {
+        return node.getSolution().size()==pricingProblems.size();
     }
 }
 

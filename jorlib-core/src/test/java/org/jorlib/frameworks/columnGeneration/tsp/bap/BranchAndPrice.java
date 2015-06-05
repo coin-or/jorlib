@@ -76,7 +76,7 @@ public final class BranchAndPrice extends AbstractBranchAndPrice<TSP,Matching, P
      * @return true if the solution is an integer solution
      */
     @Override
-    protected boolean isIntegralSolution(List<Matching> solution) {
+    protected boolean isIntegerNode(List<Matching> solution) {
         return solution.size()==pricingProblems.size();
     }
 }

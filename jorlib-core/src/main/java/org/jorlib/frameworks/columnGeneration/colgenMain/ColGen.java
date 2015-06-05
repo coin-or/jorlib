@@ -82,7 +82,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	/** Objective value of column generation procedure **/
 	protected double objectiveMasterProblem;
 	/** The Colgen procedure is terminated if the bound on the best attainable solution to the master problem is worse than the
-	 * cutoffValue. Assuming that the master is a minimization problem, the Colgen procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}. Note that the cutoffValue is an INTEGER value.
+	 * cutoffValue. If the master is a minimization problem, the Colgen procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}. If the master is a maximization problem, the Colgen procedure is terminated if {@code floor(boundOnMasterObjective) <= cutoffValue}.
 	 **/
 	protected int cutoffValue;
 	/** Bound on the best attainable objective value from the master problem. Assuming that the master is a minimization problem, the Colgen procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}.**/

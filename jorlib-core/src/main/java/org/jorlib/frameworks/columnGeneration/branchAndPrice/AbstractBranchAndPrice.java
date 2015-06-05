@@ -228,8 +228,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			notifier.fireNextNodeEvent(bapNode);
 
 			//Prune this node if its bound is worse than the best found solution. Since all solutions are integral, we may round up/down, depending on the optimization sense
-			if(optimizationSenseMaster == OptimizationSense.MINIMIZE && Math.ceil(bapNode.bound) >= upperBoundOnObjective ||
-					optimizationSenseMaster == OptimizationSense.MAXIMIZE && Math.floor(bapNode.bound) <= lowerBoundOnObjective	){
+			if(this.nodeCanBePruned(bapNode)){
 				notifier.firePruneNodeEvent(bapNode, bapNode.bound);
 				continue;
 			}
@@ -251,21 +250,20 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			}
 
 			//Prune this node if its bound is worse than the best found solution. Since all solutions are integral, we may round up/down, depending on the optimization sense
-			if(optimizationSenseMaster == OptimizationSense.MINIMIZE && Math.ceil(bapNode.bound) >= upperBoundOnObjective ||
-					optimizationSenseMaster == OptimizationSense.MAXIMIZE && Math.floor(bapNode.bound) <= lowerBoundOnObjective	){
+			if(this.nodeCanBePruned(bapNode)){
 				notifier.firePruneNodeEvent(bapNode, bapNode.bound);
 				continue;
 			}
 			
 			//Check whether the node is infeasible, i.e. whether there are artifical columns in the solution. If so, ignore it and continue with the next node.
-			if(this.isInfeasibleSolution(bapNode.solution)){
+			if(this.isInfeasibleNode(bapNode)){
 				notifier.fireNodeIsInfeasibleEvent(bapNode);
 				nodesProcessed++;
 				continue;
 			}
 
 			//If solution is integral, check whether it is better than the current best solution
-			if(this.isIntegralSolution(bapNode.solution)){
+			if(this.isIntegerNode(bapNode)){
 				int integerObjective=MathProgrammingUtil.doubleToInt(bapNode.objective);
 				notifier.fireNodeIsIntegerEvent(bapNode, bapNode.bound, integerObjective);
 				if(optimizationSenseMaster == OptimizationSense.MINIMIZE && integerObjective < this.upperBoundOnObjective){
@@ -444,19 +442,29 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	protected abstract List<U> generateArtificialSolution();
 
 	/**
-	 * Tests whether a given solution is an integer solution
-	 * @param solution List of columns constituting the solution
+	 * Tests whether the given node has an integer solution
+	 * @param node node
 	 * @return Returns true if solution is an integer solution, false otherwise
 	 */
-	protected abstract boolean isIntegralSolution(List<U> solution);
+	protected abstract boolean isIntegerNode(BAPNode<T,U> node);
 
 	/**
-	 * Tests whether a given solution represents a feasible solution, i.e. that it does not have artificial columns
-	 * @param solution List of columns constituting the solution
+	 * Test whether the given node can be pruned based on this bounds
+	 * @param node node
+	 * @return true if the node can be pruned
+	 */
+	protected boolean nodeCanBePruned(BAPNode<T,U> node){
+		return (optimizationSenseMaster == OptimizationSense.MINIMIZE && Math.ceil(node.bound) >= upperBoundOnObjective ||
+				optimizationSenseMaster == OptimizationSense.MAXIMIZE && Math.floor(node.bound) <= lowerBoundOnObjective);
+	}
+
+	/**
+	 * Tests whether a given node has a feasible solution, i.e. that it does not have artificial columns
+	 * @param node node
 	 * @return Returns true if solution is infeasible.
 	 */
-	protected boolean isInfeasibleSolution(List<U> solution){
-		for(U column : solution){
+	protected boolean isInfeasibleNode(BAPNode<T,U> node){
+		for(U column : node.solution){
 			if(column.isArtificialColumn)
 				return true;
 		}
