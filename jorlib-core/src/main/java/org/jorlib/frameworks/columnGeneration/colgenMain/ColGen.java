@@ -219,7 +219,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 					continue;
 				}else
 					break;
-			}else if(Math.ceil(lowerBound) > upperBound){ //lower bound exceeds best feasible integer solution (upper bound) -> terminate
+			}else if(thisNodeCanBePruned()){ //lower bound exceeds best feasible integer solution (upper bound) -> terminate
 				break;
 			}
 			

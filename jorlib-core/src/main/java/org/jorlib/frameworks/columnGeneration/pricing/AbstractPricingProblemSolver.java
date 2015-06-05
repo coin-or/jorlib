@@ -182,7 +182,7 @@ public abstract class AbstractPricingProblemSolver<T,U extends AbstractColumn<T,
 	 * @param bd branching decision
 	 */
 	@Override
-	public void branchingDecisionRewinded(BranchingDecision bd) {
+	public void branchingDecisionReversed(BranchingDecision bd) {
 	}
 	
 }

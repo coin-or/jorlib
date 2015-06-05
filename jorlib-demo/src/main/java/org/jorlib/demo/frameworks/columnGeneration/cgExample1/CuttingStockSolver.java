@@ -51,28 +51,28 @@ import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolv
  */
 public final class CuttingStockSolver {
 
-	private final CuttingStock modelData;
+	private final CuttingStock dataModel;
 	
-	public CuttingStockSolver(CuttingStock modelData){
-		this.modelData=modelData;
+	public CuttingStockSolver(CuttingStock dataModel){
+		this.dataModel = dataModel;
 
 		//Create the pricing problem
-		PricingProblem pricingProblem=new PricingProblem(modelData, "cuttingStockPricing");
+		PricingProblem pricingProblem=new PricingProblem(dataModel, "cuttingStockPricing");
 
 		//Create the master problem
-		Master master=new Master(modelData, pricingProblem);
+		Master master=new Master(dataModel, pricingProblem);
 
 		//Define which solvers to use
 		List<Class<? extends AbstractPricingProblemSolver<CuttingStock, CuttingPattern, PricingProblem>>> solvers= Collections.singletonList(ExactPricingProblemSolver.class);
 
 		//Define an upper bound (stronger is better). In this case we simply sum the demands, i.e. cut each final from its own raw (Rather poor initial solution).
-		int upperBound=IntStream.of(modelData.demandForFinals).sum();
+		int upperBound=IntStream.of(dataModel.demandForFinals).sum();
 
 		//Create a set of initial initialColumns.
 		List<CuttingPattern> initSolution=this.getInitialSolution(pricingProblem);
 
 		//Create a column generation instance
-		ColGen<CuttingStock, CuttingPattern, PricingProblem> cg=new ColGen<>(modelData, master, pricingProblem, solvers, initSolution, upperBound);
+		ColGen<CuttingStock, CuttingPattern, PricingProblem> cg=new ColGen<>(dataModel, master, pricingProblem, solvers, initSolution, upperBound);
 
 		//OPTIONAL: add a debugger
 		SimpleDebugger debugger=new SimpleDebugger(cg);
@@ -108,8 +108,8 @@ public final class CuttingStockSolver {
 	 */
 	private List<CuttingPattern> getInitialSolution(PricingProblem pricingProblem){
 		List<CuttingPattern> initSolution=new ArrayList<>();
-		for(int i=0; i<modelData.nrFinals; i++){
-			int[] pattern=new int[modelData.nrFinals];
+		for(int i=0; i< dataModel.nrFinals; i++){
+			int[] pattern=new int[dataModel.nrFinals];
 			pattern[i]=1;
 			CuttingPattern column=new CuttingPattern("initSolution", false, pattern, pricingProblem);
 			initSolution.add(column);

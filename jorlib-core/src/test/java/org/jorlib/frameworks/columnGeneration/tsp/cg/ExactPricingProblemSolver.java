@@ -211,7 +211,7 @@ public final class ExactPricingProblemSolver extends AbstractPricingProblemSolve
 	 * @param bd BranchingDecision
 	 */
 	@Override
-	public void branchingDecisionRewinded(BranchingDecision bd) {
+	public void branchingDecisionReversed(BranchingDecision bd) {
 		try {
 			if(bd instanceof FixEdge){
 				FixEdge fixEdgeDecision = (FixEdge) bd;

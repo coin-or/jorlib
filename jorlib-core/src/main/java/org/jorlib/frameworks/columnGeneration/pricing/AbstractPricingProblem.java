@@ -107,7 +107,7 @@ public abstract class AbstractPricingProblem<T> implements BranchingDecisionList
 	 * @param bd branching decision
 	 */
 	@Override
-	public void branchingDecisionRewinded(BranchingDecision bd) {
+	public void branchingDecisionReversed(BranchingDecision bd) {
 		//Nothing to do here
 	}
 }

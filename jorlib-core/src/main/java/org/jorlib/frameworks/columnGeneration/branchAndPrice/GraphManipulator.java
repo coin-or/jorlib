@@ -142,6 +142,6 @@ public class GraphManipulator {
 	 */
 	private void rewindBranchingDecision(BranchingDecision bd){
 		for(BranchingDecisionListener listener : listeners)
-			listener.branchingDecisionRewinded(bd);
+			listener.branchingDecisionReversed(bd);
 	}
 }

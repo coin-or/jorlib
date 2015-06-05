@@ -295,7 +295,7 @@ public final class Master extends AbstractMaster<TSP, Matching, PricingProblemBy
 	 * @param bd Branching decision
 	 */
 	@Override
-	public void branchingDecisionRewinded(BranchingDecision bd) {
+	public void branchingDecisionReversed(BranchingDecision bd) {
 		//No action required
 	}
 }

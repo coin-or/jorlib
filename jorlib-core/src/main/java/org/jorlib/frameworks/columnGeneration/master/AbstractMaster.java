@@ -276,7 +276,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	 * @param bd branching decision
 	 */
 	@Override
-	public void branchingDecisionRewinded(BranchingDecision bd) {
+	public void branchingDecisionReversed(BranchingDecision bd) {
 	}
 }
 

@@ -108,7 +108,7 @@ public class Configuration {
 	 * Global parameters
 	 */
 
-	/** Number of threads used by the column generationo procedure. Default: 4**/
+	/** Number of threads used by the column generation procedure. Default: 4**/
 	public final int MAXTHREADS;
 
 	/** Precision parameter. DONT CHANGE THIS IF YOU ARE USING CPLEX! Default: 0.000001**/

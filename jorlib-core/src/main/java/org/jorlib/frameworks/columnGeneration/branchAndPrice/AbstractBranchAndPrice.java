@@ -234,7 +234,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		notifier.fireStartBAPEvent(); //Signal start Branch-and-Price process
 		this.runtime=System.currentTimeMillis();
 		
-		processNextNode: while(!queue.isEmpty()){ //Start processing nodes until the queue is empty
+		while(!queue.isEmpty()){ //Start processing nodes until the queue is empty
 			BAPNode<T, U> bapNode = queue.poll();
 			notifier.fireNextNodeEvent(bapNode);
 
@@ -267,13 +267,11 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 				continue;
 			}
 			
-			//Check if node is infeasible, i.e. whether there are artifical initialColumns in the solution. If so, ignore it and continue with the next node.
-			for(U column : bapNode.solution){
-				if(column.isArtificialColumn) {
-					notifier.fireNodeIsInfeasibleEvent(bapNode);
-					nodesProcessed++;
-					continue processNextNode;
-				}
+			//Check whether the node is infeasible, i.e. whether there are artifical initialColumns in the solution. If so, ignore it and continue with the next node.
+			if(this.isInfeasibleSolution(bapNode.solution)){
+				notifier.fireNodeIsInfeasibleEvent(bapNode);
+				nodesProcessed++;
+				continue;
 			}
 
 			//If solution is integral, check whether it is better than the current best solution
@@ -343,7 +341,6 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		}
 		bapNode.storeSolution(cg.getObjective(), cg.getLowerBound(), cg.getSolution(), cg.getCuts());
 	}
-
 
 	/**
 	 * Returns a unique node ID. The internal nodeCounter is incremented by one each time this method is invoked.
@@ -447,10 +444,23 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 
 	/**
 	 * Tests whether a given solution is an integer solution
-	 * @param solution List of initialColumns forming the solution
+	 * @param solution List of columns constituting the solution
 	 * @return Returns true if solution is an integer solution, false otherwise
 	 */
 	protected abstract boolean isIntegralSolution(List<U> solution);
+
+	/**
+	 * Tests whether a given solution represents a feasible solution, i.e. that it does not have artificial columns
+	 * @param solution List of columns constituting the solution
+	 * @return Returns true if solution is infeasible.
+	 */
+	protected boolean isInfeasibleSolution(List<U> solution){
+		for(U column : solution){
+			if(column.isArtificialColumn)
+				return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Define how the nodes in the Branch-and-Price tree are processed. By default, the tree is processed in a Depth-First-Search manner but any other (custom)

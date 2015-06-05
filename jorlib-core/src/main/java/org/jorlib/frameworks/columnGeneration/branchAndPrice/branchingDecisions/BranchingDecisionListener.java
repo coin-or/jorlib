@@ -44,5 +44,5 @@ public interface BranchingDecisionListener {
      * This method is called when a branching decision is reversed (backtracking in the Branch-and-Price tree)
      * @param bd branching decision
      */
-    void branchingDecisionRewinded(BranchingDecision bd);
+    void branchingDecisionReversed(BranchingDecision bd);
 }

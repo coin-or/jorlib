@@ -63,7 +63,7 @@ public class Matching extends AbstractColumn<TSP, PricingProblemByColor> {
 			Set<DefaultWeightedEdge> edges,
 			int[] succ,
 			int cost) {
-		super(creator, isArtificial, associatedPricingProblem);
+		super(associatedPricingProblem, isArtificial, creator);
 		this.edges=edges;
 		this.succ=succ;
 		this.cost=cost;

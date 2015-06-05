@@ -44,7 +44,7 @@ public final class CuttingPattern extends AbstractColumn<CuttingStock, PricingPr
 	public final int[] yieldVector;
 
 	public CuttingPattern(String creator, boolean isArtificial, int[] pattern, PricingProblem pricingProblem) {
-		super(creator, isArtificial, pricingProblem);
+		super(pricingProblem, isArtificial, creator);
 		this.yieldVector=pattern;
 	}
 

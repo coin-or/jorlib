@@ -52,11 +52,11 @@ public abstract class AbstractColumn<T, V extends AbstractPricingProblem<T>>{
 	
 	/**
 	 * Constructs a new column
-	 * @param creator Who/What created this column?
-	 * @param isArtificial Is this an artificial column?
 	 * @param associatedPricingProblem Pricing problem to which this column belongs
+	 * @param isArtificial Is this an artificial column?
+	 * @param creator Who/What created this column?
 	 */
-	public AbstractColumn(String creator, boolean isArtificial, V associatedPricingProblem){
+	public AbstractColumn(V associatedPricingProblem, boolean isArtificial, String creator){
 		this.creator=creator;
 		this.isArtificialColumn=isArtificial;
 		this.associatedPricingProblem=associatedPricingProblem;
