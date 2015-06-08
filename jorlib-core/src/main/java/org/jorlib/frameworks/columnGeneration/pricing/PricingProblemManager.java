@@ -90,7 +90,7 @@ public class PricingProblemManager<T, U extends AbstractColumn<T, V>, V extends 
 				Callable<Double> task=new Callable<Double>() {
 					@Override
 					public Double call() throws Exception {
-						return solver.getUpperbound();  //Gets the upper bound on the pricing problem through the solver instance
+						return solver.getBound();  //Gets the upper bound on the pricing problem through the solver instance
 					}
 				};
 				ppBoundTasks.put(solver, task);
@@ -143,8 +143,8 @@ public class PricingProblemManager<T, U extends AbstractColumn<T, V>, V extends 
 	}
 	
 	/**
-	 * Invokes {@link AbstractPricingProblemSolver#getUpperbound()}  getUpperBound} in parallel for all pricing problems defined.
-	 * @param solver the solver on which {@link AbstractPricingProblemSolver#getUpperbound()}  getUpperBound} is invoked.
+	 * Invokes {@link AbstractPricingProblemSolver#getBound()}  getUpperBound} in parallel for all pricing problems defined.
+	 * @param solver the solver on which {@link AbstractPricingProblemSolver#getBound()}  getUpperBound} is invoked.
 	 * @return array containing the bounds calculated for each pricing problem
 	 */
 	public double[] getBoundsOnPricingProblems(Class<? extends AbstractPricingProblemSolver<T, U, V>> solver){

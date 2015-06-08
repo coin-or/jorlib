@@ -28,6 +28,7 @@ package org.jorlib.frameworks.columnGeneration.tsp.bap;
 
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchAndPrice;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.BAPNode;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.tsp.cg.Matching;
 import org.jorlib.frameworks.columnGeneration.tsp.cg.PricingProblemByColor;
@@ -72,12 +73,12 @@ public final class BranchAndPrice extends AbstractBranchAndPrice<TSP,Matching, P
 
     /**
      * Checks whether the given solution is integer
-     * @param solution List of initialColumns forming the solution
+     * @param node node
      * @return true if the solution is an integer solution
      */
     @Override
-    protected boolean isIntegerNode(List<Matching> solution) {
-        return solution.size()==pricingProblems.size();
+    protected boolean isIntegerNode(BAPNode<TSP, Matching> node) {
+        return node.getSolution().size()==2;
     }
 }
 

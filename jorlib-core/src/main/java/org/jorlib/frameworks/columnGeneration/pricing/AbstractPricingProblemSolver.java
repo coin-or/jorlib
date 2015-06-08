@@ -141,10 +141,11 @@ public abstract class AbstractPricingProblemSolver<T,U extends AbstractColumn<T,
 	protected abstract void setObjective();
 	
 	/**
-	 * Returns an upperbound on the most negative reduced cost column whenever available.
-	 * @return upper bound on the pricing problem (assuming that the pricing problem is a maximization problem)
+	 * Returns a bound on the objective of the pricing problem. If the pricing problem is solved to optimality, this function would typically return the objective value.
+	 * Alternatively, the objective value of a relaxation of the Pricing Problem may be returned, e.g. the LP relaxation when the Pricing Problem is implemented as a MIP, or the value of a Lagrangian Relaxation.
+	 * @return a bound on the objective of the pricing problem)
 	 */
-	public double getUpperbound(){
+	public double getBound(){
 		throw new UnsupportedOperationException("Not implemented");
 	}
 

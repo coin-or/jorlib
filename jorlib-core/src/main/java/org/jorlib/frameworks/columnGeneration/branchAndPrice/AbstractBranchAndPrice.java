@@ -131,6 +131,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		this.pricingProblems=pricingProblems;
 		this.solvers=solvers;
 		queue =new PriorityQueue<>(new DFSbapNodeComparator());
+		this.objectiveIncumbentSolution=(optimizationSenseMaster == OptimizationSense.MINIMIZE ? Integer.MAX_VALUE : -Integer.MAX_VALUE);
 		this.lowerBoundOnObjective=lowerBoundOnObjective;
 		this.upperBoundOnObjective=upperBoundOnObjective;
 		
