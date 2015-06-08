@@ -198,7 +198,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	 * @param initialSolution columns constituting the initial solution
 	 */
 	public void warmStart(int objectiveInitialSolution, List<U> initialSolution){
-		BAPNode rootNode=queue.peek();
+		BAPNode<T,U> rootNode=queue.peek();
 		if(rootNode.nodeID != 0)
 			throw new RuntimeException("This method can only be invoked at the start of the Branch-and-Price procedure, before runBranchAndPrice is invoked");
 		rootNode.addInitialColumns(initialSolution);
@@ -320,7 +320,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	 * Solve a given Branch-and-Price node
 	 * @param bapNode node in Branch-and-Price tree
 	 * @param timeLimit future point in time by which the method must be finished
-	 * @throws TimeLimitExceededException
+	 * @throws TimeLimitExceededException TimeLimitExceededException
 	 */
 	protected void solveBAPNode(BAPNode<T,U> bapNode, long timeLimit) throws TimeLimitExceededException {
 		ColGen<T,U,V> cg=null;

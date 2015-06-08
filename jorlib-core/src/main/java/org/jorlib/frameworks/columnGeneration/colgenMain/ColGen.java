@@ -247,6 +247,11 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 		notifier.fireFinishCGEvent();
 	}
 
+	/**
+	 * Invokes the solve method of the Master Problem, fires corresponding events and queries the results.
+	 * @param timeLimit Future point in time by which the Master Problem must be finished
+	 * @throws TimeLimitExceededException TimeLimitExceededException
+	 */
 	protected void invokeMaster(long timeLimit) throws TimeLimitExceededException {
 		notifier.fireStartMasterEvent();
 		long time=System.currentTimeMillis();
@@ -255,6 +260,14 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 		masterSolveTime+=(System.currentTimeMillis()-time);
 		notifier.fireFinishMasterEvent();
 	}
+
+	/**
+	 * Invokes the solve methods of the algorithms which solve the Pricing Problem. In addition, after solving the Pricing Problems
+	 * and before any new columns are added to the Master Problem, this method invokes the {@link #calculateBoundOnMasterObjective(Class solver) calculateBoundOnMasterObjective} method.
+	 * @param timeLimit Future point in time by which the Pricing Problem must be finished
+	 * @return list of new columns which have to be added to the Master Problem, or an empty list if no columns could be identified
+	 * @throws TimeLimitExceededException TimeLimitExceededException
+	 */
 	protected List<U> invokePricingProblems(long timeLimit) throws TimeLimitExceededException {
 		//Solve the pricing problem
 		List<U> newColumns=new ArrayList<>();

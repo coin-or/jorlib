@@ -76,6 +76,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	 * Creates a new Master Problem
 	 * @param dataModel data model
 	 * @param pricingProblems pricing problems
+	 * @param optimizationSenseMaster indicates whether the Master Problem is a Minimiation or a Maximization problem
 	 */
 	public AbstractMaster(T dataModel, List<V> pricingProblems, OptimizationSense optimizationSenseMaster){
 		this.dataModel = dataModel;
@@ -90,6 +91,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	 * Creates a new Master Problem
 	 * @param dataModel data model
 	 * @param pricingProblem pricing problem
+	 * @param optimizationSenseMaster indicates whether the Master Problem is a Minimiation or a Maximization problem
 	 */
 	public AbstractMaster(T dataModel, V pricingProblem, OptimizationSense optimizationSenseMaster){
 		this(dataModel, Collections.singletonList(pricingProblem), optimizationSenseMaster);
@@ -100,6 +102,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	 * @param dataModel data model
 	 * @param pricingProblems pricing problems
 	 * @param cutHandler Reference to a cut handler
+	 * @param optimizationSenseMaster indicates whether the Master Problem is a Minimiation or a Maximization problem
 	 */
 	public AbstractMaster(T dataModel, List<V> pricingProblems, CutHandler<T,W> cutHandler, OptimizationSense optimizationSenseMaster){
 		this.dataModel = dataModel;
@@ -115,6 +118,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	 * @param dataModel data model
 	 * @param pricingProblem pricing problem
 	 * @param cutHandler Reference to a cut handler
+	 * @param optimizationSenseMaster indicates whether the Master Problem is a Minimiation or a Maximization problem
 	 */
 	public AbstractMaster(T dataModel, V pricingProblem, CutHandler<T,W> cutHandler, OptimizationSense optimizationSenseMaster){
 		this(dataModel, Collections.singletonList(pricingProblem), cutHandler, optimizationSenseMaster);
