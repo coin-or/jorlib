@@ -125,6 +125,7 @@
 				    <version>1.0-m5.1</version>
 				    <configuration>
 					<noDeploy>true</noDeploy>
+					<allowSnapshots>true</allowSnapshots>
 					<flowInitContext>
 					  <developBranchName>development</developBranchName>
 					</flowInitContext>
