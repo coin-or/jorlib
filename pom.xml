@@ -125,6 +125,9 @@
 				    <version>1.0-m5.1</version>
 				    <configuration>
 					<noDeploy>true</noDeploy>
+					<flowInitContext>
+					  <developBranchName>development</developBranchName>
+					</flowInitContext>
 				    </configuration>
 				</plugin>
 				<plugin>
@@ -147,7 +150,22 @@
 				  <configuration>
 				    <show>protected</show>
 				    <windowtitle>Java Operations Research Library</windowtitle>
+				    <header>jORLib, ${project.version}</header>
+				    <footer>jORLib, ${project.version}</footer>
+				    <doctitle>jORLib, ${project.version}</doctitle>
 				  </configuration>
+				</plugin>
+				<plugin>
+				    <groupId>org.apache.maven.plugins</groupId>
+				    <artifactId>maven-scm-publish-plugin</artifactId>
+				    <version>1.0-beta-2</version>
+				    <configuration>
+					<checkinComment>Publishing javadoc for ${project.artifactId}:${project.version}</checkinComment>
+					<content>${project.reporting.outputDirectory}/apidocs</content>
+					<skipDeletedFiles>true</skipDeletedFiles>
+					<pubScmUrl>scm:git:git@github.com:jkinable/jorlib.git</pubScmUrl>
+					<scmBranch>gh-pages</scmBranch> <!-- branch with static site -->
+				    </configuration>
 				</plugin>
 				
 			</plugins>
