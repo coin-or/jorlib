@@ -161,7 +161,7 @@
 				    <version>1.0-beta-2</version>
 				    <configuration>
 					<checkinComment>Publishing javadoc for ${project.artifactId}:${project.version}</checkinComment>
-					<content>${project.reporting.outputDirectory}/apidocs</content>
+					<content>${basedir}/jorlib-core/target/site</content>
 					<skipDeletedFiles>true</skipDeletedFiles>
 					<pubScmUrl>scm:git:git@github.com:jkinable/jorlib.git</pubScmUrl>
 					<scmBranch>gh-pages</scmBranch> <!-- branch with static site -->
