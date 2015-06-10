@@ -5,7 +5,7 @@
 	<artifactId>jorlib</artifactId>
 	<packaging>pom</packaging>
 	<name>JORLib - Parent</name>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<description>Java Operations Research Library.</description>
 	<url>https://github.com/jkinable/jorlib</url>
 	<licenses>
@@ -39,16 +39,6 @@
 	
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>jorlib-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>jorlib-demo</artifactId>
-				<version>${project.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -124,8 +114,8 @@
 				    <artifactId>jgitflow-maven-plugin</artifactId>
 				    <version>1.0-m5.1</version>
 				    <configuration>
-					<noDeploy>true</noDeploy>
 					<allowSnapshots>true</allowSnapshots>
+					<goals>clean install</goals>
 					<flowInitContext>
 					  <developBranchName>development</developBranchName>
 					</flowInitContext>
