@@ -115,7 +115,7 @@
 				    <version>1.0-m5.1</version>
 				    <configuration>
 					<allowSnapshots>true</allowSnapshots>
-					<goals>clean install deploy</goals>
+					<goals>clean install</goals>
 					<flowInitContext>
 					  <developBranchName>development</developBranchName>
 					</flowInitContext>
