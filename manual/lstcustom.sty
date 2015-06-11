@@ -1,0 +1,267 @@
+\usepackage{color}
+
+\lstdefinelanguage{pseudo}{
+  keywords={procedure,end,return,integer,real,foreach,for,each,
+  do,if,then,else,while,until,true,false,algorithm}, 
+  comment=[l]{//}
+}
+
+\lstdefinelanguage{oaw}{
+  morekeywords={import, this, create, let, then, Void, extension, JAVA,
+  IMPORT, DEFINE, ENDDEFINE, LET, ENDLET, FOR, FILE, ENDFILE, ITERATOR, FOREACH,
+  AS, IF, ENDFOREACH, ENDIF, EXPAND, INSTANCEOF, USING, SEPARATOR, CSTART, CEND, 
+  PROTECT, ENDPROTECT, ID, EXTENSION,   
+  context, ERROR, WARNING, INFO, enum},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  % FIXME: listings does not see guillemots, so any regions with them wont work  
+  morecomment=[s]{«REM»}{«ENDREM»},
+  morecomment=[s]{«REM}{»},
+  morestring=[s]{'}{'},
+  morestring=[s]{"}{"},
+  escapechar={@},
+  % required for use with UTF-8
+  literate={«}{\guillemotleft}{1}
+           {»}{\guillemotright}{1}
+}
+
+% extension, if, then, else, switch, Void, Boolean, Integer, Real, String, let
+
+\lstdefinelanguage{shell}
+{alsodigit={>},
+  morekeywords={linux>},
+  backgroundcolor=\color{lstbackgroundshellcolor}
+}
+
+\lstdefinelanguage{csimul}
+{alsodigit={>},
+  alsodigit={\%},
+  morekeywords={CONDITIONER>, COUNTER>, \%},
+  backgroundcolor=\color{lstbackgroundshellcolor},
+  morecomment=[l]{\#}
+}
+
+\lstdefinelanguage{Esterel}
+{morekeywords={
+    abort, and, assert, await, 
+    bool,
+    call, case, clock, combine, constant, 
+    data, do, doup, dodown, dopar,
+    each, emit, else, elseif, end, every, exec, exit, extends,
+    for, function, 
+    generic, 
+    goto,
+    halt, handle, 
+    if, immediate, in, input, inputoutput, integer, interface, 
+    loop, 
+    map, module, multiclock, mux,
+    not, nothing, 
+    or, output, 
+    pause, positive, pre, present, procedure, 
+    relation, repeat, return, run, 
+    sensor, seq, signal, signed, suspend, sustain, 
+    task, then, times, trap, type, 
+    unsigned,
+    var, 
+    weak, when, with},
+  morecomment=[l]{\%}
+}
+
+\lstdefinelanguage{Lustre}
+{keywords={
+    and, assert, 
+    bool,
+    current,
+    else,
+    float,
+    if, int,
+    let, 
+    node, not, 
+    or,
+    pre, 
+    returns, 
+    tel, then,
+    var,
+    when
+  },
+  literate={-}{{--}}2 {->}{{$\to$~}}2 ,
+  morecomment=[l]{--},
+}
+
+\lstdefinelanguage{KEP}
+{morekeywords={ 
+    ABORT, ABORTI, ADD, ADDC, AWAIT, AWAITI, AWAITN, 
+    CALL, CAWAIT, CAWAITE, CMP, CMPS,
+    EMIT, EMITV, EMITD, EMITR, EXIT, GOTO, HALT, INPUT, JOIN, JW, LABORT, LABORTI,
+    LWABORT, LWABORTI, LOAD, MUL, NOTHING, OUTPUT, PAUSE, PAR, PARE,
+    PRE, PRIO, PRESENT, 
+    SETV,
+    SIGNAL, SIGNALV, SUSPEND, SUSPENDI, SUSTAIN, SUSTAINV, SUSTAIND,
+    SUSTAINR, TABORT, TABORTI, TWABORT, TWABORTI, WABORT, WABORTI,
+    %chkabort, jmp, ldaaddr
+  },
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morecomment=[l]{\%},
+  morestring=[b]"
+}
+
+\lstdefinelanguage{KLP}
+{morekeywords={ 
+    ADD, ADDI, AND,
+    DIV, DIVI, DONE, 
+    EQ,
+    GOTO,
+    IADD, IAND, IDIV, IEQ, IGE, IGT, ILE, ILT, INITC, INITV, INPUT, 
+    ICMOV, IRMOV, ISUB, IVMOV, IOR, IXOR, 
+    IMUL,
+    JF, JMP, JNZ, JT, JZ,
+    LOCAL,
+    MUL, MULI,
+    NEQ,
+    OUTPUT,
+    PRIO,
+    RRMOV, 
+    SETCLK, SETPC,
+    SUB, SUBI,
+    VVMOV,
+    XOR
+  },
+  morecomment=[l]{//},
+  morecomment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  morecomment=[l]{\%},
+  morestring=[b]",
+}
+
+\lstdefinelanguage{Kit}
+{morekeywords={%
+statechart, model, version, input, output, var, label, type, history, hi,
+deephistory, dh, initial, in, fork, fk, join, jn, junction, jc, sync, sy,
+choice, ch, dynamicchoice, dc, suspend, sd, final, doActivity, do,
+entryActivity, entry, exitActivity, exit, bindActivity, bind, localEvent,
+localVariable, priority, weakAbortion, wa, strongAbortion, sa,
+normalTermination, nt, suspension, sp, conditional, co, internalTransition,
+it, integer, float, double, boolean, combine, with, pos, pp, lp, width,
+height, collapsed, true, false%
+},
+  morecomment=[l]{\#},
+}
+
+\lstdefinelanguage{Repic}{
+  morekeywords={
+    abort, await, chkabort, emit, fork, goto, jmp, join,
+    ldaaddr, present, sync},
+  morecomment=[l]{\%}
+}
+
+
+\newcommand{\lstfontfamily}{\ttfamily}
+%\newcommand{\lstfontfamily}{\sffamily} % Adapt to schneider
+\newcommand{\textlst}[1]{\texttt{#1}}
+\newcommand{\mathlst}[1]{\mathtt{#1}}
+\lstdefinestyle{tiny}{basicstyle=\tiny\lstfontfamily}
+\lstdefinestyle{scriptsize}{basicstyle=\scriptsize\lstfontfamily}
+\lstdefinestyle{footnotesize}{basicstyle=\footnotesize\lstfontfamily}
+\lstdefinestyle{small}{basicstyle=\small\lstfontfamily}
+\lstdefinestyle{normalsize}{basicstyle=\normalsize\lstfontfamily}
+\lstdefinestyle{large}{basicstyle=\lstfontfamily}
+
+\lstdefinestyle{monitor}{morekeywords={monitor, export}}
+\lstdefinestyle{ConcPascal}{language=Pascal,style=monitor}
+
+% To make this accessible to Emacs/AUCTeX (C-c C-f C-o),
+% add something like this to TeX-mode-hook:
+%  (setq LaTeX-font-list
+%       (append '((?{\^O} "\\codefont{" "}"))
+%               LaTeX-font-list))
+%\newcommand{\codefont}[1]{{\renewcommand{\textnormal}[1]{\textlst{#1}}\lstfontfamily #1}}
+\newcommand{\mathcodefont}[1]{\mathtt{#1}}
+\newcommand{\codefont}[1]{{\lstfontfamily #1}}
+\newlength{\lstframexleftmargin}
+\setlength{\lstframexleftmargin}{1mm}
+
+% rulesepcolor and backgroundcolor are set in beamercustom{presentation|handout}.sty
+\lstdefinestyle{mydefault}{
+  style=scriptsize,
+  emphstyle=\color{red},
+  framexleftmargin=\lstframexleftmargin, 
+  frame=shadowbox, 
+  keywordstyle=\structure,
+  commentstyle=\itshape,
+  columns=flexible,            % Columns not rigid - gives nicer spacing 
+  gobble=4,                    % Gobble first 4 characters of each line
+  escapeinside=`',
+  escapechar=@,
+  lineskip=+0.2ex%,
+ % rulesepcolor=\color{lstrulesepcolor}, %
+  % WARNING: For some reason, the settin of backgroundcolor must take
+  % place at the very end!!! 
+  %backgroundcolor=\color{lstbackgroundprogcolor}
+}
+
+\definecolor{darkviolet}{rgb}{0.5,0,0.4}
+\definecolor{darkgreen}{rgb}{0,0.4,0.2} 
+\definecolor{darkblue}{rgb}{0.1,0.1,0.9}
+\definecolor{darkgrey}{rgb}{0.5,0.5,0.5}
+\definecolor{lightblue}{rgb}{0.4,0.4,1}
+
+\lstdefinestyle{eclipse}{
+	%basicstyle=\small\lstfontfamily,
+	basicstyle=\small\lstfontfamily,
+    emphstyle=\color{red}\bfseries, 
+    keywordstyle=\color{darkviolet}\bfseries,
+    commentstyle=\color{darkgreen},
+    stringstyle=\color{darkblue},
+    numberstyle=\color{darkgrey}\lstfontfamily,
+    emphstyle=\color{red},
+    % get also javadoc style comments
+    morecomment=[s][\color{lightblue}]{/**}{*/},
+   columns=fullflexible, %spaceflexible, %flexible, fullflexible             
+%  escapeinside=`',
+%  escapechar=@,
+  showstringspaces=false,
+  numbers=left
+}
+
+\lstdefinestyle{black}{
+  basicstyle=\small\lstfontfamily,
+  numbers=left,
+  columns=fullflexible,
+  breaklines=true,
+  mathescape=true,
+  escapechar=\#,
+  tabsize=4,
+  frame=lines,
+  showstringspaces=false
+}
+
+% use proper tt font that supports bold printing, e.g. by
+% \usepackage{courier}
+\lstdefinestyle{seminar}{
+  basicstyle=\small\ttfamily,
+  numbers=left,
+  breaklines=true,
+  mathescape=true,
+  escapechar=\#,
+  tabsize=4,
+  showstringspaces=false
+}
+
+% eclipse style which works in regular latex documents, not necessarily beamer documents (Joris Kinable)
+\lstdefinestyle{eclipseArticle}{
+  basicstyle=\small\lstfontfamily,
+  emphstyle=\color{red}\bfseries, 
+  keywordstyle=\color{darkviolet}\bfseries,
+  commentstyle=\color{darkgreen},
+  stringstyle=\color{darkblue},
+  numberstyle=\color{darkgrey}\lstfontfamily,
+  emphstyle=\color{red},
+  morecomment=[s][\color{lightblue}]{/**}{*/},
+  numbers=left,
+  breaklines=true,
+  mathescape=true,
+  escapechar=\#,
+  tabsize=2,
+  showstringspaces=false
+}
