@@ -92,9 +92,10 @@ public final class TSPCGSolver {
 		TSPLibTour initTour=TSPLibTour.createCanonicalTour(tsp.N); //Feasible solution
 		int tourLength=tsp.getTourLength(initTour); //Upper bound (Stronger is better)
 		List<Matching> initSolution=this.convertTourToColumns(initTour, pricingProblems); //Create a set of initial initialColumns.
+		double lowerBound=0; //Lower bound on solution
 
 		//Create a column generation instance
-		ColGen<TSP, Matching, PricingProblemByColor> cg=new ColGen<>(tsp, master, pricingProblems, solvers, initSolution, tourLength);
+		ColGen<TSP, Matching, PricingProblemByColor> cg=new ColGen<>(tsp, master, pricingProblems, solvers, initSolution, tourLength, lowerBound);
 
 		//OPTIONAL: add a debugger
 		SimpleDebugger debugger=new SimpleDebugger(cg, cutHandler);

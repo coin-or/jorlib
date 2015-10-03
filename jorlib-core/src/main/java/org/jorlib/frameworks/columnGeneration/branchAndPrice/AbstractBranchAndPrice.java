@@ -325,7 +325,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	protected void solveBAPNode(BAPNode<T,U> bapNode, long timeLimit) throws TimeLimitExceededException {
 		ColGen<T,U,V> cg=null;
 		try {
-			cg = new ColGen<>(dataModel, master, pricingProblems, solvers, pricingProblemManager, bapNode.initialColumns, objectiveIncumbentSolution); //Solve the node
+			cg = new ColGen<>(dataModel, master, pricingProblems, solvers, pricingProblemManager, bapNode.initialColumns, objectiveIncumbentSolution, bapNode.getBound()); //Solve the node
 			for(CGListener listener : columnGenerationEventListeners) cg.addCGEventListener(listener);
 			cg.solve(timeLimit);
 		}finally{
@@ -455,8 +455,8 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	 * @return true if the node can be pruned
 	 */
 	protected boolean nodeCanBePruned(BAPNode<T,U> node){
-		return (optimizationSenseMaster == OptimizationSense.MINIMIZE && Math.ceil(node.bound) >= upperBoundOnObjective ||
-				optimizationSenseMaster == OptimizationSense.MAXIMIZE && Math.floor(node.bound) <= lowerBoundOnObjective);
+		return (optimizationSenseMaster == OptimizationSense.MINIMIZE && Math.ceil(node.bound-config.PRECISION) >= upperBoundOnObjective ||
+				optimizationSenseMaster == OptimizationSense.MAXIMIZE && Math.floor(node.bound+config.PRECISION) <= lowerBoundOnObjective);
 	}
 
 	/**
