@@ -298,6 +298,10 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		//Update statistics
 		if(queue.isEmpty()){ //Problem solved to optimality
 			this.isOptimal=true;
+			if(optimizationSenseMaster == OptimizationSense.MINIMIZE)
+				this.lowerBoundOnObjective=this.objectiveIncumbentSolution;
+			else
+				this.upperBoundOnObjective=this.objectiveIncumbentSolution;
 		}else{ //Problem NOT solved to optimality
 			this.isOptimal=false;
 			if(optimizationSenseMaster == OptimizationSense.MINIMIZE) {
