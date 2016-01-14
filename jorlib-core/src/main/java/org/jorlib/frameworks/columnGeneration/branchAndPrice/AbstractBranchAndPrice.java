@@ -79,7 +79,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	/** Stores the objective of the best (integer) solution **/
 	protected int objectiveIncumbentSolution;
 	/** List containing the columns corresponding to the best integer solution (empty list when no feasible solution has been found) **/
-	protected List<U> incumbentSolution =null;
+	protected List<U> incumbentSolution =new ArrayList<>();
 	/** Indicator whether the best solution is optimal **/
 	protected boolean isOptimal=false;
 

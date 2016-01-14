@@ -194,7 +194,7 @@ public class SimpleDebugger implements BAPListener, CGListener, CHListener{
 
     @Override
     public void finishPricing(FinishPricingEvent finishPricingEvent) {
-        logger.debug("Finished pricing ({} initialColumns generated) -> CG objectiveMasterProblem: {}, CG bound: {}, CG cutoff: {}", new Object[]{finishPricingEvent.columns.size(), finishPricingEvent.objective, finishPricingEvent.boundOnMasterObjective, finishPricingEvent.cutoffValue});
+        logger.debug("Finished pricing ({} columns generated) -> CG objectiveMasterProblem: {}, CG bound: {}, CG cutoff: {}", new Object[]{finishPricingEvent.columns.size(), finishPricingEvent.objective, finishPricingEvent.boundOnMasterObjective, finishPricingEvent.cutoffValue});
         for(AbstractColumn<?, ?> column : finishPricingEvent.columns){
             logger.debug(column.toString());
         }
