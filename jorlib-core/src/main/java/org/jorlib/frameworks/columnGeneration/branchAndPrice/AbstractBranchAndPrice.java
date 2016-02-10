@@ -89,6 +89,8 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	protected Queue<BAPNode<T,U>> queue;
 	/** Counter used to provide a unique ID for each node (counter gets incremented each time a new node is created) **/
 	protected int nodeCounter=0;
+	/** A reference to the root node in the tree **/
+	protected BAPNode<T,U> rootNode;
 
 	/** Upper bound on the optimal solution **/
 	protected double upperBoundOnObjective=Double.MAX_VALUE;
@@ -139,7 +141,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		List<Integer> rootPath=new ArrayList<>();
 		int nodeID=nodeCounter++;
 		rootPath.add(nodeID);
-		BAPNode<T,U> rootNode=new BAPNode<>(nodeID, rootPath, new ArrayList<>(), new ArrayList<>(), 0, Collections.emptyList());
+		rootNode=new BAPNode<>(nodeID, rootPath, new ArrayList<>(), new ArrayList<>(), 0, Collections.emptyList());
 		queue.add(rootNode);
 		graphManipulator=new GraphManipulator(rootNode);
 		
@@ -198,7 +200,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	 * @param initialSolution columns constituting the initial solution
 	 */
 	public void warmStart(int objectiveInitialSolution, List<U> initialSolution){
-		BAPNode<T,U> rootNode=queue.peek();
+		rootNode=queue.peek();
 		if(rootNode.nodeID != 0)
 			throw new RuntimeException("This method can only be invoked at the start of the Branch-and-Price procedure, before runBranchAndPrice is invoked");
 		rootNode.addInitialColumns(initialSolution);
@@ -360,6 +362,14 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	public int getObjective(){
 		return this.objectiveIncumbentSolution;
 	}
+
+	/**
+	 * Returns the strongest available bound after the root node has been solved. Whenever the root node was solved to optimality, the value returned equals the objective of (optimal solution) of the root node. Whenever the
+	 * node is not solved to optimality, e.g. due to a time limit,the strongest lower bound (minimization problem) or strongest upper bound (maximization problem) is returned. Not that this function
+	 * is equivalent to solving the master problem relaxation through column generation.
+	 * @return
+	 */
+	public double getBoundRootNode(){ return rootNode.getBound();}
 	
 	/**
 	 * Return whether a solution has been found
