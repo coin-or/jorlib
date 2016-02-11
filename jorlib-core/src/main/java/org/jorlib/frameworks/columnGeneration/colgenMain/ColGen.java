@@ -226,9 +226,14 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			//We can stop when the optimality gap is closed. We still need to check for violated initialInequalities though.
 			if(Math.abs(objectiveMasterProblem - boundOnMasterObjective)<config.PRECISION){
 				//Check whether there are inequalities. Otherwise potentially an infeasible integer solution (e.g. TSP solution with subtours) might be returned.
-				if(config.CUTSENABLED && master.hasNewCuts()){  
-					hasNewCuts=true;
-					continue;
+				if(config.CUTSENABLED){
+					long time=System.currentTimeMillis();
+					hasNewCuts=master.hasNewCuts();
+					masterSolveTime+=(System.currentTimeMillis()-time); //Generating inequalities is considered part of the master problem
+					if(hasNewCuts)
+						continue;
+					else
+						break;
 				}else
 					break;
 			}
