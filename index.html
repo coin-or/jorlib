@@ -1,1 +1,79 @@
-PlaceHolder for jorlib website
+<html>
+<article class="markdown-body entry-content" itemprop="mainContentOfPage"><h1><a id="user-content-jorlib" class="anchor" href="#jorlib" aria-hidden="true"><span class="octicon octicon-link"></span></a>jORLib - Java OR Library</h1>
+
+<p>Released: April, 2015</p><p></p>
+<p>(C) Copyright 2015, by <a href="mailto:jkinable@cs.cmu.edu">Joris Kinable</a> and Contributors. All rights
+reserved.</p>
+
+<p>Please address all contributions, suggestions, and inquiries to the current project administrator <a href="mailto:jkinable@cs.cmu.edu">Joris Kinable</a></p>
+
+<ul>
+<li>The website of this project is: <a href="http://jkinable.github.io/jorlib/">http://jkinable.github.io/jorlib/</a></li>
+<li>The latest version of jORLib can be downloaded: <a href="https://github.com/jkinable/jorlib/releases">https://github.com/jkinable/jorlib/releases/</a></li>
+</ul>
+
+<h2><a id="user-content-introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>jORLib is a Java class library that provides implementations for Operations Research problems. The code requires JDK 1.8 or later, and is released under the terms of GPLv3. Many of the implementations are derived from journal papers and books. jORLib currently includes a framework for Column Generation and Branch-and-Price, routines to separate valid inequalities (knapsack, TSP), parsers for TSPLib instances, as well as several other useful algorithmic implementations. To simplify working with jORLib, documentation is provided, as well as an extensive set of working examples.</p>
+
+<p>A copy of the <a href="/jkinable/jorlib/blob/development/LICENSE">GPLv3</a> is included in the download.</p>
+
+<p>Please note that jORLib is distributed WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+<p>Please refer to the license for details.</p>
+
+<h2><a id="user-content-getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting Started</h2>
+
+<p>The package <code>org.jorlib.demo</code> includes small demo applications to help you get started. If you spawn your own demo app and think others can benefit from it, please send it to us and we will add it to that package.</p>
+Running examples directly from the demo package is easy. Try for example:<p></p>
+
+<ul>
+<li><code>java -cp jorlib-demo-1.0-uber.jar org.jorlib.demo.alg.tsp.separation.SubtourSeparatorDemo</code> to run the SubtourSeparatorDemo
+or</li>
+<li><code>java -Djava.library.path=/opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/ -cp jorlib-demo-1.0-uber.jar org.jorlib.demo.frameworks.columnGeneration.bapExample.TSPSolver</code> to run the Branch-and-Price example. Obviously, you need to ensure that java.library.path points to your own Cplex installation.</li>
+</ul>
+
+<h2><a id="user-content-documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h2>
+
+<p>Javadoc for the latest version can be found <a href="http://jkinable.github.io/jorlib/apidocs/">here</a>; documentation per version is bundled with every release. Releases can be found on our <a href="https://github.com/jkinable/jorlib/releases">release page</a>. There is also a <a href="http://jkinable.github.io/jorlib/manual/manual.pdf">manual</a> with an in-depth discussion on the Column Generation and Branch-and-Price features of the library.</p>
+
+<h2><a id="user-content-dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies</h2>
+
+<ul>
+<li>jORLib requires JDK 1.8 or later to build.</li>
+<li><a href="http://www.junit.org">JUnit</a> is a unit testing framework. You need JUnit only if you want to run the unit tests.  JUnit is licensed under the terms of the IBM Common Public License.  The JUnit tests included with jORLib have been created using JUnit <code>4.12</code>.</li>
+<li><a href="http://jgrapht.org/">jGraphT</a> is a free Java graph library that provides mathematical graph-theory objects and algorithms and supports various types of graphs. jGraphT is required to model several problems, such as the TSP network for the subtour elimination algorithm. jGraphT version 0.9.0 is used in jORLib. </li>
+<li><a href="https://code.google.com/p/guava-libraries/">Guava</a> The Guava project contains several of Googles core libraries for Java-based projects: collections, caching, primitives support, concurrency libraries, common annotations, string processing, I/O, and so forth. Guava version 14.0.1 is needed for the Branch-and-Price framework.</li>
+<li><a href="http://logback.qos.ch/">Logback</a> Provides logging fascilities. logback-classic-0.9.28.jar and logback-core-0.9.28.jar are required for the Branch-and-Price framework.</li>
+<li><a href="http://www.slf4j.org/">Slf4j</a> The Simple Logging Facade for Java (SLF4J) serves as a simple facade or abstraction for various logging frameworks (e.g. java.util.logging, logback, log4j) allowing the end user to plug in the desired logging framework at deployment time. slf4j-api-1.6.1.jar is required for the Branch-and-Price framework.</li>
+<li>OPTIONAL: IBM Cplex. If you want to run the Column Generation and Branch-and-Price examples in the demo package required a CPLEX installation; this is installation is not required for jorlib-core package, or for any of the other examples.
+The demo package jorlib-demo-1.0-uber.jar contains all the required dependencies. The above packages are only required if you plan to compile the source code yourself. </li>
+</ul>
+
+<h2><a id="user-content-online-resources" class="anchor" href="#online-resources" aria-hidden="true"><span class="octicon octicon-link"></span></a>Online Resources</h2>
+
+<p>Source code is hosted on <a href="https://github.com/jkinable/jorlib">github</a>. You can send contributions as pull requests there. If you intend to contribute code, please use the development branch as this branch contains the latest version of the code. The master branch always contains the source code of the latest stable release.</p>
+
+<h2><a id="user-content-your-improvements" class="anchor" href="#your-improvements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Your Improvements</h2>
+
+<p>Your contributions are highly welcome. Literally anything related to OR will be considered:</p>
+
+<ul>
+<li>Heuristic/exact algorithms related to frequently reoccurring problems, preferably backed by a scientific paper or book</li>
+<li>Visualization tools</li>
+<li>Readers/parsers for common IO such as TSPLib instances</li>
+<li>etc
+If you add improvements to jORLib please send them to us as pull requests on github. We will add them to the next release so that everyone can enjoy them. You might also benefit from it: others may fix bugs in your source files or may continue to enhance them.</li>
+</ul>
+
+<h2><a id="user-content-using-jorlib" class="anchor" href="#using-jorlib" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using jORLib</h2>
+
+<p>If you are using jORLib in your work, you are cordially invited to drop a note on our mailing lists (soon to come), describing your work and what you used jORLib for. This will give us a better understanding of how the Library is used and what people's interests are. Feel free to report any issues, feature requests, etc on our issue tracker on Github (<a href="https://github.com/jkinable/jorlib/issues">https://github.com/jkinable/jorlib/issues</a>).</p>
+
+<h2><a id="user-content-thanks" class="anchor" href="#thanks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Thanks</h2>
+
+<p>With regards from</p>
+
+<p><a href="mailto:jkinable@cs.cmu.edu">Joris Kinable</a>, jORLib Project Creator</p>
+</article>
+</html>
