@@ -408,7 +408,7 @@ public final class CuttingStockSolver {
 		SimpleDebugger debugger=new SimpleDebugger(cg);
 
 		//OPTIONAL: add a logger
-		SimpleCGLogger logger=new SimpleCGLogger(cg, new File("./output/cuttingStock.log"));
+		SimpleCGLogger logger=new SimpleCGLogger(cg, new File("./cuttingStock.log"));
 
 		//Solve the problem through column generation
 		cg.solve(System.currentTimeMillis()+1000L);
@@ -532,10 +532,10 @@ The Pricing Problems can be modeled through the following MIP formulation which 
 \label{eq:PRICE_TSP.2} &x_e\in \{0,1\}& \forall e\in E
 \end{align}
 A new matching for the red Pricing Problem is generated if the above algorithm yields a solution with an objective value larger than $-\alpha$. Similarly, a new matching for the blue Pricing Problem is generated if the above algorithm yields a solution with an objective value larger than $-\beta$.\\
-After solving the Relaxed Master Problem (Constraints \eqref{eq:MP_TSP.6}-\eqref{eq:MP_TSP.11}) to optimality, we may end up with a fractional solution, i.e.\ some of the $z_m$ variables may have a fractional value. Consequently, branching is required. If the solution is fractional, then there must exist an edge $e\in E$ such that $0<\sum\limits_{\substack{m\in M^r:\\e\in m}}z_m<1$ or $0<\sum\limits_{\substack{m\in M^b:\\e\in m}}z_m<1$. Indeed, the integrality of the $z_m$ variables implies that an edge $e\in E$ is either part of a red matching, part of a blue matching, or not used at all. Consequently, when there exists an edge $e\in E$ such that $0<\sum\limits_{\substack{m\in M^r:\\e\in m}}z_m<1$, we can create two new problems: one where edge $e$ must be part of the red matching, and one where edge $e$ is \emph{not} used by the red matchings. Similarly, when $0<\sum\limits_{\substack{m\in M^b:\\e\in m}}z_m<1$ holds for an edge $e\in E$, we can again create two new subproblems: one where edge $e$ must be part of the blue matching, and one where edge $e$ is \emph{not} used by the blue matchings.
+After solving the Relaxed Master Problem (Constraints \eqref{eq:MP_TSP.6}-\eqref{eq:MP_TSP.11}) to optimality, we may end up with a fractional solution, i.e.\ some of the $z_m$ variables may have a fractional value. Consequently, branching is required. If the solution is fractional, then there must exist an edge $e\in E$ such that $0<\sum\limits_{\substack{m\in M^r:\\e\in m}}z_m<1$ or $0<\sum\limits_{\substack{m\in M^b:\\e\in m}}z_m<1$. Indeed, the integrality of the $z_m$ variables implies that an edge $e\in E$ is either part of a red matching, part of a blue matching, or not used at all. Consequently, when there exists an edge $e\in E$ such that $0<\sum\limits_{\substack{m\in M^r:\\e\in m}}z_m<1$, we can create two new problems: one where edge $e$ must be part of any red matching, and one where edge $e$ is \emph{not} used by any red matchings. Similarly, when $0<\sum\limits_{\substack{m\in M^b:\\e\in m}}z_m<1$ holds for an edge $e\in E$, we can again create two new subproblems: one where edge $e$ must be part of any blue matching, and one where edge $e$ is \emph{not} used by any blue matchings.
 
 \subsection{Implementation}
-This section is split into three parts: in the first part we solve the Relaxed Master Problem through Column Generation. In the second part we show how constraints can be added to the master problem during the solve process. In the third part we solve the original Master Problem through Branch-and-Price.
+This section is split into three parts: in the first part we solve the Relaxed Master Problem through Column Generation. In the second part we show how constraints can be added to the master problem during the solve process (cut generation). In the third part we solve the original Master Problem through Branch-and-Price.
 \subsubsection{Part 1: Column Generation}
 Similarly to the Cutting Stock example (Section \ref{sec:cutting_stock}), extensions to the following classes need to be provided to implement the Column Generation model:
 \begin{enumerate}[nolistsep]
@@ -768,7 +768,7 @@ public final class TSPCGSolver {
 		SimpleDebugger debugger=new SimpleDebugger(cg, cutHandler);
 
 		//OPTIONAL: add a logger
-		SimpleCGLogger logger=new SimpleCGLogger(cg, new File("./output/tspCG.log"));
+		SimpleCGLogger logger=new SimpleCGLogger(cg, new File("./tspCG.log"));
 
 		//Solve the problem through column generation
 		cg.solve(System.currentTimeMillis()+1000L);
@@ -1050,7 +1050,7 @@ public final class TSPSolver {
 		SimpleDebugger debugger=new SimpleDebugger(bap, cutHandler, true);
 
 		//OPTIONAL: Attach a logger to the Branch-and-Price procedure.
-		SimpleBAPLogger logger=new SimpleBAPLogger(bap, new File("./output/tsp.log"));
+		SimpleBAPLogger logger=new SimpleBAPLogger(bap, new File("./tsp.log"));
 
 		//Solve the TSP problem through Branch-and-Price
 		bap.runBranchAndPrice(System.currentTimeMillis()+8000000L);
@@ -1131,9 +1131,32 @@ The nodes in a Branch-and-Price tree may be processed in an arbitrary order. The
 Each class in the framework is equipped with a logger. For details refer to the documentation of Logback (\cite{logback}) and SLF4j (\cite{slf4j}). In addition, the classes \code{ColGen}, \code{AbstractBranchAndPrice} and \code{CutHandler} are equipped with a notifier which fires events during various stages of the Branch-and-Price and Column Generation procedures. These events can be captured by resp.\ a \code{CGListener}, \code{BAPListener} and \code{CHListener}. Examples of a logger and a debugger are provided by the \code{SimpleBAPLogger}, \code{SimpleCGLogger} and \code{SimpleDebugger} classes.
 
 \subsection{Configuration}
-A number of parameters may be configured through the \code{Configuration} class, including the number of threads used to solve the Pricing Problems, and whether valid inequalities should be separated or not. The configuration files can be accessed through the \code{AbstractMaster}, \code{AbstractPricingProblemSolver}, \code{CutHandler} classes. The user may also specify custom configurations, as well as additional parameters. 
+A number of parameters may be configured through the \code{Configuration} class, including the number of threads used to solve the Pricing Problems, and whether valid inequalities should be separated or not. The configuration files can be accessed through the \code{AbstractMaster}, \code{AbstractPricingProblemSolver}, \code{CutHandler} classes. The user may also specify custom configurations, as well as additional parameters.\\
+A list of all parameters and their default values can be found in Table \ref{x}. Note that all parameters are defined as \code{Final} by default. Changes to the parameters can only be made \emph{prior} to the construction of any of the Column Generation or Branch-and-Price classes! To change the parameters, use the following code:
+\begin{myblock}{Example on how to change parameter values}
+\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]
+Properties properties=new Properties();
+properties.setProperty("MAXTHREADS", "5"); //Use 5 threads
+Configuration.readFromFile(properties);
+\end{lstlisting}
+\end{myblock}
 
-
+\begin{table}
+\begin{tabular}{llp{6cm}}  
+    Parameter    & Default & Description (\$) \\
+    \midrule
+    MAXTHREADS      & 4    & Number of threads used by the column generation procedure. This parameter may be passed to the LP solver used to solve the Master problem. The number of threads also controls how many pricing problems are solved in parallel. In case there are multiple pricing problems, as for example in 
+Currently, the Branch-and-Price tree is \emph{not} solved in parallel, so increasing the number of threads won't have any effect on this.      \\
+    PRECISION      &    0.000001     & 0.01       \\
+    CUTSENABLED       & true     & 92.50      \\
+    EXPORT_MODEL       & false     & 33.33      \\
+    EXPORT_MASTER_DIR & "./output/masterLP/"      & 8.99       \\
+    QUICK_RETURN_AFTER_CUTS_FOUND & true      & 8.99       \\
+    \bottomrule
+  \end{tabular}
+\caption{Parameter description}
+\label{tbl:parameters}
+\end{table}
 
 \bibliographystyle{IEEEtranS} %IEEEtranS
 %\bibliographystyle{IEEEtranSN} %IEEEtranS %model2-names
