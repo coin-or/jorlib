@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.jorlib</groupId>
 		<artifactId>jorlib</artifactId>
-		<version>1.0</version>
+		<version>1.1</version>
 	</parent>
 	<artifactId>jorlib-core</artifactId>
 	<name>JORLib - Core</name>
@@ -45,6 +45,11 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>cplex</groupId>
+			<artifactId>cplex</artifactId>
+			<version>12.6.1</version>
 		</dependency>
 	</dependencies>
     <build>

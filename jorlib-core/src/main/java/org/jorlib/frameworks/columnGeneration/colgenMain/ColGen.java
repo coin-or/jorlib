@@ -106,19 +106,22 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	 * @param solvers pricing problem solvers
 	 * @param initSolution initial solution
 	 * @param cutoffValue cutoff Value. If the master is a minimization problem, the Colgen procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}. If the master is a maximization problem, the Colgen procedure is terminated if {@code floor(boundOnMasterObjective) <= cutoffValue}.
+	 * @param boundOnMasterObjective Bound on the best attainable objective value from the master problem. Assuming that the master is a minimization problem, the Colgen procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}.
 	 */
 	public ColGen(T dataModel, 
 					AbstractMaster<T, U, V, ? extends MasterData> master,
 					List<V> pricingProblems,
 					List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
 					List<U> initSolution,
-					int cutoffValue){
+					int cutoffValue,
+				  	double boundOnMasterObjective){
 		this.dataModel=dataModel;
 		this.master=master;
 		optimizationSenseMaster=master.getOptimizationSense();
 		this.pricingProblems=pricingProblems;
 		this.solvers=solvers;
 		this.cutoffValue = cutoffValue;
+		this.boundOnMasterObjective=boundOnMasterObjective;
 		master.addColumns(initSolution);
 
 		//Generate the pricing problem instances
@@ -143,14 +146,16 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	 * @param solvers pricing problem solvers
 	 * @param initSolution initial solution
 	 * @param cutoffValue cutoff Value. If the master is a minimization problem, the Colgen procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}. If the master is a maximization problem, the Colgen procedure is terminated if {@code floor(boundOnMasterObjective) <= cutoffValue}.
+	 * @param boundOnMasterObjective Bound on the best attainable objective value from the master problem. Assuming that the master is a minimization problem, the Colgen procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}.
 	 */
 	public ColGen(T dataModel, 
 			AbstractMaster<T, U, V, ? extends MasterData> master,
 			V pricingProblem,
 			List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
 			List<U> initSolution,
-			int cutoffValue){
-		this(dataModel, master, Collections.singletonList(pricingProblem), solvers, initSolution, cutoffValue);
+			int cutoffValue,
+			double boundOnMasterObjective){
+		this(dataModel, master, Collections.singletonList(pricingProblem), solvers, initSolution, cutoffValue, boundOnMasterObjective);
 	}
 
 	/**
@@ -162,6 +167,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	 * @param pricingProblemManager pricing problem manager
 	 * @param initSolution initial solution
 	 * @param cutoffValue cutoff Value. If the master is a minimization problem, the Colgen procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}. If the master is a maximization problem, the Colgen procedure is terminated if {@code floor(boundOnMasterObjective) <= cutoffValue}.
+	 * @param boundOnMasterObjective Bound on the best attainable objective value from the master problem. Assuming that the master is a minimization problem, the Colgen procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}.
 	 */
 	public ColGen(T dataModel, 
 			AbstractMaster<T, U, V, ? extends MasterData> master,
@@ -169,7 +175,8 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
 			PricingProblemManager<T,U, V> pricingProblemManager,
 			List<U> initSolution,
-			int cutoffValue){
+			int cutoffValue,
+			double boundOnMasterObjective){
 		this.dataModel=dataModel;
 		this.master=master;
 		optimizationSenseMaster=master.getOptimizationSense();
@@ -178,6 +185,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 		this.pricingProblemManager=pricingProblemManager;
 		master.addColumns(initSolution);
 		this.cutoffValue = cutoffValue;
+		this.boundOnMasterObjective=boundOnMasterObjective;
 
 		//Create a new notifier
 		notifier=new CGNotifier();
@@ -218,9 +226,14 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			//We can stop when the optimality gap is closed. We still need to check for violated initialInequalities though.
 			if(Math.abs(objectiveMasterProblem - boundOnMasterObjective)<config.PRECISION){
 				//Check whether there are inequalities. Otherwise potentially an infeasible integer solution (e.g. TSP solution with subtours) might be returned.
-				if(config.CUTSENABLED && master.hasNewCuts()){  
-					hasNewCuts=true;
-					continue;
+				if(config.CUTSENABLED){
+					long time=System.currentTimeMillis();
+					hasNewCuts=master.hasNewCuts();
+					masterSolveTime+=(System.currentTimeMillis()-time); //Generating inequalities is considered part of the master problem
+					if(hasNewCuts)
+						continue;
+					else
+						break;
 				}else
 					break;
 			}
@@ -412,9 +425,9 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	 */
 	protected boolean boundOnMasterExceedsCutoffValue(){
 		if(optimizationSenseMaster == OptimizationSense.MINIMIZE)
-			return Math.ceil(boundOnMasterObjective) >= cutoffValue;
+			return Math.ceil(boundOnMasterObjective-config.PRECISION) >= cutoffValue;
 		else
-			return Math.floor(boundOnMasterObjective) <= cutoffValue;
+			return Math.floor(boundOnMasterObjective+config.PRECISION) <= cutoffValue;
 	}
 	
 	/**

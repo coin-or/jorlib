@@ -70,9 +70,10 @@ public final class CuttingStockSolver {
 
 		//Create a set of initial initialColumns.
 		List<CuttingPattern> initSolution=this.getInitialSolution(pricingProblem);
+		double lowerBound=0; //Lower bound on solution
 
 		//Create a column generation instance
-		ColGen<CuttingStock, CuttingPattern, PricingProblem> cg=new ColGen<>(dataModel, master, pricingProblem, solvers, initSolution, upperBound);
+		ColGen<CuttingStock, CuttingPattern, PricingProblem> cg=new ColGen<>(dataModel, master, pricingProblem, solvers, initSolution, upperBound, lowerBound);
 
 		//OPTIONAL: add a debugger
 		SimpleDebugger debugger=new SimpleDebugger(cg);

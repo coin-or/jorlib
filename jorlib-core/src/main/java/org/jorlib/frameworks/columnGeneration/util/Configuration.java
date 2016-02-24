@@ -99,9 +99,8 @@ public class Configuration {
 			throw new RuntimeException("You can only provide a configuration once");
 		instance=new Configuration(properties);
 	}
-	
-	
-	
+
+
 	//---------------- CONFIGURATION --------------------------
 	
 	/*
