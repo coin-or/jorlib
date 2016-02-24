@@ -47,10 +47,10 @@
 			<version>1.6.1</version>
 		</dependency>
 		<dependency>
-				<groupId>cplex</groupId>
-				<artifactId>cplex</artifactId>
-				<version>12.6.1</version>
-			</dependency>
+			<groupId>cplex</groupId>
+			<artifactId>cplex</artifactId>
+			<version>12.6.1</version>
+		</dependency>
 	</dependencies>
     <build>
         <plugins>
