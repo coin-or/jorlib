@@ -401,8 +401,11 @@ public final class CuttingStockSolver {
 		//Create a set of initial Columns.
 		List<CuttingPattern> initSolution=this.getInitialSolution(pricingProblem);
 
+		//Lower bound on column generation solution (stronger is better): calculate least amount of finals needed to fulfil the order (ceil(\sum_j d_j*w_j /L) 
+		double lowerBound= Math.ceil(1.0* IntStream.range(0, dataModel.nrFinals).mapToObj(i -> dataModel.demandForFinals[i] * dataModel.finals[i]).mapToInt(i -> i).sum() / dataModel.rollWidth);
+
 		//Create a column generation instance
-		ColGen<CuttingStock, CuttingPattern, PricingProblem> cg=new ColGen<>(dataModel, master, pricingProblem, solvers, initSolution, upperBound);
+		ColGen<CuttingStock, CuttingPattern, PricingProblem> cg=new ColGen<>(dataModel, master, pricingProblem, solvers, initSolution, upperBound, lowerBound);
 
 		//OPTIONAL: add a debugger
 		SimpleDebugger debugger=new SimpleDebugger(cg);
@@ -761,8 +764,11 @@ public final class TSPCGSolver {
 		//Create an initial solution and use it as an upper bound
 		List<Matching> initSolution=... //Create a set of initial initialColumns.
 
+		//Lower bound on solution (stronger is better), e.g. sum of cheapest edge out of every node.
+		double lowerBound=0;
+
 		//Create a column generation instance
-		ColGen<TSP, Matching, PricingProblemByColor> cg=new ColGen<>(tsp, master, pricingProblems, solvers, initSolution, tourLengthInitSolution);
+		ColGen<TSP, Matching, PricingProblemByColor> cg=new ColGen<>(tsp, master, pricingProblems, solvers, initSolution, tourLengthInitSolution, lowerBound);
 
 		//OPTIONAL: add a debugger
 		SimpleDebugger debugger=new SimpleDebugger(cg, cutHandler);
@@ -1001,9 +1007,10 @@ public final class BranchAndPrice extends AbstractBranchAndPrice<TSP,Matching, P
                           List<PricingProblemByColor> pricingProblems,
                           List<Class<? extends AbstractPricingProblemSolver<TSP, Matching, PricingProblemByColor>>> solvers,
                           List<? extends AbstractBranchCreator<TSP, Matching, PricingProblemByColor>> branchCreators,
-                          int upperBoundOnObjective,
+                          int objectiveInitialSolution,
                           List<Matching> initialSolution){
-        super(modelData, master, pricingProblems, solvers, branchCreators, upperBoundOnObjective, initialSolution);
+        super(modelData, master, pricingProblems, solvers, branchCreators, 0, objectiveInitialSolution);
+        this.warmStart(objectiveInitialSolution, initialSolution);
     }
 
     @Override

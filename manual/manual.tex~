@@ -401,8 +401,11 @@ public final class CuttingStockSolver {
 		//Create a set of initial Columns.
 		List<CuttingPattern> initSolution=this.getInitialSolution(pricingProblem);
 
+		//Lower bound on column generation solution (stronger is better): calculate least amount of finals needed to fulfil the order (ceil(\sum_j d_j*w_j /L) 
+		double lowerBound= Math.ceil(1.0* IntStream.range(0, dataModel.nrFinals).mapToObj(i -> dataModel.demandForFinals[i] * dataModel.finals[i]).mapToInt(i -> i).sum() / dataModel.rollWidth);
+
 		//Create a column generation instance
-		ColGen<CuttingStock, CuttingPattern, PricingProblem> cg=new ColGen<>(dataModel, master, pricingProblem, solvers, initSolution, upperBound);
+		ColGen<CuttingStock, CuttingPattern, PricingProblem> cg=new ColGen<>(dataModel, master, pricingProblem, solvers, initSolution, upperBound, lowerBound);
 
 		//OPTIONAL: add a debugger
 		SimpleDebugger debugger=new SimpleDebugger(cg);
@@ -761,8 +764,11 @@ public final class TSPCGSolver {
 		//Create an initial solution and use it as an upper bound
 		List<Matching> initSolution=... //Create a set of initial initialColumns.
 
+		//Lower bound on solution (stronger is better), e.g. sum of cheapest edge out of every node.
+		double lowerBound=0;
+
 		//Create a column generation instance
-		ColGen<TSP, Matching, PricingProblemByColor> cg=new ColGen<>(tsp, master, pricingProblems, solvers, initSolution, tourLengthInitSolution);
+		ColGen<TSP, Matching, PricingProblemByColor> cg=new ColGen<>(tsp, master, pricingProblems, solvers, initSolution, tourLengthInitSolution, lowerBound);
 
 		//OPTIONAL: add a debugger
 		SimpleDebugger debugger=new SimpleDebugger(cg, cutHandler);
@@ -1132,7 +1138,7 @@ Each class in the framework is equipped with a logger. For details refer to the 
 
 \subsection{Configuration}
 A number of parameters may be configured through the \code{Configuration} class, including the number of threads used to solve the Pricing Problems, and whether valid inequalities should be separated or not. The configuration files can be accessed through the \code{AbstractMaster}, \code{AbstractPricingProblemSolver}, \code{CutHandler} classes. The user may also specify custom configurations, as well as additional parameters.\\
-A list of all parameters and their default values can be found in Table \ref{x}. Note that all parameters are defined as \code{Final} by default. Changes to the parameters can only be made \emph{prior} to the construction of any of the Column Generation or Branch-and-Price classes! To change the parameters, use the following code:
+A list of all parameters and their default values can be found in Table \ref{tbl:parameters}. Note that all parameters are defined as \code{Final} by default. Changes to the parameters can only be made \emph{prior} to the construction of any of the Column Generation or Branch-and-Price classes! To change the parameters, use the following code:
 \begin{myblock}{Example on how to change parameter values}
 \begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]
 Properties properties=new Properties();
