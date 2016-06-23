@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.8.15)  23 JUN 2016 14:37
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.8.15)  23 JUN 2016 15:00
 entering extended mode
  %&-line parsing enabled.
 **manual.tex
@@ -1069,7 +1069,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 511--513
  []
 
 [10] [11] [12] [13] [14] [15] [16] [17] [18] [19] [20] [21]
-<figures/CG_flowChart.pdf, id=870, 633.36626pt x 641.39626pt>
+<figures/CG_flowChart.pdf, id=870, 1156.32pt x 1167.36125pt>
 File: figures/CG_flowChart.pdf Graphic file (type pdf)
 
 <use figures/CG_flowChart.pdf>
@@ -1113,7 +1113,7 @@ i10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti7.pfb></us
 r/share/texmf-texlive/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/shar
 e/texmf-texlive/fonts/type1/urw/courier/ucrb8a.pfb></usr/share/texmf-texlive/fo
 nts/type1/urw/courier/ucrr8a.pfb>
-Output written on manual.pdf (26 pages, 924766 bytes).
+Output written on manual.pdf (26 pages, 698966 bytes).
 PDF statistics:
  1151 PDF objects out of 1200 (max. 8388607)
  707 named destinations out of 1000 (max. 500000)
