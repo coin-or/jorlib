@@ -73,7 +73,10 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	protected final OptimizationSense optimizationSenseMaster;
 
 	/**
-	 * Creates a new Master Problem
+	 * Creates a new Master Problem.
+	 *
+	 * This implementation will invoke the {@link #buildModel()}  buildModel} method. Any data members required during the execution of {@link #buildModel()}  buildModel} should be instantiated prior to the invocation of this constructor,
+	 * or within the {@link #buildModel()}  buildModel} method.
 	 * @param dataModel data model
 	 * @param pricingProblems pricing problems
 	 * @param optimizationSenseMaster indicates whether the Master Problem is a Minimiation or a Maximization problem
@@ -89,6 +92,9 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 
 	/**
 	 * Creates a new Master Problem
+	 *
+	 * This implementation will invoke the {@link #buildModel()}  buildModel} method. Any data members required during the execution of {@link #buildModel()}  buildModel} should be instantiated prior to the invocation of this constructor,
+	 * or within the {@link #buildModel()}  buildModel} method.
 	 * @param dataModel data model
 	 * @param pricingProblem pricing problem
 	 * @param optimizationSenseMaster indicates whether the Master Problem is a Minimiation or a Maximization problem
@@ -99,6 +105,9 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 
 	/**
 	 * Creates a new Master Problem
+	 *
+	 * This implementation will invoke the {@link #buildModel()}  buildModel} method. Any data members required during the execution of {@link #buildModel()}  buildModel} should be instantiated prior to the invocation of this constructor,
+	 * or within the {@link #buildModel()}  buildModel} method.
 	 * @param dataModel data model
 	 * @param pricingProblems pricing problems
 	 * @param cutHandler Reference to a cut handler
@@ -115,6 +124,9 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 
 	/**
 	 * Creates a new Master Problem
+	 *
+	 * This implementation will invoke the {@link #buildModel()}  buildModel} method. Any data members required during the execution of {@link #buildModel()}  buildModel} should be instantiated prior to the invocation of this constructor,
+	 * or within the {@link #buildModel()}  buildModel} method.
 	 * @param dataModel data model
 	 * @param pricingProblem pricing problem
 	 * @param cutHandler Reference to a cut handler

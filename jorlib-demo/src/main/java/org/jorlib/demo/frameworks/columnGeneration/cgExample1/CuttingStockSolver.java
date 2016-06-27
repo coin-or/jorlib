@@ -68,9 +68,11 @@ public final class CuttingStockSolver {
 		//Define an upper bound (stronger is better). In this case we simply sum the demands, i.e. cut each final from its own raw (Rather poor initial solution).
 		int upperBound=IntStream.of(dataModel.demandForFinals).sum();
 
-		//Create a set of initial initialColumns.
+		//Create a set of initial columns.
 		List<CuttingPattern> initSolution=this.getInitialSolution(pricingProblem);
-		double lowerBound=0; //Lower bound on solution
+
+		//Lower bound on column generation solution (stronger is better): calculate least amount of finals needed to fulfil the order (ceil(\sum_j d_j*w_j /L)
+		double lowerBound= Math.ceil(1.0* IntStream.range(0, dataModel.nrFinals).mapToObj(i -> dataModel.demandForFinals[i] * dataModel.finals[i]).mapToInt(i -> i).sum() / dataModel.rollWidth);
 
 		//Create a column generation instance
 		ColGen<CuttingStock, CuttingPattern, PricingProblem> cg=new ColGen<>(dataModel, master, pricingProblem, solvers, initSolution, upperBound, lowerBound);
@@ -93,7 +95,7 @@ public final class CuttingStockSolver {
 		System.out.println("CG terminated with objectiveMasterProblem: "+cg.getObjective());
 		System.out.println("Number of iterations: "+cg.getNumberOfIterations());
 		System.out.println("Time spent on master: "+cg.getMasterSolveTime()+" time spent on pricing: "+cg.getPricingSolveTime());
-		System.out.println("Columns (only non-zero initialColumns are returned):");
+		System.out.println("Columns (only non-zero columns are returned):");
 		for(CuttingPattern column : solution)
 			System.out.println(column);
 		

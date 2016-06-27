@@ -91,8 +91,10 @@ public final class TSPCGSolver {
 		//Create an initial solution and use it as an upper bound
 		TSPLibTour initTour=TSPLibTour.createCanonicalTour(tsp.N); //Feasible solution
 		int tourLength=tsp.getTourLength(initTour); //Upper bound (Stronger is better)
-		List<Matching> initSolution=this.convertTourToColumns(initTour, pricingProblems); //Create a set of initial initialColumns.
-		double lowerBound=0; //Lower bound on solution
+		List<Matching> initSolution=this.convertTourToColumns(initTour, pricingProblems); //Create a set of initial columns.
+
+		//Lower bound on solution (stronger is better), e.g. sum of cheapest edge out of every node.
+		double lowerBound=0;
 
 		//Create a column generation instance
 		ColGen<TSP, Matching, PricingProblemByColor> cg=new ColGen<>(tsp, master, pricingProblems, solvers, initSolution, tourLength, lowerBound);
@@ -115,9 +117,8 @@ public final class TSPCGSolver {
 		System.out.println("CG terminated with objectiveMasterProblem: "+cg.getObjective());
 		System.out.println("Number of iterations: "+cg.getNumberOfIterations());
 		System.out.println("Time spent on master: "+cg.getMasterSolveTime()+" time spent on pricing: "+cg.getPricingSolveTime());
-		System.out.println("Columns (only non-zero initialColumns are returned):");
-		for(Matching column : solution)
-			System.out.println(column);
+		System.out.println("Columns (only non-zero columns are returned):");
+		solution.forEach(System.out::println);
 
 		//Clean up:
 		cg.close(); //This closes both the master and pricing problems
@@ -141,10 +142,10 @@ public final class TSPCGSolver {
 	//------------------ Helper methods -----------------
 
 	/**
-	 * Converts a TSPLib tour to a set of initialColumns: A column for every pricing problem is created
+	 * Converts a TSPLib tour to a set of columns: A column for every pricing problem is created
 	 * @param tour tour
 	 * @param pricingProblems pricing problems
-	 * @return List of initialColumns
+	 * @return List of columns
 	 */
 	private List<Matching> convertTourToColumns(TSPLibTour tour, List<PricingProblemByColor> pricingProblems) {
 		List<Set<DefaultWeightedEdge>> matchings=new ArrayList<>();
