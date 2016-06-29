@@ -298,7 +298,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			newColumns=pricingProblemManager.solvePricingProblems(solver);
 
 			//Calculate a bound on the optimal solution of the master problem
-			this.boundOnMasterObjective =Math.max(boundOnMasterObjective,this.calculateBoundOnMasterObjective(solver));
+			this.boundOnMasterObjective =(optimizationSenseMaster == OptimizationSense.MINIMIZE ? Math.max(boundOnMasterObjective,this.calculateBoundOnMasterObjective(solver)) : Math.min(boundOnMasterObjective,this.calculateBoundOnMasterObjective(solver)));
 
 			//Stop when we found new columns
 			if(!newColumns.isEmpty()){

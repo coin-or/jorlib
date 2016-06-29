@@ -5,12 +5,13 @@ Changes to jORLib in each version:
 -**Upcoming** (unknown):
 	-Fixed a bug where the number of processed nodes in BAP was not calculated correctly (pruning nodes did not increment the nodes processed counter)
 	-Added BAP example GraphColoring
-	-Fixed a bug where an externally computed bound on the optimization problem was completely ignored by BAP/CG. For example, the size of a maximum clique forms a valid bound for the chromatic number of a graph. This bound, although passed correctly to BAP, would not be taken into account.
+	-Fixed a bug where an externally computed bound on an optimization problem was completely ignored by BAP/CG. For example, the size of a maximum clique forms a valid bound for the chromatic number of a graph. This bound, although passed correctly to BAP, would not be taken into account.
+	-Fixed a bug where in a maximization problem a bound computed through the function calculateBoundOnMasterObjective(solver) would be ignored because the optimization sense was not taken into account correctly.
 
 - **version 1.1** (24-Feb-2016): 
 	- Fixed a rare bug which could cause the Branch-and-Price procedure to end prematurely.
 	- Fixed an issue where seperating cuts was not counted in the computation time of the master problem
-	-When running Branch-and-Price, you can now also query the objective of the root node without having re-solve
+	-When running Branch-and-Price, you can now also query the objective of the root node without having to re-solve
 	-Fixed a bug in AbstractBranchAndPrice where hasSolution() could return a nullpointer.
 	-Fixed: the bound on BAP instances solved to optimality was always 0, instead of the optimal solution
 
