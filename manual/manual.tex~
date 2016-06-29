@@ -1,13 +1,10 @@
 \PassOptionsToPackage{svgnames}{xcolor}
 \documentclass[a4paper]{article}
 \usepackage[margin=2.5cm]{geometry}
-%\documentclass[journal]{IEEEtran}
-%\documentclass{report}
-%\documentclass{ActaOulu}
+
 
 \usepackage{fontenc}[T1]
 \usepackage{alltt}
-%\usepackage{epsfig}
 \usepackage{graphicx}
 
 \usepackage[english]{babel}
@@ -25,11 +22,11 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage[round]{natbib}
 \usepackage{hyperref}
 \usepackage{breakurl}
 \usepackage{mdwlist}
 \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
-% \usepackage{color}
 \usepackage{pgf}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,shapes.multipart,positioning, fit, calc}
@@ -40,7 +37,6 @@
 \usepackage{listings}
 \usepackage{lstcustom}
 \usepackage[scaled=0.8]{beramono}% beramono or luximono give very nice ttfamily fonts
-% \usepackage{lmodern}
 \usepackage{courier}
 
 
@@ -432,12 +428,84 @@ public final class CuttingStockSolver {
 \end{myblock}
 In the code snippet above, the only new class we have not introduced before is the \code{ColGen} class. This class manages the entire solve procedure by invoking the master and Pricing Problems iteratively. This class is provided as part of the framework; its basic implementation suffices for most use cases. Nevertheless, when desired each of its methods may be overridden by a custom implementation.
 
+\section{Example 2 - Solving Graph Coloring through Branch-and-Price}\label{sec:gcp}
+In this example, we will solve the well-known Graph Coloring problem (GCP) through Branch-and-Price. In GCP, one wants to assign a color to each vertex in an undirected graph, such that no two neighboring vertices have the same color, while minimizing the total number of different colors needed to color the entire graph. Two vertices are neighbors whenever there is an edge between them. The minimum number of colors needed to color a graph in this way is commonly referred to as the \emph{Chromatic number} of a graph. An example is provided in Figure \ref{fig:gcp_example}. The Branch-and-Price implementation provided in the next subsections is based on the paper by \citet{METR95}.\\
+An \emph{Independent Set} in a graph is defined as a set of vertices such that no two vertices are connected by an edge in the graph. In the context of Graph Coloring, all vertices belonging to the same Independent Set may be colored by the same color. Consequently, a feasible coloring of a graph can be interpreted as a partitioning of the graph into disjoint independent sets, such that each vertex belongs to exactly one independent set. For example, in Figure \ref{fig:gcp_example}, the independent sets $\{\{2,4\}, \{1\}, \{3\}\}$ form a feasible coloring.\\
+In the following Sections we will show how this problem can be solved through our Branch-and-Price framework. Techniques used in this example:
+\begin{itemize}
+ \item Column generation
+ \item Branch-and-Price
+\end{itemize}
+A full implementation can be found in the demo package.
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\tikzset{vertex/.style = {shape=circle,draw,minimum size=1.5em, inner sep=0.05cm}}
+% \tikzset{edge/.style = {->,> = latex'}}
+% vertices
+\node[vertex, fill=green] (1) at  (0,0) {1};
+\node[vertex, fill=red] (2) at  (3,0) {2};
+\node[vertex, fill=yellow] (3) at  (3,-3) {3};
+\node[vertex, fill=red] (4) at  (0,-3) {4};
+
+%edges
+\draw[edge,ultra thick] (1) edge (2);
+\draw[edge,ultra thick] (2) edge (3);
+\draw[edge,ultra thick] (3) edge (4);
+\draw[edge,ultra thick] (4) edge (1);
+\draw[edge,ultra thick] (1) edge (3);
+\end{tikzpicture}
+\caption[Example of a GCP solution.]{Example of an optimal GCP solution having 3 colors.}
+\label{fig:gcp_example}
+\end{figure}
+
+
+\subsection{Problem description}
+\begin{table}[h]
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameter} 	& \textbf{Description}\\
+\midrule
+$V$		& Set of vertices in the graph.\\
+$E$		& Set of undirected edges in the graph.\\
+$S$		& Set of all possible independent sets\\
+\bottomrule
+\end{tabular}
+\caption{}
+\label{tbl:gcp} 
+\end{table}
+
+The Master Problem (MP) for GCP is defined as:
+\begin{align}
+\label{eq:MP_GCP.0} \mathit{MP:}\; min\; &\sum_{s\in S} x_s &\\
+\label{eq:MP_GCP.1} \mbox{s.t. }&\sum_{s \in S: i\in s} x_s \geq 1 & \forall i\in V\\
+\label{eq:MP_GCP.5} &x_s\in \{0,1\} &\forall s\in S
+\end{align}
+Binary variables $x_s$ denote whether a particular independent set $s$ is part of the solution or not. Constraint \eqref{eq:MP_GCP.1} states that each vertex must be covered by an independent set. The Reduced Master Problem is obtained from MP by relaxing integrality constraints on the $x_s$ variables, and by replacing $S$ by $\overline{S}$, where $\overline{S}$ is a subset of $S$.
+Associate dual variables $\pi_i$ with constraints \eqref{eq:MP_GCP.1}. The pricing problem becomes:
+\begin{align}
+\label{eq:PRICE_GCP.0} \mathit{PRICING:}\; max\; &\sum_{i\in V} \pi_i &\\
+\label{eq:PRICE_GCP.1} \mbox{s.t. }&z_i+z_j \leq 1 & \forall (i,j)\in E\\
+\label{eq:PRICE_GCP.5} &z_i\in \{0,1\} &\forall i\in V
+\end{align}
+This pricing problem is also known as a \emph{weighted independent set} problem, where the weight of each vertex is given by the dual values $\pi_i$. Binary variables $z_i$ indicate whether a particular vertex $i\in V$ is part of a maximum weight independent set. If the optimal solution to the pricing problem has a value larger than 1, then the $z_i$ with value 1 correspond to an independent set that should be added to $\overline{S}$ in the Reduced Master Problem.\\
+After solving the Reduced Master Problem to optimality, the solution may be fractional, and branching is required. Define the following operations on a Graph Coloring Problem:
+\begin{itemize}
+ \item SAME(i,j) requires that two vertices $i,j$ have the same color.
+ \item DIFFER(i,j) requires that two vertices $i,j$ have different colors.
+\end{itemize}
+\citet{METR95} show that in any fractional solution there must exist two independent sets $S_1,S_2 \in S$ and two vertices $i$ and $j$ such that $i\in S_1 \cap S_2$ and $j\in S_1 \setminus S_2$. For a given pair of such vertices $i$, $j$, we can create two branches: in one branch SAME(i,j) holds, in the other branch DIFFER(i,j) holds. Implementing these branches is simple. For SAME(i,j), we can add the constraint $z_i=z_j$ to the PRICING problem. For DIFFER(i,j), we add $z_i+z_j\leq 1$. 
+
+\subsection{Implementation}
 
 
 
-\section{Example 2 - Solving the Traveling Salesman Problem through Branch-and-Price}\label{sec:tsp}
+
+
+\section{Example 3 - Solving the Traveling Salesman Problem through Branch-and-Price}\label{sec:tsp}
 In this example, we will solve the well-known Traveling Salesman Problem (TSP) through Branch-and-Price. In the TSP problem, we are looking for a least cost Hamiltonian cycle in a graph. In this particular example we will assume that the number of vertices in the graph is even, and that the graph is undirected.\\
-A matching in a graph is defined as a set of edges such that no two edges in the set have an endpoint in common. A matching in a graph is said to be \emph{perfect} if every vertex in the graph is incident to exactly one edge in the matching. By definition, a perfect matching only exists in graphs with an even number of vertices. The weight of a matching is defined as the sum of the weights of the edges in the matching, where the weight of an edge is specified in the underlying graph. We can now interpret the TSP problem as the problem of finding exactly 2 perfect matching (say a red matching and a blue matching) of minimum total weight which together form a Hamiltonian cycle. Figure \ref{fig:tsp_example} gives an example. The red edges and the blue edges each form a perfect matching, and together they create a Hamiltonian cycle. The cost of the cycle is equal to the sum of the costs of these two matchings.\\
+A \emph{matching} in a graph is defined as a set of edges such that no two edges in the set have an endpoint in common. A matching in a graph is said to be \emph{perfect} if every vertex in the graph is incident to exactly one edge in the matching. By definition, a perfect matching only exists in graphs with an even number of vertices. The weight of a matching is defined as the sum of the weights of the edges in the matching, where the weight of an edge is specified in the underlying graph. We can now interpret the TSP problem as the problem of finding exactly 2 perfect matching (say a red matching and a blue matching) of minimum total weight which together form a Hamiltonian cycle. Figure \ref{fig:tsp_example} gives an example. The red edges and the blue edges each form a perfect matching, and together they create a Hamiltonian cycle. The cost of the cycle is equal to the sum of the costs of these two matchings.\\
 \begin{figure}
 \centering
 \begin{tikzpicture}
@@ -489,7 +557,7 @@ $\delta(S)$	& Set of edges with exactly one endpoint in $S$, $S\subseteq V$.\\
 \label{tbl:tsp} 
 \end{table}
 
-The Master Problem (MP) for Cutting stock is defined as:
+The Master Problem (MP) for TSP is defined as:
 \begin{align}
 \label{eq:MP_TSP.0} \mathit{MP:}\; min\; &\sum_{m\in M} c_mz_m &\\
 \label{eq:MP_TSP.1} \mbox{s.t. }&\sum_{m \in M^r} z_m = 1 & \\
@@ -1135,7 +1203,28 @@ The nodes in a Branch-and-Price tree may be processed in an arbitrary order. The
 \section{Miscellaneous topics}
 
 \subsection{Logging and Debugging}
-Each class in the framework is equipped with a logger. For details refer to the documentation of Logback (\cite{logback}) and SLF4j (\cite{slf4j}). In addition, the classes \code{ColGen}, \code{AbstractBranchAndPrice} and \code{CutHandler} are equipped with a notifier which fires events during various stages of the Branch-and-Price and Column Generation procedures. These events can be captured by resp.\ a \code{CGListener}, \code{BAPListener} and \code{CHListener}. Examples of a logger and a debugger are provided by the \code{SimpleBAPLogger}, \code{SimpleCGLogger} and \code{SimpleDebugger} classes.
+Implementing Column Generation applications is hard and prone to errors. Having a good set of debugging tools, preferably without adding print statements everywhere, is a necessity. To simplify the debugging process, a number of tools are available within the framework.\\
+Each class in the framework is equipped with a logger. For details refer to the documentation of Logback (\cite{logback}) and SLF4j (\cite{slf4j}). The logger can be used to write debugging output directly to the screen, or redirect the output to a file. Debugging can be selectively enabled and disabled through a Logback configuration file.\\
+Next to a logger, the classes \code{ColGen}, \code{AbstractBranchAndPrice} and \code{CutHandler} are equipped with a notifier which fires events during various stages of the Branch-and-Price and Column Generation procedures. These events can be captured by resp.\ a \code{CGListener}, \code{BAPListener} and \code{CHListener}. Examples of a logger and a debugger are provided by the \code{SimpleBAPLogger}, \code{SimpleCGLogger} and \code{SimpleDebugger} classes. Information about a specific event fired by a notifier can be extracted from the event that has been fired. Furthermore, the listeners and loggers have access to the \code{ColGen}, \code{AbstractBranchAndPrice} and \code{CutHandler} classes, allowing them to query specific information whenever events are received. The events fired by the notifiers could also be used to develop for example a graphical application which depicts a live representation of the solve process.\\
+All classes providing logging or debugging can be easily extended. Here is an example. Imagine that you want to know exactly which columns are provided to initialize a node somewhere in the middle of the Branch-and-Price tree. Currently, none of the debuggers does this because the number of columns could be large, thereby creating vast amounts of debugging output. One cumbersome implementation would be to overwrite the \code{solveBAPNode} method in the \code{AbstractBranchAndPrice} class, thereby adding some print statements to the beginning of the method. These kind of modifications are obviously dangerous because they may potentially modify the flow of the algorithm and could introduce errors. A much more elegant way is to implement a new debugger (see \code{SimpleDebugger} for an example). Each debugger is essentially a listener which listens for events fired by the notifiers. There is no restriction on the number of listeners. Alternatively to implementing a new debugger, one could simply extend \code{SimpleDebugger} as follows:
+\begin{myblock}{Extending \code{SimpleDebugger}}
+\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
+public class InitColumnsDebugger extends SimpleDebugger{
+    public InitColumnsDebugger(AbstractBranchAndPrice bap, boolean captureColumnGenerationEventsBAP) {
+        super(bap, true);
+    }
+
+    @Override
+    public void processNextNode(ProcessingNextNodeEvent event) {
+        super.processNextNode(event);
+        for(Column c: (List<Column>)event.node.getInitialColumns())
+            System.out.println(c);
+    }
+}
+\end{lstlisting}
+\end{myblock}
+In the above code snippet, we override a method which handles \code{ProcessingNextNodeEvent} events. This particular event is fired whenever a new node in the Branch-and-Price tree is about to be processed. Through this event we have access to the node that will be processed, and we can print the columns that will be used to initialize the node.\\
+Finally, the class \code{SimpleBAPLogger} may be used to write a concise summary of the Branch-and-Price algorithm execution to a file, thereby giving information about the nodes that have been solved, their bound, objective, branching decisions etc. This summary is particularly helpful to check whether Branching rules are implemented correctly, to verify whether bounds are being processed correctly, to check the progress of the algorithm, and to check convergence of the algorithm.
 
 \subsection{Configuration}
 A number of parameters may be configured through the \code{Configuration} class, including the number of threads used to solve the Pricing Problems, and whether valid inequalities should be separated or not. The configuration files can be accessed through the \code{AbstractMaster}, \code{AbstractPricingProblemSolver}, \code{CutHandler} classes. The user may also specify custom configurations, as well as additional parameters.\\
@@ -1169,8 +1258,7 @@ Configuration.readFromFile(properties);
 }
 \end{table}
 
-\bibliographystyle{IEEEtranS} %IEEEtranS
-%\bibliographystyle{IEEEtranSN} %IEEEtranS %model2-names
+\bibliographystyle{IEEEtranSN}
 \bibliography{sources}
 
 

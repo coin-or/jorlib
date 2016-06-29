@@ -2,19 +2,22 @@
 \BOOKMARK [1][-]{section.2}{Example 1 - Solving the Cutting Stock Problem through Column Generation}{}
 \BOOKMARK [2][-]{subsection.2.1}{Problem description}{section.2}
 \BOOKMARK [2][-]{subsection.2.2}{Implementation}{section.2}
-\BOOKMARK [1][-]{section.3}{Example 2 - Solving the Traveling Salesman Problem through Branch-and-Price}{}
+\BOOKMARK [1][-]{section.3}{Example 2 - Solving Graph Coloring through Branch-and-Price}{}
 \BOOKMARK [2][-]{subsection.3.1}{Problem description}{section.3}
 \BOOKMARK [2][-]{subsection.3.2}{Implementation}{section.3}
-\BOOKMARK [3][-]{subsubsection.3.2.1}{Part 1: Column Generation}{subsection.3.2}
-\BOOKMARK [3][-]{subsubsection.3.2.2}{Part 2: Separating valid inequalities}{subsection.3.2}
-\BOOKMARK [3][-]{subsubsection.3.2.3}{Part 3: Branch-and-Price}{subsection.3.2}
-\BOOKMARK [1][-]{section.4}{Implementation details}{}
-\BOOKMARK [2][-]{subsection.4.1}{Column Generation solve method}{section.4}
-\BOOKMARK [2][-]{subsection.4.2}{Branch-and-Price solve method}{section.4}
-\BOOKMARK [2][-]{subsection.4.3}{Bounds}{section.4}
-\BOOKMARK [2][-]{subsection.4.4}{Solving the Pricing Problem\(s\)}{section.4}
-\BOOKMARK [2][-]{subsection.4.5}{Initial solution}{section.4}
-\BOOKMARK [2][-]{subsection.4.6}{Branch-and-Price node ordering}{section.4}
-\BOOKMARK [1][-]{section.5}{Miscellaneous topics}{}
-\BOOKMARK [2][-]{subsection.5.1}{Logging and Debugging}{section.5}
-\BOOKMARK [2][-]{subsection.5.2}{Configuration}{section.5}
+\BOOKMARK [1][-]{section.4}{Example 3 - Solving the Traveling Salesman Problem through Branch-and-Price}{}
+\BOOKMARK [2][-]{subsection.4.1}{Problem description}{section.4}
+\BOOKMARK [2][-]{subsection.4.2}{Implementation}{section.4}
+\BOOKMARK [3][-]{subsubsection.4.2.1}{Part 1: Column Generation}{subsection.4.2}
+\BOOKMARK [3][-]{subsubsection.4.2.2}{Part 2: Separating valid inequalities}{subsection.4.2}
+\BOOKMARK [3][-]{subsubsection.4.2.3}{Part 3: Branch-and-Price}{subsection.4.2}
+\BOOKMARK [1][-]{section.5}{Implementation details}{}
+\BOOKMARK [2][-]{subsection.5.1}{Column Generation solve method}{section.5}
+\BOOKMARK [2][-]{subsection.5.2}{Branch-and-Price solve method}{section.5}
+\BOOKMARK [2][-]{subsection.5.3}{Bounds}{section.5}
+\BOOKMARK [2][-]{subsection.5.4}{Solving the Pricing Problem\(s\)}{section.5}
+\BOOKMARK [2][-]{subsection.5.5}{Initial solution}{section.5}
+\BOOKMARK [2][-]{subsection.5.6}{Branch-and-Price node ordering}{section.5}
+\BOOKMARK [1][-]{section.6}{Miscellaneous topics}{}
+\BOOKMARK [2][-]{subsection.6.1}{Logging and Debugging}{section.6}
+\BOOKMARK [2][-]{subsection.6.2}{Configuration}{section.6}

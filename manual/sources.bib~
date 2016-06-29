@@ -1,0 +1,9 @@
+@misc{logback,
+  title = {Logback},
+  howpublished = {\url{http://logback.qos.ch/}},
+}
+
+@misc{slf4j,
+  title = {{SLF4j}},
+  howpublished = {\url{http://www.slf4j.org/}},
+}
