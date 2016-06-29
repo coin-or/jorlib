@@ -49,7 +49,7 @@ public final class TSP extends SimpleWeightedGraph<Integer,DefaultWeightedEdge> 
 	/** Number of vertices **/
 	public final int N;
 	/** TSP Lib instance **/
-	protected final TSPLibInstance tspLibInstance; //
+	protected final TSPLibInstance tspLibInstance;
 	
 	public TSP(String tspInstanceLocation) throws IOException{
 		super(DefaultWeightedEdge.class);

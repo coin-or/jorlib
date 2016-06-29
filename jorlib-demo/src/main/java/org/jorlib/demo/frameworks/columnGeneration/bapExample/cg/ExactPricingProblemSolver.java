@@ -87,7 +87,7 @@ public final class ExactPricingProblemSolver extends AbstractPricingProblemSolve
 				IloIntVar var=cplex.boolVar("x_"+dataModel.getEdgeSource(edge)+"_"+dataModel.getEdgeTarget(edge));
 				vars.put(edge, var);
 			}
-			//Create the objectiveMasterProblem
+			//Create the objective function
 			obj=cplex.addMaximize();
 			//Create the constraints:
 			//EXACTLY 1 edge must be selected from all edges incident to a particular vertex

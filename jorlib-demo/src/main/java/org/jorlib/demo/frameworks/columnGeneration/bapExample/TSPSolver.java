@@ -86,7 +86,7 @@ public final class TSPSolver {
 		//Create the master problem
 		Master master=new Master(tsp, pricingProblems, cutHandler);
 		
-		//Define which solvers to use
+		//Define which solvers to use for the pricing problem
 		List<Class<? extends AbstractPricingProblemSolver<TSP, Matching, PricingProblemByColor>>> solvers= Collections.singletonList(ExactPricingProblemSolver.class);
 		
 		//OPTIONAL: Get an initial solution and use it as an upper bound
@@ -112,7 +112,7 @@ public final class TSPSolver {
 		
 		//Print solution:
 		System.out.println("================ Solution ================");
-		System.out.println("BAP terminated with objectiveMasterProblem: "+bap.getObjective());
+		System.out.println("BAP terminated with objective (tour length): "+bap.getObjective());
 		System.out.println("Total Number of iterations: "+bap.getTotalNrIterations());
 		System.out.println("Total Number of processed nodes: "+bap.getNumberOfProcessedNodes());
 		System.out.println("Total Time spent on master problems: "+bap.getMasterSolveTime()+" Total time spent on pricing problems: "+bap.getPricingSolveTime());
