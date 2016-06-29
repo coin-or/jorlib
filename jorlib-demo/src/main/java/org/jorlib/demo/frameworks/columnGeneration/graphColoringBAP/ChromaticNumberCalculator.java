@@ -127,8 +127,16 @@ public final class ChromaticNumberCalculator {
     public static void main(String[] args) throws IOException {
 //        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel3.col"); //Optimal: 4
 //        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel4.col"); //Optimal: 5
+//        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel5.col"); //Optimal: 6
+//        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel6.col"); //Optimal: 7
+//        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel7.col"); //Optimal: 8
 //        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/queen5_5.col"); //Optimal: 5
-        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/queen6_6.col"); //Optimal: 7
+//        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/queen6_6.col"); //Optimal: 7
+        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/huck.col"); //Optimal: 11
+//        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/david.col"); //Optimal: 11
+//        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/games120.col"); //Optimal: 9
+//        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/miles1000.col"); //Optimal: 42
+//        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/miles1500.col"); //Optimal: 73
         new ChromaticNumberCalculator(coloringGraph);
     }
 
