@@ -88,7 +88,7 @@ public final class Master extends AbstractMaster<TSP, Matching, PricingProblemBy
 			cplex.setOut(null); //Disable cplex output
 			cplex.setParam(IloCplex.IntParam.Threads,config.MAXTHREADS); //Set number of threads that may be used by the master
 
-			//Define objectiveMasterProblem
+			//Define the objective
 			obj=cplex.addMinimize();
 
 			//Define constraints
@@ -150,7 +150,7 @@ public final class Master extends AbstractMaster<TSP, Matching, PricingProblemBy
 	public void addColumn(Matching column) {
 		MatchingColor matchingColor= column.associatedPricingProblem.color;
 		try{
-			//Register column with objectiveMasterProblem
+			//Register column with objective
 			IloColumn iloColumn=masterData.cplex.column(obj,column.cost);
 			//Register column with exactlyOneRedMatching/exactlyOneBlueMatching constr
 			if(matchingColor==MatchingColor.RED){
@@ -260,7 +260,7 @@ public final class Master extends AbstractMaster<TSP, Matching, PricingProblemBy
 	}
 
 	/**
-	 * Checks whether there are any violated initialInequalities, thereby invoking the cut handler
+	 * Checks whether there are any violated inequalities, thereby invoking the cut handler
 	 * @return true if violated inqualities have been found (and added to the master problem)
 	 */
 	@Override
@@ -287,7 +287,7 @@ public final class Master extends AbstractMaster<TSP, Matching, PricingProblemBy
 	public void branchingDecisionPerformed(BranchingDecision bd) {
 		//For simplicity, we simply destroy the master problem and rebuild it. Of course, something more sophisticated may be used which retains the master problem.
 		this.close(); //Close the old cplex model
-		masterData=this.buildModel(); //Create a new model without any initialColumns
+		masterData=this.buildModel(); //Create a new model without any columns
 		cutHandler.setMasterData(masterData); //Inform the cutHandler about the new master model
 	}
 

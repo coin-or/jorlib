@@ -83,7 +83,7 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 			cplex.setOut(null); //Disable cplex output
 			cplex.setParam(IloCplex.IntParam.Threads,config.MAXTHREADS); //Set number of threads that may be used by the master
 
-			//Define objectiveMasterProblem
+			//Define the objective
 			obj=cplex.addMinimize();
 
 			//Define constraints
@@ -145,7 +145,7 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 	public void addColumn(Matching column) {
 		MatchingColor matchingColor= column.associatedPricingProblem.color;
 		try{
-			//Register column with objectiveMasterProblem
+			//Register column with objective
 			IloColumn iloColumn=masterData.cplex.column(obj,column.cost);
 			//Register column with exactlyOneRedMatching/exactlyOneBlueMatching constr
 			if(matchingColor==MatchingColor.RED){
@@ -211,7 +211,7 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 
 	/**
 	 * Gets the solution from the master problem
-	 * @return Returns all non-zero valued initialColumns from the master problem
+	 * @return Returns all non-zero valued columns from the master problem
 	 */
 	@Override
 	public List<Matching> getSolution() {
@@ -255,8 +255,8 @@ public class Master extends AbstractMaster<TSP, Matching, PricingProblemByColor,
 	}
 
 	/**
-	 * Checks whether there are any violated initialInequalities, thereby invoking the cut handler
-	 * @return true if violated inqualities have been found (and added to the master problem)
+	 * Checks whether there are any violated inequalities, thereby invoking the cut handler
+	 * @return true if violated inequalities have been found (and added to the master problem)
 	 */
 	@Override
 	public boolean hasNewCuts(){

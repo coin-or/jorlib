@@ -114,7 +114,7 @@ public final class TSPCGSolver {
 		//Print solution:
 		System.out.println("================ Solution ================");
 		List<Matching> solution=cg.getSolution();
-		System.out.println("CG terminated with objectiveMasterProblem: "+cg.getObjective());
+		System.out.println("CG terminated with objective: "+cg.getObjective());
 		System.out.println("Number of iterations: "+cg.getNumberOfIterations());
 		System.out.println("Time spent on master: "+cg.getMasterSolveTime()+" time spent on pricing: "+cg.getPricingSolveTime());
 		System.out.println("Columns (only non-zero columns are returned):");

@@ -121,7 +121,7 @@ public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T, V>,V e
 	 * @param parentNode Fractional node on which we branch
 	 * @param branchingDecision Branching decision (i.e the edge between the parent node and its child node)
 	 * @param solution Fractional solution
-	 * @param inequalities Valid initialInequalities active at the parent node
+	 * @param inequalities Valid inequalities active at the parent node
 	 * @param <B> branching decision
 	 * @return a child node
 	 */
@@ -129,9 +129,9 @@ public abstract class AbstractBranchCreator<T,U extends AbstractColumn<T, V>,V e
 		int childNodeID= bap.getUniqueNodeID();
 		List<Integer> rootPath1=new ArrayList<>(parentNode.rootPath);
 		rootPath1.add(childNodeID);
-		//Copy initialColumns from the parent to the child. The initialColumns need to comply with the Branching Decision. Artificial initialColumns are ignored
+		//Copy columns from the parent to the child. The columns need to comply with the Branching Decision. Artificial columns are ignored
 		List<U> initSolution= solution.stream().filter(column -> !column.isArtificialColumn && branchingDecision.columnIsCompatibleWithBranchingDecision(column)).collect(Collectors.toList());
-		//Copy initialInequalities to the child node whenever applicable
+		//Copy inequalities to the child node whenever applicable
 		List<AbstractInequality> initCuts= inequalities.stream().filter(inequality -> branchingDecision.inEqualityIsCompatibleWithBranchingDecision(inequality)).collect(Collectors.toList());
 
 		List<BranchingDecision> branchingDecisions=new ArrayList<>(parentNode.branchingDecisions);

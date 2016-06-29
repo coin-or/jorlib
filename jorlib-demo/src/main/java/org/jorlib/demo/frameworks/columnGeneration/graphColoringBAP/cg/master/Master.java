@@ -74,7 +74,7 @@ public final class Master extends AbstractMaster<ColoringGraph, IndependentSet, 
             cplex.setOut(null); //Disable cplex output
             cplex.setParam(IloCplex.IntParam.Threads,config.MAXTHREADS); //Set number of threads that may be used by the master
 
-            //Define objectiveMasterProblem
+            //Define objective
             obj=cplex.addMinimize();
 
             //Define constraints
@@ -145,7 +145,7 @@ public final class Master extends AbstractMaster<ColoringGraph, IndependentSet, 
     @Override
     public void addColumn(IndependentSet column) {
         try{
-            //Register column with objectiveMasterProblem
+            //Register column with objective
             IloColumn iloColumn=masterData.cplex.column(obj,column.cost);
             //Register column with edgeOnlyUsedOnce constraints
             for(Integer vertex: column.vertices)

@@ -66,7 +66,7 @@ public class CutHandler<T extends ModelInterface,W extends MasterData>{
 	
 	/**
 	 * Supply the data object containing the data from the master problem which is required by the cutGenerators to
-	 * separate valid initialInequalities.
+	 * separate valid inequalities.
 	 *
 	 * @param masterData Master data object
 	 */
@@ -112,7 +112,7 @@ public class CutHandler<T extends ModelInterface,W extends MasterData>{
 	/**
 	 * Add a set of inequalities from an external source. Can be used to add a number of initial inequalities which are not separated from the
 	 * master problem.
-	 * @param cuts Collection of initialInequalities
+	 * @param cuts Collection of inequalities
 	 */
 	public void addCuts(Collection<AbstractInequality> cuts){
 		System.out.println("Cuthandler: Added initial inequalities: " + cuts.size());
@@ -195,7 +195,7 @@ public class CutHandler<T extends ModelInterface,W extends MasterData>{
 		}
 
 		/**
-		 * Fires a StartGeneratingCutsEvent to indicate that the cut handler starts generating initialInequalities
+		 * Fires a StartGeneratingCutsEvent to indicate that the cut handler starts generating inequalities
 		 */
 		public void fireStartGeneratingCutsEvent() {
 			StartGeneratingCutsEvent startGeneratingCutsEvent = null;
@@ -207,8 +207,8 @@ public class CutHandler<T extends ModelInterface,W extends MasterData>{
 		}
 
 		/**
-		 * Fires a FinishGeneratingCutsEvent to indicate that that the cut handler finished generating initialInequalities
-		 * @param separatedInequalities list of newly separated initialInequalities which have been generated
+		 * Fires a FinishGeneratingCutsEvent to indicate that that the cut handler finished generating inequalities
+		 * @param separatedInequalities list of newly separated inequalities which have been generated
 		 */
 		public void fireFinishGeneratingCutsEvent(List<AbstractInequality> separatedInequalities) {
 			FinishGeneratingCutsEvent finishGeneratingCutsEvent = null;

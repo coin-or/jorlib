@@ -70,7 +70,7 @@ public final class ExactPricingProblemSolver extends AbstractPricingProblemSolve
 			
 			//Create the variables
 			vars=cplex.intVarArray(dataModel.nrFinals, 0, Integer.MAX_VALUE);
-			//Create the objectiveMasterProblem
+			//Create the objective
 			obj=cplex.addMaximize(cplex.sum(vars));
 			//Create the constraints
 			cplex.addLe(cplex.scalProd(vars, dataModel.finals), dataModel.rollWidth);
@@ -125,7 +125,7 @@ public final class ExactPricingProblemSolver extends AbstractPricingProblemSolve
 
 	@Override
 	protected void setObjective() {
-		//Update the objectiveMasterProblem function with the new dual values
+		//Update the objective function with the new dual values
 		try {
 			cplex.setLinearCoefs(obj, pricingProblem.dualCosts, vars);
 		} catch (IloException e) {

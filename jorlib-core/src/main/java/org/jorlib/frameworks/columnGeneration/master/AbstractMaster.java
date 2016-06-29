@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  *
  * @param <T> Type of data model
  * @param <V> Type of pricing problem
- * @param <U> Type of initialColumns
+ * @param <U> Type of columns
  * @param <W> Type of Master Data
  */
 public abstract class AbstractMaster<T extends ModelInterface, U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T>, W extends MasterData<T,U,V,?>> implements BranchingDecisionListener{
@@ -226,7 +226,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	/**
 	 * Returns all the inequalities in the master model.
 	 * A handle to a cutHandler must have been provided in the constructor of this class
-	 * @return a list of initialInequalities
+	 * @return a list of inequalities
 	 */
 	public List<AbstractInequality> getCuts(){
 		return cutHandler.getCuts();
@@ -239,7 +239,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	public abstract void addColumn(U column);
 
 	/**
-	 * Add a initial solution (list of columns)
+	 * Add an initial solution (list of columns)
 	 * @param columns initial set of columns
 	 */
 	public void addColumns(List<U> columns){

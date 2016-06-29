@@ -48,7 +48,7 @@ import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
  * <ul>
  * <li>a reference to the cplex model</li>
  * <li>a list of pricing problems</li>
- * <li>a mapping of subtour initialInequalities to the constraints in the cplex model</li>
+ * <li>a mapping of subtour inequalities to the constraints in the cplex model</li>
  * </ul>
  *
  * @author Joris Kinable
@@ -65,7 +65,7 @@ public final class TSPMasterData extends MasterData<TSP, Matching, PricingProble
 	/** Record how often a particular edge is used (only non-zero edges are considered) **/
 	public Map<DefaultWeightedEdge, Double> edgeValueMap;
 
-	/** Mapping of the Subtour initialInequalities to constraints in the cplex model **/
+	/** Mapping of the Subtour inequalities to constraints in the cplex model **/
 	public final Map<SubtourInequality, IloRange> subtourInequalities;
 	
 	public TSPMasterData(IloCplex cplex,

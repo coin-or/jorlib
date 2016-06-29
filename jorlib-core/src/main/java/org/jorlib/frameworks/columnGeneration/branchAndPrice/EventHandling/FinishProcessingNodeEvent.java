@@ -50,7 +50,7 @@ public class FinishProcessingNodeEvent extends EventObject{
     public final long masterSolveTime;
     /** Total time spent on solving pricing problems for this node **/
     public final long pricingSolveTime;
-    /** Total number of initialColumns generated for this node **/
+    /** Total number of columns generated for this node **/
     public final int nrGeneratedColumns;
 
     /**
@@ -62,7 +62,7 @@ public class FinishProcessingNodeEvent extends EventObject{
      * @param numberOfCGIterations Number of CG iterations it took to solve the node
      * @param masterSolveTime Total amount of time spent on solving the master problems
      * @param pricingSolveTime Total amount of time spent on solving the pricing problems
-     * @param nrGeneratedColumns Total number of initialColumns generated
+     * @param nrGeneratedColumns Total number of columns generated
      */
     public FinishProcessingNodeEvent(Object source,
                                      BAPNode node,

@@ -106,7 +106,7 @@ public final class ExactPricingProblemSolver extends AbstractPricingProblemSolve
 
 	/**
 	 * Main method which solves the pricing problem.
-	 * @return List of initialColumns (matchings) with negative reduced cost.
+	 * @return List of columns (matchings) with negative reduced cost.
 	 * @throws TimeLimitExceededException TimeLimitExceededException
 	 */
 	@Override
@@ -152,9 +152,6 @@ public final class ExactPricingProblemSolver extends AbstractPricingProblemSolve
 					}
 					Matching column=new Matching("exactPricing", false, pricingProblem, matching, succ, cost);
 					newPatterns.add(column);
-				}else{
-//					Object[] o={pricingProblem.color.name(), objectiveMasterProblem, pricingProblem.dualCost*-1};
-//					logger.debug("No initialColumns for pricing problem {}. Objective: {} dual constant: {}",o);
 				}
 			}
 			

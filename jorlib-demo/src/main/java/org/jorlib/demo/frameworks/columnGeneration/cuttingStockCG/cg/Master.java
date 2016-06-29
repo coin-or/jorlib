@@ -72,7 +72,7 @@ public final class Master extends AbstractMaster<CuttingStock, CuttingPattern, P
 			cplex.setOut(null); //Disable cplex output
 			cplex.setParam(IloCplex.IntParam.Threads, config.MAXTHREADS); //Set number of threads that may be used by the cplex
 
-			//Define objectiveMasterProblem
+			//Define the objective
 			obj= cplex.addMinimize();
 
 			//Define constraints
@@ -141,7 +141,7 @@ public final class Master extends AbstractMaster<CuttingStock, CuttingPattern, P
 	@Override
 	public void addColumn(CuttingPattern column) {
 		try {
-			//Register column with objectiveMasterProblem
+			//Register column with objective
 			IloColumn iloColumn= cplex.column(obj,1);
 		
 			//Register column with demand constraint
@@ -158,7 +158,7 @@ public final class Master extends AbstractMaster<CuttingStock, CuttingPattern, P
 	}
 
 	/**
-	 * Return the solution, i.e initialColumns with non-zero values in the cplex problem
+	 * Return the solution, i.e columns with non-zero values in the cplex problem
 	 */
 	@Override
 	public List<CuttingPattern> getSolution() {
