@@ -141,7 +141,10 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		List<Integer> rootPath=new ArrayList<>();
 		int nodeID=nodeCounter++;
 		rootPath.add(nodeID);
-		rootNode=new BAPNode<>(nodeID, rootPath, new ArrayList<>(), new ArrayList<>(), 0, Collections.emptyList());
+		if(optimizationSenseMaster==OptimizationSense.MINIMIZE)
+			rootNode=new BAPNode<>(nodeID, rootPath, new ArrayList<>(), new ArrayList<>(), lowerBoundOnObjective, Collections.emptyList());
+		else
+			rootNode=new BAPNode<>(nodeID, rootPath, new ArrayList<>(), new ArrayList<>(), upperBoundOnObjective, Collections.emptyList());
 		queue.add(rootNode);
 		graphManipulator=new GraphManipulator(rootNode);
 		

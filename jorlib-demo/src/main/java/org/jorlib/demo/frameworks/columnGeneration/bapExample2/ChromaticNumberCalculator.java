@@ -48,7 +48,7 @@ public final class ChromaticNumberCalculator {
 
 
         //Optional: Get a lower bound on the optimum solution, e.g. largest clique in the graph
-        int lowerBound=this.calculateLowerBound();
+        double lowerBound=2.95;//this.calculateLowerBound();
 
         //Define Branch creators
         List<? extends AbstractBranchCreator<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem>> branchCreators = Collections.singletonList(new BranchOnPair(coloringGraph, pricingProblem));

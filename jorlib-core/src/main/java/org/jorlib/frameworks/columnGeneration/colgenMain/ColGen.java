@@ -255,7 +255,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			}
 			
 		}while(foundNewColumns || hasNewCuts);
-		this.boundOnMasterObjective =this.objectiveMasterProblem; //When solved to optimality, the bound on the master problem objective equals the objective value.
+		this.boundOnMasterObjective = (optimizationSenseMaster == OptimizationSense.MINIMIZE ? Math.max(this.boundOnMasterObjective, this.objectiveMasterProblem) : Math.min(this.boundOnMasterObjective, this.objectiveMasterProblem)); //When solved to optimality, the bound on the master problem objective equals the objective value.
 		colGenSolveTime=System.currentTimeMillis()-colGenSolveTime;
 		notifier.fireFinishCGEvent();
 	}
