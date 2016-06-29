@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * ExactPricingProblemSolver.java
+ * -----------------
+ * (C) Copyright 2016, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.demo.frameworks.columnGeneration.bapExample2.cg;
 
 import ilog.concert.*;
@@ -17,14 +43,18 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Created by jkinable on 6/27/16.
+ * Algorthm implementation which solves the pricing problem to optimality. This solver is based on an exact MIP implementation
+ * using Cplex.
+ *
+ * @author Joris Kinable
+ * @version 29-6-2016
  */
 public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem> {
 
     private IloCplex cplex; //Cplex instance.
     private IloObjective obj; //Objective function
-    private IloIntVar[] vars; //variables
-    Map<VertexPair<Integer>, IloConstraint> branchingConstraints;
+    private IloIntVar[] vars; //Variables
+    private Map<VertexPair<Integer>, IloConstraint> branchingConstraints; //Constraints added to enforce branching decisions
 
     /**
      * Creates a new solver instance for a particular pricing problem
@@ -64,6 +94,11 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<Colo
         }
     }
 
+    /**
+     * Main method which solves the pricing problem.
+     * @return List of columns (independent sets) with negative reduced cost.
+     * @throws TimeLimitExceededException TimeLimitExceededException
+     */
     @Override
     protected List<IndependentSet> generateNewColumns() throws TimeLimitExceededException {
         List<IndependentSet> newPatterns=new ArrayList<>();
@@ -91,9 +126,7 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<Colo
                     double[] values=cplex.getValues(vars); //Get the variable values
                     //Create an Independent Set using all vertices with value 1 in the pricing problem
                     Set<Integer> vertices= IntStream.range(0, dataModel.getNrVertices()).filter(i->MathProgrammingUtil.doubleToBoolean(values[i])).boxed().collect(Collectors.toSet());
-                    IndependentSet column=new IndependentSet(pricingProblem, false, this.getName(), vertices);
-                    System.out.println("BLAAT BLAAT");
-                    System.out.println("Pricing generated col with obj "+objective+": "+ column);
+                    IndependentSet column=new IndependentSet(pricingProblem, false, this.getName(), vertices, 1);
                     newPatterns.add(column);
                 }else{
 //					Object[] o={pricingProblem.color.name(), objectiveMasterProblem, pricingProblem.dualCost*-1};
@@ -107,6 +140,10 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<Colo
         return newPatterns;
     }
 
+    /**
+     * Update the objective function of the pricing problem with the new dual information.
+     * The dual values are stored in the pricing problem.
+     */
     @Override
     protected void setObjective() {
         try {
@@ -116,6 +153,9 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<Colo
         }
     }
 
+    /**
+     * Close the pricing problem
+     */
     @Override
     public void close() {
         cplex.end();
@@ -128,11 +168,11 @@ public class ExactPricingProblemSolver extends AbstractPricingProblemSolver<Colo
     @Override
     public void branchingDecisionPerformed(BranchingDecision bd) {
         try {
-            if(bd instanceof SameColor){
+            if(bd instanceof SameColor){ //Ensure that two vertices appear together in an independent set
                 SameColor sameColorDecision = (SameColor) bd;
                 IloConstraint branchingConstraint=cplex.addEq(vars[sameColorDecision.vertexPair.getFirst()], vars[sameColorDecision.vertexPair.getSecond()]);
                 branchingConstraints.put(sameColorDecision.vertexPair, branchingConstraint);
-            }else if(bd instanceof DifferentColor){
+            }else if(bd instanceof DifferentColor){ //Ensure that two vertices do NOT appear together in an independent set.
                 DifferentColor differentColorDecision= (DifferentColor) bd;
                 IloConstraint branchingConstraint=cplex.addLe(cplex.sum(vars[differentColorDecision.vertexPair.getFirst()], vars[differentColorDecision.vertexPair.getSecond()]), 1);
                 branchingConstraints.put(differentColorDecision.vertexPair, branchingConstraint);

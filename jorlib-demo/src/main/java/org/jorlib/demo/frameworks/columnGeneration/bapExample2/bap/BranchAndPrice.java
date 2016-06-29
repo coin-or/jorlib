@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * BranchAndPrice.java
+ * -----------------
+ * (C) Copyright 2016, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.demo.frameworks.columnGeneration.bapExample2.bap;
 
 import org.jorlib.demo.frameworks.columnGeneration.bapExample2.cg.ChromaticNumberPricingProblem;
@@ -10,13 +36,12 @@ import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columnGeneration.master.MasterData;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
- * Created by jkinable on 6/28/16.
+ * Branch-and-Price implementation
+ * @author Joris Kinable
+ * @version 29-6-2016
  */
 public class BranchAndPrice extends AbstractBranchAndPrice<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem> {
 
@@ -30,9 +55,20 @@ public class BranchAndPrice extends AbstractBranchAndPrice<ColoringGraph, Indepe
         super(dataModel, master, pricingProblem, solvers, abstractBranchCreators, lowerBoundOnObjective, upperBoundOnObjective);
     }
 
+    /**
+     * Generates an artificial solution. Columns in the artificial solution are of high cost such that they never end up in the final solution
+     * if a feasible solution exists, since any feasible solution is assumed to be cheaper than the artificial solution. The artificial solution is used
+     * to guarantee that the master problem has a feasible solution.
+     *
+     * @return artificial solution
+     */
     @Override
     protected List<IndependentSet> generateArtificialSolution() {
-        return Collections.emptyList();
+        List<IndependentSet> artificialSolution=new ArrayList<>();
+        for(int v=0; v<dataModel.getNrVertices(); v++){
+            artificialSolution.add(new IndependentSet(pricingProblems.get(0), true, "Artificial", new HashSet<>(Collections.singletonList(v)), objectiveIncumbentSolution));
+        }
+        return artificialSolution;
     }
 
     /**
@@ -43,14 +79,6 @@ public class BranchAndPrice extends AbstractBranchAndPrice<ColoringGraph, Indepe
      */
     @Override
     protected boolean isIntegerNode(BAPNode<ColoringGraph, IndependentSet> node) {
-        /*Set<Integer> assignedVertices=new HashSet<>();
-        for(IndependentSet column : node.getSolution()){
-            for(int v : column.vertices)
-                if(assignedVertices.contains(v))
-                    return false;
-            assignedVertices.addAll(column.vertices);
-        }
-        return true;*/
         int vertexCount=0;
         for(IndependentSet column : node.getSolution())
             vertexCount+= column.vertices.size();

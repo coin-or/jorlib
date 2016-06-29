@@ -372,7 +372,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	 * Returns the strongest available bound after the root node has been solved. Whenever the root node was solved to optimality, the value returned equals the objective of (optimal solution) of the root node. Whenever the
 	 * node is not solved to optimality, e.g. due to a time limit,the strongest lower bound (minimization problem) or strongest upper bound (maximization problem) is returned. Not that this function
 	 * is equivalent to solving the master problem relaxation through column generation.
-	 * @return
+	 * @return Strongest available bound after the root node has been solved
 	 */
 	public double getBoundRootNode(){ return rootNode.getBound();}
 	

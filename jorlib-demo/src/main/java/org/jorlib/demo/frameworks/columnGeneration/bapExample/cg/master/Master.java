@@ -216,7 +216,7 @@ public final class Master extends AbstractMaster<TSP, Matching, PricingProblemBy
 
 	/**
 	 * Gets the solution from the master problem
-	 * @return Returns all non-zero valued initialColumns from the master problem
+	 * @return Returns all non-zero valued columns from the master problem
 	 */
 	@Override
 	public List<Matching> getSolution() {

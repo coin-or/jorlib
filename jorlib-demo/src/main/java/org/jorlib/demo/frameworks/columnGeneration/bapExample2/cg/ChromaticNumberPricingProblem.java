@@ -1,10 +1,39 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * ChromaticNumberPricingProblem.java
+ * -----------------
+ * (C) Copyright 2016, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.demo.frameworks.columnGeneration.bapExample2.cg;
 
 import org.jorlib.demo.frameworks.columnGeneration.bapExample2.model.ColoringGraph;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblem;
 
 /**
- * Created by jkinable on 6/27/16.
+ * Define the pricing problem
+ *
+ * @author Joris Kinable
+ * @version 29-6-2016
  */
 public class ChromaticNumberPricingProblem extends AbstractPricingProblem<ColoringGraph> {
     /**

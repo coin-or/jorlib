@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * ColoringMasterData.java
+ * -----------------
+ * (C) Copyright 2016, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.demo.frameworks.columnGeneration.bapExample2.cg.master;
 
 import ilog.concert.IloNumVar;
@@ -11,7 +37,13 @@ import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
 import java.util.Map;
 
 /**
- * Created by jkinable on 6/27/16.
+ * Container which stores information coming from the master problem. It contains:
+ * <ul>
+ * <li>a reference to the cplex model</li>
+ * <li>reference to the pricing problem</li>
+ * </ul>
+ * @author Joris Kinable
+ * @version 29-6-2016
  */
 public class ColoringMasterData extends MasterData<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem, IloNumVar> {
 
@@ -24,7 +56,7 @@ public class ColoringMasterData extends MasterData<ColoringGraph, IndependentSet
     /**
      * Creates a new MasterData object
      *
-     * @param varMap A double map which stores the variables. The first key is the pricing problem, the second key is a column and the value is a variable object, e.g. an IloNumVar in cplex.
+     * @param varMap A bi-directional map which stores the variables. The first key is the pricing problem, the second key is a column and the value is a variable object, e.g. an IloNumVar in cplex.
      */
     public ColoringMasterData(IloCplex cplex,
                               ChromaticNumberPricingProblem pricingProblem,

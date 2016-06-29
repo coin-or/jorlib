@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * Master.java
+ * -----------------
+ * (C) Copyright 2016, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.demo.frameworks.columnGeneration.bapExample2.cg.master;
 
 import ilog.concert.*;
@@ -17,7 +43,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by jkinable on 6/27/16.
+ * Defines the master problem: Select a subset of independent sets, such that the union of all selected independent sets cover all vertices in the graph.
+ * <ul>
+ * <li>a reference to the cplex model</li>
+ * <li>reference to the pricing problem</li>
+ * </ul>
+ * @author Joris Kinable
+ * @version 29-6-2016
  */
 public class Master extends AbstractMaster<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem, ColoringMasterData> {
 
@@ -29,6 +61,10 @@ public class Master extends AbstractMaster<ColoringGraph, IndependentSet, Chroma
         System.out.println("Master constructor. Columns: "+masterData.getNrColumns());
     }
 
+    /**
+     * Builds the master model
+     * @return Returns a MasterData object which is a data container for information coming from the master problem
+     */
     @Override
     protected ColoringMasterData buildModel() {
         IloCplex cplex=null;
@@ -58,6 +94,12 @@ public class Master extends AbstractMaster<ColoringGraph, IndependentSet, Chroma
         return new ColoringMasterData(cplex, pricingProblem, varMap);
     }
 
+    /**
+     * Solve the master problem
+     * @param timeLimit Future point in time by which the solve procedure must be completed
+     * @return true if the master problem has been solved
+     * @throws TimeLimitExceededException TimeLimitExceededException
+     */
     @Override
     protected boolean solveMasterProblem(long timeLimit) throws TimeLimitExceededException {
         try {
@@ -82,6 +124,10 @@ public class Master extends AbstractMaster<ColoringGraph, IndependentSet, Chroma
         return true;
     }
 
+    /**
+     * Extracts information from the master problem which is required by the pricing problems, e.g. the reduced costs/dual values
+     * @param pricingProblem pricing problem
+     */
     @Override
     public void initializePricingProblem(ChromaticNumberPricingProblem pricingProblem) {
         try {
@@ -92,11 +138,15 @@ public class Master extends AbstractMaster<ColoringGraph, IndependentSet, Chroma
         }
     }
 
+    /**
+     * Adds a new column to the master problem
+     * @param column column to add
+     */
     @Override
     public void addColumn(IndependentSet column) {
         try{
             //Register column with objectiveMasterProblem
-            IloColumn iloColumn=masterData.cplex.column(obj,1);
+            IloColumn iloColumn=masterData.cplex.column(obj,column.cost);
             //Register column with edgeOnlyUsedOnce constraints
             for(Integer vertex: column.vertices)
                 iloColumn = iloColumn.and(masterData.cplex.column(oneColorPerVertex[vertex], 1));
@@ -110,6 +160,10 @@ public class Master extends AbstractMaster<ColoringGraph, IndependentSet, Chroma
         }
     }
 
+    /**
+     * Gets the solution from the master problem
+     * @return Returns all non-zero valued columns from the master problem
+     */
     @Override
     public List<IndependentSet> getSolution() {
         List<IndependentSet> solution=new ArrayList<>();
@@ -128,6 +182,9 @@ public class Master extends AbstractMaster<ColoringGraph, IndependentSet, Chroma
         return solution;
     }
 
+    /**
+     * Prints the solution
+     */
     @Override
     public void printSolution() {
         List<IndependentSet> solution=this.getSolution();
@@ -135,6 +192,9 @@ public class Master extends AbstractMaster<ColoringGraph, IndependentSet, Chroma
             System.out.println(is);
     }
 
+    /**
+     * Closes the master problem
+     */
     @Override
     public void close() {
         masterData.cplex.end();
@@ -148,7 +208,7 @@ public class Master extends AbstractMaster<ColoringGraph, IndependentSet, Chroma
     public void branchingDecisionPerformed(BranchingDecision bd) {
         //For simplicity, we simply destroy the master problem and rebuild it. Of course, something more sophisticated may be used which retains the master problem.
         this.close(); //Close the old cplex model
-        masterData=this.buildModel(); //Create a new model without any initialColumns
+        masterData=this.buildModel(); //Create a new model without any columns
     }
 
     /**

@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * ColoringGraph.java
+ * -----------------
+ * (C) Copyright 2016, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.demo.frameworks.columnGeneration.bapExample2.model;
 
 import org.jgrapht.UndirectedGraph;
@@ -10,12 +36,21 @@ import java.io.*;
 
 
 /**
- * Created by jkinable on 6/27/16.
+ * Class defining a graph coloring instance
+ *
+ * @author Joris Kinable
+ * @version 29-6-2016
  */
 public final class ColoringGraph extends SimpleGraph<Integer, DefaultEdge> implements ModelInterface, UndirectedGraph<Integer, DefaultEdge>{
 
+    /** Instance name **/
     private final String instanceName;
 
+    /**
+     * Constructs a new graph coloring instance, based on a file specified in DIMACS format
+     * @param instanceLocation input graph
+     * @throws IOException
+     */
     public ColoringGraph(String instanceLocation) throws IOException {
         super(DefaultEdge.class);
 
@@ -27,6 +62,10 @@ public final class ColoringGraph extends SimpleGraph<Integer, DefaultEdge> imple
 
     }
 
+    /**
+     * Returns the number of vertices in the graph
+     * @return Number of vertices
+     */
     public int getNrVertices(){
         return this.vertexSet().size();
     }
@@ -36,6 +75,9 @@ public final class ColoringGraph extends SimpleGraph<Integer, DefaultEdge> imple
         return instanceName;
     }
 
+    /**
+     * Vertex factory used by the parser which processes the DIMACS input file
+     */
     private static final class IntegerVertexFactory implements VertexFactory<Integer>{
         int last = 0;
 

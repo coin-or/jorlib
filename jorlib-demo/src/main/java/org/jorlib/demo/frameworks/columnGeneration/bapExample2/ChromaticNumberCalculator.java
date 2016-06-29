@@ -1,3 +1,29 @@
+/* ==========================================
+ * jORLib : a free Java OR library
+ * ==========================================
+ *
+ * Project Info:  https://github.com/jkinable/jorlib
+ * Project Creator:  Joris Kinable (https://github.com/jkinable)
+ *
+ * (C) Copyright 2015, by Joris Kinable and Contributors.
+ *
+ * This program and the accompanying materials are licensed under GPLv3
+ *
+ */
+/* -----------------
+ * ChromaticNumberCalculator.java
+ * -----------------
+ * (C) Copyright 2016, by Joris Kinable and Contributors.
+ *
+ * Original Author:  Joris Kinable
+ * Contributor(s):   -
+ *
+ * $Id$
+ *
+ * Changes
+ * -------
+ *
+ */
 package org.jorlib.demo.frameworks.columnGeneration.bapExample2;
 
 import org.jgrapht.UndirectedGraph;
@@ -5,7 +31,7 @@ import org.jgrapht.alg.BronKerboschCliqueFinder;
 import org.jgrapht.alg.ChromaticNumber;
 import org.jgrapht.graph.DefaultEdge;
 import org.jorlib.demo.frameworks.columnGeneration.bapExample2.bap.BranchAndPrice;
-import org.jorlib.demo.frameworks.columnGeneration.bapExample2.bap.branching.BranchOnPair;
+import org.jorlib.demo.frameworks.columnGeneration.bapExample2.bap.branching.BranchOnVertexPair;
 import org.jorlib.demo.frameworks.columnGeneration.bapExample2.cg.ChromaticNumberPricingProblem;
 import org.jorlib.demo.frameworks.columnGeneration.bapExample2.cg.ExactPricingProblemSolver;
 import org.jorlib.demo.frameworks.columnGeneration.bapExample2.cg.IndependentSet;
@@ -13,7 +39,6 @@ import org.jorlib.demo.frameworks.columnGeneration.bapExample2.cg.master.Master;
 import org.jorlib.demo.frameworks.columnGeneration.bapExample2.model.ColoringGraph;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.io.SimpleBAPLogger;
-import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 
 import java.io.File;
@@ -21,7 +46,16 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by jkinable on 6/27/16.
+ * A column generation solution to calculate the chromatic number of a graph (graph coloring). A solution to a graph coloring problem
+ * can be interpreted as the smallest set of disjoint independent sets, such that the union of those sets contain all vertices in the graph.<p>
+ *
+ * The implementation is based on: Mehrotra, A. Trick, M.A., A column Generation Approach for Graph Coloring. INFORMS Journal on Computing, volume 8, p.344--354, 1995<p>
+ *
+ * Note: this is an example class to demonstrate features of the Column Generation framework. This class is not
+ * intended as a high-performance Graph Coloring solver!
+ *
+ * @author Joris Kinable
+ * @version 29-6-2016
  */
 public final class ChromaticNumberCalculator {
 
@@ -48,10 +82,10 @@ public final class ChromaticNumberCalculator {
 
 
         //Optional: Get a lower bound on the optimum solution, e.g. largest clique in the graph
-        double lowerBound=2.95;//this.calculateLowerBound();
+        double lowerBound=this.calculateLowerBound();
 
         //Define Branch creators
-        List<? extends AbstractBranchCreator<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem>> branchCreators = Collections.singletonList(new BranchOnPair(coloringGraph, pricingProblem));
+        List<? extends AbstractBranchCreator<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem>> branchCreators = Collections.singletonList(new BranchOnVertexPair(coloringGraph, pricingProblem));
 
         //Create a Branch-and-Price instance, and provide the initial solution as a warm-start
         BranchAndPrice bap = new BranchAndPrice(coloringGraph, master, pricingProblem, solvers, branchCreators, lowerBound, upperBound);
@@ -92,7 +126,10 @@ public final class ChromaticNumberCalculator {
     }
 
     public static void main(String[] args) throws IOException {
-        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel3.col");
+//        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel3.col"); //Optimal: 4
+//        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel4.col"); //Optimal: 5
+//        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/queen5_5.col"); //Optimal: 5
+        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/queen6_6.col"); //Optimal: 7
         new ChromaticNumberCalculator(coloringGraph);
     }
 
@@ -108,7 +145,7 @@ public final class ChromaticNumberCalculator {
         List<IndependentSet> initialSolution=new ArrayList<>();
         Map<Integer, Set<Integer>> coloredGroups=ChromaticNumber.findGreedyColoredGroups((UndirectedGraph<Integer, DefaultEdge>)coloringGraph);
         for(Integer color : coloredGroups.keySet()){
-            initialSolution.add(new IndependentSet(pricingProblem, false, "initialColumn", coloredGroups.get(color)));
+            initialSolution.add(new IndependentSet(pricingProblem, false, "initialColumn", coloredGroups.get(color), 1));
         }
         return initialSolution;
     }

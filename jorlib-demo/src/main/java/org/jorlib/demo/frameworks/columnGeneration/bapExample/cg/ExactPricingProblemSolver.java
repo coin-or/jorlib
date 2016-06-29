@@ -165,7 +165,7 @@ public final class ExactPricingProblemSolver extends AbstractPricingProblemSolve
 	}
 
 	/**
-	 * Update the objectiveMasterProblem function of the pricing problem with the new pricing information (modified costs).
+	 * Update the objective function of the pricing problem with the new pricing information (modified costs).
 	 * The modified costs are stored in the pricing problem.
 	 */
 	@Override
