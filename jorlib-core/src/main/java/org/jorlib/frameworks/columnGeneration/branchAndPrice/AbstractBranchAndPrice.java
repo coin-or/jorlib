@@ -96,7 +96,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	protected double upperBoundOnObjective=Double.MAX_VALUE;
 	/** Lower bound on the optimal solution **/
 	protected double lowerBoundOnObjective=-Double.MAX_VALUE;
-	/** Number of nodes fully explored **/
+	/** Number of nodes fully explored (including pruned nodes) **/
 	protected int nodesProcessed=0;
 	/** Total time spent solving master problems **/
 	protected long timeSolvingMaster=0;
@@ -233,6 +233,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			//Prune this node if its bound is worse than the best found solution. Since all solutions are integral, we may round up/down, depending on the optimization sense
 			if(this.nodeCanBePruned(bapNode)){
 				notifier.firePruneNodeEvent(bapNode, bapNode.bound);
+				nodesProcessed++;
 				continue;
 			}
 			
@@ -255,6 +256,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			//Prune this node if its bound is worse than the best found solution. Since all solutions are integral, we may round up/down, depending on the optimization sense
 			if(this.nodeCanBePruned(bapNode)){
 				notifier.firePruneNodeEvent(bapNode, bapNode.bound);
+				nodesProcessed++;
 				continue;
 			}
 			

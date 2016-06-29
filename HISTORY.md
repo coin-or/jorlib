@@ -2,6 +2,9 @@
 
 Changes to jORLib in each version:
 
+-**Upcoming** (unknown):
+	-Fixed a bug where the number of processed nodes in BAP was not calculated correctly (pruning nodes did not increment the nodes processed counter)
+	-Added BAP example GraphColoring
 
 - **version 1.1** (24-Feb-2016): 
 	- Fixed a rare bug which could cause the Branch-and-Price procedure to end prematurely.
