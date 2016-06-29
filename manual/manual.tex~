@@ -1007,9 +1007,10 @@ public final class BranchAndPrice extends AbstractBranchAndPrice<TSP,Matching, P
                           List<PricingProblemByColor> pricingProblems,
                           List<Class<? extends AbstractPricingProblemSolver<TSP, Matching, PricingProblemByColor>>> solvers,
                           List<? extends AbstractBranchCreator<TSP, Matching, PricingProblemByColor>> branchCreators,
-                          int upperBoundOnObjective,
+                          int objectiveInitialSolution,
                           List<Matching> initialSolution){
-        super(modelData, master, pricingProblems, solvers, branchCreators, upperBoundOnObjective, initialSolution);
+        super(modelData, master, pricingProblems, solvers, branchCreators, 0, objectiveInitialSolution);
+        this.warmStart(objectiveInitialSolution, initialSolution);
     }
 
     @Override
