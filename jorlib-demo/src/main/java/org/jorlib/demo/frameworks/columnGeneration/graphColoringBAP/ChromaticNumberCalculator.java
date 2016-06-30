@@ -38,6 +38,7 @@ import org.jorlib.demo.frameworks.columnGeneration.graphColoringBAP.cg.master.Ma
 import org.jorlib.demo.frameworks.columnGeneration.graphColoringBAP.model.ColoringGraph;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
 import org.jorlib.frameworks.columnGeneration.io.SimpleBAPLogger;
+import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 
 import java.io.File;
@@ -75,10 +76,6 @@ public final class ChromaticNumberCalculator {
         //Optional: Get an initial solution
         List<IndependentSet> initSolution = this.getInitialSolution(pricingProblem);
         int upperBound=initSolution.size();
-        System.out.println("Init solution: ");
-        for(IndependentSet is : initSolution)
-            System.out.println(is);
-
 
         //Optional: Get a lower bound on the optimum solution, e.g. largest clique in the graph
         double lowerBound=this.calculateLowerBound();
@@ -91,15 +88,10 @@ public final class ChromaticNumberCalculator {
         bap.warmStart(upperBound, initSolution);
 
         //OPTIONAL: Attach a debugger
-        //SimpleDebugger debugger = new SimpleDebugger(bap, true);
-        new MyDebugger(bap, true);
+        new SimpleDebugger(bap, true);
 
         //OPTIONAL: Attach a logger to the Branch-and-Price procedure.
         new SimpleBAPLogger(bap, new File("./output/coloring.log"));
-
-        System.out.println("Instance: "+coloringGraph.getName());
-        System.out.println("Vertices: "+coloringGraph.getNrVertices()+" edges: "+coloringGraph.edgeSet().size());
-        System.out.println("Lower bound: "+lowerBound+" upper bound: "+upperBound);
 
         //Solve the Graph Coloring problem through Branch-and-Price
         bap.runBranchAndPrice(System.currentTimeMillis() + 8000000L);
@@ -125,14 +117,14 @@ public final class ChromaticNumberCalculator {
     }
 
     public static void main(String[] args) throws IOException {
-//        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel3.col"); //Optimal: 4
+        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel3.col"); //Optimal: 4
 //        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel4.col"); //Optimal: 5
 //        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel5.col"); //Optimal: 6
 //        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel6.col"); //Optimal: 7
 //        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel7.col"); //Optimal: 8
 //        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/queen5_5.col"); //Optimal: 5
 //        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/queen6_6.col"); //Optimal: 7
-        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/huck.col"); //Optimal: 11
+//        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/huck.col"); //Optimal: 11
 //        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/david.col"); //Optimal: 11
 //        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/games120.col"); //Optimal: 9
 //        ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/miles1000.col"); //Optimal: 42

@@ -91,7 +91,7 @@ public final class Master extends AbstractMaster<ColoringGraph, IndependentSet, 
         varMap.put(pricingProblem, new OrderedBiMap<>());
 
         //Create a new data object which will store information from the master.
-        return new ColoringMasterData(cplex, pricingProblem, varMap);
+        return new ColoringMasterData(cplex, varMap);
     }
 
     /**
@@ -147,7 +147,7 @@ public final class Master extends AbstractMaster<ColoringGraph, IndependentSet, 
         try{
             //Register column with objective
             IloColumn iloColumn=masterData.cplex.column(obj,column.cost);
-            //Register column with edgeOnlyUsedOnce constraints
+            //Register column with oneColorPerVertex constraints
             for(Integer vertex: column.vertices)
                 iloColumn = iloColumn.and(masterData.cplex.column(oneColorPerVertex[vertex], 1));
 

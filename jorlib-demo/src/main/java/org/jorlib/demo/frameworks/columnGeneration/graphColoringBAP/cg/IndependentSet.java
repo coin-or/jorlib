@@ -39,7 +39,9 @@ import java.util.Set;
  */
 public final class IndependentSet extends AbstractColumn<ColoringGraph, ChromaticNumberPricingProblem>{
 
+    /** Vertices in the independent set **/
     public final Set<Integer> vertices;
+    /** Cost of this column in the objective of the Master Problem **/
     public final int cost;
 
     /**
@@ -73,8 +75,7 @@ public final class IndependentSet extends AbstractColumn<ColoringGraph, Chromati
 
     @Override
     public String toString() {
-        String s="Value: "+this.value+" artificial: "+isArtificialColumn+" set: "+vertices.toString();
-        return s;
+        return "Value: "+ this.value+" artificial: "+isArtificialColumn+" set: "+vertices.toString();
     }
 
 }

@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
 public class SimpleDebugger implements BAPListener, CGListener, CHListener{
 
     /** Logger for this class **/
-    final Logger logger = LoggerFactory.getLogger(SimpleDebugger.class);
+    protected final Logger logger = LoggerFactory.getLogger(SimpleDebugger.class);
 
     /** Branch-and-Price instance being debugged **/
     protected final AbstractBranchAndPrice bap;

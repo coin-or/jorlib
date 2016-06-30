@@ -49,9 +49,6 @@ public final class ColoringMasterData extends MasterData<ColoringGraph, Independ
 
     /** Cplex instance **/
     public final IloCplex cplex;
-    /** Pricing Problem **/
-    public final ChromaticNumberPricingProblem pricingProblem;
-
 
     /**
      * Creates a new MasterData object
@@ -59,10 +56,8 @@ public final class ColoringMasterData extends MasterData<ColoringGraph, Independ
      * @param varMap A bi-directional map which stores the variables. The first key is the pricing problem, the second key is a column and the value is a variable object, e.g. an IloNumVar in cplex.
      */
     public ColoringMasterData(IloCplex cplex,
-                              ChromaticNumberPricingProblem pricingProblem,
                               Map<ChromaticNumberPricingProblem, OrderedBiMap<IndependentSet, IloNumVar>> varMap) {
         super(varMap);
         this.cplex=cplex;
-        this.pricingProblem=pricingProblem;
     }
 }

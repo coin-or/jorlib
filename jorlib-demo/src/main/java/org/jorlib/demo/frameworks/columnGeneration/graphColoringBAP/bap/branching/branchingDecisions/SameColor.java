@@ -63,7 +63,7 @@ public final class SameColor implements BranchingDecision<ColoringGraph, Indepen
      */
     @Override
     public boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality inequality) {
-        return false;  //Cuts are not added in this example
+        return true;  //Cuts are not added in this example
     }
 
     @Override
