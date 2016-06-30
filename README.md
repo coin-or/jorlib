@@ -5,7 +5,7 @@ Released: April, 2015</p>
 
 Written by Joris Kinable and Contributors
 
-(C) Copyright 2015, by [Joris Kinable](mailto:jkinable@cs.cmu.edu) and Contributors. All rights
+(C) Copyright 2015-2016, by [Joris Kinable](mailto:jkinable@cs.cmu.edu) and Contributors. All rights
 reserved.
 
 Please address all contributions, suggestions, and inquiries to the current project administrator [Joris Kinable](mailto:jkinable@cs.cmu.edu)
