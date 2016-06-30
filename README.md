@@ -60,6 +60,8 @@ If you add improvements to jORLib please send them to us as pull requests on git
 ## Using jORLib ##
 If you are using jORLib in your work, you are cordially invited to drop a note on our mailing lists (soon to come), describing your work and what you used jORLib for. This will give us a better understanding of how the Library is used and what people's interests are. Feel free to report any issues, feature requests, etc on our issue tracker on Github (https://github.com/jkinable/jorlib/issues).
 
+If you are using jORLib in your research, products, etc, please include a reference to the library; this increases the visibility of the project and may attract additional developers.
+
 ## Thanks ##
 
 With regards from
