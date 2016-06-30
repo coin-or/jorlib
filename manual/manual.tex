@@ -122,7 +122,7 @@ Techniques used in this example:
 A full implementation can be found in the demo package.
 
 \subsection{Problem description}
-\begin{table}[h]
+\begin{table}[ht]
 \begin{tabular}{ll}
 \toprule
 \textbf{Parameter} 	& \textbf{Description}\\
@@ -338,40 +338,40 @@ public final class PricingProblem extends AbstractPricingProblem<CuttingStock> {
 }
 \end{lstlisting}
 \end{myblock}
-After defining the data object which stores the information required to solve the Pricing Problem, one or more solvers for the Pricing Problem have to be defined. The Pricing Problem of the Cutting Stock problem is a knapsack problem. Each time the Pricing Problem is solved, only the objective changes ($max\; \sum_{j\in J} a_ju_j$); the constraint remain the same.
+After defining the data object which stores the information required to solve the Pricing Problem, one or more solvers for the Pricing Problem have to be defined. The Pricing Problem of the Cutting Stock problem is a knapsack problem. Each time the Pricing Problem is solved, only the objective changes ($max\; \sum_{j\in J} a_ju_j$); the constraints remain the same.
 
 \begin{myblock}{ExactPricingProblemSolver}
 \begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
 public final class ExactPricingProblemSolver extends AbstractPricingProblemSolver<CuttingStock, CuttingPattern, PricingProblem> {
-	public ExactPricingProblemSolver(CuttingStock dataModel, PricingProblem pricingProblem) {
-		super(dataModel, pricingProblem);
-		this.name="ExactSolver"; //Set a name for the solver
-		knapsackSolver=new KnapsackSolver();
-	}
-	
-	@Override
-	protected List<CuttingPattern> generateNewColumns() throws TimeLimitExceededException {
-		List<CuttingPattern> newPatterns=new ArrayList<>();
-		knapsackSolver.solve();
-		if(knapsackSolver.getObjective() >= 1+config.PRECISION){ //Generate new column
-			int[] pattern=knapsackSolver.getItemCoefficients();
-			CuttingPattern column=new CuttingPattern("exactPricing", false, pattern, pricingProblem);
-			newPatterns.add(column);
-		}
-		return newPatterns;
-	}
+  public ExactPricingProblemSolver(CuttingStock dataModel, PricingProblem pricingProblem) {
+	  super(dataModel, pricingProblem);
+	  knapsackSolver=new KnapsackSolver();
+  }
 
-	/**
-	 * Set the objective value
-	 */
-	@Override
-	protected void setObjective() {
-		//Update the objective function with the new dual values, by using the fields in the pricingProblem, e.g. pricingProblem.dualCosts
-		knapsackSolver.setObjective(pricingProblem.dualCosts);
-	}
+  @Override
+  protected List<CuttingPattern> generateNewColumns() throws TimeLimitExceededException {
+	  List<CuttingPattern> newPatterns=new ArrayList<>();
+	  knapsackSolver.solve();
+	  //Generate new column if objective >= 1
+	  if(knapsackSolver.getObjective() >= 1+config.PRECISION){
+	    int[] pattern=knapsackSolver.getItemCoefficients();
+	    CuttingPattern column=new CuttingPattern("exactPricing", false, pattern, pricingProblem);
+	    newPatterns.add(column);
+	  }
+	  return newPatterns;
+  }
 
-	@Override
-	public void close() {<Code Omitted>}
+  /**
+    * Set the objective value
+    */
+  @Override
+  protected void setObjective() {
+	  //Update the objective function with the new dual values, by using the fields in the pricingProblem, e.g. pricingProblem.dualCosts
+	  knapsackSolver.setObjective(pricingProblem.dualCosts);
+  }
+
+  @Override
+  public void close() {<Code Omitted>}
 }
 \end{lstlisting}
 \end{myblock}
@@ -462,7 +462,8 @@ A full implementation can be found in the demo package.
 
 
 \subsection{Problem description}
-\begin{table}[h]
+\begin{table}[ht]
+\centering
 \begin{tabular}{ll}
 \toprule
 \textbf{Parameter} 	& \textbf{Description}\\
@@ -476,7 +477,7 @@ $S$		& Set of all possible independent sets\\
 \label{tbl:gcp} 
 \end{table}
 
-The Master Problem (MP) for GCP is defined as:
+The Master Problem (MP) for GCP is defined as (see Table \ref{tbl:gcp} for notation details):
 \begin{align}
 \label{eq:MP_GCP.0} \mathit{MP:}\; min\; &\sum_{s\in S} x_s &\\
 \label{eq:MP_GCP.1} \mbox{s.t. }&\sum_{s \in S: i\in s} x_s \geq 1 & \forall i\in V\\
@@ -489,7 +490,7 @@ Associate dual variables $\pi_i$ with constraints \eqref{eq:MP_GCP.1}. The prici
 \label{eq:PRICE_GCP.1} \mbox{s.t. }&z_i+z_j \leq 1 & \forall (i,j)\in E\\
 \label{eq:PRICE_GCP.5} &z_i\in \{0,1\} &\forall i\in V
 \end{align}
-This pricing problem is also known as a \emph{weighted independent set} problem, where the weight of each vertex is given by the dual values $\pi_i$. Binary variables $z_i$ indicate whether a particular vertex $i\in V$ is part of a maximum weight independent set. If the optimal solution to the pricing problem has a value larger than 1, then the $z_i$ with value 1 correspond to an independent set that should be added to $\overline{S}$ in the Reduced Master Problem.\\
+This pricing problem is also known as a \emph{weighted independent set} problem, where the weight of each vertex is given by the dual values $\pi_i$. Binary variables $z_i$ indicate whether a particular vertex $i\in V$ is part of a maximum weight independent set. If the optimal solution to the pricing problem has a value larger than 1, then the independent set given by $\{i\in V: z_i=1\}$ should be added to $\overline{S}$ in the Reduced Master Problem.\\
 After solving the Reduced Master Problem to optimality, the solution may be fractional, and branching is required. Define the following operations on a Graph Coloring Problem:
 \begin{itemize}
  \item SAME(i,j) requires that two vertices $i,j$ have the same color.
@@ -498,10 +499,430 @@ After solving the Reduced Master Problem to optimality, the solution may be frac
 \citet{METR95} show that in any fractional solution there must exist two independent sets $S_1,S_2 \in S$ and two vertices $i$ and $j$ such that $i\in S_1 \cap S_2$ and $j\in S_1 \setminus S_2$. For a given pair of such vertices $i$, $j$, we can create two branches: in one branch SAME(i,j) holds, in the other branch DIFFER(i,j) holds. Implementing these branches is simple. For SAME(i,j), we can add the constraint $z_i=z_j$ to the PRICING problem. For DIFFER(i,j), we add $z_i+z_j\leq 1$. 
 
 \subsection{Implementation}
+Similar to the Cutting Stock Problem, the following classes are needed to implement Column Generation for GCP:
+\begin{enumerate}[nolistsep]
+ \item \code{AbstractColumn} - This class defines a column in the Column Generation process.
+ \item \code{AbstractMaster} - This problem defines the Master Problem.
+ \item \code{AbstractMasterData} - This class stores data from the Master Problem.
+ \item \code{AbstractPricingProblem} - This class defines a Pricing Problem and provides storages for shared data between the Master Problem and the Pricing Problem solvers.
+ \item \code{AbstractPricingProblemSolver} - A solver class for the Pricing Problem.
+\end{enumerate}
+In addition, to add Branch-and-Price functionality, the following classes need to be extended:
+\begin{enumerate}[nolistsep]
+ \item \code{AbstractBranchAndPrice} - This class implements the Branch-and-Price functionality. Similar to the ColGen class for Column Generation.
+ \item \code{AbstractBranchCreator} - This class creates branches in the Branch-and-Price tree
+ \item \code{BranchingDecision} - This class implements a single branch in the Branch-and-Price tree.
+\end{enumerate}
+We assume that there already exists a class \code{ColoringGraph} which implements a data model representing the graph for which a coloring has to be found.
+In the remainder of this section we discuss each of these classes individually. A complete, working, implementation is provided in the demo package. The actual implementation may deviate from the examples shown below as many of the irrelevant details have been omitted.\\
+Lets start by defining a column in GCP. Each column (\code{IndependentSet}) has to keep track of its vertices:
+\begin{myblock}{IndependentSet}
+\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
+public final class IndependentSet extends AbstractColumn<ColoringGraph, ChromaticNumberPricingProblem> {
+  /** Vertices in the independent set **/
+  public final Set<Integer> vertices;
+  /** Cost of this column in the objective of the Master Problem **/
+  public final int cost;
+
+  public IndependentSet(ChromaticNumberPricingProblem associatedPricingProblem, boolean isArtificial, String creator, Set<Integer> vertices, int cost) {
+    super(associatedPricingProblem, isArtificial, creator);
+    this.vertices=vertices;
+    this.cost=cost;
+  }
+
+  @Override
+  public boolean equals(Object o) {<Code Omitted>}
+
+  @Override
+  public int hashCode() {<Code Omitted>}
+
+  @Override
+  public String toString() {<Code Omitted>}
+}
+\end{lstlisting}
+\end{myblock}
+
+After defining what a Column is in our problem, we have to define a Master Problem and a Pricing Problem. We assume that both are being solved through IBM Cplex, but any other solver would be fine as well.
+\begin{myblock}{Master}
+\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
+public final class Master extends AbstractMaster<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem, ColoringMasterData> {
+  public Master(ColoringGraph dataModel, ChromaticNumberPricingProblem pricingProblem) {
+    super(dataModel, pricingProblem, OptimizationSense.MINIMIZE);
+  }
+
+  @Override
+  protected ColoringMasterData buildModel() {
+    IloCplex cplex=new IloCplex(); //Create cplex instance
+
+    //Define objective
+    obj=cplex.addMinimize();
+
+    //Define constraints
+    oneColorPerVertex=new IloRange[dataModel.getNrVertices()];
+    for(int i=0; i<dataModel.getNrVertices(); i++)
+      oneColorPerVertex[i]=cplex.addRange(1, Double.MAX_VALUE, "oneColorPerVertex");
+
+    Map<ChromaticNumberPricingProblem, OrderedBiMap<IndependentSet, IloNumVar>> variableMap=...
+
+    //Create a new data object which will store information from the master.
+    return new ColoringMasterData(cplex, varMap);
+  }
+
+  @Override
+  protected boolean solveMasterProblem(long timeLimit) throws TimeLimitExceededException { <Code Omitted> }
+
+  @Override
+  public void initializePricingProblem(PricingProblem pricingProblem){
+    double[] duals=masterData.cplex.getDuals(oneColorPerVertex);
+    pricingProblem.initPricingProblem(duals);
+  }
+
+  @Override
+  public void addColumn(IndependentSet column) {
+    IloColumn iloColumn=masterData.cplex.column(obj,column.cost);
+    //Register column with constraints
+    for(Integer vertex: column.vertices)
+      iloColumn = iloColumn.and(masterData.cplex.column(oneColorPerVertex[vertex], 1));
+    //Create the variable and store it
+    IloNumVar var=masterData.cplex.numVar(iloColumn, 0, Double.MAX_VALUE, "x_"+masterData.getNrColumns());
+    cplex.add(var);
+    masterData.addColumn(column,var);
+  }
+
+  @Override
+  public List<IndependentSet> getSolution() { <Code Omitted> }
+
+  @Override
+  public void close() {<Code Omitted>}	
+}
+\end{lstlisting}
+\end{myblock}
+Data originating from the Master Problem, such as its variables, constraints etc may be required by other classes. A shared object which extends \code{AbstractMasterData} is created for this purpose in the \code{buildModel} method of the Master Problem. This object is for example passed to a \code{CutHandler} to separate violated inequalities (cuts). For GCP, we only store the variables in this object:
+
+\begin{myblock}{ColoringMasterData}
+\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
+public final class ColoringMasterData extends MasterData<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem, IloNumVar>{
+  public ColoringMasterData(Map<ChromaticNumberPricingProblem, OrderedBiMap<IndependentSet, IloNumVar>> varMap) {
+    super(varMap);
+  }
+}
+\end{lstlisting}
+\end{myblock}
+
+Next up is the Pricing Problem. For GCP, there is only one Pricing Problem.  The \code{AbstractPricingProblem} class mainly serves as a container to hold the dual information coming from the Master Problem. It \emph{defines} a Pricing Problem which can be solved by some algorithm. In our case, the \code{PricingProblem} class maintains the $\pi_i$ dual values.
+\begin{myblock}{ChromaticNumberPricingProblem}
+\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
+public final class ChromaticNumberPricingProblem extends AbstractPricingProblem<ColoringGraph> {
+  public ChromaticNumberPricingProblem(ColoringGraph dataModel, String name) { super(dataModel, name); }
+}
+\end{lstlisting}
+\end{myblock}
+After defining the data object which stores the information required to solve the Pricing Problem, one or more solvers for the Pricing Problem have to be defined. If the optimization problem needs to be solved to optimality, one of the Pricing Problem solvers must be exact. If optimality is not required, then heuristic solvers suffice. Ideally, multiple solvers are provided: a fast heuristic solver, as well as an exact solver. In general it is beneficial if a solver returns multiple columns of negative reduced cost at once. In this example we will only use a single (simple) exact solver.\\
+The Pricing Problem of GCP is a weighted independent set problem. Each time the Pricing Problem is solved, only the objective changes ($\sum_{i\in V}\pi_i z_i$); the constraints remain the same.
+
+\begin{myblock}{ExactPricingProblemSolver}
+\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
+public final class ExactPricingProblemSolver extends AbstractPricingProblemSolver<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem> {
+  public ExactPricingProblemSolver(ColoringGraph dataModel, ChromaticNumberPricingProblem pricingProblem) {
+    super(dataModel, pricingProblem);
+    this.buildModel();
+  }
+	
+  private void buildModel(){ <Code Omitted> }
+
+  @Override
+  protected List<IndependentSet> generateNewColumns() throws TimeLimitExceededException {
+    <...>
+    //Generate new column if objective >= 1
+    if(objective >= 1 + config.PRECISION){
+	    double[] values=cplex.getValues(vars);
+	    //Create an Independent Set using all vertices with value 1 in the pricing problem
+	    Set<Integer> vertices= ...
+	    IndependentSet column=new IndependentSet(pricingProblem, false, this.getName(), vertices, 1);
+	    newPatterns.add(column);
+    }
+    return newPatterns;
+  }
+
+  /**
+    * Set the objective value
+    */
+  @Override
+  protected void setObjective() {
+    obj.setExpr(cplex.scalProd(pricingProblem.dualCosts, vars));
+  }
+
+  @Override
+  public void close() {<Code Omitted>}
+}
+\end{lstlisting}
+\end{myblock}
+Each time the Pricing Problem is solved, the \code{setObjective} function gets invoked first. During the execution of this function, the solver can prepare its data structures and retrieve the new dual information. Next the \code{generateNewColumns} method is invoked which produces zero or more columns. Finally, when the Column Generation procedure terminates, the close() function is invoked which allows for cleanup. It serves the same purpose as a destructor in C++. This concludes the basic implementation of the Column Generation classes. Next up are the classes needed for Branch-and-Price.\\
+
+For the Branch-and-Price machinery, \code{AbstractBranchAndPrice} needs to be extended. In addition, one or more extensions of \code{AbstractBranchCreator} and two ore more extensions of \code{BranchingDecision} must be implemented:
+\begin{enumerate}[nolistsep]
+ \item \code{AbstractBranchAndPrice} - This class defines how the Branch-and-Price problem is solved.
+ \item \code{AbstractBranchCreator} - Given a fractional node in the Branch-and-Price tree, this class performs the branching, thereby creating two ore more child nodes.
+ \item \code{BranchingDecision} - An instance of this class describes a single branch; it represents an edge in the Branch-and-Price tree.
+\end{enumerate}
+In addition, each branching decision enforces a number of changes to the Pricing Problems, the Master Problem or both. 
+Lets first look at the two branching decisions we have for our problem:
+\begin{enumerate}
+ \item DIFFER(i,j) - Vertices $i,j\in V$ are colored differently
+ \item SAME(i,j) - Vertices $i,j\in V$ receive the same color
+\end{enumerate}
+The decisions are implemented as follows.
+\begin{myblock}{Branching decision 1: SAME}
+\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
+public final class SameColor implements BranchingDecision<ColoringGraph, IndependentSet> {
+  /** Vertices to be colored the same **/
+  public final VertexPair<Integer> vertexPair;
+
+  public SameColor(VertexPair<Integer> vertexPair){
+    this.vertexPair=vertexPair;
+  }
+
+  @Override
+  public boolean columnIsCompatibleWithBranchingDecision(IndependentSet column) {
+    return !(column.vertices.contains(vertexPair.getFirst()) ^ column.vertices.contains(vertexPair.getSecond()));
+  }
+
+  @Override
+  public boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality inequality) {
+    return true;  //Cuts are not added in this example
+  }
+
+  @Override
+  public String toString(){<Code Omitted>}
+}
+\end{lstlisting}
+\end{myblock}
+
+\begin{myblock}{Branching decision 2: DIFFER}
+\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
+public final class DifferentColor implements BranchingDecision<ColoringGraph, IndependentSet>{
+  /** Vertices to be colored differently **/
+  public final VertexPair<Integer> vertexPair;
+
+  public DifferentColor(VertexPair<Integer> vertexPair){
+    this.vertexPair=vertexPair;
+  }
+
+  @Override
+  public boolean columnIsCompatibleWithBranchingDecision(IndependentSet column) {
+    return !(column.vertices.contains(vertexPair.getFirst()) && column.vertices.contains(vertexPair.getSecond()));
+  }
+
+  @Override
+  public boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality inequality) {
+    return true; //Cuts are not added in this example
+  }
+
+  @Override
+  public String toString(){<Code Omitted>}
+}
+\end{lstlisting}
+\end{myblock}
+Each of these branching decisions implement two important methods:
+\begin{itemize}
+ \item \code{inEqualityIsCompatibleWithBranchingDecision}
+ \item \code{columnIsCompatibleWithBranchingDecision}
+\end{itemize}
+Each node has an associated solution (set of columns) and a set of inequalities which have been separated at that node. Once the node is solved and turns out to yield a fractional solution, the branching process creates a number of child nodes. The solution of the parent node, as well as the inequalities separated at the parent node are transferred to the child nodes to serve as an initial starting point. However, not all columns (inequalities) are compliant with each branching decision. The method \code{columnIsCompatibleWithBranchingDecision} (\code{inEqualityIsCompatibleWithBranchingDecision}) acts as filters: it checks whether a particular column (inequality) is compliant with the branching decision. For example, in the first branching decision (SAME(i,j)), \code{columnIsCompatibleWithBranchingDecision} will eliminate all independent sets (columns) which contain vertex $i$ but not vertex $j$; after all, $i$ and $j$ must be in the same independent set whenever they are to receive the same color.\\
+Each Branch-and-Price implementation must implement at least one \code{AbstractBranchCreator}. A branch creator takes a fractional node in the Branch-and-Price tree and creates two or more child nodes. Two methods have to be implemented:
+\begin{enumerate}
+ \item \code{canPerformBranching} determines whether the particular branch creator can create the child nodes. In the example code below, the \code{canPerformBranching} determines whether there is a fractional edge to branch on.
+ \item \code{getBranches} creates the actual branches
+\end{enumerate}
+\begin{myblock}{BranchOnVertexPair}
+\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
+public final class BranchOnVertexPair extends AbstractBranchCreator<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem> {
+  /** Pair of vertices to branch on **/
+  VertexPair<Integer> candidateVertexPair=null;
+
+  public BranchOnVertexPair(ColoringGraph dataModel, ChromaticNumberPricingProblem pricingProblem) {
+    super(dataModel, pricingProblem);
+  }
+
+  @Override
+  protected boolean canPerformBranching(List<IndependentSet> solution) {
+    //Find a vertex v1 which is in BOTH independent set s1 and independent set s2, and a vertex v2 which is ONLY in s1.
+    <Code Omitted>
+    if(foundPair)
+      candidateVertexPair=new VertexPair<>(v1, v2);
+    return foundPair;
+  }
+
+  @Override
+  protected List<BAPNode<ColoringGraph, IndependentSet>> getBranches(BAPNode<ColoringGraph, IndependentSet> parentNode) {
+    //Branch 1: same color:
+    SameColor branchingDecision1=new SameColor(candidateVertexPair);
+    BAPNode<ColoringGraph,IndependentSet> node1=this.createBranch(parentNode, branchingDecision1, parentNode.getSolution(), parentNode.getInequalities());
+
+    //Branch 2: different colors:
+    DifferentColor branchingDecision2=new DifferentColor(candidateVertexPair);
+    BAPNode<ColoringGraph,IndependentSet> node2=this.createBranch(parentNode, branchingDecision2, parentNode.getSolution(), parentNode.getInequalities());
+
+    return Arrays.asList(node1, node2); //Return order matters
+  }
+}
+\end{lstlisting}
+\end{myblock}
+The Branch-and-Price framework will first invoke the \code{canPerformBranching} method. If this method returns \code{true}, the \code{getBranches} method is invoked. Multiple branch creators may be supplied to the Branch-and-Price framework through the \code{AbstractBranchAndPrice} class. The framework will invoke them one-by-one until either of them produces a set of child nodes. A common example where multiple Branching rules are desirable can be found in certain vehicle routing applications. As a first branching rule, you may want to branch on the number of vehicles used. If for a given solution the number of vehicles in use is fractional, two branches are created where the number of vehicles in use is rounded up/down. At some point, the number of vehicles used may be integer, but the solution could still be fractional. In this case \code{canPerformBranching} of the \code{BranchOnNumberOfVehicles} will return false. A second branching decision \code{BranchOnEdge} could then branch on a fractional edge, e.g.\ should customer $i$ be visited immediately after customer $j$ or not.\\
+Now that we have defined our branching decisions we can have a look at how they are used within the framework. A small Branch-and-Price tree is depicted in Figure \ref{fig:bap_tree}: black nodes have been processed, the green node is the current active node, and the purple nodes are waiting to be processed. The labels on the arcs are Branching Decisions. The Branch-and-Price framework utilizes reversible data structures. Currently, node $3$ is being processed. To get to node $3$ from the root node, first Branching Decision $b_{01}$ is executed, and then $b_{13}$. Lets assume that node $3$ yields an integer solution, and that node $4$ is the next node to be processed. That means that we have to backtrack one level in the Branch-and-Price tree, thereby reverting Branching Decision $b_{13}$, and that we have to perform Branching Decision $b_{14}$ after that. All of this is already implemented in the Branch-and-Price framework. Any class which needs to update its data structures after a Branching Decision has been executed/reverted, must implement the \code{BranchingDecisionListener} interface:
+\begin{myblock}{BranchingDecisionListener}
+\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
+public interface BranchingDecisionListener {
+  void branchingDecisionPerformed(BranchingDecision bd);
+  void branchingDecisionReverted(BranchingDecision bd);
+}
+\end{lstlisting}
+\end{myblock}
+
+\begin{figure}[width=5cm]
+\centering
+\begin{tikzpicture}[->,>=stealth',level/.style={sibling distance = 3cm/#1,
+  level distance = 1.5cm}] 
+\node [blackNode] {0} 
+    child{ node [blackNode] {1}
+            child{ node [greenNode] {3} edge from parent node[above left]{$b_{13}$} 
+            }
+            child{ node [purpleNode] {4} edge from parent node[above right]{$b_{14}$}				
+            }
+	    edge from parent node[above left]{$b_{01}$}
+    }
+    child{ node [purpleNode] {2} 
+	edge from parent node[above right]{$b_{02}$}
+    }
+; 
+\end{tikzpicture}
+\caption{Example of a Branch-and-Price tree: Black nodes have been processed, the green node is the current active node, and purple are nodes which are waiting to be processed.}
+\label{fig:bap_tree}
+\end{figure}
+By default, the $AbstractMaster$ and $AbstractPricingProblemSolver$ classes already implement this interface, and as a result, they are informed when a Branching Decision has been executed/reverted.\\
+\begin{myblock}{ExactPricingProblemSolver continued}
+\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
+@Override
+public void branchingDecisionPerformed(BranchingDecision bd) {
+  if(bd instanceof SameColor){ //Ensure that two vertices appear together in an independent set
+    SameColor sameColorDecision = (SameColor) bd;
+    IloConstraint branchingConstraint=cplex.addEq(vars[sameColorDecision.vertexPair.getFirst()], vars[sameColorDecision.vertexPair.getSecond()]);
+    branchingConstraints.put(sameColorDecision.vertexPair, branchingConstraint);
+  }else if(bd instanceof DifferentColor){ //Ensure that two vertices do NOT appear together in an independent set.
+    DifferentColor differentColorDecision= (DifferentColor) bd;
+    IloConstraint branchingConstraint=cplex.addLe(cplex.sum(vars[differentColorDecision.vertexPair.getFirst()], vars[differentColorDecision.vertexPair.getSecond()]), 1);
+    branchingConstraints.put(differentColorDecision.vertexPair, branchingConstraint);
+  }
+}
+
+@Override
+public void branchingDecisionReverted(BranchingDecision bd) {
+  if(bd instanceof SameColor){
+    SameColor sameColorDecision = (SameColor) bd;
+    cplex.remove(branchingConstraints.get(sameColorDecision.vertexPair));
+  }else if(bd instanceof DifferentColor){
+    DifferentColor differentColorDecision= (DifferentColor) bd;
+    cplex.remove(branchingConstraints.get(differentColorDecision.vertexPair));
+  }
+}
+\end{lstlisting}
+\end{myblock}
+Also in the \code{Master} class, a minor modification has to be made. The Master Problem currently maintains a set of columns. Some of these columns may no longer be valid when we start processing a new node. Two straightforward solutions exist:
+\begin{enumerate}
+ \item if a Branching Decision is executed, we iterate over all columns currently active in the Master model. For each column we test whether it is compliant with the Branching Decision. If not, we remove the column from the Master Problem. Remember that this compliance test can be performed using the \code{columnIsCompatibleWithBranchingDecision} method in the \code{BranchingDecision} class.
+ \item simply destroy the current Master Problem and rebuild it.
+\end{enumerate}
+For the sake of simplicity we opt to go for the second approach, thereby adding the following method to the \code{Master} class:
+\begin{myblock}{Master continued}
+\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
+@Override
+public void branchingDecisionPerformed(BranchingDecision bd) {
+  this.close(); //Invoke the destructor
+  masterData=this.buildModel(); //Create a new model without any initialColumns
+}
+
+@Override
+public void branchingDecisionReverted(BranchingDecision bd) { } //No action required
+\end{lstlisting}
+\end{myblock}
 
 
+\code{AbstractBranchAndPrice} implements the entire Branch-and-Price logic. This class serves the same purpose as the class \code{ColGen}. Although most methods in \code{AbstractBranchAndPrice} can be overwritten, its default implementation will suffice for most use-cases. \begin{itemize}
+ \item \code{generateArtificialSolution} Details on this method are provided in Section \ref{subsec:initSolution}.
+ \item \code{isIntegralSolution} this method determines whether a particular solution is an integer solution. In our case, we simply check whether every vertex is covered in exactly one independent set.
+\end{itemize}
+The following code block gives the \code{BranchAndPrice} implementation.
+\begin{myblock}{BranchAndPrice}
+\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
+public final class BranchAndPrice extends AbstractBranchAndPrice<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem>{
+  <Constructor Omitted>
 
+  @Override
+  protected List<IndependentSet> generateArtificialSolution() {
+    List<IndependentSet> artificialSolution=new ArrayList<>();
+    for(int v=0; v<dataModel.getNrVertices(); v++)
+      artificialSolution.add(new IndependentSet(pricingProblems.get(0), true, "Artificial", new HashSet<>(Collections.singletonList(v)), objectiveIncumbentSolution));
+    return artificialSolution;
+  }
 
+  @Override
+  protected boolean isIntegerNode(BAPNode<ColoringGraph, IndependentSet> node) {
+    int vertexCount=0;
+    for(IndependentSet column : node.getSolution())
+      vertexCount+= column.vertices.size();
+    return vertexCount==dataModel.getNrVertices();
+  }
+}
+\end{lstlisting}
+\end{myblock}
+
+Finally, we can bring all the parts together in a solver class:
+\begin{myblock}{ChromaticNumberCalculator}
+\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
+public final class ChromaticNumberCalculator {
+  public ChromaticNumberCalculator(ColoringGraph coloringGraph){
+    //Create Pricing problem
+    ChromaticNumberPricingProblem pricingProblem = new ChromaticNumberPricingProblem(coloringGraph, "chromaticNumberPricingProblem");
+
+    //Create the Master Problem
+    Master master = new Master(coloringGraph, pricingProblem);
+
+    //Define which solvers to use for the pricing problem
+    List<Class<? extends AbstractPricingProblemSolver<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem>>> solvers = Collections.singletonList(ExactPricingProblemSolver.class);
+
+    //OPTIONAL: Get an initial solution
+    List<IndependentSet> initSolution = this.getInitialSolution(pricingProblem);
+    int upperBound=initSolution.size();
+
+    //OPTIONAL: Get a lower bound on the optimum solution, e.g. largest clique in the graph
+    double lowerBound=this.calculateLowerBound();
+
+    //Define Branch creators
+    List<? extends AbstractBranchCreator<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem>> branchCreators = Collections.singletonList(new BranchOnVertexPair(coloringGraph, pricingProblem));
+
+    //Create a Branch-and-Price instance, and provide the initial solution as a warm-start
+    BranchAndPrice bap = new BranchAndPrice(coloringGraph, master, pricingProblem, solvers, branchCreators, lowerBound, upperBound);
+    bap.warmStart(upperBound, initSolution);
+
+    //OPTIONAL: Attach a debugger
+    new SimpleDebugger(bap, true);
+
+    //OPTIONAL: Attach a logger to the Branch-and-Price procedure.
+    new SimpleBAPLogger(bap, new File("./output/coloring.log"));
+
+    //Solve the Graph Coloring problem through Branch-and-Price
+    bap.runBranchAndPrice(System.currentTimeMillis() + 8000000L);
+
+    //Print solution:
+    <Code Omitted>
+
+    //Clean up:
+    bap.close(); //Close master and Pricing Problems
+    cutHandler.close(); //Close the cut handler. The close() call is propagated to all registered AbstractCutGenerator classes
+  }
+}
+\end{lstlisting}
+\end{myblock}
 
 \section{Example 3 - Solving the Traveling Salesman Problem through Branch-and-Price}\label{sec:tsp}
 In this example, we will solve the well-known Traveling Salesman Problem (TSP) through Branch-and-Price. In the TSP problem, we are looking for a least cost Hamiltonian cycle in a graph. In this particular example we will assume that the number of vertices in the graph is even, and that the graph is undirected.\\
@@ -528,17 +949,17 @@ A \emph{matching} in a graph is defined as a set of edges such that no two edges
 \caption[Example of a TSP solution.]{Example of a TSP solution. The blue and red perfect matchings together form a Hamiltonian cycle. The blue perfect matching has a weight of $1+3=4$, whereas the red perfect matching has a weight of $2+4=6$. The objective of the solution equals $4+6=10$}
 \label{fig:tsp_example}
 \end{figure}
-In the following Sections we will show how this problem can be solved through our Branch-and-Price framework. Techniques used in this example:
+In the following subsections we will show how this problem can be solved through our Branch-and-Price framework. Techniques used in this example:
 \begin{itemize}
  \item Column generation
  \item Branch-and-Price
  \item Cuts
  \item Multiple Pricing Problems
 \end{itemize}
-A full implementation can be found in the demo package.
+A full implementation can be found in the demo package. It is recommended that you first read Section \ref{sec:gcp} which presents an easier Branch-and-Price example.
 
 \subsection{Problem description}
-\begin{table}[h]
+\begin{table}[ht]
 \begin{tabular}{ll}
 \toprule
 \textbf{Parameter} 	& \textbf{Description}\\
@@ -977,39 +1398,7 @@ public final class BranchOnEdge extends AbstractBranchCreator<TSP, Matching, Pri
 }
 \end{lstlisting}
 \end{myblock}
-The Branch-and-Price framework will first invoke the \code{canPerformBranching} method. If this method returns \code{true}, the \code{getBranches} method is invoked. Multiple branch creators may be supplied to the Branch-and-Price framework. The framework will invoke them one-by-one until either of them produces a set of child nodes. A common example where multiple Branching rules are desirable can be found in certain vehicle routing applications. As a first branching rule, you may want to branch on the number of vehicles used. If for a given solution the number of vehicles in use is fractional, two branches are created where the number of vehicles in use is rounded up/down. In a second branching decision, one may want to branch on a particular edge, e.g.\ should customer $i$ be visited immediately after customer $j$ or not.\\
-Now we have defined our Branching Decisions we can have a look at how they are used within the framework. A small Branch-and-Price tree is depicted in Figure \ref{fig:bap_tree}: black nodes have been processed, the green node is the current active node, and the purple nodes are waiting to be processed. The labels on the arcs are Branching Decisions. The Branch-and-Price framework utilizes reversible data structures. Currently, node $3$ is being processed. To get to node $3$ from the root node, first Branching Decision $b_{01}$ is executed, and then $b_{13}$. Lets assume that node $3$ yields an integer solution, and that node $4$ is the next node to be processed. That means that we have to backtrack one level in the Branch-and-Price tree, thereby reverting Branching Decision $b_{13}$, and that we have to perform Branching Decision $b_{14}$ after that. All of this is already implemented in the Branch-and-Price framework. Any class which needs to update its data structures after a Branching Decision has been executed/reverted, must implement the \code{BranchingDecisionListener} interface:
-\begin{myblock}{BranchingDecisionListener}
-\begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
-public interface BranchingDecisionListener {
-    void branchingDecisionPerformed(BranchingDecision bd);
-    void branchingDecisionReverted(BranchingDecision bd);
-}
-\end{lstlisting}
-\end{myblock}
-
-\begin{figure}[width=5cm]
-\centering
-\begin{tikzpicture}[->,>=stealth',level/.style={sibling distance = 3cm/#1,
-  level distance = 1.5cm}] 
-\node [blackNode] {0} 
-    child{ node [blackNode] {1}
-            child{ node [greenNode] {3} edge from parent node[above left]{$b_{13}$} 
-            }
-            child{ node [purpleNode] {4} edge from parent node[above right]{$b_{14}$}				
-            }
-	    edge from parent node[above left]{$b_{01}$}
-    }
-    child{ node [purpleNode] {2} 
-	edge from parent node[above right]{$b_{02}$}
-    }
-; 
-\end{tikzpicture}
-\caption{Example of a Branch-and-Price tree: Black nodes have been processed, the green node is the current active node, and purple are nodes which are waiting to be processed.}
-\label{fig:bap_tree}
-\end{figure}
-
-By default, the $AbstractMaster$ and $AbstractPricingProblemSolver$ classes already implement this interface, and as a result, they are informed when a Branching Decision has been executed/reverted.\\
+The Branch-and-Price framework will first invoke the \code{canPerformBranching} method. If this method returns \code{true}, the \code{getBranches} method is invoked. Multiple branch creators may be supplied to the Branch-and-Price framework. The framework will invoke them one-by-one until either of them produces a set of child nodes.\\
 Returning to our TSP example, where we have two Branching Decisions, \code{RemoveEdge} and \code{FixEdge}, we are now ready to define what happens when either of them gets executed/reverted. When we execute a \code{RemoveEdge} Branching Decision, then the Pricing Problem defined in this Branching Decision can no longer produce matchings with this edge. Similarly, if we execute a \code{FixEdge} Branching Decision, then the Pricing Problem defined in this Branching Decision can only produce matchings which contain this edge. To implement this behavior, we need to modify our \code{ExactPricingProblemSolver} class (see \ref{codeBlock:tspExactPricingProblemSolver}), thereby adding the following two methods:
 
 \begin{myblock}{ExactPricingProblemSolver continued}
@@ -1041,12 +1430,7 @@ public void branchingDecisionReverted(BranchingDecision bd) {
 }
 \end{lstlisting}
 \end{myblock}
-Also in the \code{Master} class, a minor modification has to be made. The Master Problem currently maintains a set of columns. Some of these columns may not longer be valid when we start processing a new node. Two straightforward solutions exist:
-\begin{enumerate}
- \item if a Branching Decision is executed, we iterate over all columns currently active in the Master model. For each column we test whether it is compliant with the Branching Decision. If not, we remove the column from the Master Problem. Remember that this compliance test can be performed using the \code{columnIsCompatibleWithBranchingDecision} method in the \code{BranchingDecision} class.
- \item simply destroy the current Master Problem and rebuild it.
-\end{enumerate}
-For the sake of simplicity we opt to go for the second approach, thereby adding the following method to the \code{Master} class:
+Also in the \code{Master} class, a minor modification has to be made. The Master Problem currently maintains a set of columns. Some of these columns may not longer be valid when we start processing a new node. For the sake of simplicity we simply destroy the Master and rebuild it:
 \begin{myblock}{Master continued}
 \begin{lstlisting}[language=java, style=eclipseArticle, xleftmargin=2em]  
 @Override
