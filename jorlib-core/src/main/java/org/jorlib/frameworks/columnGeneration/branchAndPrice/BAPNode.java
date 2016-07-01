@@ -211,6 +211,14 @@ public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 	}
 
 	/**
+	 * Returns the depth of the node in the Branch-and-Price tree. The depth of the root node is 0, the depth of its siblings is 1, etc.
+	 * @return Depth of node in the Branch-and-Price tree
+	 */
+	public int getNodeDepth(){
+		return rootPath.size();
+	}
+
+	/**
 	 * Textual description of the node.
 	 * @return Textual description of the node.
 	 */
