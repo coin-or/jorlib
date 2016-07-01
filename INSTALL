@@ -1,0 +1,25 @@
+INSTALL
+
+## Using jORLib as a dependency in your project ##
+Simply download jORLib from the releases page. Import the jar jorlib-core.jar and its dependencies into your project.
+
+## Running jORLib demo's ##
+The demo's can be run directly from the command line.
+1. Download jORLib from the releases page, as well as the necessary data files in the release package.
+2. Running the code (version numbering needs to be adjusted accordingly):
+  a. Algorithmic example (SubtourSeparatorDemo): java -cp jorlib-demo-1.0-uber.jar org.jorlib.demo.alg.tsp.separation.SubtourSeparatorDemo
+  b. Column Generation example (this requires a working Cplex installation): java -Djava.library.path=/opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/ -cp jorlib-demo-1.0-uber.jar org.jorlib.demo.frameworks.columnGeneration.bapExample.TSPSolver
+
+## Importing jORLib as a Maven project in Eclipse/IntelliJ ##
+1. Download all project files from the release page. Alternatively, download the sources directly from github.
+2. OPTIONAL: if you plan on running the Column Generation/Branch-and-Price test suite or demo's, make sure that Cplex is installed. Two alternative options exist (choose one).
+  a. Add cplex.jar (located under cplex/lib in your Cplex Studio installation folder) to your local maven repository, e.g.:
+     mvn install:install-file -DgroupId=cplex -DartifactId=cplex -Dversion=12.6.1 -Dpackaging=jar -Dfile=/opt/ILOG/CPLEX_Studio1261/cplex/lib/cplex.jar
+  b. You can proceed to step 3 first, and add cplex.jar later as a library to your project manually
+3. Through your favorite IDE (e.g. IntelliJ or Eclipse), import the pom.xml file from jORLib's root directory. For IntelliJ, ensure that recursive project detection is enabled.
+4. OPTIONAL: if you plan on running the Column Generation/Branch-and-Price test suite or demo's, you need to point the LD_LIBRARY_PATH enviromental variable to Cplex' native libraries.
+   In IntelliJ, the easiest way to do this by opening Module Settings (F4)->Libraries. Select the Cplex library you've added in step 2, click the 'add' button (green plus), and add the path pointing to
+   the native libraries, e.g. /opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/. Click apply and you are done.
+
+## Running the test suite through Maven ##
+To be included
