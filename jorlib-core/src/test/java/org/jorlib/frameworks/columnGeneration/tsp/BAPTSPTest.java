@@ -28,8 +28,6 @@ package org.jorlib.frameworks.columnGeneration.tsp;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
-import org.jorlib.frameworks.columnGeneration.io.SimpleBAPLogger;
-import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.tsp.bap.BranchAndPrice;

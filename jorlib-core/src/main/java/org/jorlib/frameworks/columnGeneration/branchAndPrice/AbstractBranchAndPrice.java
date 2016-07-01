@@ -224,9 +224,10 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 		notifier.fireStartBAPEvent(); //Signal start Branch-and-Price process
 		this.runtime=System.currentTimeMillis();
 
-		//Check whether an initial solution is provided, if not, add an artificial solution
-		if(queue.peek().getInitialColumns().isEmpty())
-			queue.peek().addInitialColumns(this.generateArtificialSolution());
+		//Check whether an warm start is provided, if not, invoke generateInitialFeasibleSolution
+		BAPNode<T, U> rootNode = queue.peek();
+		if(rootNode.getInitialColumns().isEmpty())
+			rootNode.addInitialColumns(this.generateInitialFeasibleSolution(rootNode));
 
 		//Start processing nodes until the queue is empty
 		while(!queue.isEmpty()){
@@ -242,9 +243,9 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 			
 			graphManipulator.next(bapNode); //Prepare data structures for the next node
 
-			//Generate artificial solution for this node to guarantee that the master problem is feasible
+			//Generate an initial solution for this node to guarantee that the master problem is feasible
 			if(bapNode.nodeID != 0){
-				bapNode.addInitialColumns(this.generateArtificialSolution());
+				bapNode.addInitialColumns(this.generateInitialFeasibleSolution(bapNode));
 			}
 
 			//Solve the next BAPNode
@@ -458,8 +459,32 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	 * The columns are not necessary feasible or meet the definition of a column; it is undesirable that these columns end up in a final solution.
 	 * To prevent them from ending up in a final solution, a high cost is associated with them.
 	 * @return List of columns constituting the artificial solution
+	 * @deprecated use {@link #generateInitialFeasibleSolution(BAPNode node)()} instead.
 	 */
-	protected abstract List<U> generateArtificialSolution();
+	protected List<U> generateArtificialSolution(){return Collections.emptyList();};
+
+	/**
+	 * Creates a (small) set of columns used to initialize a node in the Branch-and-Price tree.
+	 * Whenever a node in the Branch-and-Price tree is being solved, its initial master problem needs to be feasible. To ensure feasibility, a minimal
+	 * subset of initial columns needs to be provided. This initial subset is generated in this method.
+	 *
+	 * Any node, other than the root node, will receive a set of initial columns from its parent node. However, because a number of columns which did not comply with the
+	 * branching decision may have been filtered out (see {@see org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision#columnIsCompatibleWithBranchingDecision(U column)()}),
+	 * the subset of columns passed by the parent may not constitute a feasible solution. It is up to the developer to very this.
+	 *
+	 * In general it is hard to come up with a feasible set of columns which satisfy all constraints in the master problem, including potential branching decisions. A common technique
+	 * is to add 'artificial' columns. These columns are not necessary feasible columns (they may not satisfy the definition of a feasible column as defined by the pricing problem). Furthermore, these
+	 * columns may also violate branching decisions. To prevent artificial columns from ending up in a final solution, a high cost is associated with them (higher than any solution consisting
+	 * of normal columns). Whenever a cheaper feasible solution is available, the Master Problem will automatically price artificial columns out. If however artificial columns do end up in the
+	 * final solution obtained when the Master problem terminates, we have a proof that the BAPNode is infeasible. Finally note that artificial columns are volatile: they are never passed from
+	 * a parent node to any of its children!
+	 *
+	 * Note 1: This function is not invoked at the root node whenever a {@link #warmStart(int objectiveInitialSolution, List initialSolution) warmStart} is provided.
+	 * Note 2: execution of this method is delayed as much as possible so safe computational effort.
+	 * @param node node
+	 * @return List of columns used to initialize the given BAPNode
+	 */
+	protected abstract List<U> generateInitialFeasibleSolution(BAPNode<T,U> node);
 
 	/**
 	 * Tests whether the given node has an integer solution
@@ -505,7 +530,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	}
 
 	/**
-	 * Destroy both the master problem and pricing problems
+	 * Destroy both the master problem and pricing problems. A CutHandler which has been provided to the Constructor will not be destroyed by this method.
 	 */
 	public void close(){
 		master.close();

@@ -63,7 +63,7 @@ public final class BranchAndPrice extends AbstractBranchAndPrice<ColoringGraph, 
      * @return artificial solution
      */
     @Override
-    protected List<IndependentSet> generateArtificialSolution() {
+    protected List<IndependentSet> generateInitialFeasibleSolution(BAPNode<ColoringGraph, IndependentSet> node) {
         List<IndependentSet> artificialSolution=new ArrayList<>();
         for(int v=0; v<dataModel.getNrVertices(); v++){
             artificialSolution.add(new IndependentSet(pricingProblems.get(0), true, "Artificial", new HashSet<>(Collections.singletonList(v)), objectiveIncumbentSolution));

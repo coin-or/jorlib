@@ -65,7 +65,7 @@ public final class BranchAndPrice extends AbstractBranchAndPrice<TSP,Matching, P
      * @return artificial solution
      */
     @Override
-    protected List<Matching> generateArtificialSolution() {
+    protected List<Matching> generateInitialFeasibleSolution(BAPNode<TSP, Matching> node) {
         Matching matching1=new Matching("Artificial", true,	pricingProblems.get(0), incumbentSolution.get(0).edges, incumbentSolution.get(0).succ, objectiveIncumbentSolution);
         Matching matching2=new Matching("Artificial", true,	pricingProblems.get(1), incumbentSolution.get(1).edges, incumbentSolution.get(1).succ, objectiveIncumbentSolution);
         return Arrays.asList(matching1, matching2);
