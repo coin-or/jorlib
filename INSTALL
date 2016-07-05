@@ -22,4 +22,7 @@ The demo's can be run directly from the command line.
    the native libraries, e.g. /opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/. Click apply and you are done.
 
 ## Running the test suite through Maven ##
-To be included
+1. Download jORLib from the releases page
+2. Install cplex in maven: mvn install:install-file -DgroupId=cplex -DartifactId=cplex -Dversion=12.6.1 -Dpackaging=jar -Dfile=/opt/ILOG/CPLEX_Studio1261/cplex/lib/cplex.jar
+3. Ensure that LD_LIBRARY_PATH is set correctly: export LD_LIBRARY_PATH=/opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/:$LD_LIBRARY_PATH
+4. Next you can invoke: mvn compile; mvn test
