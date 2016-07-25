@@ -2,7 +2,7 @@
 
 Changes to jORLib in each version:
 
--**Upcoming** (unknown):
+-**version 1.2** (24-Jul-2016):
 	-Fixed a bug where the number of processed nodes in BAP was not calculated correctly (pruning nodes did not increment the nodes processed counter)
 	-Added BAP example GraphColoring
 	-Fixed a bug where an externally computed bound on an optimization problem was completely ignored by BAP/CG. For example, the size of a maximum clique forms a valid bound for the chromatic number of a graph. This bound, although passed correctly to BAP, would not be taken into account.
