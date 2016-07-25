@@ -14,9 +14,9 @@ Please address all contributions, suggestions, and inquiries to the current proj
 
 ## Introduction ##
 
-jORLib is a Java class library that provides implementations for Operations Research problems. The code requires JDK 1.8 or later, and is released under the terms of GPLv3. Many of the implementations are derived from journal papers and books. jORLib currently includes a framework for Column Generation and Branch-and-Price, routines to separate valid inequalities (knapsack, TSP), parsers for TSPLib instances, as well as several other useful algorithmic implementations. To simplify working with jORLib, documentation is provided, as well as an extensive set of working examples.
+jORLib is a Java class library that provides implementations for Operations Research problems. The code requires JDK 1.8 or later, and is released under the terms of LGPLv2.1. Many of the implementations are derived from journal papers and books. jORLib currently includes a framework for Column Generation and Branch-and-Price, routines to separate valid inequalities (knapsack, TSP), parsers for TSPLib instances, as well as several other useful algorithmic implementations. To simplify working with jORLib, documentation is provided, as well as an extensive set of working examples.
 
-A copy of the [GPLv3](LICENSE) is included in the download.
+A copy of the [LGPLv2.1](LICENSE) is included in the download.
 
 Please note that jORLib is distributed WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
