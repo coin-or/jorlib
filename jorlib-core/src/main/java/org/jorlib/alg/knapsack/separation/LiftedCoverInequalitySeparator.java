@@ -7,7 +7,7 @@
  *
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
- * This program and the accompanying materials are licensed under GPLv3
+ * This program and the accompanying materials are licensed under LGPLv2.1
  *
  */
 /* -----------------
@@ -38,12 +38,12 @@ import org.jorlib.alg.knapsack.KnapsackAlgorithm;
 
 
 /**
- * This class calculates both Lifted and Minimal Cover initialInequalities for binary knapsack constraints.<p>
- * The algorithms used to separate violated initialInequalities are provided in:<br>
+ * This class calculates both Lifted and Minimal Cover inequalities for binary knapsack constraints.<p>
+ * The algorithms used to separate violated inequalities are provided in:<br>
  * {@literal Nemhauser, G.L., Wolsey, L.A., Integer and combinatorial optimization. 1999, John Wiley & Sons}
  * Given a knapsack constraint: {@code \sum_i a_i x_i <= b} where {@code x_i} are binary variables, {@code b} a positive integer and {@code a_i} integer coefficients.
  * Let {@code N} be the set of variables in the knapsack constraint.
- * For a given assignment of values to the variables, this class computes two types of violated cover initialInequalities:
+ * For a given assignment of values to the variables, this class computes two types of violated cover inequalities:
  * <ol>
  * <li>Minimal covers: {@code \sum_{j\in C} \leq |C|-1}, where {@code C\subseteq N, \sum_{j\in C} a_i >b}</li>
  * <li>Lifted covers: {@code \sum_{j\in N\setminus C} \alpha_jx_j + \sum_{j\in C2} \gamma_jx_j + \sum_{j\in C1} x_j \leq |C1|-1+\sum_{j\in C2}\gamma_j}, where

@@ -7,7 +7,7 @@
  *
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
- * This program and the accompanying materials are licensed under GPLv3
+ * This program and the accompanying materials are licensed under LGPLv2.1
  *
  */
 /* -----------------
@@ -53,7 +53,7 @@ public final class LiftedCoverInequalitySeparatorTest extends TestCase {
 	}
 
 	/**
-	 * Test 1 - Violated cover: x1+x7<=1, minimalCoverValue: 0.29
+	 * Test 1 - Violated cover: {@code x1+x7<=1}, minimalCoverValue: 0.29
 	 */
 	public void testSeparateMinimalCoverInequality1(){
 		
@@ -71,7 +71,7 @@ public final class LiftedCoverInequalitySeparatorTest extends TestCase {
 	}
 	
 	/**
-	 * Test2 - Violated cover: x3+x7<=1, minimalCoverValue: 0.65
+	 * Test2 - Violated cover: {@code x3+x7<=1}, minimalCoverValue: 0.65
 	 */
 	public void testSeparateMinimalCoverInequality2(){	
 		//Test2 - Violated cover: x3+x7<=1, minimalCoverValue: 0.65
@@ -89,7 +89,7 @@ public final class LiftedCoverInequalitySeparatorTest extends TestCase {
 	}
 	
 	/**
-	 * Test 3 - Violated cover: x3+x4+x5<=2, minimalCoverValue: 7/53=0.13207547169
+	 * Test 3 - Violated cover: {@code x3+x4+x5<=2}, minimalCoverValue: 7/53=0.13207547169
 	 */
 	public void testSeparateMinimalCoverInequality3(){	
 		double[] variableValues3={0, 0, 1, 1, 46.0/53};
@@ -106,7 +106,7 @@ public final class LiftedCoverInequalitySeparatorTest extends TestCase {
 	}
 	
 	/**
-	 * Test 4 - minimal cover: x3+x4+x5<=2, minimalCoverValue: 1, NO violation
+	 * Test 4 - minimal cover: {@code x3+x4+x5<=2}, minimalCoverValue: 1, NO violation
 	 */
 	public void testSeparateMinimalCoverInequality4(){	
 		double[] variableValues4={.5, .5, 1, .5, .5};
@@ -123,7 +123,7 @@ public final class LiftedCoverInequalitySeparatorTest extends TestCase {
 	}
 	
 	/**
-	 * Test 5 - violated minimal cover: x1+x7<=1, violated lifted cover: x1+x6+x7+x9<=1
+	 * Test 5 - violated minimal cover: {@code x1+x7<=1}, violated lifted cover: {@code x1+x6+x7+x9<=1}
 	 */
 	public void testSeparateLiftedCoverInequality1(){
 		double[] variableValues5={0.71, 0, 0.35, 1, 1, 0, 1, 1, 0};
@@ -147,7 +147,7 @@ public final class LiftedCoverInequalitySeparatorTest extends TestCase {
 	}
 	
 	/**
-	 * Test 6 - minimal cover: x3+x4+x5<=2 (NOT violated), violated lifted cover: x1+2x3+x4+x5<=3
+	 * Test 6 - minimal cover: {@code x3+x4+x5<=2} (NOT violated), violated lifted cover: {@code x1+2x3+x4+x5<=3}
 	 */
 	public void testSeparateLiftedCoverInequality2(){
 		double[] variableValues6={.5, .5, 1, .5, .5};
@@ -171,7 +171,7 @@ public final class LiftedCoverInequalitySeparatorTest extends TestCase {
 	}
 	
 	/**
-	 * Test 7 - Knapsack: 3x_1+3_x_2 <=6. NO cover inequality exists for this knapsack constraint.
+	 * Test 7 - Knapsack: {@code 3x_1+3_x_2 <=6}. NO cover inequality exists for this knapsack constraint.
 	 */
 	public void testNoCoverInequalityExists(){
 		double[] variableValues7={0.8333333333333334, 0.8333333333333333};

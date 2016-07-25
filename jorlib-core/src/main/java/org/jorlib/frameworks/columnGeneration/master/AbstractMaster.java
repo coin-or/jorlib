@@ -7,7 +7,7 @@
  *
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
- * This program and the accompanying materials are licensed under GPLv3
+ * This program and the accompanying materials are licensed under LGPLv2.1
  *
  */
 /* -----------------
@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  *
  * @param <T> Type of data model
  * @param <V> Type of pricing problem
- * @param <U> Type of initialColumns
+ * @param <U> Type of columns
  * @param <W> Type of Master Data
  */
 public abstract class AbstractMaster<T extends ModelInterface, U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T>, W extends MasterData<T,U,V,?>> implements BranchingDecisionListener{
@@ -73,7 +73,10 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	protected final OptimizationSense optimizationSenseMaster;
 
 	/**
-	 * Creates a new Master Problem
+	 * Creates a new Master Problem.
+	 *
+	 * This implementation will invoke the {@link #buildModel()}  buildModel} method. Any data members required during the execution of {@link #buildModel()}  buildModel} should be instantiated prior to the invocation of this constructor,
+	 * or within the {@link #buildModel()}  buildModel} method.
 	 * @param dataModel data model
 	 * @param pricingProblems pricing problems
 	 * @param optimizationSenseMaster indicates whether the Master Problem is a Minimiation or a Maximization problem
@@ -89,6 +92,9 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 
 	/**
 	 * Creates a new Master Problem
+	 *
+	 * This implementation will invoke the {@link #buildModel()}  buildModel} method. Any data members required during the execution of {@link #buildModel()}  buildModel} should be instantiated prior to the invocation of this constructor,
+	 * or within the {@link #buildModel()}  buildModel} method.
 	 * @param dataModel data model
 	 * @param pricingProblem pricing problem
 	 * @param optimizationSenseMaster indicates whether the Master Problem is a Minimiation or a Maximization problem
@@ -99,6 +105,9 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 
 	/**
 	 * Creates a new Master Problem
+	 *
+	 * This implementation will invoke the {@link #buildModel()}  buildModel} method. Any data members required during the execution of {@link #buildModel()}  buildModel} should be instantiated prior to the invocation of this constructor,
+	 * or within the {@link #buildModel()}  buildModel} method.
 	 * @param dataModel data model
 	 * @param pricingProblems pricing problems
 	 * @param cutHandler Reference to a cut handler
@@ -115,6 +124,9 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 
 	/**
 	 * Creates a new Master Problem
+	 *
+	 * This implementation will invoke the {@link #buildModel()}  buildModel} method. Any data members required during the execution of {@link #buildModel()}  buildModel} should be instantiated prior to the invocation of this constructor,
+	 * or within the {@link #buildModel()}  buildModel} method.
 	 * @param dataModel data model
 	 * @param pricingProblem pricing problem
 	 * @param cutHandler Reference to a cut handler
@@ -214,7 +226,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	/**
 	 * Returns all the inequalities in the master model.
 	 * A handle to a cutHandler must have been provided in the constructor of this class
-	 * @return a list of initialInequalities
+	 * @return a list of inequalities
 	 */
 	public List<AbstractInequality> getCuts(){
 		return cutHandler.getCuts();
@@ -227,7 +239,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 	public abstract void addColumn(U column);
 
 	/**
-	 * Add a initial solution (list of columns)
+	 * Add an initial solution (list of columns)
 	 * @param columns initial set of columns
 	 */
 	public void addColumns(List<U> columns){

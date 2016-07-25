@@ -7,7 +7,7 @@
  *
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
- * This program and the accompanying materials are licensed under GPLv3
+ * This program and the accompanying materials are licensed under LGPLv2.1
  *
  */
 /* -----------------
@@ -29,7 +29,7 @@ package org.jorlib.frameworks.columnGeneration.branchAndPrice.EventHandling;
 import java.util.EventObject;
 
 /**
- * Event generated when the cut handler starts separating violated initialInequalities
+ * Event generated when the cut handler starts separating violated inequalities
  *
  * @author Joris Kinable
  * @version 5-5-2015

@@ -7,7 +7,7 @@
  *
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
- * This program and the accompanying materials are licensed under GPLv3
+ * This program and the accompanying materials are licensed under LGPLv2.1
  *
  */
 /* -----------------
@@ -53,7 +53,7 @@ public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 	protected final List<BranchingDecision> branchingDecisions;
 	/** Columns used to initialize the master problem **/
 	protected final List<U> initialColumns;
-	/** Valid initialInequalities used to initialize the master problem of this node **/
+	/** Valid inequalities used to initialize the master problem of this node **/
 	protected final List<AbstractInequality> initialInequalities;
 
 
@@ -63,9 +63,9 @@ public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 	/** Bound on the optimum solution of this node. If the bound of this node exceeds the best incumbent int solution, this node will be pruned.
 	 * If this node is solved to optimality, this.objective and this.bound must be equal **/
 	protected double bound;
-	/** List of initialColumns constituting the solution after solving this node; Typically, only non-zero initialColumns are stored **/
+	/** List of columns constituting the solution after solving this node; Typically, only non-zero columns are stored **/
 	protected List<U> solution;
-	/** List of initialInequalities in the master problem after solving this node **/
+	/** List of inequalities in the master problem after solving this node **/
 	protected List<AbstractInequality> inequalities;
 
 	/**
@@ -73,7 +73,7 @@ public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 	 * @param nodeID ID of the Node
 	 * @param rootPath Sequence of the IDs of the nodes encountered while walking from the root of the BAP tree to this node. rootPath[0]=0, rootPath[last(rootPath)]=this.nodeID
 	 * @param initialColumns Columns used to initialize the master problem
-	 * @param initialInequalities Valid initialInequalities used to initialize the master problem of this node
+	 * @param initialInequalities Valid inequalities used to initialize the master problem of this node
 	 * @param bound Bound on the optimum solution of this node. If the bound of this node exceeds the best incumbent integer solution, this node will be pruned. The bound may be inherited from the parent.
 	 * @param branchingDecisions List of branching decisions that lead to this node.
 	 */
@@ -208,6 +208,14 @@ public class BAPNode<T,U extends AbstractColumn<T, ?>> {
 	 */
 	public List<AbstractInequality> getInequalities(){
 		return Collections.unmodifiableList(inequalities);
+	}
+
+	/**
+	 * Returns the depth of the node in the Branch-and-Price tree. The depth of the root node is 0, the depth of its siblings is 1, etc.
+	 * @return Depth of node in the Branch-and-Price tree
+	 */
+	public int getNodeDepth(){
+		return rootPath.size();
 	}
 
 	/**

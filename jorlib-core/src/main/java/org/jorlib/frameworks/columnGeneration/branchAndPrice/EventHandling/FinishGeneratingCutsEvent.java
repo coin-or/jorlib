@@ -7,7 +7,7 @@
  *
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
- * This program and the accompanying materials are licensed under GPLv3
+ * This program and the accompanying materials are licensed under LGPLv2.1
  *
  */
 /* -----------------
@@ -32,7 +32,7 @@ import java.util.EventObject;
 import java.util.List;
 
 /**
- * Event generated when the cut handler finished separating violated initialInequalities
+ * Event generated when the cut handler finished separating violated inequalities
  *
  * @author Joris Kinable
  * @version 5-5-2015

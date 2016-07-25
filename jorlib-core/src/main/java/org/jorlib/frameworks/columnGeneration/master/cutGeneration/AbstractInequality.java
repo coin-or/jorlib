@@ -7,7 +7,7 @@
  *
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
- * This program and the accompanying materials are licensed under GPLv3
+ * This program and the accompanying materials are licensed under LGPLv2.1
  *
  */
 /* -----------------
@@ -36,12 +36,12 @@ package org.jorlib.frameworks.columnGeneration.master.cutGeneration;
  */
 public abstract class AbstractInequality {
 
-	/** Reference to the AbstractCutGenerator which generates initialInequalities of the type that extends this class **/
+	/** Reference to the AbstractCutGenerator which generates inequalities of the type that extends this class **/
 	public final AbstractCutGenerator maintainingGenerator;
 
 	/**
 	 * Creates a new inequality
-	 * @param maintainingGenerator Reference to the AbstractCutGenerator which generates initialInequalities of the type that extends this class
+	 * @param maintainingGenerator Reference to the AbstractCutGenerator which generates inequalities of the type that extends this class
 	 */
 	public AbstractInequality(AbstractCutGenerator maintainingGenerator){
 		this.maintainingGenerator=maintainingGenerator;

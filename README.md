@@ -1,11 +1,11 @@
 # jORLib
-Java OR Library
+Java Operations Research Library
 
 Released: April, 2015</p>
 
 Written by Joris Kinable and Contributors
 
-(C) Copyright 2015, by [Joris Kinable](mailto:jkinable@cs.cmu.edu) and Contributors. All rights
+(C) Copyright 2015-2016, by [Joris Kinable](mailto:jkinable@cs.cmu.edu) and Contributors. All rights
 reserved.
 
 Please address all contributions, suggestions, and inquiries to the current project administrator [Joris Kinable](mailto:jkinable@cs.cmu.edu)
@@ -14,9 +14,9 @@ Please address all contributions, suggestions, and inquiries to the current proj
 
 ## Introduction ##
 
-jORLib is a Java class library that provides implementations for Operations Research problems. The code requires JDK 1.8 or later, and is released under the terms of GPLv3. Many of the implementations are derived from journal papers and books. jORLib currently includes a framework for Column Generation and Branch-and-Price, routines to separate valid inequalities (knapsack, TSP), parsers for TSPLib instances, as well as several other useful algorithmic implementations. To simplify working with jORLib, documentation is provided, as well as an extensive set of working examples.
+jORLib is a Java class library that provides implementations for Operations Research problems. The code requires JDK 1.8 or later, and is released under the terms of LGPLv2.1. Many of the implementations are derived from journal papers and books. jORLib currently includes a framework for Column Generation and Branch-and-Price, routines to separate valid inequalities (knapsack, TSP), parsers for TSPLib instances, as well as several other useful algorithmic implementations. To simplify working with jORLib, documentation is provided, as well as an extensive set of working examples.
 
-A copy of the [GPLv3](LICENSE) is included in the download.
+A copy of the [LGPLv2.1](LICENSE) is included in the download.
 
 Please note that jORLib is distributed WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
@@ -27,9 +27,9 @@ Please refer to the license for details.
 
 The package `org.jorlib.demo` includes small demo applications to help you get started. If you spawn your own demo app and think others can benefit from it, please send it to us and we will add it to that package.</p>
 Running examples directly from the demo package is easy. Try for example:
-- "java -cp jorlib-demo-1.0-uber.jar org.jorlib.demo.alg.tsp.separation.SubtourSeparatorDemo" to run the SubtourSeparatorDemo
+- "java -cp jorlib-demo-<VERSION>-uber.jar org.jorlib.demo.alg.tsp.separation.SubtourSeparatorDemo" to run the SubtourSeparatorDemo
 or
-- "java -Djava.library.path=/opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/ -cp jorlib-demo-1.0-uber.jar org.jorlib.demo.frameworks.columnGeneration.bapExample.TSPSolver" to run the Branch-and-Price example. Obviously, you need to ensure that java.library.path points to your own Cplex installation.
+- "java -Djava.library.path=/opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/ -cp jorlib-demo-<VERSION>-uber.jar org.jorlib.demo.frameworks.columnGeneration.bapExample.TSPSolver" to run the Branch-and-Price example. Obviously, you need to ensure that java.library.path points to your own Cplex installation.
 
 ## Documentation ##
 Javadoc for the latest version can be found [here](http://jkinable.github.io/jorlib/apidocs/); documentation per version is bundled with every release. Releases can be found on our [release page](https://github.com/jkinable/jorlib/releases). There is also a [manual](http://jkinable.github.io/jorlib/manual/manual.pdf) with an in-depth discussion on the Column Generation and Branch-and-Price features of the library.
@@ -59,6 +59,8 @@ If you add improvements to jORLib please send them to us as pull requests on git
 
 ## Using jORLib ##
 If you are using jORLib in your work, you are cordially invited to drop a note on our mailing lists (soon to come), describing your work and what you used jORLib for. This will give us a better understanding of how the Library is used and what people's interests are. Feel free to report any issues, feature requests, etc on our issue tracker on Github (https://github.com/jkinable/jorlib/issues).
+
+If you are using jORLib in your research, products, etc, please include a reference to the library; this increases the visibility of the project and may attract additional developers.
 
 ## Thanks ##
 

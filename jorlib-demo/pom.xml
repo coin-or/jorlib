@@ -4,14 +4,14 @@
 	<parent>
 		<groupId>org.jorlib</groupId>
 		<artifactId>jorlib</artifactId>
-		<version>1.1</version>
+		<version>1.1.1</version>
 	</parent>
 	<artifactId>jorlib-demo</artifactId>
 	<name>JORLib - Demo</name>
 	<licenses>
 		<license>
-			<name>GNU GENERAL PUBLIC LICENSE (GPLv3)</name>
-			<url>http://www.gnu.org/copyleft/gpl.html</url>
+			<name>GNU Lesser General Public License (LGPLv2.1)</name>
+			<url>https://www.gnu.org/licenses/lgpl-2.1.html</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -71,6 +71,30 @@
 				<configuration>
 					<finalName>${project.artifactId}-${project.version}-uber</finalName>
 				</configuration>
+			</plugin>
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-source-plugin</artifactId>
+			  <executions>
+			    <execution>
+			      <id>attach-sources</id>
+			      <goals>
+				<goal>jar</goal>
+			      </goals>
+			    </execution>
+			  </executions>
+			</plugin>
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-javadoc-plugin</artifactId>
+			  <executions>
+			    <execution>
+			      <id>attach-javadocs</id>
+			      <goals>
+				<goal>jar</goal>
+			      </goals>
+			    </execution>
+			  </executions>
 			</plugin>
 		</plugins>
 	</build>

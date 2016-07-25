@@ -7,7 +7,7 @@
  *
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
- * This program and the accompanying materials are licensed under GPLv3
+ * This program and the accompanying materials are licensed under LGPLv2.1
  *
  */
 /* -----------------
@@ -49,7 +49,7 @@ public class FinishMasterEvent extends EventObject{
      * Creates a new FinishMasterEvent
      * @param source Generator of the event
      * @param columnGenerationIteration column generation iteration during which this event was fired
-     * @param objective objectiveMasterProblem of master problem
+     * @param objective objective of master problem
      * @param cutoffValue best available integer solution
      * @param boundOnMasterObjective best available bound on master problem
      */

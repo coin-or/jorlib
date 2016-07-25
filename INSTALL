@@ -1,0 +1,123 @@
+INSTALL
+
+
+## Downloading jORLib ##
+Option 1: directly from the release page: https://github.com/jkinable/jorlib/releases
+Option 2 (source files only): Go to https://github.com/jkinable/jorlib. Make sure that you have the 'master' branch selected. Click the green "Clone or Download button"-> Download ZIP. Alternatively, you can use the command line (requires git scm to be installed). To download the repository through the command line:
+  a. create a new folder jORLib: 
+      mkdir jORLib; cd jORLib
+  b. run: 
+      git clone https://github.com/jkinable/jorlib.git .
+     notice the . at the end; this will download the files *into* your current directly. Your currenct directory must be empty for this to work.
+
+  
+
+## Running jORLib demo's ##
+The demo's can be run directly from the command line.
+1. Download jORLib (see 'Downloading jORLib', option 1). Make sure that you have java 8 or higher installed on your system.
+2. Running the code (version numbering needs to be adjusted accordingly):
+  a. Algorithmic example (SubtourSeparatorDemo): java -cp jorlib-demo-<VERSION>-uber.jar org.jorlib.demo.alg.tsp.separation.SubtourSeparatorDemo
+  b. Column Generation example (this requires a working IBM CPLEx installation): java -Djava.library.path=/opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/ -cp jorlib-demo-<VERSION>-uber.jar org.jorlib.demo.frameworks.columnGeneration.bapExample.TSPSolver
+  Note that java.library.path must point to your Cplex installation folder.
+
+
+
+## Using jORLib as a library example ##
+1. Download jORLib (see 'Downloading jORLib', option 1). Make sure that you have java 8 or higher installed on your system. Extract jorlib-core-<VERSION>.jar
+2. Create a new file HelloJORLib.java (in the same directory you extracted jorlib-core) and copy/paste the following code:
+
+    import org.jorlib.alg.knapsack.BinaryKnapsack;
+    import java.util.Arrays;
+
+    public class HelloJORLib {
+	public static void main(String[] args){
+	    //Define the knapsack problem...
+	    double[] itemValues={15,10,9,5};
+	    int[] itemWeights={1,5,3,4};
+	    int maxKnapsackWeight=8;
+
+	    //... and solve it:
+	    BinaryKnapsack knapsack=new BinaryKnapsack();
+	    knapsack.solveKnapsackProblem(itemValues.length, maxKnapsackWeight, itemValues, itemWeights);
+	    System.out.println("Knapsack solution: ");
+	    System.out.println("\t value: "+knapsack.getKnapsackValue());
+	    System.out.println("\t weight: "+knapsack.getKnapsackWeight());
+	    System.out.println("\t item selected: "+ Arrays.toString(knapsack.getKnapsackItems()));
+	}
+    }
+
+3. Compile the code...:
+    javac -cp jorlib-core-<VERSION>.jar HelloJORLib.java
+4. ... and execute:
+    java -cp .:jorlib-core-<VERSION>.jar HelloJORLib
+5. Expected result:
+  Knapsack solution: 
+	 value: 29.0
+	 weight: 8
+	 item selected: [true, false, true, true]
+That's it!
+
+
+
+## Importing jORLib as a dependency into your Eclipse/IntelliJ project (manual download) ##
+Download jORLib (see 'Downloading jORLib', option 1). Import the jar jorlib-core-<VERSION>.jar.
+a. To import a jar under Eclipse: right-click on the Project → Build Path → Configure Build Path. Under Libraries tab, click Add Jars or Add External JARs and give the Jar.
+b. To import a jar under IntelliJ: Click File from File menu → Project Structure → Libraries → Click the green '+' sign at the top and follow the instructions.
+Note that some classes have a number of dependencies (listed here: http://jkinable.github.io/jorlib/). These dependencies must obviously be met before these classes can be used.
+
+
+
+## Importing jORLib as a dependency into your Eclipse/IntelliJ project (Maven) ##
+Currently, jORLib is not included in the Maven Central Repository. This will hopefully change soon once we hammer out some dependency issues. See 'Notes' below.
+
+
+
+## Contributing code to jORLib ##
+1. Create an account on github.com.
+2. Navigate to http://jkinable.github.io/jorlib/ and click 'Fork'. Now you have a Fork of the jORLib repository!
+3. Follow the steps outlined in https://help.github.com/articles/fork-a-repo/ to get a the files from your repository to your computer. In summary, the commands would be:
+  a. create a new folder jORLib on your harddrive: 
+      mkdir jORLib; cd jORLib
+  b. run: 
+      git clone https://github.com/YOUR-USERNAME/jorlib.git .
+     notice the . at the end; this will download the files *into* your current directly. Your currenct directory must be empty for this to work.
+  c. set up a remote, thereby pointing to the original repository:
+      git remote add upstream https://github.com/jkinable/jorlib.git
+  Alright, you are almost there. You now have a local working copy of your repository. Each time you want to make a new contribution to the library, you do the following:
+  a. Synchronize your fork with the upstream repository (development branch, see notes below): https://help.github.com/articles/syncing-a-fork/
+  b. Create a new branch, make the necessary changes, and commit them. See https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging and https://help.github.com/articles/creating-and-deleting-branches-within-your-repository/
+  c. Once you are fully satisfied with your code and you believe that this would be a valuable contribution to jORLib, you can initiate a pull request (development branch, see notes below): https://help.github.com/articles/using-pull-requests/. After you've created a pull request, your code will be reviewed and tested by one of the project's administrators. Make sure that your submission includes your full name such that your contribution can be properly attributed to you.
+Important notes:
+  -The Development branch is the branch containing all code for the next release. All pull requests should be directed to this branch. Make sure that your local branch is synchronized with this branch. Do NOT initiate a pull request to the Master branch.
+  -All contributions need to be properly documented. Please include references to journal papers or algorithm descriptions you have used, as well as a note on runtime complexity (when applicable).
+  -Each file must contain the copyright header.
+  -All new algorithmic contributions must come with unit tests.
+  -Please include a simple demo in the demo package (when applicable).
+  -Run the necessary tests to ensure that everything is still working as expected.
+  -To help upgrading, jORLib maintains a one-version-backwards compatibility. While this compatibility is not a hard promise, it is generally respected.
+
+
+
+## Importing jORLib as a Maven project in Eclipse/IntelliJ ##
+Requirements: Working installation of Java 8, IntelliJ or Eclipse IDE's and (necessary for older versions of these IDE) maven plugins installed.
+1. Clone or download the jORLib repository on github (see 'Downloading jORLib').
+2. OPTIONAL: if you plan on running the Column Generation/Branch-and-Price test suite or demo's, make sure that Cplex is installed. Two alternative options exist (choose one).
+  a. Add cplex.jar (located under cplex/lib in your Cplex Studio installation folder) to your local maven repository, e.g.:
+     mvn install:install-file -DgroupId=cplex -DartifactId=cplex -Dversion=12.6.1 -Dpackaging=jar -Dfile=/opt/ILOG/CPLEX_Studio1261/cplex/lib/cplex.jar
+  b. You can proceed to step 3 first, and add cplex.jar later as a library to your project manually
+3. Through your favorite IDE (e.g. IntelliJ or Eclipse), import the pom.xml file from jORLib's root directory. For IntelliJ, ensure that recursive project detection is enabled. Consult your IDE's 	   manual on to import a Maven project.
+4. OPTIONAL: if you plan on running the Column Generation/Branch-and-Price test suite or demo's, you need to point the LD_LIBRARY_PATH enviromental variable to Cplex' native libraries.
+   In IntelliJ, the easiest way to do this by opening Module Settings (F4)->Libraries. Select the Cplex library you've added in step 2, click the 'add' button (green plus), and add the path pointing to
+   the native libraries, e.g. /opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/. Click apply and you are done.
+
+
+## Compiling and testing through Maven ##
+1. Download jORLib source files (see 'Downloading jORLib', option 1 or 2)
+2. Install cplex in maven: mvn install:install-file -DgroupId=cplex -DartifactId=cplex -Dversion=12.6.1 -Dpackaging=jar -Dfile=/opt/ILOG/CPLEX_Studio1261/cplex/lib/cplex.jar
+3. Ensure that LD_LIBRARY_PATH is set correctly: export LD_LIBRARY_PATH=/opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/:$LD_LIBRARY_PATH
+4. Next you can invoke: mvn compile; mvn test
+
+NOTES:
+Currently it is not possible to compile and run the code directly through Maven unless you have access to the commercial software IBM Cplex (free for academics). Cplex.jar is sufficient to make the code compile, but Cplex' runtime libraries are needed to run the tests. We are looking into a solution for this. Several possible options exist:
+a. IBM adds Cplex.jar to the Central Maven Repository; this way, jORLib can be compiled even if you don't have access to Cplex.
+b. The commercial Linear Program Solver Cplex gets swapped out for an open-source equivalent. Thus far, we haven't found a good replacement which allows for concise, readable code, while at the same time being easy to install and offering all the necessary functionality: access to dual information, possibility to create a model by columns. 

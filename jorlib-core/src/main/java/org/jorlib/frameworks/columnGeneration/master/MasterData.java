@@ -7,7 +7,7 @@
  *
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
- * This program and the accompanying materials are licensed under GPLv3
+ * This program and the accompanying materials are licensed under LGPLv2.1
  *
  */
 /* -----------------
@@ -35,7 +35,7 @@ import java.util.*;
 /**
  * This is a data object which is being managed by the Master problem. The same data object is passed
  * to the cutHandlers. Therefore, the object can be used to pass information from the master problem to
- * the classes which separate valid initialInequalities (and also in the opposite direction).
+ * the classes which separate valid inequalities (and also in the opposite direction).
  * 
  * @author Joris Kinable
  * @version 13-4-2015
@@ -55,7 +55,7 @@ public class MasterData<T, U extends AbstractColumn<T, V>, V extends AbstractPri
 	/** Indicates whether the master problem has been solved to optimality **/
 	public boolean optimal=false;
 
-	/** Storage of the variables representing the initialColumns in the master problem **/
+	/** Storage of the variables representing the columns in the master problem **/
 	protected final Map<V, OrderedBiMap<U, X>> varMap;
 
 	/**
@@ -81,8 +81,8 @@ public class MasterData<T, U extends AbstractColumn<T, V>, V extends AbstractPri
 	//============= Single Pricing Problem methods ====================
 
 	/**
-	 * Returns a set of initialColumns registered with the master problem
-	 * @return Set of initialColumns
+	 * Returns a set of columns registered with the master problem
+	 * @return Set of columns
 	 * @throws UnsupportedOperationException if the number of pricing problems does not equal one
 	 */
 	public Set<U> getColumns(){
@@ -92,8 +92,8 @@ public class MasterData<T, U extends AbstractColumn<T, V>, V extends AbstractPri
 	}
 
 	/**
-	 * Returns a list of initialColumns registered with the master problem
-	 * @return List of initialColumns
+	 * Returns a list of columns registered with the master problem
+	 * @return List of columns
 	 * @throws UnsupportedOperationException if the number of pricing problems does not equal one
 	 */
 	public List<U> getColumnsForPricingProblemAsList(){
@@ -103,8 +103,8 @@ public class MasterData<T, U extends AbstractColumn<T, V>, V extends AbstractPri
 	}
 
 	/**
-	 * Returns the number of initialColumns registered with the master problem
-	 * @return Number of initialColumns
+	 * Returns the number of columns registered with the master problem
+	 * @return Number of columns
 	 * @throws UnsupportedOperationException if the number of pricing problems does not equal one
 	 */
 	public int getNrColumns(){
@@ -114,8 +114,8 @@ public class MasterData<T, U extends AbstractColumn<T, V>, V extends AbstractPri
 	}
 
 	/**
-	 * Returns a mapping of the initialColumns to their variables. WARNING: extreme care must be taken when modifying this mapping outside of the MasterData class!
-	 * @return Mapping of initialColumns to variables
+	 * Returns a mapping of the columns to their variables. WARNING: extreme care must be taken when modifying this mapping outside of the MasterData class!
+	 * @return Mapping of columns to variables
 	 * @throws UnsupportedOperationException if the number of pricing problems does not equal one
 	 */
 	public OrderedBiMap<U, X> getVarMap(){
@@ -139,36 +139,36 @@ public class MasterData<T, U extends AbstractColumn<T, V>, V extends AbstractPri
 	//============= Multiple Pricing Problem methods ====================
 
 	/**
-	 * Returns a set of initialColumns registered with the master problem for the given pricing problem
+	 * Returns a set of columns registered with the master problem for the given pricing problem
 	 * @param pricingProblem pricing problem
-	 * @return Set of initialColumns
+	 * @return Set of columns
 	 */
 	public Set<U> getColumnsForPricingProblem(V pricingProblem){
 		return varMap.get(pricingProblem).keySet();
 	}
 
 	/**
-	 * Returns a list of initialColumns registered with the master problem for the given pricing problem
+	 * Returns a list of columns registered with the master problem for the given pricing problem
 	 * @param pricingProblem pricing problem
-	 * @return List of initialColumns
+	 * @return List of columns
 	 */
 	public List<U> getColumnsForPricingProblemAsList(V pricingProblem){
 		return varMap.get(pricingProblem).keyList();
 	}
 
 	/**
-	 * Returns the number of initialColumns registered with the master problem for the given pricing problem
+	 * Returns the number of columns registered with the master problem for the given pricing problem
 	 * @param pricingProblem pricing problem
-	 * @return Number of initialColumns
+	 * @return Number of columns
 	 */
 	public int getNrColumnsForPricingProblem(V pricingProblem){
 		return varMap.get(pricingProblem).size();
 	}
 
 	/**
-	 * Returns a mapping of the initialColumns to their variables for the given pricing problem. WARNING: extreme care must be taken when modifying this mapping outside of teh MasterData class!
+	 * Returns a mapping of the columns to their variables for the given pricing problem. WARNING: extreme care must be taken when modifying this mapping outside of teh MasterData class!
 	 * @param pricingProblem pricing problem
-	 * @return Mapping of initialColumns to variables
+	 * @return Mapping of columns to variables
 	 */
 	public OrderedBiMap<U, X> getVarMapForPricingProblem(V pricingProblem){
 		return  varMap.get(pricingProblem);

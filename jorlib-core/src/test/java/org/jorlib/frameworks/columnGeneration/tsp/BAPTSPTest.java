@@ -7,7 +7,7 @@
  *
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
- * This program and the accompanying materials are licensed under GPLv3
+ * This program and the accompanying materials are licensed under LGPLv2.1
  *
  */
 /* -----------------
@@ -28,8 +28,6 @@ package org.jorlib.frameworks.columnGeneration.tsp;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jorlib.frameworks.columnGeneration.branchAndPrice.AbstractBranchCreator;
-import org.jorlib.frameworks.columnGeneration.io.SimpleBAPLogger;
-import org.jorlib.frameworks.columnGeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columnGeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columnGeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columnGeneration.tsp.bap.BranchAndPrice;
@@ -128,7 +126,7 @@ public final class BAPTSPTest {
 		//Get an initial solution and use it as an upper bound
 		TSPLibTour initTour=TSPLibTour.createCanonicalTour(tsp.N); //Feasible solution
 		int tourLength=tsp.getTourLength(initTour); //Upper bound (Stronger is better)
-		List<Matching> initSolution=this.convertTourToColumns(tsp, initTour, pricingProblems); //Create a set of initial initialColumns.
+		List<Matching> initSolution=this.convertTourToColumns(tsp, initTour, pricingProblems); //Create a set of initial columns.
 
 		//Define Branch creators
 		List<? extends AbstractBranchCreator<TSP, Matching, PricingProblemByColor>> branchCreators= Collections.singletonList(new BranchOnEdge(tsp, pricingProblems));
@@ -159,10 +157,10 @@ public final class BAPTSPTest {
 	//------------------ Helper methods -----------------
 
 	/**
-	 * Converts a TSPLib tour to a set of initialColumns: A column for every pricing problem is created
+	 * Converts a TSPLib tour to a set of columns: A column for every pricing problem is created
 	 * @param tour tour
 	 * @param pricingProblems pricing problems
-	 * @return List of initialColumns
+	 * @return List of columns
 	 */
 	private List<Matching> convertTourToColumns(TSP tsp, TSPLibTour tour, List<PricingProblemByColor> pricingProblems) {
 		List<Set<DefaultWeightedEdge>> matchings=new ArrayList<>();

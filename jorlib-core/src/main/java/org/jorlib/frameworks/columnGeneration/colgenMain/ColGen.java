@@ -7,7 +7,7 @@
  *
  * (C) Copyright 2015, by Joris Kinable and Contributors.
  *
- * This program and the accompanying materials are licensed under GPLv3
+ * This program and the accompanying materials are licensed under LGPLv2.1
  *
  */
 /* -----------------
@@ -196,7 +196,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	 * solvers are invoked one by one in a hierarchical fashion. First the first solver is invoked to solve the pricing problems. Any new columns generated are immediately returned.
 	 * If it fails to find columns, the next solver is invoked and so on. If the pricing problem discovers new columns, they are added to the master problem and the method continues
 	 * with the next column generation iteration.<br>
-	 * If no new columns are found, the method checks for violated initialInequalities. If there are violated initialInequalities, they are added to the master problem and the method continues with the
+	 * If no new columns are found, the method checks for violated inequalities. If there are violated inequalities, they are added to the master problem and the method continues with the
 	 * next column generation iteration.<br>
 	 * The solve procedure terminates under any of the following conditions:
 	 * <ol>
@@ -214,7 +214,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 		colGenSolveTime=System.currentTimeMillis();
 		
 		boolean foundNewColumns=false; //Identify whether the pricing problem generated new columns
-		boolean hasNewCuts; //Identify whether the master problem violates any valid initialInequalities
+		boolean hasNewCuts; //Identify whether the master problem violates any valid inequalities
 		notifier.fireStartCGEvent();
 		do{
 			nrOfColGenIterations++;
@@ -223,7 +223,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			//Solve the master
 			this.invokeMaster(timeLimit);
 
-			//We can stop when the optimality gap is closed. We still need to check for violated initialInequalities though.
+			//We can stop when the optimality gap is closed. We still need to check for violated inequalities though.
 			if(Math.abs(objectiveMasterProblem - boundOnMasterObjective)<config.PRECISION){
 				//Check whether there are inequalities. Otherwise potentially an infeasible integer solution (e.g. TSP solution with subtours) might be returned.
 				if(config.CUTSENABLED){
@@ -255,7 +255,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			}
 			
 		}while(foundNewColumns || hasNewCuts);
-		this.boundOnMasterObjective =this.objectiveMasterProblem; //When solved to optimality, the bound on the master problem objective equals the objective value.
+		this.boundOnMasterObjective = (optimizationSenseMaster == OptimizationSense.MINIMIZE ? Math.max(this.boundOnMasterObjective, this.objectiveMasterProblem) : Math.min(this.boundOnMasterObjective, this.objectiveMasterProblem)); //When solved to optimality, the bound on the master problem objective equals the objective value.
 		colGenSolveTime=System.currentTimeMillis()-colGenSolveTime;
 		notifier.fireFinishCGEvent();
 	}
@@ -298,7 +298,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 			newColumns=pricingProblemManager.solvePricingProblems(solver);
 
 			//Calculate a bound on the optimal solution of the master problem
-			this.boundOnMasterObjective =Math.max(boundOnMasterObjective,this.calculateBoundOnMasterObjective(solver));
+			this.boundOnMasterObjective =(optimizationSenseMaster == OptimizationSense.MINIMIZE ? Math.max(boundOnMasterObjective,this.calculateBoundOnMasterObjective(solver)) : Math.min(boundOnMasterObjective,this.calculateBoundOnMasterObjective(solver)));
 
 			//Stop when we found new columns
 			if(!newColumns.isEmpty()){
@@ -328,7 +328,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>, V 
 	 * <li>{@link PricingProblemManager#getBoundsOnPricingProblems(Class)}  method for the pricing problems</li>
 	 * </ul>
 	 * NOTE: This method is not implemented by default.
-	 * NOTE2: When calling this method, it is guaranteed that the master problem has not been changed (no columns or initialInequalities are added) since the last time its
+	 * NOTE2: When calling this method, it is guaranteed that the master problem has not been changed (no columns or inequalities are added) since the last time its
 	 * {@link #solve(long timeLimit) solve} method was invoked!
 	 * 
 	 * @param solver solver which was used to solve the pricing problem during the last invocation
