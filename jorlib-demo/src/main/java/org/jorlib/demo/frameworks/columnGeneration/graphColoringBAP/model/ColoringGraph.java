@@ -49,7 +49,7 @@ public final class ColoringGraph extends SimpleGraph<Integer, DefaultEdge> imple
     /**
      * Constructs a new graph coloring instance, based on a file specified in DIMACS format
      * @param instanceLocation input graph
-     * @throws IOException
+     * @throws IOException Throws IO exception when the instance cannot be found.
      */
     public ColoringGraph(String instanceLocation) throws IOException {
         super(DefaultEdge.class);

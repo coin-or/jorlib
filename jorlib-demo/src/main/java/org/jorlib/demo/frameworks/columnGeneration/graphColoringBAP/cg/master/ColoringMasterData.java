@@ -53,6 +53,7 @@ public final class ColoringMasterData extends MasterData<ColoringGraph, Independ
     /**
      * Creates a new MasterData object
      *
+     * @param cplex cplex instance
      * @param varMap A bi-directional map which stores the variables. The first key is the pricing problem, the second key is a column and the value is a variable object, e.g. an IloNumVar in cplex.
      */
     public ColoringMasterData(IloCplex cplex,

@@ -459,9 +459,9 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	 * The columns are not necessary feasible or meet the definition of a column; it is undesirable that these columns end up in a final solution.
 	 * To prevent them from ending up in a final solution, a high cost is associated with them.
 	 * @return List of columns constituting the artificial solution
-	 * @deprecated use {@link #generateInitialFeasibleSolution(BAPNode node)()} instead.
+	 * @deprecated use {@link #generateInitialFeasibleSolution(BAPNode node)} instead.
 	 */
-	protected List<U> generateArtificialSolution(){return Collections.emptyList();};
+	protected List<U> generateArtificialSolution(){return Collections.emptyList();}
 
 	/**
 	 * Creates a (small) set of columns used to initialize a node in the Branch-and-Price tree.
@@ -469,7 +469,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface, U extends
 	 * subset of initial columns needs to be provided. This initial subset is generated in this method.
 	 *
 	 * Any node, other than the root node, will receive a set of initial columns from its parent node. However, because a number of columns which did not comply with the
-	 * branching decision may have been filtered out (see {@see org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision#columnIsCompatibleWithBranchingDecision(U column)()}),
+	 * branching decision may have been filtered out (see {@link org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision#columnIsCompatibleWithBranchingDecision(AbstractColumn)}),
 	 * the subset of columns passed by the parent may not constitute a feasible solution. It is up to the developer to very this.
 	 *
 	 * In general it is hard to come up with a feasible set of columns which satisfy all constraints in the master problem, including potential branching decisions. A common technique

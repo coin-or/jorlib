@@ -50,6 +50,8 @@ public final class IndependentSet extends AbstractColumn<ColoringGraph, Chromati
      * @param associatedPricingProblem Pricing problem to which this column belongs
      * @param isArtificial             Is this an artificial column?
      * @param creator                  Who/What created this column?
+     * @param vertices Vertices in the independent set
+     * @param cost cost of the independent set
      */
     public IndependentSet(ChromaticNumberPricingProblem associatedPricingProblem, boolean isArtificial, String creator, Set<Integer> vertices, int cost) {
         super(associatedPricingProblem, isArtificial, creator);
