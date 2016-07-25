@@ -1,5 +1,5 @@
 # jORLib
-Java OR Library
+Java Operations Research Library
 
 Released: April, 2015</p>
 
@@ -27,9 +27,9 @@ Please refer to the license for details.
 
 The package `org.jorlib.demo` includes small demo applications to help you get started. If you spawn your own demo app and think others can benefit from it, please send it to us and we will add it to that package.</p>
 Running examples directly from the demo package is easy. Try for example:
-- "java -cp jorlib-demo-1.0-uber.jar org.jorlib.demo.alg.tsp.separation.SubtourSeparatorDemo" to run the SubtourSeparatorDemo
+- "java -cp jorlib-demo-<VERSION>-uber.jar org.jorlib.demo.alg.tsp.separation.SubtourSeparatorDemo" to run the SubtourSeparatorDemo
 or
-- "java -Djava.library.path=/opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/ -cp jorlib-demo-1.0-uber.jar org.jorlib.demo.frameworks.columnGeneration.bapExample.TSPSolver" to run the Branch-and-Price example. Obviously, you need to ensure that java.library.path points to your own Cplex installation.
+- "java -Djava.library.path=/opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/ -cp jorlib-demo-<VERSION>-uber.jar org.jorlib.demo.frameworks.columnGeneration.bapExample.TSPSolver" to run the Branch-and-Price example. Obviously, you need to ensure that java.library.path points to your own Cplex installation.
 
 ## Documentation ##
 Javadoc for the latest version can be found [here](http://jkinable.github.io/jorlib/apidocs/); documentation per version is bundled with every release. Releases can be found on our [release page](https://github.com/jkinable/jorlib/releases). There is also a [manual](http://jkinable.github.io/jorlib/manual/manual.pdf) with an in-depth discussion on the Column Generation and Branch-and-Price features of the library.
