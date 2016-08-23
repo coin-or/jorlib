@@ -58,7 +58,7 @@ Your contributions are highly welcome. Literally anything related to OR will be 
 If you add improvements to jORLib please send them to us as pull requests on github. We will add them to the next release so that everyone can enjoy them. You might also benefit from it: others may fix bugs in your source files or may continue to enhance them.
 
 ## Using jORLib ##
-If you are using jORLib in your work, you are cordially invited to drop a note on our mailing lists (soon to come), describing your work and what you used jORLib for. This will give us a better understanding of how the Library is used and what people's interests are. Feel free to report any issues, feature requests, etc on our issue tracker on Github (https://github.com/jkinable/jorlib/issues).
+If you are using jORLib in your work, you are cordially invited to drop a note on our mailing list (jorlib@list.coin-or.org), describing your work and what you used jORLib for. This will give us a better understanding of how the Library is used and what people's interests are. Questions should be directed to the mailing list as well. Feel free to report any issues, feature requests, etc on our issue tracker on Github (https://github.com/jkinable/jorlib/issues).
 
 If you are using jORLib in your research, products, etc, please include a reference to the library; this increases the visibility of the project and may attract additional developers.
 
