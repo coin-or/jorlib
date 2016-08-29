@@ -10,7 +10,7 @@ reserved.
 
 Please address all contributions, suggestions, and inquiries to the current project administrator [Joris Kinable](mailto:jkinable@cs.cmu.edu)
 
-- The website of this project where the latest version of jORLib can be downloaded: [http://jkinable.github.io/jorlib/](http://jkinable.github.io/jorlib/)
+- The website of this project where the latest version of jORLib can be downloaded: [http://coin-or.github.io/jorlib/](http://coin-or.github.io/jorlib/)
 
 ## Introduction ##
 
@@ -32,7 +32,7 @@ or
 - "java -Djava.library.path=/opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/ -cp jorlib-demo-<VERSION>-uber.jar org.jorlib.demo.frameworks.columnGeneration.bapExample.TSPSolver" to run the Branch-and-Price example. Obviously, you need to ensure that java.library.path points to your own Cplex installation.
 
 ## Documentation ##
-Javadoc for the latest version can be found [here](http://jkinable.github.io/jorlib/apidocs/); documentation per version is bundled with every release. Releases can be found on our [release page](https://github.com/jkinable/jorlib/releases). There is also a [manual](http://jkinable.github.io/jorlib/manual/manual.pdf) with an in-depth discussion on the Column Generation and Branch-and-Price features of the library.
+Javadoc for the latest version can be found [here](http://coin-or.github.io/jorlib/apidocs/); documentation per version is bundled with every release. Releases can be found on our [release page](https://github.com/coin-or/jorlib/releases). There is also a [manual](http://coin-or.github.io/jorlib/manual/manual.pdf) with an in-depth discussion on the Column Generation and Branch-and-Price features of the library.
 
 ## Dependencies ##
 
@@ -47,7 +47,7 @@ The demo package jorlib-demo-1.0-uber.jar contains all the required dependencies
 
 ## Online Resources ##
 
-Source code is hosted on [github](https://github.com/jkinable/jorlib). You can send contributions as pull requests there. If you intend to contribute code, please use the development branch as this branch contains the latest version of the code. The master branch always contains the source code of the latest stable release.
+Source code is hosted on [github](https://github.com/coin-or/jorlib/). You can send contributions as pull requests there. If you intend to contribute code, please use the development branch as this branch contains the latest version of the code. The master branch always contains the source code of the latest stable release.
 
 ## Your Improvements ##
 Your contributions are highly welcome. Literally anything related to OR will be considered:
@@ -58,7 +58,7 @@ Your contributions are highly welcome. Literally anything related to OR will be 
 If you add improvements to jORLib please send them to us as pull requests on github. We will add them to the next release so that everyone can enjoy them. You might also benefit from it: others may fix bugs in your source files or may continue to enhance them.
 
 ## Using jORLib ##
-If you are using jORLib in your work, you are cordially invited to drop a note on our mailing list (jorlib@list.coin-or.org), describing your work and what you used jORLib for. This will give us a better understanding of how the Library is used and what people's interests are. Questions should be directed to the mailing list as well. Feel free to report any issues, feature requests, etc on our issue tracker on Github (https://github.com/jkinable/jorlib/issues).
+If you are using jORLib in your work, you are cordially invited to drop a note on our mailing list (jorlib@list.coin-or.org), describing your work and what you used jORLib for. This will give us a better understanding of how the Library is used and what people's interests are. Questions should be directed to the mailing list as well. Feel free to report any issues, feature requests, etc on our issue tracker on Github (https://github.com/coin-or/jorlib/issues).
 
 If you are using jORLib in your research, products, etc, please include a reference to the library; this increases the visibility of the project and may attract additional developers.
 
