@@ -35,43 +35,54 @@ import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequ
 
 /**
  * Ensure that an edge is used
+ * 
  * @author Joris Kinable
  * @version 22-4-2015
  */
-public final class FixEdge implements BranchingDecision<TSP,Matching> {
+public final class FixEdge
+    implements BranchingDecision<TSP, Matching>
+{
 
     /** Pricing problem **/
     public final PricingProblemByColor pricingProblem;
     /** Edge on which we branch **/
     public final DefaultWeightedEdge edge;
 
-    public FixEdge(PricingProblemByColor pricingProblem, DefaultWeightedEdge edge){
-        this.pricingProblem=pricingProblem;
-        this.edge=edge;
+    public FixEdge(PricingProblemByColor pricingProblem, DefaultWeightedEdge edge)
+    {
+        this.pricingProblem = pricingProblem;
+        this.edge = edge;
     }
 
     /**
      * Determine whether the given inequality remains feasible for the child node
+     * 
      * @param inequality inequality
      * @return true
      */
     @Override
-    public boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality inequality) {
-        return true;  //In this example we only have subtourInequalities. They remain valid, independent of whether we fix an edge.
+    public boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality inequality)
+    {
+        return true; // In this example we only have subtourInequalities. They remain valid,
+                     // independent of whether we fix an edge.
     }
 
     /**
      * Determine whether the given column remains feasible for the child node
+     * 
      * @param column column
      * @return true if the column is compliant with the branching decision
      */
     @Override
-    public boolean columnIsCompatibleWithBranchingDecision(Matching column) {
-       return column.associatedPricingProblem != this.pricingProblem || column.edges.contains(edge);
+    public boolean columnIsCompatibleWithBranchingDecision(Matching column)
+    {
+        return column.associatedPricingProblem != this.pricingProblem
+            || column.edges.contains(edge);
     }
 
     @Override
-    public String toString(){
-        return "FixEdge: "+edge+" for pricingProblem: "+pricingProblem;
+    public String toString()
+    {
+        return "FixEdge: " + edge + " for pricingProblem: " + pricingProblem;
     }
 }

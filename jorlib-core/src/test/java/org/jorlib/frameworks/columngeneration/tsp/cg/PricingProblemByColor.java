@@ -31,26 +31,30 @@ import org.jorlib.frameworks.columngeneration.tsp.model.MatchingColor;
 import org.jorlib.frameworks.columngeneration.tsp.model.TSP;
 
 /**
- * Define a pricing problem which is unique for every color: a pricing problem for the blue matchings and a pricing problem
- * for the red matchings.
+ * Define a pricing problem which is unique for every color: a pricing problem for the blue
+ * matchings and a pricing problem for the red matchings.
  *
  * @author Joris Kinable
  * @version 13-4-2015
  *
  */
-public final class PricingProblemByColor extends AbstractPricingProblem<TSP> {
-	
-	/** Color of the matching group. Can be either Red or Blue **/
-	public final MatchingColor color;
+public final class PricingProblemByColor
+    extends AbstractPricingProblem<TSP>
+{
 
-	/**
-	 * Creates a new Pricing problem instance
-	 * @param modelData data model
-	 * @param name name of pricing problem
-	 * @param color color
-	 */
-	public PricingProblemByColor(TSP modelData, String name, MatchingColor color) {
-		super(modelData, name);
-		this.color=color;
-	}
+    /** Color of the matching group. Can be either Red or Blue **/
+    public final MatchingColor color;
+
+    /**
+     * Creates a new Pricing problem instance
+     * 
+     * @param modelData data model
+     * @param name name of pricing problem
+     * @param color color
+     */
+    public PricingProblemByColor(TSP modelData, String name, MatchingColor color)
+    {
+        super(modelData, name);
+        this.color = color;
+    }
 }

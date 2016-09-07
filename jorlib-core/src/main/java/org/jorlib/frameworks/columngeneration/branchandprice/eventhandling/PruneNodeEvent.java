@@ -36,7 +36,9 @@ import java.util.EventObject;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class PruneNodeEvent extends EventObject{
+public class PruneNodeEvent
+    extends EventObject
+{
 
     /** Node which is being pruned **/
     public final BAPNode node;
@@ -47,15 +49,17 @@ public class PruneNodeEvent extends EventObject{
 
     /**
      * Creates a new PruneNodeEvent
+     * 
      * @param source Generator of the event
      * @param node ID of the node being pruned
      * @param nodeBound Bound on the node
      * @param bestIntegerSolution Best integer solution discovered thus far
      */
-    public PruneNodeEvent(Object source, BAPNode node, double nodeBound, int bestIntegerSolution){
+    public PruneNodeEvent(Object source, BAPNode node, double nodeBound, int bestIntegerSolution)
+    {
         super(source);
-        this.node=node;
-        this.nodeBound=nodeBound;
-        this.bestIntegerSolution=bestIntegerSolution;
+        this.node = node;
+        this.nodeBound = nodeBound;
+        this.bestIntegerSolution = bestIntegerSolution;
     }
 }

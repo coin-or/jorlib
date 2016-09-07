@@ -35,14 +35,17 @@ import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
  * @author Joris Kinable
  * @version 29-6-2016
  */
-public final class ChromaticNumberPricingProblem extends AbstractPricingProblem<ColoringGraph> {
+public final class ChromaticNumberPricingProblem
+    extends AbstractPricingProblem<ColoringGraph>
+{
     /**
      * Create a new Pricing Problem
      *
      * @param dataModel Data model
-     * @param name      Name of the pricing problem
+     * @param name Name of the pricing problem
      */
-    public ChromaticNumberPricingProblem(ColoringGraph dataModel, String name) {
+    public ChromaticNumberPricingProblem(ColoringGraph dataModel, String name)
+    {
         super(dataModel, name);
     }
 }

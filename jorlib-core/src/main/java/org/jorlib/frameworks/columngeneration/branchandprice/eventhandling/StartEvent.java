@@ -34,23 +34,31 @@ import java.util.EventObject;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class StartEvent extends EventObject{
+public class StartEvent
+    extends EventObject
+{
 
     /** Name of the instance being solved **/
     public final String instanceName;
 
-    /** Best available integer solution at the start of the Branch-and-Price or Column generation procedure **/
+    /**
+     * Best available integer solution at the start of the Branch-and-Price or Column generation
+     * procedure
+     **/
     public final int objectiveIncumbentSolution;
 
     /**
      * Creates a new StartEvent
+     * 
      * @param source Generator of the event
      * @param instanceName Name of the instance being solved
-     * @param objectiveIncumbentSolution Best available integer solution at the start of the Branch-and-Price or Column generation procedure
+     * @param objectiveIncumbentSolution Best available integer solution at the start of the
+     *        Branch-and-Price or Column generation procedure
      */
-    public StartEvent(Object source, String instanceName, int objectiveIncumbentSolution){
+    public StartEvent(Object source, String instanceName, int objectiveIncumbentSolution)
+    {
         super(source);
-        this.instanceName=instanceName;
-        this.objectiveIncumbentSolution=objectiveIncumbentSolution;
+        this.instanceName = instanceName;
+        this.objectiveIncumbentSolution = objectiveIncumbentSolution;
     }
 }

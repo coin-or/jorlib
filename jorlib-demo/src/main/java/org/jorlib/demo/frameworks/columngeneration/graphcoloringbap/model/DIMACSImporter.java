@@ -49,9 +49,8 @@ import org.jgrapht.WeightedGraph;
 import org.jgrapht.generate.GraphGenerator;
 
 /**
- * Imports a graph specified in DIMACS format
- * (http://mat.gsia.cmu.edu/COLOR/general/ccformat.ps). In summary, graphs
- * specified in DIMACS format adhere to the following structure:
+ * Imports a graph specified in DIMACS format (http://mat.gsia.cmu.edu/COLOR/general/ccformat.ps).
+ * In summary, graphs specified in DIMACS format adhere to the following structure:
  *
  * <pre>
  * {@code
@@ -67,8 +66,8 @@ import org.jgrapht.generate.GraphGenerator;
  * }
  * </pre>
  *
- * Although not specified directly in the DIMACS format documentation, this
- * implementation also allows for the a weighted variant:
+ * Although not specified directly in the DIMACS format documentation, this implementation also
+ * allows for the a weighted variant:
  *
  * <pre>
  * {@code
@@ -76,9 +75,8 @@ import org.jgrapht.generate.GraphGenerator;
  * }
  * </pre>
  *
- * Note: the current implementation does not fully implement the DIMACS
- * specifications! Special (rarely used) fields specified as 'Optional
- * Descriptors' are currently not supported.
+ * Note: the current implementation does not fully implement the DIMACS specifications! Special
+ * (rarely used) fields specified as 'Optional Descriptors' are currently not supported.
  *
  * @author Michael Behrisch (adaptation of GraphReader class)
  * @author Joris Kinable
@@ -87,7 +85,7 @@ import org.jgrapht.generate.GraphGenerator;
  * @param <E> the graph edge type
  */
 public class DIMACSImporter<V, E>
-        implements GraphGenerator<V, E, V>
+    implements GraphGenerator<V, E, V>
 {
     private final BufferedReader input;
     private final double defaultWeight;
@@ -102,7 +100,7 @@ public class DIMACSImporter<V, E>
      * @throws IOException in case an I/O error occurs
      */
     public DIMACSImporter(Reader input, double defaultWeight)
-            throws IOException
+        throws IOException
     {
         if (input instanceof BufferedReader) {
             this.input = (BufferedReader) input;
@@ -119,7 +117,7 @@ public class DIMACSImporter<V, E>
      * @throws IOException in case an I/O error occurs
      */
     public DIMACSImporter(Reader input)
-            throws IOException
+        throws IOException
     {
         this(input, 1);
     }
@@ -139,8 +137,8 @@ public class DIMACSImporter<V, E>
         String[] cols = null;
         try {
             cols = split(input.readLine());
-            while ((cols != null) && ((cols.length == 0) || cols[0].equals("c")
-                    || cols[0].startsWith("%")))
+            while ((cols != null)
+                && ((cols.length == 0) || cols[0].equals("c") || cols[0].startsWith("%")))
             {
                 cols = split(input.readLine());
             }
@@ -163,9 +161,7 @@ public class DIMACSImporter<V, E>
      */
     @Override
     public void generateGraph(
-            Graph<V, E> target,
-            VertexFactory<V> vertexFactory,
-            Map<String, V> resultMap)
+        Graph<V, E> target, VertexFactory<V> vertexFactory, Map<String, V> resultMap)
     {
         final int size = readNodeCount();
         if (resultMap == null) {
@@ -180,8 +176,7 @@ public class DIMACSImporter<V, E>
         String[] cols = skipComments();
         while (cols != null) {
             if (cols[0].equals("e")) {
-                E edge = target
-                        .addEdge(resultMap.get(cols[1]), resultMap.get(cols[2]));
+                E edge = target.addEdge(resultMap.get(cols[1]), resultMap.get(cols[2]));
                 if (target instanceof WeightedGraph && (edge != null)) {
                     double weight = defaultWeight;
                     if (cols.length > 3) {

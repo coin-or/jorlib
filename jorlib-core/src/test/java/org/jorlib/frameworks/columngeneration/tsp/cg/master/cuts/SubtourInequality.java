@@ -32,36 +32,41 @@ import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequ
 import java.util.Set;
 
 /**
- * Class representing a subtour inequality: The number of edges entering/leaving the
- * cutSet must be at least 2, otherwise there is a subtour within the cutSet
+ * Class representing a subtour inequality: The number of edges entering/leaving the cutSet must be
+ * at least 2, otherwise there is a subtour within the cutSet
  *
  * @author Joris Kinable
  * @version 13-4-2015
  *
  */
-public final class SubtourInequality extends AbstractInequality {
+public final class SubtourInequality
+    extends AbstractInequality
+{
 
-	/** Vertices in the cut set **/
-	public final Set<Integer> cutSet;
-	
-	public SubtourInequality(AbstractCutGenerator maintainingGenerator, Set<Integer> cutSet) {
-		super(maintainingGenerator);
-		this.cutSet=cutSet;
-	}
+    /** Vertices in the cut set **/
+    public final Set<Integer> cutSet;
 
-	@Override
-	public boolean equals(Object o) {
-		if(this==o)
-			return true;
-		else if(!(o instanceof SubtourInequality))
-			return false;
-		SubtourInequality other=(SubtourInequality)o;
-		return this.cutSet.equals(other.cutSet);
-	}
+    public SubtourInequality(AbstractCutGenerator maintainingGenerator, Set<Integer> cutSet)
+    {
+        super(maintainingGenerator);
+        this.cutSet = cutSet;
+    }
 
-	@Override
-	public int hashCode() {
-		return cutSet.hashCode();
-	}
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o)
+            return true;
+        else if (!(o instanceof SubtourInequality))
+            return false;
+        SubtourInequality other = (SubtourInequality) o;
+        return this.cutSet.equals(other.cutSet);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return cutSet.hashCode();
+    }
 
 }

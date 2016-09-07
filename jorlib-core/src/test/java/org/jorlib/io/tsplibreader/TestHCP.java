@@ -32,55 +32,62 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests Hamiltonian cycle problem (HCP) instances.  
+ * Tests Hamiltonian cycle problem (HCP) instances.
  * 
  * @author David Hadka
  */
-public final class TestHCP {
-	
-	private static Set<String> instances;
-	
-	@BeforeClass
-	public static void initializeInstances() {
-		instances = new HashSet<>();
-		instances.add("alb1000");
-		instances.add("alb2000");
-		instances.add("alb3000a");
-		instances.add("alb3000b");
-		instances.add("alb3000c");
-		instances.add("alb3000d");
-		instances.add("alb3000e");
-		instances.add("alb4000");
-		instances.add("alb5000");
-	}
-	
-	@AfterClass
-	public static void freeInstances() {
-		instances = null;
-	}
-	
-	@Test
-	public void testLoad() throws IOException {
-		for(String instance : instances){
-			InputStream inputStream1 = getClass().getClassLoader().getResourceAsStream("./tspLib/hcp/"+instance+".hcp");
-			if(inputStream1 == null)
-				Assert.fail("Cannot find problem instance!");
-			TSPLibInstance problem = new TSPLibInstance(inputStream1);
-			Assert.assertEquals(DataType.HCP, problem.getDataType());
+public final class TestHCP
+{
 
-			InputStream inputStream2 = getClass().getClassLoader().getResourceAsStream("./tspLib/hcp/"+instance+".opt.tour");
-			if(inputStream2 == null){ //No optimal tour file exists
-				inputStream1.close();
-				continue;
-			}
-			problem.addTour(inputStream2);
-			for (TSPLibTour tour : problem.getTours()) {
-				Assert.assertTrue(tour.isHamiltonianCycle(problem));
-				Assert.assertTrue(tour.containsFixedEdges(problem));
-			}
-			inputStream1.close();
-			inputStream2.close();
-		}
-	}
+    private static Set<String> instances;
+
+    @BeforeClass
+    public static void initializeInstances()
+    {
+        instances = new HashSet<>();
+        instances.add("alb1000");
+        instances.add("alb2000");
+        instances.add("alb3000a");
+        instances.add("alb3000b");
+        instances.add("alb3000c");
+        instances.add("alb3000d");
+        instances.add("alb3000e");
+        instances.add("alb4000");
+        instances.add("alb5000");
+    }
+
+    @AfterClass
+    public static void freeInstances()
+    {
+        instances = null;
+    }
+
+    @Test
+    public void testLoad()
+        throws IOException
+    {
+        for (String instance : instances) {
+            InputStream inputStream1 = getClass()
+                .getClassLoader().getResourceAsStream("./tspLib/hcp/" + instance + ".hcp");
+            if (inputStream1 == null)
+                Assert.fail("Cannot find problem instance!");
+            TSPLibInstance problem = new TSPLibInstance(inputStream1);
+            Assert.assertEquals(DataType.HCP, problem.getDataType());
+
+            InputStream inputStream2 = getClass()
+                .getClassLoader().getResourceAsStream("./tspLib/hcp/" + instance + ".opt.tour");
+            if (inputStream2 == null) { // No optimal tour file exists
+                inputStream1.close();
+                continue;
+            }
+            problem.addTour(inputStream2);
+            for (TSPLibTour tour : problem.getTours()) {
+                Assert.assertTrue(tour.isHamiltonianCycle(problem));
+                Assert.assertTrue(tour.containsFixedEdges(problem));
+            }
+            inputStream1.close();
+            inputStream2.close();
+        }
+    }
 
 }

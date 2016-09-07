@@ -32,51 +32,57 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests vehicle routing problem (VRP) instances.  This only tests if the
- * instance loads correctly, not for correctness.
+ * Tests vehicle routing problem (VRP) instances. This only tests if the instance loads correctly,
+ * not for correctness.
  * 
  * @author David Hadka
  */
-public final class TestVRP {
-	
-	private static Set<String> instances;
-	
-	@BeforeClass
-	public static void initializeInstances() {
-		instances = new HashSet<String>();
-		instances.add("att48");
-		instances.add("eil7");
-		instances.add("eil13");
-		instances.add("eil22");
-		instances.add("eil23");
-		instances.add("eil30");
-		instances.add("eil31");
-		instances.add("eil33");
-		instances.add("eil51");
-		instances.add("eilA76");
-		instances.add("eilA101");
-		instances.add("eilB76");
-		instances.add("eilB101");
-		instances.add("eilC76");
-		instances.add("eilD76");
-		instances.add("gil262");
-	}
-	
-	@AfterClass
-	public static void freeInstances() {
-		instances = null;
-	}
-	
-	@Test
-	public void testLoad() throws IOException {
-		for (String instance : instances) {
-			InputStream inputStream = getClass().getClassLoader().getResourceAsStream("./tspLib/vrp/"+instance+".vrp");
-			if(inputStream == null)
-				Assert.fail("Cannot find problem instance!");
-			TSPLibInstance problem = new TSPLibInstance(inputStream);
-			Assert.assertEquals(DataType.CVRP, problem.getDataType());
-			inputStream.close();
-		}
-	}
+public final class TestVRP
+{
+
+    private static Set<String> instances;
+
+    @BeforeClass
+    public static void initializeInstances()
+    {
+        instances = new HashSet<String>();
+        instances.add("att48");
+        instances.add("eil7");
+        instances.add("eil13");
+        instances.add("eil22");
+        instances.add("eil23");
+        instances.add("eil30");
+        instances.add("eil31");
+        instances.add("eil33");
+        instances.add("eil51");
+        instances.add("eilA76");
+        instances.add("eilA101");
+        instances.add("eilB76");
+        instances.add("eilB101");
+        instances.add("eilC76");
+        instances.add("eilD76");
+        instances.add("gil262");
+    }
+
+    @AfterClass
+    public static void freeInstances()
+    {
+        instances = null;
+    }
+
+    @Test
+    public void testLoad()
+        throws IOException
+    {
+        for (String instance : instances) {
+            InputStream inputStream = getClass()
+                .getClassLoader().getResourceAsStream("./tspLib/vrp/" + instance + ".vrp");
+            if (inputStream == null)
+                Assert.fail("Cannot find problem instance!");
+            TSPLibInstance problem = new TSPLibInstance(inputStream);
+            Assert.assertEquals(DataType.CVRP, problem.getDataType());
+            inputStream.close();
+        }
+    }
 
 }

@@ -28,8 +28,12 @@ package org.jorlib.frameworks.columngeneration.master;
 
 /**
  * Defines the optimization sense: a minimization or a maximization problem.
+ * 
  * @author Joris Kinable
  * @version 5-6-2015
  */
-public enum OptimizationSense { MINIMIZE, MAXIMIZE
+public enum OptimizationSense
+{
+    MINIMIZE,
+    MAXIMIZE
 }

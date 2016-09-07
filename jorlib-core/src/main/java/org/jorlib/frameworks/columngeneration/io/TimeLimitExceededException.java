@@ -33,8 +33,10 @@ package org.jorlib.frameworks.columngeneration.io;
  * @version 13-4-2015
  *
  */
-public class TimeLimitExceededException extends Exception {
+public class TimeLimitExceededException
+    extends Exception
+{
 
-	private static final long serialVersionUID = -8299961617197441031L;
+    private static final long serialVersionUID = -8299961617197441031L;
 
 }

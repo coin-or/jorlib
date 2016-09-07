@@ -34,51 +34,61 @@ import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 
 import java.io.*;
 
-
 /**
  * Class defining a graph coloring instance
  *
  * @author Joris Kinable
  * @version 29-6-2016
  */
-public final class ColoringGraph extends SimpleGraph<Integer, DefaultEdge> implements ModelInterface, UndirectedGraph<Integer, DefaultEdge>{
+public final class ColoringGraph
+    extends SimpleGraph<Integer, DefaultEdge>
+    implements ModelInterface, UndirectedGraph<Integer, DefaultEdge>
+{
 
     /** Instance name **/
     private final String instanceName;
 
     /**
      * Constructs a new graph coloring instance, based on a file specified in DIMACS format
+     * 
      * @param instanceLocation input graph
      * @throws IOException Throws IO exception when the instance cannot be found.
      */
-    public ColoringGraph(String instanceLocation) throws IOException {
+    public ColoringGraph(String instanceLocation)
+        throws IOException
+    {
         super(DefaultEdge.class);
 
-        File inputFile=new File(instanceLocation);
-        this.instanceName=inputFile.getName();
+        File inputFile = new File(instanceLocation);
+        this.instanceName = inputFile.getName();
         BufferedReader in = new BufferedReader(new FileReader(inputFile));
-        DIMACSImporter<Integer, DefaultEdge> importer=new DIMACSImporter<>(in, 1);
+        DIMACSImporter<Integer, DefaultEdge> importer = new DIMACSImporter<>(in, 1);
         importer.generateGraph(this, new IntegerVertexFactory(), null);
 
     }
 
     /**
      * Returns the number of vertices in the graph
+     * 
      * @return Number of vertices
      */
-    public int getNrVertices(){
+    public int getNrVertices()
+    {
         return this.vertexSet().size();
     }
 
     @Override
-    public String getName() {
+    public String getName()
+    {
         return instanceName;
     }
 
     /**
      * Vertex factory used by the parser which processes the DIMACS input file
      */
-    private static final class IntegerVertexFactory implements VertexFactory<Integer>{
+    private static final class IntegerVertexFactory
+        implements VertexFactory<Integer>
+    {
         int last = 0;
 
         @Override

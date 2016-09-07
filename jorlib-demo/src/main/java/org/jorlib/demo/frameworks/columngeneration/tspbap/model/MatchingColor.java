@@ -32,6 +32,8 @@ package org.jorlib.demo.frameworks.columngeneration.tspbap.model;
  * @version 13-4-2015
  *
  */
-public enum MatchingColor {
-	RED, BLUE
+public enum MatchingColor
+{
+    RED,
+    BLUE
 }

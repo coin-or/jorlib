@@ -42,10 +42,13 @@ import java.util.Map;
  * <li>a reference to the cplex model</li>
  * <li>reference to the pricing problem</li>
  * </ul>
+ * 
  * @author Joris Kinable
  * @version 29-6-2016
  */
-public final class ColoringMasterData extends MasterData<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem, IloNumVar> {
+public final class ColoringMasterData
+    extends MasterData<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem, IloNumVar>
+{
 
     /** Cplex instance **/
     public final IloCplex cplex;
@@ -54,11 +57,15 @@ public final class ColoringMasterData extends MasterData<ColoringGraph, Independ
      * Creates a new MasterData object
      *
      * @param cplex cplex instance
-     * @param varMap A bi-directional map which stores the variables. The first key is the pricing problem, the second key is a column and the value is a variable object, e.g. an IloNumVar in cplex.
+     * @param varMap A bi-directional map which stores the variables. The first key is the pricing
+     *        problem, the second key is a column and the value is a variable object, e.g. an
+     *        IloNumVar in cplex.
      */
-    public ColoringMasterData(IloCplex cplex,
-                              Map<ChromaticNumberPricingProblem, OrderedBiMap<IndependentSet, IloNumVar>> varMap) {
+    public ColoringMasterData(
+        IloCplex cplex,
+        Map<ChromaticNumberPricingProblem, OrderedBiMap<IndependentSet, IloNumVar>> varMap)
+    {
         super(varMap);
-        this.cplex=cplex;
+        this.cplex = cplex;
     }
 }

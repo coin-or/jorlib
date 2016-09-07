@@ -40,12 +40,9 @@ import org.junit.runners.*;
  * @since April 8, 2015
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-	KnapsackTest.class,
-	LiftedCoverInequalitySeparatorTest.class,
-	SmallestEnclosingCircleCalculatorTest.class,
-	SubtourSeparatorTest.class
-})
+@Suite.SuiteClasses({ KnapsackTest.class, LiftedCoverInequalitySeparatorTest.class,
+    SmallestEnclosingCircleCalculatorTest.class, SubtourSeparatorTest.class })
 
-public final class AllAlgTests {
+public final class AllAlgTests
+{
 }

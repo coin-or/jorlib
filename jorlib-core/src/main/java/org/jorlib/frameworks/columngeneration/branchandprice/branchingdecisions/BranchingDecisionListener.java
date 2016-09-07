@@ -27,21 +27,25 @@
 package org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions;
 
 /**
- * Interface defining a BranchingDecision Listener. Every BranchingDecision listener is informed about branching
- * decisions which are executed.
+ * Interface defining a BranchingDecision Listener. Every BranchingDecision listener is informed
+ * about branching decisions which are executed.
  *
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public interface BranchingDecisionListener {
+public interface BranchingDecisionListener
+{
     /**
      * This method is called when a branching decision is executed
+     * 
      * @param bd branching decision
      */
     void branchingDecisionPerformed(BranchingDecision bd);
 
     /**
-     * This method is called when a branching decision is reversed (backtracking in the Branch-and-Price tree)
+     * This method is called when a branching decision is reversed (backtracking in the
+     * Branch-and-Price tree)
+     * 
      * @param bd branching decision
      */
     void branchingDecisionReversed(BranchingDecision bd);

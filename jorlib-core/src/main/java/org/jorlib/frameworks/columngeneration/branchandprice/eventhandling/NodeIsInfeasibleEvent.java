@@ -36,18 +36,22 @@ import java.util.EventObject;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class NodeIsInfeasibleEvent extends EventObject{
+public class NodeIsInfeasibleEvent
+    extends EventObject
+{
 
     /** Node which is infeasible **/
     public final BAPNode node;
 
     /**
      * Creates a new NodeIsInfeasibleEvent
+     * 
      * @param source Generator of the event
      * @param node Node which is infeasible
      */
-    public NodeIsInfeasibleEvent(Object source, BAPNode node){
+    public NodeIsInfeasibleEvent(Object source, BAPNode node)
+    {
         super(source);
-        this.node=node;
+        this.node = node;
     }
 }

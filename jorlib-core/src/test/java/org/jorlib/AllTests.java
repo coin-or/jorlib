@@ -39,12 +39,9 @@ import org.junit.runners.Suite;
  * @since April 8, 2015
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-	AllAlgTests.class,
-	AllIOTests.class,
-	AllFrameworksTests.class
-})
+@Suite.SuiteClasses({ AllAlgTests.class, AllIOTests.class, AllFrameworksTests.class })
 
-public final class AllTests {
+public final class AllTests
+{
 
 }

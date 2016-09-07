@@ -34,40 +34,50 @@ import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequ
 
 /**
  * Ensure that two vertices are colored differently
+ * 
  * @author Joris Kinable
  * @version 29-6-2016
  */
-public final class DifferentColor implements BranchingDecision<ColoringGraph, IndependentSet> {
+public final class DifferentColor
+    implements BranchingDecision<ColoringGraph, IndependentSet>
+{
 
     /** Vertices to be colored differently **/
     public final VertexPair<Integer> vertexPair;
 
-    public DifferentColor(VertexPair<Integer> vertexPair){
-        this.vertexPair=vertexPair;
+    public DifferentColor(VertexPair<Integer> vertexPair)
+    {
+        this.vertexPair = vertexPair;
     }
 
     /**
      * Determine whether the given column remains feasible for the child node
+     * 
      * @param column column
      * @return true if the column is compliant with the branching decision
      */
     @Override
-    public boolean columnIsCompatibleWithBranchingDecision(IndependentSet column) {
-        return !(column.vertices.contains(vertexPair.getFirst()) && column.vertices.contains(vertexPair.getSecond()));
+    public boolean columnIsCompatibleWithBranchingDecision(IndependentSet column)
+    {
+        return !(column.vertices.contains(vertexPair.getFirst())
+            && column.vertices.contains(vertexPair.getSecond()));
     }
 
     /**
      * Determine whether the given inequality remains feasible for the child node
+     * 
      * @param inequality inequality
      * @return true
      */
     @Override
-    public boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality inequality) {
-        return true; //Cuts are not added in this example
+    public boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality inequality)
+    {
+        return true; // Cuts are not added in this example
     }
 
     @Override
-    public String toString(){
-        return "DifferentColor "+vertexPair;
+    public String toString()
+    {
+        return "DifferentColor " + vertexPair;
     }
 }

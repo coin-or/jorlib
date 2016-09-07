@@ -12,5 +12,5 @@ java_path=/usr/lib/jvm/java-8-oracle/bin/java
 #
 config_file=org.eclipse.jdt.core.prefs
 
-find ../jorlib-core/ -name *.java -print -exec $eclipse_path -vm $java_path -application org.eclipse.jdt.core.JavaCodeFormatter -quiet -config $config_file {} \;
-find ../jorlib-demo/ -name *.java -print -exec $eclipse_path -vm $java_path -application org.eclipse.jdt.core.JavaCodeFormatter -quiet -config $config_file {} \;
+find ../jorlib-core/ -name *.java -print -exec $eclipse_path -nosplash -vm $java_path -application org.eclipse.jdt.core.JavaCodeFormatter -quiet -config $config_file {} \;
+find ../jorlib-demo/ -name *.java -print -exec $eclipse_path -nosplash -vm $java_path -application org.eclipse.jdt.core.JavaCodeFormatter -quiet -config $config_file {} \;

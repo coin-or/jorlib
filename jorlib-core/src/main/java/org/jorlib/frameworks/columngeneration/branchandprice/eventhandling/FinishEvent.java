@@ -34,13 +34,17 @@ import java.util.EventObject;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class FinishEvent extends EventObject{
+public class FinishEvent
+    extends EventObject
+{
 
     /**
      * Creates a new FinishEvent
+     * 
      * @param source Generator of the event
      */
-    public FinishEvent(Object source){
+    public FinishEvent(Object source)
+    {
         super(source);
     }
 }

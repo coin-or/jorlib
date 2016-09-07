@@ -44,16 +44,9 @@ import org.junit.runners.Suite;
  * @since April 24, 2015
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-	DistanceFunctionTest.class,
-	EdgeTest.class,
-	TestATSP.class,
-	TestHCP.class,
-	TestSOP.class,
-	TestTSP.class,
-	TestVRP.class,
-	TourTest.class
-})
+@Suite.SuiteClasses({ DistanceFunctionTest.class, EdgeTest.class, TestATSP.class, TestHCP.class,
+    TestSOP.class, TestTSP.class, TestVRP.class, TourTest.class })
 
-public final class AllIOTests {
+public final class AllIOTests
+{
 }

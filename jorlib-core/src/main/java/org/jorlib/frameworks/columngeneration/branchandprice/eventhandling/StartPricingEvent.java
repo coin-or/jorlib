@@ -34,18 +34,23 @@ import java.util.EventObject;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class StartPricingEvent extends EventObject{
+public class StartPricingEvent
+    extends EventObject
+{
 
     /** Indicates which iteration we are at in the column generation procedure **/
     public final int columnGenerationIteration;
 
     /**
      * Creates a new StartPricingEvent
+     * 
      * @param source Generator of the event
-     * @param columnGenerationIteration column generation iteration during which this event was fired
+     * @param columnGenerationIteration column generation iteration during which this event was
+     *        fired
      */
-    public StartPricingEvent(Object source, int columnGenerationIteration){
+    public StartPricingEvent(Object source, int columnGenerationIteration)
+    {
         super(source);
-        this.columnGenerationIteration=columnGenerationIteration;
+        this.columnGenerationIteration = columnGenerationIteration;
     }
 }

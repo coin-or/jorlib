@@ -37,44 +37,53 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Defines a TSP problem. This is a simple wrapper class for a TSPLibInstance
- * For simplicity we assume that the problem is defined on a undirected, complete, weighted graph.
+ * Defines a TSP problem. This is a simple wrapper class for a TSPLibInstance For simplicity we
+ * assume that the problem is defined on a undirected, complete, weighted graph.
  * 
  * @author Joris Kinable
  * @version 13-4-2015
  * 
  */
-public final class TSP extends SimpleWeightedGraph<Integer,DefaultWeightedEdge> implements ModelInterface{
+public final class TSP
+    extends SimpleWeightedGraph<Integer, DefaultWeightedEdge>
+    implements ModelInterface
+{
 
-	/** Number of vertices **/
-	public final int N;
-	/** TSP Lib instance **/
-	protected final TSPLibInstance tspLibInstance;
-	
-	public TSP(String tspInstanceLocation) throws IOException{
-		super(DefaultWeightedEdge.class);
-		tspLibInstance= new TSPLibInstance(new File(tspInstanceLocation));
-		this.N=tspLibInstance.getDimension();
+    /** Number of vertices **/
+    public final int N;
+    /** TSP Lib instance **/
+    protected final TSPLibInstance tspLibInstance;
 
-		//Create the graph for jGrapht
-		for(int i=0; i<tspLibInstance.getDimension()-1; i++){
-			for(int j=i+1; j<tspLibInstance.getDimension(); j++){
-				Graphs.addEdgeWithVertices(this, i, j, tspLibInstance.getDistanceTable().getDistanceBetween(i, j));
-			}
-		}
-	}
+    public TSP(String tspInstanceLocation)
+        throws IOException
+    {
+        super(DefaultWeightedEdge.class);
+        tspLibInstance = new TSPLibInstance(new File(tspInstanceLocation));
+        this.N = tspLibInstance.getDimension();
 
-	/**
-	 * Gets the length of a tour
-	 * @param tour tour
-	 * @return length
-	 */
-	public int getTourLength(TSPLibTour tour){
-		return (int)tour.distance(tspLibInstance);
-	}
+        // Create the graph for jGrapht
+        for (int i = 0; i < tspLibInstance.getDimension() - 1; i++) {
+            for (int j = i + 1; j < tspLibInstance.getDimension(); j++) {
+                Graphs.addEdgeWithVertices(
+                    this, i, j, tspLibInstance.getDistanceTable().getDistanceBetween(i, j));
+            }
+        }
+    }
 
-	@Override
-	public String getName() {
-		return tspLibInstance.getName();
-	}
+    /**
+     * Gets the length of a tour
+     * 
+     * @param tour tour
+     * @return length
+     */
+    public int getTourLength(TSPLibTour tour)
+    {
+        return (int) tour.distance(tspLibInstance);
+    }
+
+    @Override
+    public String getName()
+    {
+        return tspLibInstance.getName();
+    }
 }

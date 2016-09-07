@@ -55,26 +55,29 @@ import org.jorlib.frameworks.columngeneration.util.OrderedBiMap;
  * @version 13-4-2015
  *
  */
-public final class TSPMasterData extends MasterData<TSP, Matching, PricingProblemByColor, IloNumVar> {
+public final class TSPMasterData
+    extends MasterData<TSP, Matching, PricingProblemByColor, IloNumVar>
+{
 
-	/** Cplex instance **/
-	public final IloCplex cplex;
-	/** List of pricing problems **/
-	public final List<PricingProblemByColor> pricingProblems;
+    /** Cplex instance **/
+    public final IloCplex cplex;
+    /** List of pricing problems **/
+    public final List<PricingProblemByColor> pricingProblems;
 
-	/** Record how often a particular edge is used (only non-zero edges are considered) **/
-	public Map<DefaultWeightedEdge, Double> edgeValueMap;
+    /** Record how often a particular edge is used (only non-zero edges are considered) **/
+    public Map<DefaultWeightedEdge, Double> edgeValueMap;
 
-	/** Mapping of the Subtour inequalities to constraints in the cplex model **/
-	public final Map<SubtourInequality, IloRange> subtourInequalities;
-	
-	public TSPMasterData(IloCplex cplex,
-						 List<PricingProblemByColor> pricingProblems,
-						 Map<PricingProblemByColor, OrderedBiMap<Matching, IloNumVar>> varMap){
-		super(varMap);
-		this.cplex=cplex;
-		this.pricingProblems=pricingProblems;
-		subtourInequalities=new LinkedHashMap<>();
-		edgeValueMap=new HashMap<>();
-	}
+    /** Mapping of the Subtour inequalities to constraints in the cplex model **/
+    public final Map<SubtourInequality, IloRange> subtourInequalities;
+
+    public TSPMasterData(
+        IloCplex cplex, List<PricingProblemByColor> pricingProblems,
+        Map<PricingProblemByColor, OrderedBiMap<Matching, IloNumVar>> varMap)
+    {
+        super(varMap);
+        this.cplex = cplex;
+        this.pricingProblems = pricingProblems;
+        subtourInequalities = new LinkedHashMap<>();
+        edgeValueMap = new HashMap<>();
+    }
 }
