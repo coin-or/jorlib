@@ -26,6 +26,9 @@
  */
 package org.jorlib.frameworks;
 
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.bapNodeComparators.BFSNodeComparatorTest;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.bapNodeComparators.BestBoundNodeComparatorTest;
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.bapNodeComparators.DFSNodeComparatorTest;
 import org.jorlib.frameworks.columnGeneration.tsp.BAPTSPTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -38,7 +41,10 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	BAPTSPTest.class
+	BAPTSPTest.class,
+	BestBoundNodeComparatorTest.class,
+	BFSNodeComparatorTest.class,
+	DFSNodeComparatorTest.class
 })
 
 public final class AllFrameworksTests {
