@@ -30,16 +30,19 @@ import org.jorlib.demo.frameworks.columngeneration.cuttingstockcg.model.CuttingS
 import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 
 /**
- * Definition of the pricing problem. Since there's only 1 pricing problem in the cutting stock,
- * we can simply extend the pricing problem included in the framework with no further modifications.
+ * Definition of the pricing problem. Since there's only 1 pricing problem in the cutting stock, we
+ * can simply extend the pricing problem included in the framework with no further modifications.
  * 
  * @author Joris Kinable
  * @version 13-4-2015
  */
-public final class PricingProblem extends AbstractPricingProblem<CuttingStock> {
+public final class PricingProblem
+    extends AbstractPricingProblem<CuttingStock>
+{
 
-	public PricingProblem(CuttingStock modelData, String name) {
-		super(modelData, name);
-	}
+    public PricingProblem(CuttingStock modelData, String name)
+    {
+        super(modelData, name);
+    }
 
 }

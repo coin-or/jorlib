@@ -25,21 +25,22 @@ package org.jorlib.io.tsplibreader.fieldTypesAndFormats;
  * 
  * @author David Hadka
  */
-public enum DisplayDataType {
-	
-	/**
-	 * The display is generated from the node coordinates.
-	 */
-	COORD_DISPLAY,
-	
-	/**
-	 * Explicit coordinates in 2-D are given.
-	 */
-	TWOD_DISPLAY,
-	
-	/**
-	 * No graphical display is available.
-	 */
-	NO_DISPLAY
+public enum DisplayDataType
+{
+
+    /**
+     * The display is generated from the node coordinates.
+     */
+    COORD_DISPLAY,
+
+    /**
+     * Explicit coordinates in 2-D are given.
+     */
+    TWOD_DISPLAY,
+
+    /**
+     * No graphical display is available.
+     */
+    NO_DISPLAY
 
 }

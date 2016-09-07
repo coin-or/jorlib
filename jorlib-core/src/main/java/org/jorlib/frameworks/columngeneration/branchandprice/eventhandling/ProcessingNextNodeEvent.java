@@ -36,7 +36,9 @@ import java.util.EventObject;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class ProcessingNextNodeEvent extends EventObject{
+public class ProcessingNextNodeEvent
+    extends EventObject
+{
 
     /** Node which will be processed **/
     public final BAPNode node;
@@ -47,15 +49,18 @@ public class ProcessingNextNodeEvent extends EventObject{
 
     /**
      * Creates a new ProcessingNextNodeEvent
+     * 
      * @param source Generator of the event
      * @param node Node which will be processed
      * @param nodesInQueue Number of nodes currently in the queue
      * @param objectiveIncumbentSolution Best integer solution found thus far
      */
-    public ProcessingNextNodeEvent(Object source, BAPNode node, int nodesInQueue, int objectiveIncumbentSolution){
+    public ProcessingNextNodeEvent(
+        Object source, BAPNode node, int nodesInQueue, int objectiveIncumbentSolution)
+    {
         super(source);
-        this.node=node;
-        this.nodesInQueue=nodesInQueue;
-        this.objectiveIncumbentSolution=objectiveIncumbentSolution;
+        this.node = node;
+        this.nodesInQueue = nodesInQueue;
+        this.objectiveIncumbentSolution = objectiveIncumbentSolution;
     }
 }

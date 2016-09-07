@@ -35,15 +35,18 @@ import org.jorlib.frameworks.columngeneration.model.ModelInterface;
  * @version 13-4-2015
  *
  */
-public final class CuttingStock implements ModelInterface{
+public final class CuttingStock
+    implements ModelInterface
+{
 
-	public final int nrFinals=4; //Number of different finals
-	public final int rollWidth=100; //Width of the raws
-	public final int[] finals={45, 36, 31, 14}; //Size of the finals
-	public final int[] demandForFinals={97, 610, 395, 211}; //Requested quantity of each final
+    public final int nrFinals = 4; // Number of different finals
+    public final int rollWidth = 100; // Width of the raws
+    public final int[] finals = { 45, 36, 31, 14 }; // Size of the finals
+    public final int[] demandForFinals = { 97, 610, 395, 211 }; // Requested quantity of each final
 
-	@Override
-	public String getName() {
-		return "CuttingStockExample";
-	}
+    @Override
+    public String getName()
+    {
+        return "CuttingStockExample";
+    }
 }

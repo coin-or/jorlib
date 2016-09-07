@@ -34,13 +34,17 @@ import java.util.EventObject;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class StartGeneratingCutsEvent extends EventObject{
+public class StartGeneratingCutsEvent
+    extends EventObject
+{
 
     /**
      * Creates a new StartGeneratingCutsEvent
+     * 
      * @param source Generator of the event
      */
-    public StartGeneratingCutsEvent(Object source){
+    public StartGeneratingCutsEvent(Object source)
+    {
         super(source);
     }
 }

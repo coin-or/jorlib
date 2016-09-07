@@ -36,7 +36,9 @@ import java.util.EventObject;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class FinishProcessingNodeEvent extends EventObject{
+public class FinishProcessingNodeEvent
+    extends EventObject
+{
 
     /** Node which has been solved **/
     public final BAPNode node;
@@ -55,30 +57,28 @@ public class FinishProcessingNodeEvent extends EventObject{
 
     /**
      * Creates a new FinishProcessingNodeEvent
+     * 
      * @param source Generator of this event
      * @param node node which has been solved
      * @param nodeBound Bound on the node which has been solved
-     * @param nodeValue Objective value of the node which has been solved. When solved to optimality, nodeBound and nodeValue should be equal
+     * @param nodeValue Objective value of the node which has been solved. When solved to
+     *        optimality, nodeBound and nodeValue should be equal
      * @param numberOfCGIterations Number of CG iterations it took to solve the node
      * @param masterSolveTime Total amount of time spent on solving the master problems
      * @param pricingSolveTime Total amount of time spent on solving the pricing problems
      * @param nrGeneratedColumns Total number of columns generated
      */
-    public FinishProcessingNodeEvent(Object source,
-                                     BAPNode node,
-                                     double nodeBound,
-                                     double nodeValue,
-                                     int numberOfCGIterations,
-                                     long masterSolveTime,
-                                     long pricingSolveTime,
-                                     int nrGeneratedColumns){
+    public FinishProcessingNodeEvent(
+        Object source, BAPNode node, double nodeBound, double nodeValue, int numberOfCGIterations,
+        long masterSolveTime, long pricingSolveTime, int nrGeneratedColumns)
+    {
         super(source);
-        this.node=node;
-        this.nodeBound=nodeBound;
-        this.nodeValue=nodeValue;
-        this.numberOfCGIterations=numberOfCGIterations;
-        this.masterSolveTime=masterSolveTime;
-        this.pricingSolveTime=pricingSolveTime;
-        this.nrGeneratedColumns=nrGeneratedColumns;
+        this.node = node;
+        this.nodeBound = nodeBound;
+        this.nodeValue = nodeValue;
+        this.numberOfCGIterations = numberOfCGIterations;
+        this.masterSolveTime = masterSolveTime;
+        this.pricingSolveTime = pricingSolveTime;
+        this.nrGeneratedColumns = nrGeneratedColumns;
     }
 }

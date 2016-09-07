@@ -42,15 +42,20 @@ import java.text.NumberFormat;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class SimpleCGLogger implements CGListener{
+public class SimpleCGLogger
+    implements CGListener
+{
     protected BufferedWriter writer;
     protected NumberFormat formatter;
 
-    /** Keeps track of the number of column generations. A regular iteration consist of solving the master problem and the pricing problem **/
-    protected int cgIteration=-1;
+    /**
+     * Keeps track of the number of column generations. A regular iteration consist of solving the
+     * master problem and the pricing problem
+     **/
+    protected int cgIteration = -1;
 
-    //Master problem
-    /** Counts how much time is spent on solving master problem during iteration it**/
+    // Master problem
+    /** Counts how much time is spent on solving master problem during iteration it **/
     protected long timeSolvingMaster;
     /** Objective of master problem at the end of iteration it **/
     protected double objective;
@@ -59,7 +64,7 @@ public class SimpleCGLogger implements CGListener{
     /** Bound on the objective at the end of iteration it **/
     protected double boundOnMasterObjective;
 
-    //Pricing Problem
+    // Pricing Problem
     /** Counts how much time is spent on solving the pricing problem at iteration it **/
     protected long timeSolvingPricing;
     /** Total number of columns generated during iteration it **/
@@ -67,31 +72,37 @@ public class SimpleCGLogger implements CGListener{
     /** Solver which produced new columns during iteration it **/
     protected String pricingSolver;
 
-    /** Boolean indicating whether the pricing problem has been solved after solving the master problem. In some cases,
-     * inequalities are added to master problem, after which the master is resolved while skipping the pricing problem.
+    /**
+     * Boolean indicating whether the pricing problem has been solved after solving the master
+     * problem. In some cases, inequalities are added to master problem, after which the master is
+     * resolved while skipping the pricing problem.
      */
-    boolean pricingProblemHasBeenSkipped=false;
+    boolean pricingProblemHasBeenSkipped = false;
 
     /**
      * Create a new logger which writes its output the the file specified
+     * 
      * @param colGen Column generation instance for which this logger is created
      * @param outputFile file to redirect the output to.
      */
-    public SimpleCGLogger(ColGen colGen, File outputFile){
+    public SimpleCGLogger(ColGen colGen, File outputFile)
+    {
         try {
-            writer=new BufferedWriter(new FileWriter(outputFile));
+            writer = new BufferedWriter(new FileWriter(outputFile));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        formatter=new DecimalFormat("#0.00");
+        formatter = new DecimalFormat("#0.00");
         colGen.addCGEventListener(this);
     }
 
     /**
      * Write a single line of text to the output file
+     * 
      * @param line line of text to be written
      */
-    protected void writeLine(String line){
+    protected void writeLine(String line)
+    {
         try {
             writer.write(line);
             writer.newLine();
@@ -104,31 +115,39 @@ public class SimpleCGLogger implements CGListener{
     /**
      * Reset the values
      */
-    protected void reset(){
+    protected void reset()
+    {
         cgIteration++;
-        objective=-1;
-        cutoffValue =-1;
-        boundOnMasterObjective =-1;
-        timeSolvingMaster=0;
-        timeSolvingPricing=0;
-        nrGeneratedColumns=0;
-        pricingSolver="";
+        objective = -1;
+        cutoffValue = -1;
+        boundOnMasterObjective = -1;
+        timeSolvingMaster = 0;
+        timeSolvingPricing = 0;
+        nrGeneratedColumns = 0;
+        pricingSolver = "";
     }
 
     /**
      * Construct a single line in the log file, and write it to the output file
      */
-    protected void constructAndWriteLine(){
-        this.writeLine(String.valueOf(cgIteration) + "\t" + formatter.format(boundOnMasterObjective) + "\t" + formatter.format(objective) + "\t" + cutoffValue + "\t"  + timeSolvingMaster + "\t" + timeSolvingPricing + "\t"+ nrGeneratedColumns + "\t" + pricingSolver);
+    protected void constructAndWriteLine()
+    {
+        this.writeLine(
+            String.valueOf(cgIteration) + "\t" + formatter.format(boundOnMasterObjective) + "\t"
+                + formatter.format(objective) + "\t" + cutoffValue + "\t" + timeSolvingMaster + "\t"
+                + timeSolvingPricing + "\t" + nrGeneratedColumns + "\t" + pricingSolver);
     }
 
     @Override
-    public void startCG(StartEvent startEvent) {
-        this.writeLine("iteration \t boundOnMasterObjective \t objectiveMasterProblem \t cutoffValue \t t_master \t t_pricing \t nrGenColumns \t pricingSolver");
+    public void startCG(StartEvent startEvent)
+    {
+        this.writeLine(
+            "iteration \t boundOnMasterObjective \t objectiveMasterProblem \t cutoffValue \t t_master \t t_pricing \t nrGenColumns \t pricingSolver");
     }
 
     @Override
-    public void finishCG(FinishEvent finishEvent) {
+    public void finishCG(FinishEvent finishEvent)
+    {
         try {
             writer.close();
         } catch (IOException e) {
@@ -137,43 +156,48 @@ public class SimpleCGLogger implements CGListener{
     }
 
     @Override
-    public void startMaster(StartMasterEvent startMasterEvent) {
-        if(pricingProblemHasBeenSkipped)
+    public void startMaster(StartMasterEvent startMasterEvent)
+    {
+        if (pricingProblemHasBeenSkipped)
             this.constructAndWriteLine();
         reset();
 
-        timeSolvingMaster=System.currentTimeMillis();
+        timeSolvingMaster = System.currentTimeMillis();
     }
 
     @Override
-    public void finishMaster(FinishMasterEvent finishMasterEvent) {
-        timeSolvingMaster=System.currentTimeMillis()-timeSolvingMaster;
-        objective=finishMasterEvent.objective;
-        boundOnMasterObjective =finishMasterEvent.boundOnMasterObjective;
-        cutoffValue =finishMasterEvent.cutoffValue;
-        pricingProblemHasBeenSkipped=true;
+    public void finishMaster(FinishMasterEvent finishMasterEvent)
+    {
+        timeSolvingMaster = System.currentTimeMillis() - timeSolvingMaster;
+        objective = finishMasterEvent.objective;
+        boundOnMasterObjective = finishMasterEvent.boundOnMasterObjective;
+        cutoffValue = finishMasterEvent.cutoffValue;
+        pricingProblemHasBeenSkipped = true;
     }
 
     @Override
-    public void startPricing(StartPricingEvent startPricing) {
-        pricingProblemHasBeenSkipped=false;
-        timeSolvingPricing=System.currentTimeMillis();
+    public void startPricing(StartPricingEvent startPricing)
+    {
+        pricingProblemHasBeenSkipped = false;
+        timeSolvingPricing = System.currentTimeMillis();
     }
 
     @Override
-    public void finishPricing(FinishPricingEvent finishPricingEvent) {
-        timeSolvingPricing=System.currentTimeMillis()-timeSolvingPricing;
-        objective=finishPricingEvent.objective;
-        boundOnMasterObjective =finishPricingEvent.boundOnMasterObjective;
-        cutoffValue =finishPricingEvent.cutoffValue;
-        nrGeneratedColumns=finishPricingEvent.columns.size();
-        if(nrGeneratedColumns > 0)
-            pricingSolver=finishPricingEvent.columns.get(0).creator;
+    public void finishPricing(FinishPricingEvent finishPricingEvent)
+    {
+        timeSolvingPricing = System.currentTimeMillis() - timeSolvingPricing;
+        objective = finishPricingEvent.objective;
+        boundOnMasterObjective = finishPricingEvent.boundOnMasterObjective;
+        cutoffValue = finishPricingEvent.cutoffValue;
+        nrGeneratedColumns = finishPricingEvent.columns.size();
+        if (nrGeneratedColumns > 0)
+            pricingSolver = finishPricingEvent.columns.get(0).creator;
         this.constructAndWriteLine();
     }
 
     @Override
-    public void timeLimitExceeded(TimeLimitExceededEvent timeLimitExceededEvent) {
+    public void timeLimitExceeded(TimeLimitExceededEvent timeLimitExceededEvent)
+    {
         this.constructAndWriteLine();
     }
 }

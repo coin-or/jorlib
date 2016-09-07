@@ -36,24 +36,25 @@ import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public interface BranchingDecision<T,U extends AbstractColumn<T, ? extends AbstractPricingProblem>> {
+public interface BranchingDecision<T, U extends AbstractColumn<T, ? extends AbstractPricingProblem>>
+{
 
-	/**
-	 * Determine whether a particular column from the parent node is feasible for the child node resulting from the Branching Decision
-	 * and hence can be transferred.
-	 *
-	 * @param column column
-	 * @return true if the column is feasible, false otherwise
-	 */
-	boolean columnIsCompatibleWithBranchingDecision(U column);
+    /**
+     * Determine whether a particular column from the parent node is feasible for the child node
+     * resulting from the Branching Decision and hence can be transferred.
+     *
+     * @param column column
+     * @return true if the column is feasible, false otherwise
+     */
+    boolean columnIsCompatibleWithBranchingDecision(U column);
 
-	/**
-	 * Determine whether a particular inequality from the parent node is feasible for the child node resulting from the Branching Decision
-	 * and hence can be transferred.
-	 *
-	 * @param inequality inequality
-	 * @return true if the inequality is feasible, false otherwise
-	 */
-	boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality inequality);
-	
+    /**
+     * Determine whether a particular inequality from the parent node is feasible for the child node
+     * resulting from the Branching Decision and hence can be transferred.
+     *
+     * @param inequality inequality
+     * @return true if the inequality is feasible, false otherwise
+     */
+    boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality inequality);
+
 }

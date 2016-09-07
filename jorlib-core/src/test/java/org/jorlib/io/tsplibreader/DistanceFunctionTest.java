@@ -28,38 +28,47 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Tests the distance functions against the cases provided in the official
- * TSPLIB documentation.
+ * Tests the distance functions against the cases provided in the official TSPLIB documentation.
  * 
  * @author David Hadka
  */
-public final class DistanceFunctionTest {
+public final class DistanceFunctionTest
+{
 
-	@Test
-	public void testPCB442() throws IOException, URISyntaxException{
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("./tspLib/tsp/pcb442.tsp");
-		TSPLibInstance problem = new TSPLibInstance(inputStream);
-		problem.addTour(TSPLibTour.createCanonicalTour(problem.getDimension()));
-		Assert.assertEquals(221440, problem.getTours().get(0).distance(problem), 0.5);
-		inputStream.close();
-	}
+    @Test
+    public void testPCB442()
+        throws IOException, URISyntaxException
+    {
+        InputStream inputStream =
+            getClass().getClassLoader().getResourceAsStream("./tspLib/tsp/pcb442.tsp");
+        TSPLibInstance problem = new TSPLibInstance(inputStream);
+        problem.addTour(TSPLibTour.createCanonicalTour(problem.getDimension()));
+        Assert.assertEquals(221440, problem.getTours().get(0).distance(problem), 0.5);
+        inputStream.close();
+    }
 
-	@Test
-	public void testGR666() throws IOException, URISyntaxException {
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("./tspLib/tsp/gr666.tsp");
-		TSPLibInstance problem = new TSPLibInstance(inputStream);
-		problem.addTour(TSPLibTour.createCanonicalTour(problem.getDimension()));
-		Assert.assertEquals(423710, problem.getTours().get(0).distance(problem), 0.5);
-		inputStream.close();
-	}
+    @Test
+    public void testGR666()
+        throws IOException, URISyntaxException
+    {
+        InputStream inputStream =
+            getClass().getClassLoader().getResourceAsStream("./tspLib/tsp/gr666.tsp");
+        TSPLibInstance problem = new TSPLibInstance(inputStream);
+        problem.addTour(TSPLibTour.createCanonicalTour(problem.getDimension()));
+        Assert.assertEquals(423710, problem.getTours().get(0).distance(problem), 0.5);
+        inputStream.close();
+    }
 
-	@Test
-	public void testATT532() throws IOException, URISyntaxException {
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("./tspLib/tsp/att532.tsp");
-		TSPLibInstance problem = new TSPLibInstance(inputStream);
-		problem.addTour(TSPLibTour.createCanonicalTour(problem.getDimension()));
-		Assert.assertEquals(309636, problem.getTours().get(0).distance(problem), 0.5);
-		inputStream.close();
-	}
-	
+    @Test
+    public void testATT532()
+        throws IOException, URISyntaxException
+    {
+        InputStream inputStream =
+            getClass().getClassLoader().getResourceAsStream("./tspLib/tsp/att532.tsp");
+        TSPLibInstance problem = new TSPLibInstance(inputStream);
+        problem.addTour(TSPLibTour.createCanonicalTour(problem.getDimension()));
+        Assert.assertEquals(309636, problem.getTours().get(0).distance(problem), 0.5);
+        inputStream.close();
+    }
+
 }

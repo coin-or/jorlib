@@ -29,8 +29,8 @@ package org.jorlib.frameworks.columngeneration.pricing;
 import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
 
 /**
- * Interface which has to be implemented by a factory class which produces solver instances for the pricing problem
- * provided as its argument.
+ * Interface which has to be implemented by a factory class which produces solver instances for the
+ * pricing problem provided as its argument.
  * 
  * @author Joris Kinable
  * @version 13-4-2015
@@ -39,12 +39,15 @@ import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
  * @param <U> Columns
  * @param <V> PricingProblem
  */
-public interface PricingProblemSolverFactory<T,U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T>> {
+public interface PricingProblemSolverFactory<T, U extends AbstractColumn<T, V>,
+    V extends AbstractPricingProblem<T>>
+{
 
-	/**
-	 * Creates a new solver instance for the pricing problem provided
-	 * @param pricingProblem pricing problem
-	 * @return A new solver instance
-	 */
-	AbstractPricingProblemSolver<T, U, V> createSolverInstance(V pricingProblem);
+    /**
+     * Creates a new solver instance for the pricing problem provided
+     * 
+     * @param pricingProblem pricing problem
+     * @return A new solver instance
+     */
+    AbstractPricingProblemSolver<T, U, V> createSolverInstance(V pricingProblem);
 }

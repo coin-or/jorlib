@@ -31,15 +31,19 @@ import org.jorlib.frameworks.columngeneration.branchandprice.BAPNode;
 import java.util.Comparator;
 
 /**
- * Simple comparator which processes the BAP tree in a DFS manner. The nodes are sorted based on their nodeID.
- * NOTE: this comparator is used by default. Alternative comparators have to be specified explicitly.
+ * Simple comparator which processes the BAP tree in a DFS manner. The nodes are sorted based on
+ * their nodeID. NOTE: this comparator is used by default. Alternative comparators have to be
+ * specified explicitly.
  *
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class DFSBapNodeComparator implements Comparator<BAPNode>{
+public class DFSBapNodeComparator
+    implements Comparator<BAPNode>
+{
     @Override
-    public int compare(BAPNode o1, BAPNode o2) {
+    public int compare(BAPNode o1, BAPNode o2)
+    {
         return -Integer.compare(o1.nodeID, o2.nodeID);
     }
 }

@@ -32,9 +32,11 @@ package org.jorlib.frameworks.columngeneration.model;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public interface ModelInterface {
+public interface ModelInterface
+{
     /**
      * Returns the name of the data model
+     * 
      * @return the name of the data model
      */
     String getName();

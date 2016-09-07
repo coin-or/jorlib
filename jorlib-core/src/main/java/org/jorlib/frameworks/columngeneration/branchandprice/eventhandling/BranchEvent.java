@@ -37,7 +37,9 @@ import java.util.List;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class BranchEvent extends EventObject{
+public class BranchEvent
+    extends EventObject
+{
 
     /** Number of branches created **/
     public final int nrBranches;
@@ -48,15 +50,17 @@ public class BranchEvent extends EventObject{
 
     /**
      * Creates a new BranchEvent
+     * 
      * @param source Generator of this event
      * @param nrBranches Number of branches created
      * @param parentNode Parent node
      * @param childNodes List of child nodes
      */
-    public BranchEvent(Object source, int nrBranches, BAPNode parentNode, List<BAPNode> childNodes){
+    public BranchEvent(Object source, int nrBranches, BAPNode parentNode, List<BAPNode> childNodes)
+    {
         super(source);
-        this.nrBranches=nrBranches;
-        this.parentNode=parentNode;
-        this.childNodes=childNodes;
+        this.nrBranches = nrBranches;
+        this.parentNode = parentNode;
+        this.childNodes = childNodes;
     }
 }

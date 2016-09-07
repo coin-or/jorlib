@@ -26,7 +26,6 @@
  */
 package org.jorlib.frameworks.columngeneration.master.cutGeneration;
 
-
 /**
  * Class representing a valid inequality.
  *
@@ -34,23 +33,30 @@ package org.jorlib.frameworks.columngeneration.master.cutGeneration;
  * @version 13-4-2015
  *
  */
-public abstract class AbstractInequality {
+public abstract class AbstractInequality
+{
 
-	/** Reference to the AbstractCutGenerator which generates inequalities of the type that extends this class **/
-	public final AbstractCutGenerator maintainingGenerator;
+    /**
+     * Reference to the AbstractCutGenerator which generates inequalities of the type that extends
+     * this class
+     **/
+    public final AbstractCutGenerator maintainingGenerator;
 
-	/**
-	 * Creates a new inequality
-	 * @param maintainingGenerator Reference to the AbstractCutGenerator which generates inequalities of the type that extends this class
-	 */
-	public AbstractInequality(AbstractCutGenerator maintainingGenerator){
-		this.maintainingGenerator=maintainingGenerator;
-	}
+    /**
+     * Creates a new inequality
+     * 
+     * @param maintainingGenerator Reference to the AbstractCutGenerator which generates
+     *        inequalities of the type that extends this class
+     */
+    public AbstractInequality(AbstractCutGenerator maintainingGenerator)
+    {
+        this.maintainingGenerator = maintainingGenerator;
+    }
 
-	@Override
-	public abstract boolean equals(Object o);
-	
-	@Override
-	public abstract int hashCode();
-	
+    @Override
+    public abstract boolean equals(Object o);
+
+    @Override
+    public abstract int hashCode();
+
 }

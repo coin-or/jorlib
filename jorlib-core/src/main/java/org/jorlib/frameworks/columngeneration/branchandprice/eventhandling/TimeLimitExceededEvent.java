@@ -36,27 +36,33 @@ import java.util.EventObject;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class TimeLimitExceededEvent extends EventObject{
+public class TimeLimitExceededEvent
+    extends EventObject
+{
 
     /** Branch-and-Price Node which was being processed when TimeLimitExceededEvent occurred **/
     public final BAPNode node;
 
     /**
      * Event fired when a time out occurs due to a time limit
+     * 
      * @param source Generator of the event
      */
-    public TimeLimitExceededEvent(Object source){
+    public TimeLimitExceededEvent(Object source)
+    {
         super(source);
-        this.node=null;
+        this.node = null;
     }
 
     /**
      * Event fired when a time out occurs due to a time limit
+     * 
      * @param source Generator of the event
      * @param node node which was being processed when the time out occurred.
      */
-    public TimeLimitExceededEvent(Object source, BAPNode node){
+    public TimeLimitExceededEvent(Object source, BAPNode node)
+    {
         super(source);
-        this.node=node;
+        this.node = node;
     }
 }

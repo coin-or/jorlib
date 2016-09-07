@@ -40,12 +40,9 @@ import org.junit.runners.Suite;
  * @since April 8, 2015
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-	BAPTSPTest.class,
-	BestBoundBapNodeComparatorTest.class,
-	BFSBapNodeComparatorTest.class,
-	DFSBapNodeComparatorTest.class
-})
+@Suite.SuiteClasses({ BAPTSPTest.class, BestBoundBapNodeComparatorTest.class,
+    BFSBapNodeComparatorTest.class, DFSBapNodeComparatorTest.class })
 
-public final class AllFrameworksTests {
+public final class AllFrameworksTests
+{
 }

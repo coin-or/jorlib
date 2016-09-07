@@ -33,14 +33,18 @@ import org.junit.Test;
 /**
  * Tests for the BFSNodeComparator
  */
-public final class BFSBapNodeComparatorTest {
+public final class BFSBapNodeComparatorTest
+{
 
     @Test
-    public void testBFSNodeComparator(){
-        BAPNode bapNode0=new BAPNode<>(0, null, null, null, 4, null); //Node with bound equal to 4
-        BAPNode bapNode1=new BAPNode<>(1, null, null, null, 2, null); //Node with bound equal to 2
+    public void testBFSNodeComparator()
+    {
+        BAPNode bapNode0 = new BAPNode<>(0, null, null, null, 4, null); // Node with bound equal to
+                                                                        // 4
+        BAPNode bapNode1 = new BAPNode<>(1, null, null, null, 2, null); // Node with bound equal to
+                                                                        // 2
 
-        BFSBapNodeComparator comparator=new BFSBapNodeComparator();
+        BFSBapNodeComparator comparator = new BFSBapNodeComparator();
 
         Assert.assertEquals(1, comparator.compare(bapNode1, bapNode0));
         Assert.assertEquals(-1, comparator.compare(bapNode0, bapNode1));

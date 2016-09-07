@@ -37,7 +37,9 @@ import java.util.Set;
  * @author Joris Kinable
  * @version 29-6-2016
  */
-public final class IndependentSet extends AbstractColumn<ColoringGraph, ChromaticNumberPricingProblem>{
+public final class IndependentSet
+    extends AbstractColumn<ColoringGraph, ChromaticNumberPricingProblem>
+{
 
     /** Vertices in the independent set **/
     public final Set<Integer> vertices;
@@ -48,36 +50,43 @@ public final class IndependentSet extends AbstractColumn<ColoringGraph, Chromati
      * Constructs a new column
      *
      * @param associatedPricingProblem Pricing problem to which this column belongs
-     * @param isArtificial             Is this an artificial column?
-     * @param creator                  Who/What created this column?
+     * @param isArtificial Is this an artificial column?
+     * @param creator Who/What created this column?
      * @param vertices Vertices in the independent set
      * @param cost cost of the independent set
      */
-    public IndependentSet(ChromaticNumberPricingProblem associatedPricingProblem, boolean isArtificial, String creator, Set<Integer> vertices, int cost) {
+    public IndependentSet(
+        ChromaticNumberPricingProblem associatedPricingProblem, boolean isArtificial,
+        String creator, Set<Integer> vertices, int cost)
+    {
         super(associatedPricingProblem, isArtificial, creator);
-        this.vertices=vertices;
-        this.cost=cost;
+        this.vertices = vertices;
+        this.cost = cost;
     }
 
-
     @Override
-    public boolean equals(Object o) {
-        if(this==o)
+    public boolean equals(Object o)
+    {
+        if (this == o)
             return true;
-        else if(!(o instanceof IndependentSet))
+        else if (!(o instanceof IndependentSet))
             return false;
-        IndependentSet other=(IndependentSet) o;
-        return this.vertices.equals(other.vertices) && this.isArtificialColumn == other.isArtificialColumn;
+        IndependentSet other = (IndependentSet) o;
+        return this.vertices.equals(other.vertices)
+            && this.isArtificialColumn == other.isArtificialColumn;
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return vertices.hashCode();
     }
 
     @Override
-    public String toString() {
-        return "Value: "+ this.value+" artificial: "+isArtificialColumn+" set: "+vertices.toString();
+    public String toString()
+    {
+        return "Value: " + this.value + " artificial: " + isArtificialColumn + " set: "
+            + vertices.toString();
     }
 
 }

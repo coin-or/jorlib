@@ -43,80 +43,110 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Defines the master problem: Select a subset of independent sets, such that the union of all selected independent sets cover all vertices in the graph.
+ * Defines the master problem: Select a subset of independent sets, such that the union of all
+ * selected independent sets cover all vertices in the graph.
  * <ul>
  * <li>a reference to the cplex model</li>
  * <li>reference to the pricing problem</li>
  * </ul>
+ * 
  * @author Joris Kinable
  * @version 29-6-2016
  */
-public final class Master extends AbstractMaster<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem, ColoringMasterData> {
+public final class Master
+    extends
+    AbstractMaster<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem, ColoringMasterData>
+{
 
-    private IloObjective obj; //Objective function
-    private IloRange[] oneColorPerVertex; //Constraint
+    private IloObjective obj; // Objective function
+    private IloRange[] oneColorPerVertex; // Constraint
 
-    public Master(ColoringGraph dataModel, ChromaticNumberPricingProblem pricingProblem) {
+    public Master(ColoringGraph dataModel, ChromaticNumberPricingProblem pricingProblem)
+    {
         super(dataModel, pricingProblem, OptimizationSense.MINIMIZE);
-        System.out.println("Master constructor. Columns: "+masterData.getNrColumns());
+        System.out.println("Master constructor. Columns: " + masterData.getNrColumns());
     }
 
     /**
      * Builds the master model
-     * @return Returns a MasterData object which is a data container for information coming from the master problem
+     * 
+     * @return Returns a MasterData object which is a data container for information coming from the
+     *         master problem
      */
     @Override
-    protected ColoringMasterData buildModel() {
-        IloCplex cplex=null;
+    protected ColoringMasterData buildModel()
+    {
+        IloCplex cplex = null;
 
         try {
-            cplex=new IloCplex(); //Create cplex instance
-            cplex.setOut(null); //Disable cplex output
-            cplex.setParam(IloCplex.IntParam.Threads,config.MAXTHREADS); //Set number of threads that may be used by the master
+            cplex = new IloCplex(); // Create cplex instance
+            cplex.setOut(null); // Disable cplex output
+            cplex.setParam(IloCplex.IntParam.Threads, config.MAXTHREADS); // Set number of threads
+                                                                          // that may be used by the
+                                                                          // master
 
-            //Define objective
-            obj=cplex.addMinimize();
+            // Define objective
+            obj = cplex.addMinimize();
 
-            //Define constraints
-            oneColorPerVertex=new IloRange[dataModel.getNrVertices()];
-            for(int i=0; i<dataModel.getNrVertices(); i++)
-                oneColorPerVertex[i]=cplex.addRange(1, Double.MAX_VALUE, "oneColorPerVertex"); //Assign one color to every vertex
+            // Define constraints
+            oneColorPerVertex = new IloRange[dataModel.getNrVertices()];
+            for (int i = 0; i < dataModel.getNrVertices(); i++)
+                oneColorPerVertex[i] = cplex.addRange(1, Double.MAX_VALUE, "oneColorPerVertex"); // Assign
+                                                                                                 // one
+                                                                                                 // color
+                                                                                                 // to
+                                                                                                 // every
+                                                                                                 // vertex
 
         } catch (IloException e) {
             e.printStackTrace();
         }
 
-        Map<ChromaticNumberPricingProblem, OrderedBiMap<IndependentSet, IloNumVar>> varMap=new LinkedHashMap<>();
-        ChromaticNumberPricingProblem pricingProblem=this.pricingProblems.get(0);
+        Map<ChromaticNumberPricingProblem, OrderedBiMap<IndependentSet, IloNumVar>> varMap =
+            new LinkedHashMap<>();
+        ChromaticNumberPricingProblem pricingProblem = this.pricingProblems.get(0);
         varMap.put(pricingProblem, new OrderedBiMap<>());
 
-        //Create a new data object which will store information from the master.
+        // Create a new data object which will store information from the master.
         return new ColoringMasterData(cplex, varMap);
     }
 
     /**
      * Solve the master problem
+     * 
      * @param timeLimit Future point in time by which the solve procedure must be completed
      * @return true if the master problem has been solved
      * @throws TimeLimitExceededException TimeLimitExceededException
      */
     @Override
-    protected boolean solveMasterProblem(long timeLimit) throws TimeLimitExceededException {
+    protected boolean solveMasterProblem(long timeLimit)
+        throws TimeLimitExceededException
+    {
         try {
-            //Set time limit
-            double timeRemaining=Math.max(1,(timeLimit-System.currentTimeMillis())/1000.0);
-            masterData.cplex.setParam(IloCplex.DoubleParam.TiLim, timeRemaining); //set time limit in seconds
-            //Potentially export the model
-            if(config.EXPORT_MODEL) masterData.cplex.exportModel(config.EXPORT_MASTER_DIR+"master_"+this.getIterationCount()+".lp");
+            // Set time limit
+            double timeRemaining = Math.max(1, (timeLimit - System.currentTimeMillis()) / 1000.0);
+            masterData.cplex.setParam(IloCplex.DoubleParam.TiLim, timeRemaining); // set time limit
+                                                                                  // in seconds
+            // Potentially export the model
+            if (config.EXPORT_MODEL)
+                masterData.cplex.exportModel(
+                    config.EXPORT_MASTER_DIR + "master_" + this.getIterationCount() + ".lp");
 
-            //Solve the model
-            if(!masterData.cplex.solve() || masterData.cplex.getStatus()!=IloCplex.Status.Optimal){
-                if(masterData.cplex.getCplexStatus()==IloCplex.CplexStatus.AbortTimeLim) //Aborted due to time limit
+            // Solve the model
+            if (!masterData.cplex.solve()
+                || masterData.cplex.getStatus() != IloCplex.Status.Optimal)
+            {
+                if (masterData.cplex.getCplexStatus() == IloCplex.CplexStatus.AbortTimeLim) // Aborted
+                                                                                            // due
+                                                                                            // to
+                                                                                            // time
+                                                                                            // limit
                     throw new TimeLimitExceededException();
                 else
-                    throw new RuntimeException("Master problem solve failed! Status: "+masterData.cplex.getStatus());
-            }else{
-                masterData.objectiveValue=masterData.cplex.getObjValue();
+                    throw new RuntimeException(
+                        "Master problem solve failed! Status: " + masterData.cplex.getStatus());
+            } else {
+                masterData.objectiveValue = masterData.cplex.getObjValue();
             }
         } catch (IloException e) {
             e.printStackTrace();
@@ -125,13 +155,17 @@ public final class Master extends AbstractMaster<ColoringGraph, IndependentSet, 
     }
 
     /**
-     * Extracts information from the master problem which is required by the pricing problems, e.g. the reduced costs/dual values
+     * Extracts information from the master problem which is required by the pricing problems, e.g.
+     * the reduced costs/dual values
+     * 
      * @param pricingProblem pricing problem
      */
     @Override
-    public void initializePricingProblem(ChromaticNumberPricingProblem pricingProblem) {
+    public void initializePricingProblem(ChromaticNumberPricingProblem pricingProblem)
+    {
         try {
-            double[] dualValues=masterData.cplex.getDuals(oneColorPerVertex); //Dual value per vertex
+            double[] dualValues = masterData.cplex.getDuals(oneColorPerVertex); // Dual value per
+                                                                                // vertex
             pricingProblem.initPricingProblem(dualValues);
         } catch (IloException e) {
             e.printStackTrace();
@@ -140,21 +174,24 @@ public final class Master extends AbstractMaster<ColoringGraph, IndependentSet, 
 
     /**
      * Adds a new column to the master problem
+     * 
      * @param column column to add
      */
     @Override
-    public void addColumn(IndependentSet column) {
-        try{
-            //Register column with objective
-            IloColumn iloColumn=masterData.cplex.column(obj,column.cost);
-            //Register column with oneColorPerVertex constraints
-            for(Integer vertex: column.vertices)
+    public void addColumn(IndependentSet column)
+    {
+        try {
+            // Register column with objective
+            IloColumn iloColumn = masterData.cplex.column(obj, column.cost);
+            // Register column with oneColorPerVertex constraints
+            for (Integer vertex : column.vertices)
                 iloColumn = iloColumn.and(masterData.cplex.column(oneColorPerVertex[vertex], 1));
 
-            //Create the variable and store it
-            IloNumVar var=masterData.cplex.numVar(iloColumn, 0, Double.MAX_VALUE, "x_"+masterData.getNrColumns());
+            // Create the variable and store it
+            IloNumVar var = masterData.cplex
+                .numVar(iloColumn, 0, Double.MAX_VALUE, "x_" + masterData.getNrColumns());
             masterData.cplex.add(var);
-            masterData.addColumn(column,var);
+            masterData.addColumn(column, var);
         } catch (IloException e) {
             e.printStackTrace();
         }
@@ -162,18 +199,23 @@ public final class Master extends AbstractMaster<ColoringGraph, IndependentSet, 
 
     /**
      * Gets the solution from the master problem
+     * 
      * @return Returns all non-zero valued columns from the master problem
      */
     @Override
-    public List<IndependentSet> getSolution() {
-        List<IndependentSet> solution=new ArrayList<>();
+    public List<IndependentSet> getSolution()
+    {
+        List<IndependentSet> solution = new ArrayList<>();
         try {
-            IndependentSet[] independentSets=masterData.getColumnsForPricingProblemAsList().toArray(new IndependentSet[masterData.getNrColumns()]);
-            IloNumVar[] vars=masterData.getVarMap().getValuesAsArray(new IloNumVar[masterData.getNrColumns()]);
-            double[] values=masterData.cplex.getValues(vars);
-            for(int i=0; i<independentSets.length; i++){
-                independentSets[i].value=values[i];
-                if(values[i]>=config.PRECISION)
+            IndependentSet[] independentSets =
+                masterData.getColumnsForPricingProblemAsList().toArray(
+                    new IndependentSet[masterData.getNrColumns()]);
+            IloNumVar[] vars =
+                masterData.getVarMap().getValuesAsArray(new IloNumVar[masterData.getNrColumns()]);
+            double[] values = masterData.cplex.getValues(vars);
+            for (int i = 0; i < independentSets.length; i++) {
+                independentSets[i].value = values[i];
+                if (values[i] >= config.PRECISION)
                     solution.add(independentSets[i]);
             }
         } catch (IloException e) {
@@ -186,9 +228,10 @@ public final class Master extends AbstractMaster<ColoringGraph, IndependentSet, 
      * Prints the solution
      */
     @Override
-    public void printSolution() {
-        List<IndependentSet> solution=this.getSolution();
-        for(IndependentSet is : solution)
+    public void printSolution()
+    {
+        List<IndependentSet> solution = this.getSolution();
+        for (IndependentSet is : solution)
             System.out.println(is);
     }
 
@@ -196,27 +239,33 @@ public final class Master extends AbstractMaster<ColoringGraph, IndependentSet, 
      * Closes the master problem
      */
     @Override
-    public void close() {
+    public void close()
+    {
         masterData.cplex.end();
     }
 
     /**
      * Listen to branching decisions
+     * 
      * @param bd Branching decision
      */
     @Override
-    public void branchingDecisionPerformed(BranchingDecision bd) {
-        //For simplicity, we simply destroy the master problem and rebuild it. Of course, something more sophisticated may be used which retains the master problem.
-        this.close(); //Close the old cplex model
-        masterData=this.buildModel(); //Create a new model without any columns
+    public void branchingDecisionPerformed(BranchingDecision bd)
+    {
+        // For simplicity, we simply destroy the master problem and rebuild it. Of course, something
+        // more sophisticated may be used which retains the master problem.
+        this.close(); // Close the old cplex model
+        masterData = this.buildModel(); // Create a new model without any columns
     }
 
     /**
      * Undo branching decisions during backtracking in the Branch-and-Price tree
+     * 
      * @param bd Branching decision
      */
     @Override
-    public void branchingDecisionReversed(BranchingDecision bd) {
-        //No action required
+    public void branchingDecisionReversed(BranchingDecision bd)
+    {
+        // No action required
     }
 }
