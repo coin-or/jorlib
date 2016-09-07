@@ -2,12 +2,12 @@ INSTALL
 
 
 ## Downloading jORLib ##
-Option 1: directly from the release page: https://github.com/jkinable/jorlib/releases
-Option 2 (source files only): Go to https://github.com/jkinable/jorlib. Make sure that you have the 'master' branch selected. Click the green "Clone or Download button"-> Download ZIP. Alternatively, you can use the command line (requires git scm to be installed). To download the repository through the command line:
+Option 1: directly from the release page: https://github.com/coin-or/jorlib/releases
+Option 2 (source files only): Go to https://github.com/coin-or/jorlib. Make sure that you have the 'master' branch selected. Click the green "Clone or Download button"-> Download ZIP. Alternatively, you can use the command line (requires git scm to be installed). To download the repository through the command line:
   a. create a new folder jORLib: 
       mkdir jORLib; cd jORLib
   b. run: 
-      git clone https://github.com/jkinable/jorlib.git .
+      git clone https://github.com/coin-or/jorlib.git .
      notice the . at the end; this will download the files *into* your current directly. Your currenct directory must be empty for this to work.
 
   
@@ -63,7 +63,7 @@ That's it!
 Download jORLib (see 'Downloading jORLib', option 1). Import the jar jorlib-core-<VERSION>.jar.
 a. To import a jar under Eclipse: right-click on the Project → Build Path → Configure Build Path. Under Libraries tab, click Add Jars or Add External JARs and give the Jar.
 b. To import a jar under IntelliJ: Click File from File menu → Project Structure → Libraries → Click the green '+' sign at the top and follow the instructions.
-Note that some classes have a number of dependencies (listed here: http://jkinable.github.io/jorlib/). These dependencies must obviously be met before these classes can be used.
+Note that some classes have a number of dependencies (listed here: http://coin-or.github.io/jorlib/). These dependencies must obviously be met before these classes can be used.
 
 
 
@@ -74,7 +74,7 @@ Currently, jORLib is not included in the Maven Central Repository. This will hop
 
 ## Contributing code to jORLib ##
 1. Create an account on github.com.
-2. Navigate to http://jkinable.github.io/jorlib/ and click 'Fork'. Now you have a Fork of the jORLib repository!
+2. Navigate to http://coin-or.github.io/jorlib/ and click 'Fork'. Now you have a Fork of the jORLib repository!
 3. Follow the steps outlined in https://help.github.com/articles/fork-a-repo/ to get a the files from your repository to your computer. In summary, the commands would be:
   a. create a new folder jORLib on your harddrive: 
       mkdir jORLib; cd jORLib
@@ -82,7 +82,7 @@ Currently, jORLib is not included in the Maven Central Repository. This will hop
       git clone https://github.com/YOUR-USERNAME/jorlib.git .
      notice the . at the end; this will download the files *into* your current directly. Your currenct directory must be empty for this to work.
   c. set up a remote, thereby pointing to the original repository:
-      git remote add upstream https://github.com/jkinable/jorlib.git
+      git remote add upstream https://github.com/coin-or/jorlib.git
   Alright, you are almost there. You now have a local working copy of your repository. Each time you want to make a new contribution to the library, you do the following:
   a. Synchronize your fork with the upstream repository (development branch, see notes below): https://help.github.com/articles/syncing-a-fork/
   b. Create a new branch, make the necessary changes, and commit them. See https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging and https://help.github.com/articles/creating-and-deleting-branches-within-your-repository/
