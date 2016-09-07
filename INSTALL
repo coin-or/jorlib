@@ -17,7 +17,7 @@ The demo's can be run directly from the command line.
 1. Download jORLib (see 'Downloading jORLib', option 1). Make sure that you have java 8 or higher installed on your system.
 2. Running the code (version numbering needs to be adjusted accordingly):
   a. Algorithmic example (SubtourSeparatorDemo): java -cp jorlib-demo-<VERSION>-uber.jar org.jorlib.demo.alg.tsp.separation.SubtourSeparatorDemo
-  b. Column Generation example (this requires a working IBM CPLEx installation): java -Djava.library.path=/opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/ -cp jorlib-demo-<VERSION>-uber.jar org.jorlib.demo.frameworks.columnGeneration.bapExample.TSPSolver
+  b. Column Generation example (this requires a working IBM CPLEx installation): java -Djava.library.path=/opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/ -cp jorlib-demo-<VERSION>-uber.jar org.jorlib.demo.frameworks.columngeneration.bapExample.TSPSolver
   Note that java.library.path must point to your Cplex installation folder.
 
 

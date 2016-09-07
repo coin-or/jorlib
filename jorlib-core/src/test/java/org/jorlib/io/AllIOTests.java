@@ -26,14 +26,14 @@
  */
 package org.jorlib.io;
 
-import org.jorlib.io.tspLibReader.DistanceFunctionTest;
-import org.jorlib.io.tspLibReader.EdgeTest;
-import org.jorlib.io.tspLibReader.TestATSP;
-import org.jorlib.io.tspLibReader.TestHCP;
-import org.jorlib.io.tspLibReader.TestSOP;
-import org.jorlib.io.tspLibReader.TestTSP;
-import org.jorlib.io.tspLibReader.TestVRP;
-import org.jorlib.io.tspLibReader.TourTest;
+import org.jorlib.io.tsplibreader.DistanceFunctionTest;
+import org.jorlib.io.tsplibreader.EdgeTest;
+import org.jorlib.io.tsplibreader.TestATSP;
+import org.jorlib.io.tsplibreader.TestHCP;
+import org.jorlib.io.tsplibreader.TestSOP;
+import org.jorlib.io.tsplibreader.TestTSP;
+import org.jorlib.io.tsplibreader.TestVRP;
+import org.jorlib.io.tsplibreader.TourTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

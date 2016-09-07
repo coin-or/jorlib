@@ -28,7 +28,7 @@ package org.jorlib.alg;
 
 import org.jorlib.alg.knapsack.*;
 import org.jorlib.alg.knapsack.separation.*;
-import org.jorlib.alg.packing.circlePacking.SmallestEnclosingCircleCalculatorTest;
+import org.jorlib.alg.packing.circlepacking.SmallestEnclosingCircleCalculatorTest;
 import org.jorlib.alg.tsp.separation.SubtourSeparatorTest;
 import org.junit.runner.*;
 import org.junit.runners.*;

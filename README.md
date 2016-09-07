@@ -29,7 +29,7 @@ The package `org.jorlib.demo` includes small demo applications to help you get s
 Running examples directly from the demo package is easy. Try for example:
 - "java -cp jorlib-demo-<VERSION>-uber.jar org.jorlib.demo.alg.tsp.separation.SubtourSeparatorDemo" to run the SubtourSeparatorDemo
 or
-- "java -Djava.library.path=/opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/ -cp jorlib-demo-<VERSION>-uber.jar org.jorlib.demo.frameworks.columnGeneration.bapExample.TSPSolver" to run the Branch-and-Price example. Obviously, you need to ensure that java.library.path points to your own Cplex installation.
+- "java -Djava.library.path=/opt/ILOG/CPLEX_Studio1261/cplex/bin/x86-64_linux/ -cp jorlib-demo-<VERSION>-uber.jar org.jorlib.demo.frameworks.columngeneration.bapExample.TSPSolver" to run the Branch-and-Price example. Obviously, you need to ensure that java.library.path points to your own Cplex installation.
 
 ## Documentation ##
 Installation istructions are available [here](INSTALL); Javadoc for the latest version can be found [here](http://coin-or.github.io/jorlib/apidocs/); documentation per version is bundled with every release. Releases can be found on our [release page](https://github.com/coin-or/jorlib/releases). There is also a [manual](http://coin-or.github.io/jorlib/manual/manual.pdf) with an in-depth discussion on the Column Generation and Branch-and-Price features of the library.
