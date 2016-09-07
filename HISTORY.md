@@ -4,6 +4,7 @@ Changes to jORLib in each version:
 
 - **version 1.1.2** (Under development):
 	- Added `BestBoundBAPNodeComparator`: The Branch-and-Price tree can now be traversed using the Best Bound strategy
+	- Package names have been standardized to follow Java naming conventions: all package names are now in lower case. This unfortunately breaks backward compabitility for this release.
 
 - **version 1.1.1** (24-Jul-2016):
 	- Fixed a bug where the number of processed nodes in BAP was not calculated correctly (pruning nodes did not increment the nodes processed counter)
