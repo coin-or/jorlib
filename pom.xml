@@ -7,7 +7,7 @@
 	<name>JORLib - Parent</name>
 	<version>1.1.2-SNAPSHOT</version>
 	<description>Java Operations Research Library.</description>
-	<url>https://github.com/jkinable/jorlib</url>
+	<url>https://github.com/coin-or/jorlib</url>
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License (LGPLv2.1)</name>
@@ -28,9 +28,9 @@
 	</issueManagement>-->
 	
 	<scm>
-		<url>https://github.com/jkinable/jorlib</url>
-		<connection>scm:git:git://github.com/jkinable/jorlib.git</connection>
-		<developerConnection>scm:git:git@github.com:jkinable/jorlib.git</developerConnection>
+		<url>https://github.com/coin-or/jorlib</url>
+		<connection>scm:git:git://github.com/coin-or/jorlib.git</connection>
+		<developerConnection>scm:git:git@github.com:coin-or/jorlib.git</developerConnection>
 	</scm>
 	
 	<properties>
@@ -154,8 +154,38 @@
 					<checkinComment>Publishing javadoc for ${project.artifactId}:${project.version}</checkinComment>
 					<content>${basedir}/jorlib-core/target/site</content>
 					<skipDeletedFiles>true</skipDeletedFiles>
-					<pubScmUrl>scm:git:git@github.com:jkinable/jorlib.git</pubScmUrl>
+					<pubScmUrl>scm:git:git@github.com:coin-or/jorlib.git</pubScmUrl>
 					<scmBranch>gh-pages</scmBranch> <!-- branch with static site -->
+				    </configuration>
+				</plugin>
+				<plugin>
+				    <groupId>org.eclipse.m2e</groupId>
+				    <artifactId>lifecycle-mapping</artifactId>
+				    <version>1.0.0</version>
+				    <configuration>
+					<lifecycleMappingMetadata>
+					    <pluginExecutions>
+						<pluginExecution>
+						    <pluginExecutionFilter>
+							<groupId>
+							    org.apache.felix
+							</groupId>
+							<artifactId>
+							    maven-bundle-plugin
+							</artifactId>
+							<versionRange>
+							    [3.0.1,)
+							</versionRange>
+							<goals>
+							    <goal>manifest</goal>
+							</goals>
+						    </pluginExecutionFilter>
+						    <action>
+							<ignore></ignore>
+						    </action>
+						</pluginExecution>
+					    </pluginExecutions>
+					</lifecycleMappingMetadata>
 				    </configuration>
 				</plugin>
 				
