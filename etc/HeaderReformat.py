@@ -99,7 +99,7 @@ print("(C) Copyright "+year+"-2016, by "+authors+", and Contributors."+" "+input
 p= re.compile('/\*(.*?)\*/\r?\n\n?/\*(.*?)\*/\n*', re.DOTALL)
 data=p.sub('', data)
 #strip away single header
-p= re.compile('/\*\s*Copyright (.*?)\*/', re.DOTALL)
+p= re.compile('/\*\s*Copyright (.*?)\*/\n*', re.DOTALL)
 data=p.sub('', data)
 #print("result:")
 #print(data)
@@ -124,11 +124,10 @@ newHeader= """/* ==========================================
  
 #print(newHeader)
 
-"""
 outputFile = inputFile + ".tmp"
 out = open(outputFile, "w")
 out.write(newHeader)
 out.write(data)
 out.close()
 os.rename(outputFile, inputFile)
-"""
+
