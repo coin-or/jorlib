@@ -1,28 +1,14 @@
 /* ==========================================
- * jORLib : a free Java OR library
+ * jORLib : Java Operations Research Library
  * ==========================================
  *
- * Project Info:  https://github.com/jkinable/jorlib
+ * Project Info:  http://www.coin-or.org/projects/jORLib.xml
  * Project Creator:  Joris Kinable (https://github.com/jkinable)
  *
- * (C) Copyright 2015, by Joris Kinable and Contributors.
+ * (C) Copyright 2015-2016, by Joris Kinable and Contributors.
  *
  * This program and the accompanying materials are licensed under LGPLv2.1
- *
- */
-/* -----------------
- * AbstractBranchCreator.java
- * -----------------
- * (C) Copyright 2015, by Joris Kinable and Contributors.
- *
- * Original Author:  Joris Kinable
- * Contributor(s):   -
- *
- * $Id$
- *
- * Changes
- * -------
- *
+ * as published by the Free Software Foundation.
  */
 package org.jorlib.frameworks.columngeneration.branchandprice;
 
