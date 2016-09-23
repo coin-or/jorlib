@@ -16,6 +16,7 @@ Changes to jORLib in each version:
 	- Disabled an exclude in the main pom.xml file; this exclude seemed to cause AllFrameworksTests.java to fail when the jORLib was loaded as a maven project in Eclipse. [reported by Gabor Marotig]
 	- Added method to query the depth of a BAPNode; included a method to initialize BAPNode
 	- Switched license to LGPLv2.1
+	- Updated JGraphT to version 1.0.0
 
 - **version 1.1** (24-Feb-2016): 
 	- Fixed a rare bug which could cause the Branch-and-Price procedure to end prematurely.
