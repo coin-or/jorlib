@@ -7,6 +7,7 @@ Changes to jORLib in each version:
 	- Package names have been standardized to follow Java naming conventions: all package names are now in lower case. This unfortunately breaks backward compabitility for this release.
 	- Added code formatting rules using the Eclipse formatter, and added script to perform automated mass formatting. Code format is now the same throughout all files.
 	- Reformatted all file headers. Format is now consistent across all packages, concise and easier to maintain.
+	- Updated JGraphT to version 1.0.0
 
 - **version 1.1.1** (24-Jul-2016):
 	- Fixed a bug where the number of processed nodes in BAP was not calculated correctly (pruning nodes did not increment the nodes processed counter)
@@ -16,7 +17,6 @@ Changes to jORLib in each version:
 	- Disabled an exclude in the main pom.xml file; this exclude seemed to cause AllFrameworksTests.java to fail when the jORLib was loaded as a maven project in Eclipse. [reported by Gabor Marotig]
 	- Added method to query the depth of a BAPNode; included a method to initialize BAPNode
 	- Switched license to LGPLv2.1
-	- Updated JGraphT to version 1.0.0
 
 - **version 1.1** (24-Feb-2016): 
 	- Fixed a rare bug which could cause the Branch-and-Price procedure to end prematurely.
