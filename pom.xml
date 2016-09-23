@@ -88,6 +88,7 @@
 					<configuration>
 						<source>1.8</source>
 						<target>1.8</target>
+						<showWarnings>true</showWarnings>
 						<!--<testExcludes>
 						  <exclude>**/org/jorlib/frameworks/columngeneration/tsp/**/*</exclude>
 						</testExcludes>-->
