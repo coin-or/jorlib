@@ -37,9 +37,8 @@ import org.slf4j.LoggerFactory;
  * @param <V> type of pricing problem
  */
 public abstract class AbstractPricingProblemSolver<T extends ModelInterface, U extends AbstractColumn<T, V>,
-    V extends AbstractPricingProblem<T, U, W>,
-        W extends MasterData<T, U, V, ?>>
-    implements Callable<Void>, BranchingDecisionListener<T, U, W>
+    V extends AbstractPricingProblem<T, U>>
+    implements Callable<Void>, BranchingDecisionListener<T, U>
 {
 
     /** Logger for this class **/
@@ -203,7 +202,7 @@ public abstract class AbstractPricingProblemSolver<T extends ModelInterface, U e
      * @param bd branching decision
      */
     @Override
-    public void branchingDecisionPerformed(BranchingDecision<T, U, W> bd)
+    public void branchingDecisionPerformed(BranchingDecision<T, U> bd)
     {
     }
 
@@ -214,7 +213,7 @@ public abstract class AbstractPricingProblemSolver<T extends ModelInterface, U e
      * @param bd branching decision
      */
     @Override
-    public void branchingDecisionReversed(BranchingDecision<T, U, W> bd)
+    public void branchingDecisionReversed(BranchingDecision<T, U> bd)
     {
     }
 

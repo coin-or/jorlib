@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.BranchingDecision;
 import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
-import org.jorlib.frameworks.columngeneration.master.MasterData;
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
@@ -46,7 +45,7 @@ public class BAPNode<T extends ModelInterface, U extends AbstractColumn<T, ? ext
     /** Columns used to initialize the master problem **/
     protected final List<U> initialColumns;
     /** Valid inequalities used to initialize the master problem of this node **/
-    protected final List<AbstractInequality<T, ? extends MasterData<T, U, ? extends AbstractPricingProblem<T, U>, ? >>> initialInequalities;
+    protected final List<AbstractInequality> initialInequalities;
 
     // Data after solving the node:
     /** Objective value of the master problem after solving this node. **/
@@ -63,7 +62,7 @@ public class BAPNode<T extends ModelInterface, U extends AbstractColumn<T, ? ext
      **/
     protected List<U> solution;
     /** List of inequalities in the master problem after solving this node **/
-    protected List<AbstractInequality<T, ? extends MasterData<T, U, ? extends AbstractPricingProblem<T, U>, ? >>> inequalities;
+    protected List<AbstractInequality> inequalities;
 
     /**
      * Creates a new BAPNode
@@ -81,7 +80,7 @@ public class BAPNode<T extends ModelInterface, U extends AbstractColumn<T, ? ext
      */
     public BAPNode(
         int nodeID, List<Integer> rootPath, List<U> initialColumns,
-        List<AbstractInequality<T, ? extends MasterData<T, U, ? extends AbstractPricingProblem<T, U>, ? >>> initialInequalities, double bound,
+        List<AbstractInequality> initialInequalities, double bound,
         List<BranchingDecision<T,U>> branchingDecisions)
     {
         this.nodeID = nodeID;
@@ -140,7 +139,7 @@ public class BAPNode<T extends ModelInterface, U extends AbstractColumn<T, ? ext
      * 
      * @param additionalInequalities columns to add to the initial solution.
      */
-    public void addInitialInequalities(List<? extends AbstractInequality<T, ? extends MasterData<T, U, ? extends AbstractPricingProblem<T, U>, ? >>> additionalInequalities)
+    public void addInitialInequalities(List<? extends AbstractInequality> additionalInequalities)
     {
         inequalities.addAll(additionalInequalities);
     }
@@ -175,14 +174,14 @@ public class BAPNode<T extends ModelInterface, U extends AbstractColumn<T, ? ext
      * @param inequalities inequalities generated while solving this node
      */
     public void storeSolution(
-        double objective, double bound, List<U> solution, List<? extends AbstractInequality<T, ? extends MasterData<T, U, ? extends AbstractPricingProblem<T, U>, ? >>> inequalities)
+        double objective, double bound, List<U> solution, List<AbstractInequality> inequalities)
     {
         this.objective = objective;
         this.bound = bound;
         this.solution = solution;
-        //this.inequalities = inequalities;
-        this.inequalities = new ArrayList<>(); //Need to check whether I have to create a new list, or whether the old one can be cleared
-        this.inequalities.addAll(inequalities);
+        this.inequalities = inequalities;
+//        this.inequalities = new ArrayList<>(); //Need to check whether I have to create a new list, or whether the old one can be cleared
+//        this.inequalities.addAll(inequalities);
     }
 
     /**
@@ -204,7 +203,7 @@ public class BAPNode<T extends ModelInterface, U extends AbstractColumn<T, ? ext
      * @return a set of inequalities which are used to initialize the master problem when this node
      *         is being solved.
      */
-    public List<AbstractInequality<T, ? extends MasterData<T, U, ? extends AbstractPricingProblem<T, U>, ? >>> getInitialInequalities()
+    public List<AbstractInequality> getInitialInequalities()
     {
         return Collections.unmodifiableList(initialInequalities);
     }
@@ -247,7 +246,7 @@ public class BAPNode<T extends ModelInterface, U extends AbstractColumn<T, ? ext
      * @return a list of inequalities which are in the Master problem after this node has been
      *         solved.
      */
-    public List<AbstractInequality<T, ? extends MasterData<T, U, ? extends AbstractPricingProblem<T, U>, ? >>> getInequalities()
+    public List<AbstractInequality> getInequalities()
     {
         return Collections.unmodifiableList(inequalities);
     }

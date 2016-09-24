@@ -24,14 +24,14 @@ import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
  * @version 13-4-2015
  *
  */
-public abstract class AbstractInequality<T extends ModelInterface, W extends MasterData<T, ? extends AbstractColumn<T, ?>, ? extends AbstractPricingProblem<T, ?>, ? >>
+public abstract class AbstractInequality
 {
 
     /**
      * Reference to the AbstractCutGenerator which generates inequalities of the type that extends
      * this class
      **/
-    public final AbstractCutGenerator<T, W> maintainingGenerator;
+    public final AbstractCutGenerator<? extends ModelInterface, ? extends MasterData<? extends ModelInterface, ? extends AbstractColumn<? extends ModelInterface, ?>, ? extends AbstractPricingProblem<? extends ModelInterface, ?>, ? >> maintainingGenerator;
 
     /**
      * Creates a new inequality
@@ -39,7 +39,7 @@ public abstract class AbstractInequality<T extends ModelInterface, W extends Mas
      * @param maintainingGenerator Reference to the AbstractCutGenerator which generates
      *        inequalities of the type that extends this class
      */
-    public AbstractInequality(AbstractCutGenerator<T, W> maintainingGenerator)
+    public AbstractInequality(AbstractCutGenerator<? extends ModelInterface, ? extends MasterData<? extends ModelInterface, ? extends AbstractColumn<? extends ModelInterface, ?>, ? extends AbstractPricingProblem<? extends ModelInterface, ?>, ? >> maintainingGenerator)
     {
         this.maintainingGenerator = maintainingGenerator;
     }

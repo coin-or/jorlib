@@ -13,7 +13,10 @@
 package org.jorlib.frameworks.columngeneration.branchandprice.bapnodecomparators;
 
 import org.jorlib.frameworks.columngeneration.branchandprice.BAPNode;
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
 import org.jorlib.frameworks.columngeneration.master.OptimizationSense;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,16 +27,16 @@ public final class BestBoundBapNodeComparatorTest
 {
 
     @Test
-    public void testBestBoundMinimization()
+    public <T extends ModelInterface, U extends AbstractColumn<T,? extends AbstractPricingProblem<T, U>>> void testBestBoundMinimization()
     {
-        BAPNode<?, ?> bapNode0 = new BAPNode<>(0, null, null, null, 4, null); // Node with bound equal to
+        BAPNode<T, U> bapNode0 = new BAPNode<>(0, null, null, null, 4, null); // Node with bound equal to
                                                                         // 4
-        BAPNode<?, ?> bapNode1 = new BAPNode<>(1, null, null, null, 2, null); // Node with bound equal to
+        BAPNode<T, U> bapNode1 = new BAPNode<>(1, null, null, null, 2, null); // Node with bound equal to
                                                                         // 2
-        BAPNode<?, ?> bapNode2 = new BAPNode<>(2, null, null, null, 4, null); // Node with bound equal to
+        BAPNode<T, U> bapNode2 = new BAPNode<>(2, null, null, null, 4, null); // Node with bound equal to
                                                                         // 4
 
-        BestBoundBapNodeComparator<?, ?> comparator =
+        BestBoundBapNodeComparator<T, U> comparator =
             new BestBoundBapNodeComparator<>(OptimizationSense.MINIMIZE);
 
         // Compare nodes with different bound
@@ -46,16 +49,16 @@ public final class BestBoundBapNodeComparatorTest
     }
 
     @Test
-    public void testBestBoundMaximization()
+    public <T extends ModelInterface, U extends AbstractColumn<T,? extends AbstractPricingProblem<T, U>>> void testBestBoundMaximization()
     {
-        BAPNode bapNode0 = new BAPNode<>(0, null, null, null, 4, null); // Node with bound equal to
+        BAPNode<T, U> bapNode0 = new BAPNode<>(0, null, null, null, 4, null); // Node with bound equal to
                                                                         // 4
-        BAPNode bapNode1 = new BAPNode<>(1, null, null, null, 2, null); // Node with bound equal to
+        BAPNode<T, U> bapNode1 = new BAPNode<>(1, null, null, null, 2, null); // Node with bound equal to
                                                                         // 2
-        BAPNode bapNode2 = new BAPNode<>(2, null, null, null, 4, null); // Node with bound equal to
+        BAPNode<T, U> bapNode2 = new BAPNode<>(2, null, null, null, 4, null); // Node with bound equal to
                                                                         // 4
 
-        BestBoundBapNodeComparator<?, ?> comparator =
+        BestBoundBapNodeComparator<T, U> comparator =
             new BestBoundBapNodeComparator<>(OptimizationSense.MAXIMIZE);
 
         // Compare nodes with different bound

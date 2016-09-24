@@ -24,14 +24,14 @@ import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public interface BranchingDecisionListener<T extends ModelInterface, U extends AbstractColumn<T, ? extends AbstractPricingProblem<T, U>>, W extends MasterData<T, U, ? extends AbstractPricingProblem<T, U>, ? >>
+public interface BranchingDecisionListener<T extends ModelInterface, U extends AbstractColumn<T, ? extends AbstractPricingProblem<T, U>>>
 {
     /**
      * This method is called when a branching decision is executed
      * 
      * @param bd branching decision
      */
-    void branchingDecisionPerformed(BranchingDecision<T,U, W> bd);
+    void branchingDecisionPerformed(BranchingDecision<T,U> bd);
 
     /**
      * This method is called when a branching decision is reversed (backtracking in the
@@ -39,5 +39,5 @@ public interface BranchingDecisionListener<T extends ModelInterface, U extends A
      * 
      * @param bd branching decision
      */
-    void branchingDecisionReversed(BranchingDecision<T,U, W> bd);
+    void branchingDecisionReversed(BranchingDecision<T,U> bd);
 }

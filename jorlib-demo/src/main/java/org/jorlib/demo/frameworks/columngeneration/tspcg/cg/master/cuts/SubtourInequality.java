@@ -28,7 +28,7 @@ import java.util.Set;
  *
  */
 public final class SubtourInequality
-    extends AbstractInequality<TSP, TSPMasterData>
+    extends AbstractInequality
 {
 
     /** Vertices in the cut set **/

@@ -501,7 +501,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
      * 
      * @return Returns all inequalities generated for the master problem
      */
-    public List<? extends AbstractInequality<T, ? extends MasterData<T, U, V, ?>>> getCuts()
+    public List<AbstractInequality> getCuts()
     {
         return master.getCuts();
     }

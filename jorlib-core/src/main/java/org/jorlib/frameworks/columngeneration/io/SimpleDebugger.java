@@ -267,7 +267,7 @@ public class SimpleDebugger
             logger.debug("No inequalities found!");
         else {
             logger.debug("Cuts have been generated! Summary:");
-            for (AbstractInequality<?, ?> inequality : finishGenerateCutsEvent.separatedInequalities) {
+            for (AbstractInequality inequality : finishGenerateCutsEvent.separatedInequalities) {
                 if (cutSummary.containsKey(inequality.maintainingGenerator)) {
                     cutSummary.put(
                         inequality.maintainingGenerator,

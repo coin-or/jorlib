@@ -13,7 +13,6 @@
 package org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions;
 
 import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
-import org.jorlib.frameworks.columngeneration.master.MasterData;
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
@@ -24,7 +23,7 @@ import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public interface BranchingDecision<T extends ModelInterface, U extends AbstractColumn<T, ? extends AbstractPricingProblem<T, U>>, W extends MasterData<T, U, ? extends AbstractPricingProblem<T, U>, ? >>
+public interface BranchingDecision<T extends ModelInterface, U extends AbstractColumn<T, ? extends AbstractPricingProblem<T, U>>>
 {
 
     /**
@@ -43,6 +42,6 @@ public interface BranchingDecision<T extends ModelInterface, U extends AbstractC
      * @param inequality inequality
      * @return true if the inequality is feasible, false otherwise
      */
-    boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality<T, W> inequality);
+    boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality inequality);
 
 }

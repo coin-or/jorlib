@@ -20,7 +20,6 @@ import org.jorlib.frameworks.columngeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columngeneration.tsp.bap.branching.branchingDecisions.FixEdge;
 import org.jorlib.frameworks.columngeneration.tsp.bap.branching.branchingDecisions.RemoveEdge;
-import org.jorlib.frameworks.columngeneration.tsp.cg.master.TSPMasterData;
 import org.jorlib.frameworks.columngeneration.tsp.model.TSP;
 import org.jorlib.frameworks.columngeneration.util.MathProgrammingUtil;
 import org.jorlib.frameworks.columngeneration.util.OrderedBiMap;
@@ -196,7 +195,7 @@ public final class ExactPricingProblemSolver
      * @param bd BranchingDecision
      */
     @Override
-    public void branchingDecisionPerformed(BranchingDecision<TSP, Matching, TSPMasterData> bd)
+    public void branchingDecisionPerformed(BranchingDecision<TSP, Matching> bd)
     {
         try {
             if (bd instanceof FixEdge) {
@@ -221,7 +220,7 @@ public final class ExactPricingProblemSolver
      * @param bd BranchingDecision
      */
     @Override
-    public void branchingDecisionReversed(  BranchingDecision<TSP, Matching, TSPMasterData> bd)
+    public void branchingDecisionReversed(  BranchingDecision<TSP, Matching> bd)
     {
         try {
             if (bd instanceof FixEdge) {

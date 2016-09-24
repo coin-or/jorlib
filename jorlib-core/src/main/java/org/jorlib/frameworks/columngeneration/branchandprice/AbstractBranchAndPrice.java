@@ -139,14 +139,13 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
         rootPath.add(nodeID);
         if (optimizationSenseMaster == OptimizationSense.MINIMIZE)
             rootNode = new BAPNode<>(
-                nodeID, rootPath, new ArrayList<>(), new ArrayList<>(), lowerBoundOnObjective,
-                Collections.emptyList());
+                nodeID, rootPath, new ArrayList<>(), new ArrayList<>(), lowerBoundOnObjective, Collections.emptyList());
         else
-            rootNode = new BAPNode<>(
+            rootNode = new BAPNode<T, U>(
                 nodeID, rootPath, new ArrayList<>(), new ArrayList<>(), upperBoundOnObjective,
                 Collections.emptyList());
         queue.add(rootNode);
-        graphManipulator = new GraphManipulator(rootNode);
+        graphManipulator = new GraphManipulator<>(rootNode);
 
         // Initialize pricing algorithms
         Map<Class<? extends AbstractPricingProblemSolver<T, U, V>>,

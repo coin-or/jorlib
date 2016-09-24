@@ -15,7 +15,6 @@ package org.jorlib.frameworks.columngeneration.pricing;
 import java.lang.reflect.InvocationTargetException;
 
 import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
-import org.jorlib.frameworks.columngeneration.master.MasterData;
 import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 
 /**
@@ -26,13 +25,12 @@ import org.jorlib.frameworks.columngeneration.model.ModelInterface;
  *
  */
 public final class DefaultPricingProblemSolverFactory<T extends ModelInterface, U extends AbstractColumn<T, V>,
-    V extends AbstractPricingProblem<T, U, W>,
-        W extends MasterData<T, U, V, ?>>
+    V extends AbstractPricingProblem<T, U>>
     implements PricingProblemSolverFactory<T, U, V>
 {
 
     /** The solver (class) **/
-    private final Class<? extends AbstractPricingProblemSolver<T, U, V, W>> solverClass;
+    private final Class<? extends AbstractPricingProblemSolver<T, U, V>> solverClass;
 
     /** Data model **/
     private final T dataModel;
@@ -44,7 +42,7 @@ public final class DefaultPricingProblemSolverFactory<T extends ModelInterface, 
      * @param dataModel The data model
      */
     public DefaultPricingProblemSolverFactory(
-        Class<? extends AbstractPricingProblemSolver<T, U, V, W>> solverClass, T dataModel)
+        Class<? extends AbstractPricingProblemSolver<T, U, V>> solverClass, T dataModel)
     {
         this.solverClass = solverClass;
         this.dataModel = dataModel;
@@ -56,14 +54,14 @@ public final class DefaultPricingProblemSolverFactory<T extends ModelInterface, 
      * @param pricingProblem The pricing problem for which a new solver instance must be created
      * @return A new solver instance
      */
-    public AbstractPricingProblemSolver<T, U, V, W> createSolverInstance(V pricingProblem)
+    public AbstractPricingProblemSolver<T, U, V> createSolverInstance(V pricingProblem)
     {
 
         Class<?>[] cArg = new Class[2]; // Our constructor has 2 arguments
         cArg[0] = dataModel.getClass(); // First argument is of type T
         cArg[1] = pricingProblem.getClass(); // Second argument has the type of the pricing problem
 
-        AbstractPricingProblemSolver<T, U, V, W> solverInstance = null; // Create the new instance
+        AbstractPricingProblemSolver<T, U, V> solverInstance = null; // Create the new instance
         try {
             solverInstance =
                 solverClass.getDeclaredConstructor(cArg).newInstance(dataModel, pricingProblem);

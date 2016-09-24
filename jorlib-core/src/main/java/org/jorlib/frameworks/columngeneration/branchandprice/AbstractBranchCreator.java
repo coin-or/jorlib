@@ -132,7 +132,7 @@ public abstract class AbstractBranchCreator<T extends ModelInterface, U extends 
      */
     protected <B extends BranchingDecision<T, U>> BAPNode<T, U> createBranch(
         BAPNode<T, U> parentNode, B branchingDecision, List<U> solution,
-        List<AbstractInequality<T, ? extends MasterData<T, U, ? extends AbstractPricingProblem<T, U>, ?>>> inequalities)
+        List<AbstractInequality> inequalities)
     {
         int childNodeID = bap.getUniqueNodeID();
         List<Integer> rootPath1 = new ArrayList<>(parentNode.rootPath);
@@ -146,7 +146,7 @@ public abstract class AbstractBranchCreator<T extends ModelInterface, U extends 
                     && branchingDecision.columnIsCompatibleWithBranchingDecision(column))
             .collect(Collectors.toList());
         // Copy inequalities to the child node whenever applicable
-        List<AbstractInequality<T, ? extends MasterData<T, U, ? extends AbstractPricingProblem<T, U>, ?>>> initCuts = inequalities
+        List<AbstractInequality> initCuts = inequalities
             .stream()
             .filter(
                 inequality -> branchingDecision
@@ -155,7 +155,7 @@ public abstract class AbstractBranchCreator<T extends ModelInterface, U extends 
 
         List<BranchingDecision<T,U>> branchingDecisions = new ArrayList<>(parentNode.branchingDecisions);
         branchingDecisions.add(branchingDecision);
-        return new BAPNode<T, U>(
+        return new BAPNode<>(
             childNodeID, rootPath1, initSolution, initCuts, parentNode.bound, branchingDecisions);
     }
 

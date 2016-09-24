@@ -27,7 +27,7 @@ import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequ
  * @version 22-4-2015
  */
 public final class FixEdge
-    implements BranchingDecision<TSP, Matching, TSPMasterData>
+    implements BranchingDecision<TSP, Matching>
 {
 
     /** Pricing problem **/
@@ -48,7 +48,7 @@ public final class FixEdge
      * @return true
      */
     @Override
-    public boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality<TSP, TSPMasterData> inequality)
+    public boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality inequality)
     {
         return true; // In this example we only have subtourInequalities. They remain valid,
                      // independent of whether we fix an edge.

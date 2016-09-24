@@ -26,7 +26,7 @@ import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequ
  * @version 29-6-2016
  */
 public final class SameColor
-    implements BranchingDecision<ColoringGraph, IndependentSet, ColoringMasterData>
+    implements BranchingDecision<ColoringGraph, IndependentSet>
 {
 
     /** Vertices to be colored the same **/
@@ -57,7 +57,7 @@ public final class SameColor
      * @return true
      */
     @Override
-    public boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality<ColoringGraph, ColoringMasterData> inequality)
+    public boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality inequality)
     {
         return true; // Cuts are not added in this example
     }
