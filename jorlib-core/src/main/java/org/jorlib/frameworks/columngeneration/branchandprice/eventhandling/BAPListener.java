@@ -93,5 +93,5 @@ public interface BAPListener
      * 
      * @param branchEvent branchEvent
      */
-    void branchCreated(BranchEvent branchEvent);
+    void branchCreated(BranchEvent<?,?> branchEvent);
 }

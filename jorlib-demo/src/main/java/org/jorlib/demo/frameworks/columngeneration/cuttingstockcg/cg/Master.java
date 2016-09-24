@@ -42,7 +42,7 @@ public final class Master
     extends AbstractMaster<CuttingStock, CuttingPattern, PricingProblem, CuttingStockMasterData>
 {
 
-    IloCplex cplex; // Cplex instance
+    private IloCplex cplex; // Cplex instance
     private IloObjective obj; // Objective function
     private IloRange[] satisfyDemandConstr; // Constraint
 

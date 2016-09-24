@@ -18,6 +18,9 @@ import java.util.Stack;
 
 import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.BranchingDecision;
 import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.BranchingDecisionListener;
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,24 +32,24 @@ import org.slf4j.LoggerFactory;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class GraphManipulator
+public class GraphManipulator<T extends ModelInterface, U extends AbstractColumn<T, ? extends AbstractPricingProblem<T, U>>>
 {
 
     /** Logger for this class **/
     protected final Logger logger = LoggerFactory.getLogger(GraphManipulator.class);
 
     /** The previous node that has been solved. **/
-    private BAPNode previousNode;
+    private BAPNode<T, U> previousNode;
     /** Set of listeners which should be informed about the Branching Decisions which were made **/
-    private final Set<BranchingDecisionListener> listeners;
+    private final Set<BranchingDecisionListener<T,U>> listeners;
 
     /**
      * This stack keeps track of all the branching decisions that lead from the root node of the BAP
      * tree to the last node for which this.next(BAPNode<?,?> nextNode) has been invoked.
      */
-    private Stack<BranchingDecision> changeHistory;
+    private Stack<BranchingDecision<T, U>> changeHistory;
 
-    public GraphManipulator(BAPNode rootNode)
+    public GraphManipulator(BAPNode<T, U> rootNode)
     {
         this.previousNode = rootNode;
         changeHistory = new Stack<>();
@@ -58,7 +61,7 @@ public class GraphManipulator
      * 
      * @param nextNode The next node to be solved
      */
-    public void next(BAPNode<?, ?> nextNode)
+    public void next(BAPNode<T, U> nextNode)
     {
         logger.trace("Previous node: {}, history: {}", previousNode.nodeID, previousNode.rootPath);
         logger.trace(
@@ -78,7 +81,7 @@ public class GraphManipulator
         // 1b. revert until the first mutual ancestor
         while (changeHistory.size() > mutualNodesOnPath - 1) {
             logger.trace("Reverting 1 branch lvl");
-            BranchingDecision bd = changeHistory.pop();
+            BranchingDecision<T, U> bd = changeHistory.pop();
             // Revert the branching decision!
             this.rewindBranchingDecision(bd);
         }
@@ -90,7 +93,7 @@ public class GraphManipulator
             changeHistory.size());
         for (int i = changeHistory.size(); i < nextNode.branchingDecisions.size(); i++) {
             // Get the next branching decision and add it to the changeHistory
-            BranchingDecision bd = nextNode.branchingDecisions.get(i);
+            BranchingDecision<T, U> bd = nextNode.branchingDecisions.get(i);
             changeHistory.add(bd);
             // Execute the decision
             logger.trace("BAP exec branchingDecision: {}", bd);
@@ -106,7 +109,7 @@ public class GraphManipulator
     public void restore()
     {
         while (!changeHistory.isEmpty()) {
-            BranchingDecision bd = changeHistory.pop();
+            BranchingDecision<T, U> bd = changeHistory.pop();
             this.rewindBranchingDecision(bd);
         }
     }
@@ -116,7 +119,7 @@ public class GraphManipulator
      * 
      * @param listener listener
      */
-    protected void addBranchingDecisionListener(BranchingDecisionListener listener)
+    protected void addBranchingDecisionListener(BranchingDecisionListener<T, U> listener)
     {
         listeners.add(listener);
     }
@@ -126,7 +129,7 @@ public class GraphManipulator
      * 
      * @param listener listener
      */
-    protected void removeBranchingDecisionListener(BranchingDecisionListener listener)
+    protected void removeBranchingDecisionListener(BranchingDecisionListener<T, U> listener)
     {
         listeners.remove(listener);
     }
@@ -136,9 +139,9 @@ public class GraphManipulator
      * 
      * @param bd branching decision
      */
-    private void performBranchingDecision(BranchingDecision bd)
+    private void performBranchingDecision(BranchingDecision<T, U> bd)
     {
-        for (BranchingDecisionListener listener : listeners)
+        for (BranchingDecisionListener<T, U> listener : listeners)
             listener.branchingDecisionPerformed(bd);
     }
 
@@ -147,9 +150,9 @@ public class GraphManipulator
      * 
      * @param bd branching decision
      */
-    private void rewindBranchingDecision(BranchingDecision bd)
+    private void rewindBranchingDecision(BranchingDecision<T, U> bd)
     {
-        for (BranchingDecisionListener listener : listeners)
+        for (BranchingDecisionListener<T, U> listener : listeners)
             listener.branchingDecisionReversed(bd);
     }
 }

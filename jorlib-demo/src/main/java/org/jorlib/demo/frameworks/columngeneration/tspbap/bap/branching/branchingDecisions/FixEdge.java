@@ -15,6 +15,7 @@ package org.jorlib.demo.frameworks.columngeneration.tspbap.bap.branching.branchi
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jorlib.demo.frameworks.columngeneration.tspbap.cg.Matching;
 import org.jorlib.demo.frameworks.columngeneration.tspbap.cg.PricingProblemByColor;
+import org.jorlib.demo.frameworks.columngeneration.tspbap.cg.master.TSPMasterData;
 import org.jorlib.demo.frameworks.columngeneration.tspbap.model.TSP;
 import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.BranchingDecision;
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequality;
@@ -26,7 +27,7 @@ import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequ
  * @version 22-4-2015
  */
 public final class FixEdge
-    implements BranchingDecision<TSP, Matching>
+    implements BranchingDecision<TSP, Matching, TSPMasterData>
 {
 
     /** Pricing problem **/
@@ -47,7 +48,7 @@ public final class FixEdge
      * @return true
      */
     @Override
-    public boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality inequality)
+    public boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality<TSP, TSPMasterData> inequality)
     {
         return true; // In this example we only have subtourInequalities. They remain valid,
                      // independent of whether we fix an edge.
@@ -65,6 +66,7 @@ public final class FixEdge
         return column.associatedPricingProblem != this.pricingProblem
             || column.edges.contains(edge);
     }
+
 
     @Override
     public String toString()

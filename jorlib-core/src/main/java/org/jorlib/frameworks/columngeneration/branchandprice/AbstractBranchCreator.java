@@ -19,7 +19,9 @@ import java.util.stream.Collectors;
 
 import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.BranchingDecision;
 import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.master.MasterData;
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequality;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +33,8 @@ import org.slf4j.LoggerFactory;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public abstract class AbstractBranchCreator<T, U extends AbstractColumn<T, V>,
-    V extends AbstractPricingProblem<T>>
+public abstract class AbstractBranchCreator<T extends ModelInterface, U extends AbstractColumn<T, V>,
+    V extends AbstractPricingProblem<T, U>>
 {
 
     /** Logger for this class **/
@@ -43,7 +45,7 @@ public abstract class AbstractBranchCreator<T, U extends AbstractColumn<T, V>,
     /** Pricing problems **/
     protected final List<V> pricingProblems;
     /** Branch-and-Price class **/
-    protected AbstractBranchAndPrice bap = null;
+    protected AbstractBranchAndPrice<T,U,V> bap = null;
 
     /**
      * Creates a new BranchCreator
@@ -73,7 +75,7 @@ public abstract class AbstractBranchCreator<T, U extends AbstractColumn<T, V>,
      * 
      * @param bap Branch-and-Price class
      */
-    protected void registerBAP(AbstractBranchAndPrice bap)
+    protected void registerBAP(AbstractBranchAndPrice<T,U,V> bap)
     {
         if (this.bap != null)
             throw new RuntimeException(
@@ -130,7 +132,7 @@ public abstract class AbstractBranchCreator<T, U extends AbstractColumn<T, V>,
      */
     protected <B extends BranchingDecision<T, U>> BAPNode<T, U> createBranch(
         BAPNode<T, U> parentNode, B branchingDecision, List<U> solution,
-        List<AbstractInequality> inequalities)
+        List<AbstractInequality<T, ? extends MasterData<T, U, ? extends AbstractPricingProblem<T, U>, ?>>> inequalities)
     {
         int childNodeID = bap.getUniqueNodeID();
         List<Integer> rootPath1 = new ArrayList<>(parentNode.rootPath);
@@ -144,16 +146,16 @@ public abstract class AbstractBranchCreator<T, U extends AbstractColumn<T, V>,
                     && branchingDecision.columnIsCompatibleWithBranchingDecision(column))
             .collect(Collectors.toList());
         // Copy inequalities to the child node whenever applicable
-        List<AbstractInequality> initCuts = inequalities
+        List<AbstractInequality<T, ? extends MasterData<T, U, ? extends AbstractPricingProblem<T, U>, ?>>> initCuts = inequalities
             .stream()
             .filter(
                 inequality -> branchingDecision
                     .inEqualityIsCompatibleWithBranchingDecision(inequality))
             .collect(Collectors.toList());
 
-        List<BranchingDecision> branchingDecisions = new ArrayList<>(parentNode.branchingDecisions);
+        List<BranchingDecision<T,U>> branchingDecisions = new ArrayList<>(parentNode.branchingDecisions);
         branchingDecisions.add(branchingDecision);
-        return new BAPNode<>(
+        return new BAPNode<T, U>(
             childNodeID, rootPath1, initSolution, initCuts, parentNode.bound, branchingDecisions);
     }
 

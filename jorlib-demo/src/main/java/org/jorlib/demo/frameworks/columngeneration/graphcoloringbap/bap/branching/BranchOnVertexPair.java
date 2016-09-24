@@ -38,7 +38,7 @@ public final class BranchOnVertexPair
 {
 
     /** Pair of vertices to branch on **/
-    VertexPair<Integer> candidateVertexPair = null;
+    private VertexPair<Integer> candidateVertexPair = null;
 
     public BranchOnVertexPair(ColoringGraph dataModel, ChromaticNumberPricingProblem pricingProblem)
     {

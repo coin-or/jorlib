@@ -63,7 +63,7 @@ public class SimpleCGLogger
      * problem. In some cases, inequalities are added to master problem, after which the master is
      * resolved while skipping the pricing problem.
      */
-    boolean pricingProblemHasBeenSkipped = false;
+    private boolean pricingProblemHasBeenSkipped = false;
 
     /**
      * Create a new logger which writes its output the the file specified
@@ -71,7 +71,7 @@ public class SimpleCGLogger
      * @param colGen Column generation instance for which this logger is created
      * @param outputFile file to redirect the output to.
      */
-    public SimpleCGLogger(ColGen colGen, File outputFile)
+    public SimpleCGLogger(ColGen<?, ?, ?> colGen, File outputFile)
     {
         try {
             writer = new BufferedWriter(new FileWriter(outputFile));

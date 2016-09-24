@@ -80,10 +80,9 @@ public class Matching
     @Override
     public String toString()
     {
-        String s = "Value: " + this.value + " cost: " + this.cost + " color: "
+        return "Value: " + this.value + " cost: " + this.cost + " color: "
             + associatedPricingProblem.color + " artificial: " + isArtificialColumn + " edges: "
             + edges + " succ: " + Arrays.toString(succ);
-        return s;
     }
 
 }

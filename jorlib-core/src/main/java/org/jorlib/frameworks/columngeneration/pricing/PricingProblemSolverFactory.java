@@ -13,6 +13,7 @@
 package org.jorlib.frameworks.columngeneration.pricing;
 
 import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 
 /**
  * Interface which has to be implemented by a factory class which produces solver instances for the
@@ -25,8 +26,8 @@ import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
  * @param <U> Columns
  * @param <V> PricingProblem
  */
-public interface PricingProblemSolverFactory<T, U extends AbstractColumn<T, V>,
-    V extends AbstractPricingProblem<T>>
+public interface PricingProblemSolverFactory<T extends ModelInterface, U extends AbstractColumn<T, V>,
+    V extends AbstractPricingProblem<T, U>>
 {
 
     /**

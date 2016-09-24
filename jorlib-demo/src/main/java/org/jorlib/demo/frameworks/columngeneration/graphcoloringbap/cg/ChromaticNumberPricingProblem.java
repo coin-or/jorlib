@@ -22,7 +22,7 @@ import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
  * @version 29-6-2016
  */
 public final class ChromaticNumberPricingProblem
-    extends AbstractPricingProblem<ColoringGraph>
+    extends AbstractPricingProblem<ColoringGraph, IndependentSet>
 {
     /**
      * Create a new Pricing Problem

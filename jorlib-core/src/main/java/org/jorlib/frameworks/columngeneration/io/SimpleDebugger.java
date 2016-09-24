@@ -43,11 +43,11 @@ public class SimpleDebugger
     protected final Logger logger = LoggerFactory.getLogger(SimpleDebugger.class);
 
     /** Branch-and-Price instance being debugged **/
-    protected final AbstractBranchAndPrice bap;
+    protected final AbstractBranchAndPrice<?, ?, ?> bap;
     /** Column Generation instance being debugged **/
-    protected final ColGen colGen;
+    protected final ColGen<?, ?, ?> colGen;
     /** CutHandler instance being debugged **/
-    protected final CutHandler cutHandler;
+    protected final CutHandler<?, ?> cutHandler;
 
     /** Name of the instance being solved **/
     protected String instanceName;
@@ -59,7 +59,7 @@ public class SimpleDebugger
      * 
      * @param colGen Column generation instance to which the debugger should be attached
      */
-    public SimpleDebugger(ColGen colGen)
+    public SimpleDebugger(ColGen<?, ?, ?> colGen)
     {
         this(colGen, null);
     }
@@ -70,7 +70,7 @@ public class SimpleDebugger
      * @param colGen Column generation instance to which the debugger should be attached
      * @param cutHandler Cut Handler instance to which the debugger should be attached
      */
-    public SimpleDebugger(ColGen colGen, CutHandler cutHandler)
+    public SimpleDebugger(ColGen<?, ?, ?> colGen, CutHandler<?, ?> cutHandler)
     {
         this.bap = null;
         this.colGen = colGen;
@@ -87,7 +87,7 @@ public class SimpleDebugger
      * @param captureColumnGenerationEventsBAP boolean indicating whether Column Generation events
      *        should be captured which are being generated when BAPNodes are being processed.
      */
-    public SimpleDebugger(AbstractBranchAndPrice bap, boolean captureColumnGenerationEventsBAP)
+    public SimpleDebugger(AbstractBranchAndPrice<?, ?, ?> bap, boolean captureColumnGenerationEventsBAP)
     {
         this(bap, null, captureColumnGenerationEventsBAP);
     }
@@ -101,7 +101,7 @@ public class SimpleDebugger
      *        should be captured which are being generated when BAPNodes are being processed.
      */
     public SimpleDebugger(
-        AbstractBranchAndPrice bap, CutHandler cutHandler, boolean captureColumnGenerationEventsBAP)
+        AbstractBranchAndPrice<?, ?, ?> bap, CutHandler<?, ?> cutHandler, boolean captureColumnGenerationEventsBAP)
     {
         this.bap = bap;
         this.colGen = null;
@@ -244,10 +244,10 @@ public class SimpleDebugger
     }
 
     @Override
-    public void branchCreated(BranchEvent branchEvent)
+    public void branchCreated(BranchEvent<?, ?> branchEvent)
     {
         logger.debug("Branching - {} new nodes: ", branchEvent.nrBranches);
-        for (BAPNode childNode : branchEvent.childNodes) {
+        for (BAPNode<?, ?> childNode : branchEvent.childNodes) {
             logger.debug(
                 "ChildNode {} - {}", childNode.nodeID, childNode.getBranchingDecision().toString());
         }
@@ -262,12 +262,12 @@ public class SimpleDebugger
     @Override
     public void finishGeneratingCuts(FinishGeneratingCutsEvent finishGenerateCutsEvent)
     {
-        Map<AbstractCutGenerator, Integer> cutSummary = new LinkedHashMap<>();
+        Map<AbstractCutGenerator<?, ?>, Integer> cutSummary = new LinkedHashMap<>();
         if (finishGenerateCutsEvent.separatedInequalities.isEmpty())
             logger.debug("No inequalities found!");
         else {
             logger.debug("Cuts have been generated! Summary:");
-            for (AbstractInequality inequality : finishGenerateCutsEvent.separatedInequalities) {
+            for (AbstractInequality<?, ?> inequality : finishGenerateCutsEvent.separatedInequalities) {
                 if (cutSummary.containsKey(inequality.maintainingGenerator)) {
                     cutSummary.put(
                         inequality.maintainingGenerator,

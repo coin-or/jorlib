@@ -12,6 +12,7 @@
  */
 package org.jorlib.frameworks.columngeneration.colgenmain;
 
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 
 /**
@@ -23,7 +24,7 @@ import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
  * @version 13-4-2015
  *
  */
-public abstract class AbstractColumn<T, V extends AbstractPricingProblem<T>>
+public abstract class AbstractColumn<T extends ModelInterface, V extends AbstractPricingProblem<T, ? extends AbstractColumn<T,V>>>
 {
     /**
      * The value of the column assigned to it by the last master problem solved which contained this

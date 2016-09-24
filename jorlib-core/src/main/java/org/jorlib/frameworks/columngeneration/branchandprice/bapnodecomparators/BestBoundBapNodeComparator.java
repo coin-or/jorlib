@@ -13,7 +13,10 @@
 package org.jorlib.frameworks.columngeneration.branchandprice.bapnodecomparators;
 
 import org.jorlib.frameworks.columngeneration.branchandprice.BAPNode;
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
 import org.jorlib.frameworks.columngeneration.master.OptimizationSense;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 
 import java.util.Comparator;
 
@@ -29,8 +32,8 @@ import java.util.Comparator;
  * @author Joris Kinable
  * @version 7-9-2016
  */
-public class BestBoundBapNodeComparator
-    implements Comparator<BAPNode>
+public class BestBoundBapNodeComparator<T extends ModelInterface,U extends AbstractColumn<T, ? extends AbstractPricingProblem<T,U>>>
+    implements Comparator<BAPNode<T,U>>
 {
 
     private final OptimizationSense optimizationSense;
@@ -48,7 +51,7 @@ public class BestBoundBapNodeComparator
     }
 
     @Override
-    public int compare(BAPNode o1, BAPNode o2)
+    public int compare(BAPNode<T,U> o1, BAPNode<T,U> o2)
     {
         int boundComparison = Double.compare(o1.getBound(), o2.getBound());
         if (boundComparison == 0) // Bounds are equal

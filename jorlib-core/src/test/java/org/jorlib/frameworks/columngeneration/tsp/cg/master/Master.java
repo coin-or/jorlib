@@ -330,7 +330,7 @@ public final class Master
      * @param bd Branching decision
      */
     @Override
-    public void branchingDecisionPerformed(BranchingDecision bd)
+    public void branchingDecisionPerformed(BranchingDecision<TSP, Matching, TSPMasterData> bd)
     {
         // For simplicity, we simply destroy the master problem and rebuild it. Of course, something
         // more sophisticated may be used which retains the master problem.
@@ -345,7 +345,7 @@ public final class Master
      * @param bd Branching decision
      */
     @Override
-    public void branchingDecisionReversed(BranchingDecision bd)
+    public void branchingDecisionReversed(BranchingDecision<TSP, Matching, TSPMasterData> bd)
     {
         // No action required
     }

@@ -63,7 +63,7 @@ public final class SubtourInequalityGenerator
      * @return Returns true if a violated inequality has been found
      */
     @Override
-    public List<AbstractInequality> generateInqualities()
+    public List<AbstractInequality<TSP, TSPMasterData>> generateInqualities()
     {
         // Check for violated subtours. When found, generate an inequality
         separator.separateSubtour(masterData.edgeValueMap);
@@ -122,7 +122,7 @@ public final class SubtourInequalityGenerator
      * @param cut AbstractInequality
      */
     @Override
-    public void addCut(AbstractInequality cut)
+    public void addCut(AbstractInequality<TSP, TSPMasterData> cut)
     {
         if (!(cut instanceof SubtourInequality))
             throw new IllegalArgumentException(
@@ -137,7 +137,7 @@ public final class SubtourInequalityGenerator
      * @return Retuns a list of inequalities that have been generated.
      */
     @Override
-    public List<AbstractInequality> getCuts()
+    public List<AbstractInequality<TSP, TSPMasterData>> getCuts()
     {
         return new ArrayList<>(masterData.subtourInequalities.keySet());
     }

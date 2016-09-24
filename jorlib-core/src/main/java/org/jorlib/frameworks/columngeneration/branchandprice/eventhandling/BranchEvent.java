@@ -13,6 +13,9 @@
 package org.jorlib.frameworks.columngeneration.branchandprice.eventhandling;
 
 import org.jorlib.frameworks.columngeneration.branchandprice.BAPNode;
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 
 import java.util.EventObject;
 import java.util.List;
@@ -23,16 +26,16 @@ import java.util.List;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class BranchEvent
+public class BranchEvent<T extends ModelInterface, U extends AbstractColumn<T, ? extends AbstractPricingProblem<T, U>>>
     extends EventObject
 {
 
     /** Number of branches created **/
     public final int nrBranches;
     /** Parent node **/
-    public final BAPNode parentNode;
+    public final BAPNode<T, U> parentNode;
     /** List of child nodes **/
-    public final List<BAPNode> childNodes;
+    public final List<BAPNode<T, U>> childNodes;
 
     /**
      * Creates a new BranchEvent
@@ -42,7 +45,7 @@ public class BranchEvent
      * @param parentNode Parent node
      * @param childNodes List of child nodes
      */
-    public BranchEvent(Object source, int nrBranches, BAPNode parentNode, List<BAPNode> childNodes)
+    public BranchEvent(Object source, int nrBranches, BAPNode<T, U> parentNode, List<BAPNode<T, U>> childNodes)
     {
         super(source);
         this.nrBranches = nrBranches;

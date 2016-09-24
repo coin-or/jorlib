@@ -41,8 +41,8 @@ import org.slf4j.LoggerFactory;
  * @param <W> Type of Master Data
  */
 public abstract class AbstractMaster<T extends ModelInterface, U extends AbstractColumn<T, V>,
-    V extends AbstractPricingProblem<T>, W extends MasterData<T, U, V, ?>>
-    implements BranchingDecisionListener
+    V extends AbstractPricingProblem<T, U>, W extends MasterData<T, U, V, ?>>
+    implements BranchingDecisionListener<T, U, W>
 {
 
     /** Logger for this class **/
@@ -254,7 +254,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
      * 
      * @param cuts inequalities to be added
      */
-    public void addCuts(Collection<AbstractInequality> cuts)
+    public void addCuts(Collection<AbstractInequality<T, W>> cuts)
     {
         cutHandler.addCuts(cuts);
     }
@@ -265,7 +265,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
      * 
      * @return a list of inequalities
      */
-    public List<AbstractInequality> getCuts()
+    public List<AbstractInequality<T, W>> getCuts()
     {
         return cutHandler.getCuts();
     }
@@ -349,7 +349,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
      * @param bd branching decision
      */
     @Override
-    public void branchingDecisionPerformed(BranchingDecision bd)
+    public void branchingDecisionPerformed(BranchingDecision<T,U, W> bd)
     {
     }
 
@@ -360,7 +360,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
      * @param bd branching decision
      */
     @Override
-    public void branchingDecisionReversed(BranchingDecision bd)
+    public void branchingDecisionReversed(BranchingDecision<T,U, W> bd)
     {
     }
 }

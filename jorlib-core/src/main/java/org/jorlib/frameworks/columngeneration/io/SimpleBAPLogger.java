@@ -72,7 +72,7 @@ public class SimpleBAPLogger
      * @param branchAndPrice Branch-and-Price instance for which this logger is created.
      * @param outputFile file to redirect the output to.
      */
-    public SimpleBAPLogger(AbstractBranchAndPrice branchAndPrice, File outputFile)
+    public SimpleBAPLogger(AbstractBranchAndPrice<?, ?, ?> branchAndPrice, File outputFile)
     {
         try {
             writer = new BufferedWriter(new FileWriter(outputFile));
@@ -203,7 +203,7 @@ public class SimpleBAPLogger
     }
 
     @Override
-    public void branchCreated(BranchEvent branchEvent)
+    public void branchCreated(BranchEvent<?,?> branchEvent)
     {
         // Ignore this event, not needed by the logger.
     }

@@ -154,7 +154,7 @@ public final class ChromaticNumberCalculator
      * @param pricingProblem Pricing problem
      * @return Feasible coloring.
      */
-    public List<IndependentSet> getInitialSolution(ChromaticNumberPricingProblem pricingProblem)
+    private List<IndependentSet> getInitialSolution(ChromaticNumberPricingProblem pricingProblem)
     {
         List<IndependentSet> initialSolution = new ArrayList<>();
         Map<Integer, Set<Integer>> coloredGroups =

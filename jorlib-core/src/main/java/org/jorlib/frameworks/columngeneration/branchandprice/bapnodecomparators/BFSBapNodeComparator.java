@@ -13,6 +13,9 @@
 package org.jorlib.frameworks.columngeneration.branchandprice.bapnodecomparators;
 
 import org.jorlib.frameworks.columngeneration.branchandprice.BAPNode;
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 
 import java.util.Comparator;
 
@@ -23,11 +26,11 @@ import java.util.Comparator;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class BFSBapNodeComparator
-    implements Comparator<BAPNode>
+public class BFSBapNodeComparator<T extends ModelInterface,U extends AbstractColumn<T, ? extends AbstractPricingProblem<T,U>>>
+    implements Comparator<BAPNode<T,U>>
 {
     @Override
-    public int compare(BAPNode o1, BAPNode o2)
+    public int compare(BAPNode<T,U> o1, BAPNode<T,U> o2)
     {
         return Integer.compare(o1.nodeID, o2.nodeID);
     }

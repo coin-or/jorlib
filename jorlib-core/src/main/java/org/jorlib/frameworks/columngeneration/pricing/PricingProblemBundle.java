@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 
 /**
  * Each pricing problem (PricingProblem) is solved by some algorithm (AbstractPricingProblemSolver).
@@ -28,8 +29,8 @@ import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
  * @version 13-4-2015
  *
  */
-public final class PricingProblemBundle<T, U extends AbstractColumn<T, V>,
-    V extends AbstractPricingProblem<T>>
+public final class PricingProblemBundle<T extends ModelInterface, U extends AbstractColumn<T, V>,
+    V extends AbstractPricingProblem<T, U>>
 {
 
     /** The solver (class) **/

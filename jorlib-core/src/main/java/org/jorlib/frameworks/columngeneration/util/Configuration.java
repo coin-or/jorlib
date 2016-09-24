@@ -123,7 +123,7 @@ public class Configuration
     /** Define export directory for master models. Default: ./output/masterLP/ **/
     public final String EXPORT_MASTER_DIR;
 
-    /**
+    /*
      * Cut handling
      */
 

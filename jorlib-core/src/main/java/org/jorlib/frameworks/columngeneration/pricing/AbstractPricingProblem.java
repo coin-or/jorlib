@@ -14,6 +14,9 @@ package org.jorlib.frameworks.columngeneration.pricing;
 
 import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.BranchingDecision;
 import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.BranchingDecisionListener;
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.master.MasterData;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +30,10 @@ import org.slf4j.LoggerFactory;
  * @version 13-4-2015
  *
  */
-public abstract class AbstractPricingProblem<T>
-    implements BranchingDecisionListener
+public abstract class AbstractPricingProblem<T extends ModelInterface,
+                                             U extends AbstractColumn<T, ? extends AbstractPricingProblem<T, U, W>>,
+                                             W extends MasterData<T, U, ? extends AbstractPricingProblem<T, U, W>, ?>>
+    implements BranchingDecisionListener<T, U, W>
 {
 
     /** Logger for this class **/
@@ -94,7 +99,7 @@ public abstract class AbstractPricingProblem<T>
      * @param bd branching decision
      */
     @Override
-    public void branchingDecisionPerformed(BranchingDecision bd)
+    public void branchingDecisionPerformed(BranchingDecision<T,U, W> bd)
     {
         // Nothing to do here
     }
@@ -106,7 +111,7 @@ public abstract class AbstractPricingProblem<T>
      * @param bd branching decision
      */
     @Override
-    public void branchingDecisionReversed(BranchingDecision bd)
+    public void branchingDecisionReversed(BranchingDecision<T,U, W> bd)
     {
         // Nothing to do here
     }

@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @version 13-4-2015
  */
 public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
-    V extends AbstractPricingProblem<T>>
+    V extends AbstractPricingProblem<T, U>>
 {
 
     /** Logger for this class **/
@@ -56,7 +56,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
     protected final T dataModel;
 
     /** Master problem **/
-    protected final AbstractMaster<T, U, V, ? extends MasterData> master;
+    protected final AbstractMaster<T, U, V, ? extends MasterData<T, U, V, ?>> master;
     /** Pricing problems **/
     protected final List<V> pricingProblems;
     /** Solvers for the pricing problems **/
@@ -112,7 +112,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
      *        terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}.
      */
     public ColGen(
-        T dataModel, AbstractMaster<T, U, V, ? extends MasterData> master, List<V> pricingProblems,
+        T dataModel, AbstractMaster<T, U, V, ? extends MasterData<T, U, V, ?>> master, List<V> pricingProblems,
         List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers, List<U> initSolution,
         int cutoffValue, double boundOnMasterObjective)
     {
@@ -159,7 +159,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
      *        terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}.
      */
     public ColGen(
-        T dataModel, AbstractMaster<T, U, V, ? extends MasterData> master, V pricingProblem,
+        T dataModel, AbstractMaster<T, U, V, ? extends MasterData<T, U, V, ?>> master, V pricingProblem,
         List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers, List<U> initSolution,
         int cutoffValue, double boundOnMasterObjective)
     {
@@ -186,7 +186,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
      *        terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}.
      */
     public ColGen(
-        T dataModel, AbstractMaster<T, U, V, ? extends MasterData> master, List<V> pricingProblems,
+        T dataModel, AbstractMaster<T, U, V, ? extends MasterData<T, U, V, ?>> master, List<V> pricingProblems,
         List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
         PricingProblemManager<T, U, V> pricingProblemManager, List<U> initSolution, int cutoffValue,
         double boundOnMasterObjective)
@@ -501,7 +501,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
      * 
      * @return Returns all inequalities generated for the master problem
      */
-    public List<AbstractInequality> getCuts()
+    public List<? extends AbstractInequality<T, ? extends MasterData<T, U, V, ?>>> getCuts()
     {
         return master.getCuts();
     }

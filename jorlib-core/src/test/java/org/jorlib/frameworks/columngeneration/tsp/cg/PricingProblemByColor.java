@@ -25,7 +25,7 @@ import org.jorlib.frameworks.columngeneration.tsp.model.TSP;
  *
  */
 public final class PricingProblemByColor
-    extends AbstractPricingProblem<TSP>
+    extends AbstractPricingProblem<TSP, Matching>
 {
 
     /** Color of the matching group. Can be either Red or Blue **/

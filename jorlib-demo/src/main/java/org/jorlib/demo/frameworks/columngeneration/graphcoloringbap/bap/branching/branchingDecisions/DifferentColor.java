@@ -14,6 +14,7 @@ package org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.bap.branchi
 
 import org.jgrapht.util.VertexPair;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.cg.IndependentSet;
+import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.cg.master.ColoringMasterData;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.model.ColoringGraph;
 import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.BranchingDecision;
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequality;
@@ -25,7 +26,7 @@ import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequ
  * @version 29-6-2016
  */
 public final class DifferentColor
-    implements BranchingDecision<ColoringGraph, IndependentSet>
+    implements BranchingDecision<ColoringGraph, IndependentSet, ColoringMasterData>
 {
 
     /** Vertices to be colored differently **/
@@ -56,7 +57,7 @@ public final class DifferentColor
      * @return true
      */
     @Override
-    public boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality inequality)
+    public boolean inEqualityIsCompatibleWithBranchingDecision(AbstractInequality<ColoringGraph, ColoringMasterData> inequality)
     {
         return true; // Cuts are not added in this example
     }
