@@ -13,6 +13,9 @@
 package org.jorlib.frameworks.columngeneration.branchandprice.eventhandling;
 
 import org.jorlib.frameworks.columngeneration.branchandprice.BAPNode;
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 
 import java.util.EventObject;
 
@@ -22,11 +25,13 @@ import java.util.EventObject;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class NodeIsFractionalEvent
+public class NodeIsFractionalEvent<T extends ModelInterface, U extends AbstractColumn<T, ? extends AbstractPricingProblem<T,U>>>
     extends EventObject
 {
+    private static final long serialVersionUID = -2425443687514518307L;
+
     /** Node which is fractional **/
-    public final BAPNode node;
+    public final BAPNode<T,U> node;
     /** Bound of this node **/
     public final double nodeBound;
     /** Objective value of this node **/
@@ -41,7 +46,7 @@ public class NodeIsFractionalEvent
      * @param nodeValue Objective value of the node. nodeBound and nodeValue are equal when the node
      *        is solved to optimality
      */
-    public NodeIsFractionalEvent(Object source, BAPNode node, double nodeBound, double nodeValue)
+    public NodeIsFractionalEvent(Object source, BAPNode<T,U> node, double nodeBound, double nodeValue)
     {
         super(source);
         this.node = node;

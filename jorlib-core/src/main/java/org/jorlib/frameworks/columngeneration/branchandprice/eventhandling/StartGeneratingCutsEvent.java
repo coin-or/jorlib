@@ -24,6 +24,8 @@ public class StartGeneratingCutsEvent
     extends EventObject
 {
 
+    private static final long serialVersionUID = -4849913351149418457L;
+
     /**
      * Creates a new StartGeneratingCutsEvent
      * 

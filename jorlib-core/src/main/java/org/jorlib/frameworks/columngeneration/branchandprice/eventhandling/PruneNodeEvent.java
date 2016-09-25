@@ -13,6 +13,9 @@
 package org.jorlib.frameworks.columngeneration.branchandprice.eventhandling;
 
 import org.jorlib.frameworks.columngeneration.branchandprice.BAPNode;
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 
 import java.util.EventObject;
 
@@ -22,12 +25,14 @@ import java.util.EventObject;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class PruneNodeEvent
+public class PruneNodeEvent<T extends ModelInterface, U extends AbstractColumn<T, ? extends AbstractPricingProblem<T,U>>>
     extends EventObject
 {
 
+    private static final long serialVersionUID = 391540912011467710L;
+
     /** Node which is being pruned **/
-    public final BAPNode node;
+    public final BAPNode<T, U> node;
     /** Bound on this node **/
     public final double nodeBound;
     /** Best integer solution discovered so far **/
@@ -41,7 +46,7 @@ public class PruneNodeEvent
      * @param nodeBound Bound on the node
      * @param bestIntegerSolution Best integer solution discovered thus far
      */
-    public PruneNodeEvent(Object source, BAPNode node, double nodeBound, int bestIntegerSolution)
+    public PruneNodeEvent(Object source, BAPNode<T, U> node, double nodeBound, int bestIntegerSolution)
     {
         super(source);
         this.node = node;

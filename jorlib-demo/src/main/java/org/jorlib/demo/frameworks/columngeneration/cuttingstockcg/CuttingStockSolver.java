@@ -74,10 +74,10 @@ public final class CuttingStockSolver
             dataModel, master, pricingProblem, solvers, initSolution, upperBound, lowerBound);
 
         // OPTIONAL: add a debugger
-        SimpleDebugger debugger = new SimpleDebugger(cg);
+        new SimpleDebugger<>(cg);
 
         // OPTIONAL: add a logger
-        SimpleCGLogger logger = new SimpleCGLogger(cg, new File("./output/cuttingStock.log"));
+        new SimpleCGLogger<>(cg, new File("./output/cuttingStock.log"));
 
         // Solve the problem through column generation
         try {

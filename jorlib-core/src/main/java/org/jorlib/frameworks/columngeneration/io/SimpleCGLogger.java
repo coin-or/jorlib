@@ -13,7 +13,10 @@
 package org.jorlib.frameworks.columngeneration.io;
 
 import org.jorlib.frameworks.columngeneration.branchandprice.eventhandling.*;
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
 import org.jorlib.frameworks.columngeneration.colgenmain.ColGen;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -28,8 +31,8 @@ import java.text.NumberFormat;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class SimpleCGLogger
-    implements CGListener
+public class SimpleCGLogger<T extends ModelInterface, U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T, U>>
+    implements CGListener<T,U>
 {
     protected BufferedWriter writer;
     protected NumberFormat formatter;
@@ -71,7 +74,7 @@ public class SimpleCGLogger
      * @param colGen Column generation instance for which this logger is created
      * @param outputFile file to redirect the output to.
      */
-    public SimpleCGLogger(ColGen<?, ?, ?> colGen, File outputFile)
+    public SimpleCGLogger(ColGen<T, U, V> colGen, File outputFile)
     {
         try {
             writer = new BufferedWriter(new FileWriter(outputFile));
@@ -169,7 +172,7 @@ public class SimpleCGLogger
     }
 
     @Override
-    public void finishPricing(FinishPricingEvent finishPricingEvent)
+    public void finishPricing(FinishPricingEvent<T,U> finishPricingEvent)
     {
         timeSolvingPricing = System.currentTimeMillis() - timeSolvingPricing;
         objective = finishPricingEvent.objective;

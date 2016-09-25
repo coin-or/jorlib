@@ -27,6 +27,8 @@ public class FinishGeneratingCutsEvent
     extends EventObject
 {
 
+    private static final long serialVersionUID = 7555296324311766394L;
+
     public final List<AbstractInequality> separatedInequalities;
 
     /**

@@ -14,6 +14,9 @@ package org.jorlib.frameworks.columngeneration.io;
 
 import org.jorlib.frameworks.columngeneration.branchandprice.AbstractBranchAndPrice;
 import org.jorlib.frameworks.columngeneration.branchandprice.eventhandling.*;
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -28,8 +31,8 @@ import java.text.NumberFormat;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class SimpleBAPLogger
-    implements BAPListener
+public class SimpleBAPLogger<T extends ModelInterface, U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T, U>>
+    implements BAPListener<T,U>
 {
     protected BufferedWriter writer;
     protected NumberFormat formatter;
@@ -72,7 +75,7 @@ public class SimpleBAPLogger
      * @param branchAndPrice Branch-and-Price instance for which this logger is created.
      * @param outputFile file to redirect the output to.
      */
-    public SimpleBAPLogger(AbstractBranchAndPrice<?, ?, ?> branchAndPrice, File outputFile)
+    public SimpleBAPLogger(AbstractBranchAndPrice<T, U, V> branchAndPrice, File outputFile)
     {
         try {
             writer = new BufferedWriter(new FileWriter(outputFile));
@@ -146,7 +149,7 @@ public class SimpleBAPLogger
     }
 
     @Override
-    public void pruneNode(PruneNodeEvent pruneNodeEvent)
+    public void pruneNode(PruneNodeEvent<T,U> pruneNodeEvent)
     {
         this.nodeStatus = NodeResultStatus.PRUNED;
         this.nodeBound = pruneNodeEvent.nodeBound;
@@ -154,28 +157,28 @@ public class SimpleBAPLogger
     }
 
     @Override
-    public void nodeIsInfeasible(NodeIsInfeasibleEvent nodeIsInfeasibleEvent)
+    public void nodeIsInfeasible(NodeIsInfeasibleEvent<T,U> nodeIsInfeasibleEvent)
     {
         this.nodeStatus = NodeResultStatus.INFEASIBLE;
         this.constructAndWriteLine();
     }
 
     @Override
-    public void nodeIsInteger(NodeIsIntegerEvent nodeIsIntegerEvent)
+    public void nodeIsInteger(NodeIsIntegerEvent<T,U> nodeIsIntegerEvent)
     {
         this.nodeStatus = NodeResultStatus.INTEGER;
         this.constructAndWriteLine();
     }
 
     @Override
-    public void nodeIsFractional(NodeIsFractionalEvent nodeIsFractionalEvent)
+    public void nodeIsFractional(NodeIsFractionalEvent<T,U> nodeIsFractionalEvent)
     {
         this.nodeStatus = NodeResultStatus.FRACTIONAL;
         this.constructAndWriteLine();
     }
 
     @Override
-    public void processNextNode(ProcessingNextNodeEvent processingNextNodeEvent)
+    public void processNextNode(ProcessingNextNodeEvent<T,U> processingNextNodeEvent)
     {
         this.reset();
         this.bapNodeID = processingNextNodeEvent.node.nodeID;
@@ -185,7 +188,7 @@ public class SimpleBAPLogger
     }
 
     @Override
-    public void finishedColumnGenerationForNode(FinishProcessingNodeEvent finishProcessingNodeEvent)
+    public void finishedColumnGenerationForNode(FinishProcessingNodeEvent<T,U> finishProcessingNodeEvent)
     {
         this.nodeBound = finishProcessingNodeEvent.nodeBound;
         this.nodeValue = finishProcessingNodeEvent.nodeValue;
@@ -203,7 +206,7 @@ public class SimpleBAPLogger
     }
 
     @Override
-    public void branchCreated(BranchEvent<?,?> branchEvent)
+    public void branchCreated(BranchEvent<T,U> branchEvent)
     {
         // Ignore this event, not needed by the logger.
     }

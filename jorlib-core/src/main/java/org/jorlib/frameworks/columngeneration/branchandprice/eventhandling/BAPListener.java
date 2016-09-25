@@ -12,6 +12,10 @@
  */
 package org.jorlib.frameworks.columngeneration.branchandprice.eventhandling;
 
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
+
 import java.util.EventListener;
 
 /**
@@ -20,7 +24,7 @@ import java.util.EventListener;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public interface BAPListener
+public interface BAPListener<T extends ModelInterface, U extends AbstractColumn<T, ? extends AbstractPricingProblem<T,U>>>
     extends EventListener
 {
     /**
@@ -44,42 +48,42 @@ public interface BAPListener
      * 
      * @param pruneNodeEvent pruneNodeEvent
      */
-    void pruneNode(PruneNodeEvent pruneNodeEvent);
+    void pruneNode(PruneNodeEvent<T, U> pruneNodeEvent);
 
     /**
      * Method invoked when a node is infeasible, i.e no solution to its master problem exists
      * 
      * @param nodeIsInfeasibleEvent nodeIsInfeasibleEvent
      */
-    void nodeIsInfeasible(NodeIsInfeasibleEvent nodeIsInfeasibleEvent);
+    void nodeIsInfeasible(NodeIsInfeasibleEvent<T,U> nodeIsInfeasibleEvent);
 
     /**
      * Method invoked when the node is an integer node
      * 
      * @param nodeIsIntegerEvent nodeIsIntegerEvent
      */
-    void nodeIsInteger(NodeIsIntegerEvent nodeIsIntegerEvent);
+    void nodeIsInteger(NodeIsIntegerEvent<T,U> nodeIsIntegerEvent);
 
     /**
      * Method invoked when the node has a fractional solution (branching is required)
      * 
      * @param nodeIsFractionalEvent nodeIsFractionalEvent
      */
-    void nodeIsFractional(NodeIsFractionalEvent nodeIsFractionalEvent);
+    void nodeIsFractional(NodeIsFractionalEvent<T,U> nodeIsFractionalEvent);
 
     /**
      * Method invoked when the Branch-and-Price process starts processing a new node
      * 
      * @param processingNextNodeEvent processingNextNodeEvent
      */
-    void processNextNode(ProcessingNextNodeEvent processingNextNodeEvent);
+    void processNextNode(ProcessingNextNodeEvent<T,U> processingNextNodeEvent);
 
     /**
      * Method invoked when the Branch-and-Price process finishes processing a node
      * 
      * @param finishProcessingNodeEvent finishProcessingNodeEvent
      */
-    void finishedColumnGenerationForNode(FinishProcessingNodeEvent finishProcessingNodeEvent);
+    void finishedColumnGenerationForNode(FinishProcessingNodeEvent<T,U> finishProcessingNodeEvent);
 
     /**
      * Method invoked when the Branch-and-Price process is terminated due to a time out
@@ -93,5 +97,5 @@ public interface BAPListener
      * 
      * @param branchEvent branchEvent
      */
-    void branchCreated(BranchEvent<?,?> branchEvent);
+    void branchCreated(BranchEvent<T,U> branchEvent);
 }

@@ -30,6 +30,8 @@ public class BranchEvent<T extends ModelInterface, U extends AbstractColumn<T, ?
     extends EventObject
 {
 
+    private static final long serialVersionUID = 7211470887166674774L;
+
     /** Number of branches created **/
     public final int nrBranches;
     /** Parent node **/

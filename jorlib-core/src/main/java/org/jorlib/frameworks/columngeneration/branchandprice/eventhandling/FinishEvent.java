@@ -24,6 +24,8 @@ public class FinishEvent
     extends EventObject
 {
 
+    private static final long serialVersionUID = -1771357959981692682L;
+
     /**
      * Creates a new FinishEvent
      * 

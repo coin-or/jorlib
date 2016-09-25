@@ -102,10 +102,10 @@ public final class TSPSolver
             tsp, master, pricingProblems, solvers, branchCreators, tourLength, initSolution);
 
         // OPTIONAL: Attach a debugger
-        SimpleDebugger debugger = new SimpleDebugger(bap, cutHandler, true);
+        new SimpleDebugger<>(bap, cutHandler, true);
 
         // OPTIONAL: Attach a logger to the Branch-and-Price procedure.
-        SimpleBAPLogger logger = new SimpleBAPLogger(bap, new File("./output/tsp.log"));
+        new SimpleBAPLogger<>(bap, new File("./output/tsp.log"));
 
         // Solve the TSP problem through Branch-and-Price
         bap.runBranchAndPrice(System.currentTimeMillis() + 8000000L);

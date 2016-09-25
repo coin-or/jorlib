@@ -101,10 +101,10 @@ public final class TSPCGSolver
             tsp, master, pricingProblems, solvers, initSolution, tourLength, lowerBound);
 
         // OPTIONAL: add a debugger
-        SimpleDebugger debugger = new SimpleDebugger(cg, cutHandler);
+        new SimpleDebugger<>(cg, cutHandler);
 
         // OPTIONAL: add a logger
-        SimpleCGLogger logger = new SimpleCGLogger(cg, new File("./output/tspCG.log"));
+        new SimpleCGLogger<>(cg, new File("./output/tspCG.log"));
 
         // Solve the problem through column generation
         try {

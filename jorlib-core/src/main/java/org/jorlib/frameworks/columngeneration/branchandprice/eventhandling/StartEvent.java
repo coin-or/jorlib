@@ -24,6 +24,8 @@ public class StartEvent
     extends EventObject
 {
 
+    private static final long serialVersionUID = 4130714412964979464L;
+
     /** Name of the instance being solved **/
     public final String instanceName;
 

@@ -31,6 +31,8 @@ public final class ColoringGraph
     implements ModelInterface, UndirectedGraph<Integer, DefaultEdge>
 {
 
+    private static final long serialVersionUID = -3825616742007718078L;
+
     /** Instance name **/
     private final String instanceName;
 
