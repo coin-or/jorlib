@@ -51,6 +51,7 @@ public class GraphManipulator<T extends ModelInterface, U extends AbstractColumn
 
     public GraphManipulator(BAPNode<T, U> rootNode)
     {
+        assert(rootNode != null);
         this.previousNode = rootNode;
         changeHistory = new Stack<>();
         listeners = new LinkedHashSet<>();

@@ -33,12 +33,11 @@ public final class LiftedCoverInequalitySeparatorTest
     extends TestCase
 {
 
-    private final KnapsackAlgorithm knapsackAlgorithm;
     private final LiftedCoverInequalitySeparator separator;
 
     public LiftedCoverInequalitySeparatorTest()
     {
-        knapsackAlgorithm = new BinaryKnapsack();
+        KnapsackAlgorithm knapsackAlgorithm = new BinaryKnapsack();
         separator = new LiftedCoverInequalitySeparator(knapsackAlgorithm);
     }
 

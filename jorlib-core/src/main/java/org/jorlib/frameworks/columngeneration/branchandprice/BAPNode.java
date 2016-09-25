@@ -93,15 +93,6 @@ public class BAPNode<T extends ModelInterface, U extends AbstractColumn<T, ? ext
         this.inequalities = new ArrayList<>();
     }
 
-    public BAPNode(//List<U> initialColumns){
-                   List<AbstractInequality> initialInequalities){
-        rootPath=null;
-        this.branchingDecisions=null;
-        this.initialColumns=null;
-        this.initialInequalities=initialInequalities;
-        nodeID=-1;
-    }
-
     /**
      * Returns the ID of its parent in the Branch-and-Price tree. For memory efficiency, no pointer
      * to the ancestor is returned. As maintaining a link to every parent may be expensive.
