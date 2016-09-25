@@ -14,6 +14,7 @@ package org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions
 
 import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequality;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 
 /**
@@ -22,7 +23,7 @@ import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public interface BranchingDecision<T, U extends AbstractColumn<T, ? extends AbstractPricingProblem>>
+public interface BranchingDecision<T extends ModelInterface, U extends AbstractColumn<T, ? extends AbstractPricingProblem<T, U>>>
 {
 
     /**

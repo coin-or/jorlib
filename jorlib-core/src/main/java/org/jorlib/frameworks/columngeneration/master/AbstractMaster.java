@@ -41,8 +41,8 @@ import org.slf4j.LoggerFactory;
  * @param <W> Type of Master Data
  */
 public abstract class AbstractMaster<T extends ModelInterface, U extends AbstractColumn<T, V>,
-    V extends AbstractPricingProblem<T>, W extends MasterData<T, U, V, ?>>
-    implements BranchingDecisionListener
+    V extends AbstractPricingProblem<T, U>, W extends MasterData<T, U, V, ?>>
+    implements BranchingDecisionListener<T, U>
 {
 
     /** Logger for this class **/
@@ -349,7 +349,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
      * @param bd branching decision
      */
     @Override
-    public void branchingDecisionPerformed(BranchingDecision bd)
+    public void branchingDecisionPerformed(BranchingDecision<T,U> bd)
     {
     }
 
@@ -360,7 +360,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
      * @param bd branching decision
      */
     @Override
-    public void branchingDecisionReversed(BranchingDecision bd)
+    public void branchingDecisionReversed(BranchingDecision<T,U> bd)
     {
     }
 }

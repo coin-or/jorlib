@@ -13,6 +13,8 @@
 package org.jorlib.frameworks.columngeneration.branchandprice.eventhandling;
 
 import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 
 import java.util.EventObject;
 import java.util.List;
@@ -23,16 +25,18 @@ import java.util.List;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class FinishPricingEvent
+public class FinishPricingEvent<T extends ModelInterface, U extends AbstractColumn<T, ? extends AbstractPricingProblem<T,U>>>
     extends EventObject
 {
+
+    private static final long serialVersionUID = 316287891741086187L;
 
     /** Indicates which iteration we are at in the column generation procedure **/
     public final int columnGenerationIteration;
     /**
      * List of new columns, or empty list if no new columns could be found by the pricing problem
      **/
-    public List<? extends AbstractColumn<?, ?>> columns;
+    public List<U> columns;
     /** Objective value of the master problem **/
     public final double objective;
     /**
@@ -53,9 +57,8 @@ public class FinishPricingEvent
      * @param objective objective value
      * @param cutoffValue cutoff value
      * @param boundOnMasterObjective best available bound on the master objective
-     * @param <U> type of column
      */
-    public <U extends AbstractColumn<?, ?>> FinishPricingEvent(
+    public FinishPricingEvent(
         Object source, int columnGenerationIteration, List<U> columns, double objective,
         int cutoffValue, double boundOnMasterObjective)
     {

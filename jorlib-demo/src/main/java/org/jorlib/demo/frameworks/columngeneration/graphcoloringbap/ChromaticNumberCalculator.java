@@ -87,10 +87,10 @@ public final class ChromaticNumberCalculator
         bap.warmStart(upperBound, initSolution);
 
         // OPTIONAL: Attach a debugger
-        new SimpleDebugger(bap, true);
+        new SimpleDebugger<>(bap, true);
 
         // OPTIONAL: Attach a logger to the Branch-and-Price procedure.
-        new SimpleBAPLogger(bap, new File("./output/coloring.log"));
+        new SimpleBAPLogger<>(bap, new File("./output/coloring.log"));
 
         // Solve the Graph Coloring problem through Branch-and-Price
         bap.runBranchAndPrice(System.currentTimeMillis() + 8000000L);
@@ -155,7 +155,7 @@ public final class ChromaticNumberCalculator
      * @param pricingProblem Pricing problem
      * @return Feasible coloring.
      */
-    public List<IndependentSet> getInitialSolution(ChromaticNumberPricingProblem pricingProblem)
+    private List<IndependentSet> getInitialSolution(ChromaticNumberPricingProblem pricingProblem)
     {
         List<IndependentSet> initialSolution = new ArrayList<>();
         Map<Integer, Set<Integer>> coloredGroups =

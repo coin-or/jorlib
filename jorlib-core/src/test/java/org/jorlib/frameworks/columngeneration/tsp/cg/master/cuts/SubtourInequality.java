@@ -14,6 +14,8 @@ package org.jorlib.frameworks.columngeneration.tsp.cg.master.cuts;
 
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractCutGenerator;
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequality;
+import org.jorlib.frameworks.columngeneration.tsp.cg.master.TSPMasterData;
+import org.jorlib.frameworks.columngeneration.tsp.model.TSP;
 
 import java.util.Set;
 
@@ -32,7 +34,7 @@ public final class SubtourInequality
     /** Vertices in the cut set **/
     public final Set<Integer> cutSet;
 
-    public SubtourInequality(AbstractCutGenerator maintainingGenerator, Set<Integer> cutSet)
+    public SubtourInequality(AbstractCutGenerator<TSP, TSPMasterData> maintainingGenerator, Set<Integer> cutSet)
     {
         super(maintainingGenerator);
         this.cutSet = cutSet;

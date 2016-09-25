@@ -14,6 +14,7 @@ package org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.bap;
 
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.cg.ChromaticNumberPricingProblem;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.cg.IndependentSet;
+import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.cg.master.ColoringMasterData;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.model.ColoringGraph;
 import org.jorlib.frameworks.columngeneration.branchandprice.AbstractBranchAndPrice;
 import org.jorlib.frameworks.columngeneration.branchandprice.AbstractBranchCreator;
@@ -36,8 +37,7 @@ public final class BranchAndPrice
 
     public BranchAndPrice(
         ColoringGraph dataModel,
-        AbstractMaster<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem,
-            ? extends MasterData> master,
+        AbstractMaster<ColoringGraph, IndependentSet, ChromaticNumberPricingProblem, ColoringMasterData> master,
         ChromaticNumberPricingProblem pricingProblem,
         List<Class<? extends AbstractPricingProblemSolver<ColoringGraph, IndependentSet,
             ChromaticNumberPricingProblem>>> solvers,

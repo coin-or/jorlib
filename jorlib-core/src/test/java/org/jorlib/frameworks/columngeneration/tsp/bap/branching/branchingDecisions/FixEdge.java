@@ -17,6 +17,7 @@ import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columngeneration.tsp.cg.Matching;
 import org.jorlib.frameworks.columngeneration.tsp.cg.PricingProblemByColor;
+import org.jorlib.frameworks.columngeneration.tsp.cg.master.TSPMasterData;
 import org.jorlib.frameworks.columngeneration.tsp.model.TSP;
 
 /**

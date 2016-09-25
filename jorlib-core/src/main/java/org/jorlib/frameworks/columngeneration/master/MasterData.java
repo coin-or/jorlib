@@ -13,6 +13,7 @@
 package org.jorlib.frameworks.columngeneration.master;
 
 import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 import org.jorlib.frameworks.columngeneration.util.OrderedBiMap;
 
@@ -32,7 +33,7 @@ import java.util.*;
  * @param <X> type of variable, e.g. an IloNumVar in cplex
  *
  */
-public class MasterData<T, U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T>, X>
+public class MasterData<T extends ModelInterface, U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T, U>, X>
 {
 
     /** Objective value of the current master problem **/

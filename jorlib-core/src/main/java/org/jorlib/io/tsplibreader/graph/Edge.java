@@ -134,23 +134,18 @@ public class Edge
 
         if ((id1 == other.id1) && (id2 == other.id2)) {
             return true;
-        } else if ((id1 == other.id2) && (id2 == other.id1)) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return (id1 == other.id2) && (id2 == other.id1);
     }
 
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append("(");
-        sb.append(id1);
-        sb.append(",");
-        sb.append(id2);
-        sb.append(")");
+        String sb = "(" +
+                id1 +
+                "," +
+                id2 +
+                ")";
 
-        return sb.toString();
+        return sb;
     }
 }

@@ -72,7 +72,7 @@ public class EdgeWeightMatrix
     private void readNextLine(BufferedReader reader, Queue<Double> entries)
         throws IOException
     {
-        String line = null;
+        String line;
 
         do {
             line = reader.readLine();
@@ -93,7 +93,7 @@ public class EdgeWeightMatrix
     public void load(BufferedReader reader)
         throws IOException
     {
-        Queue<Double> entries = new LinkedList<Double>();
+        Queue<Double> entries = new LinkedList<>();
 
         switch (format) {
         case FULL_MATRIX:
@@ -132,7 +132,8 @@ public class EdgeWeightMatrix
                     matrix[j][i] = matrix[i][j];
                 }
             }
-        case LOWER_ROW:
+            break;
+            case LOWER_ROW:
             for (int i = 1; i < size; i++) {
                 for (int j = 0; j < i; j++) {
                     if (entries.isEmpty()) {

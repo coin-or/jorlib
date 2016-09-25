@@ -45,7 +45,7 @@ public enum NodeCoordType
      * 
      * @param length the length (dimension) of the coordinates
      */
-    private NodeCoordType(int length)
+    NodeCoordType(int length)
     {
         this.length = length;
     }

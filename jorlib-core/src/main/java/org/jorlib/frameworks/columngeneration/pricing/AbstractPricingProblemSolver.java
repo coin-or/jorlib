@@ -20,6 +20,8 @@ import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.
 import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.BranchingDecisionListener;
 import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
 import org.jorlib.frameworks.columngeneration.io.TimeLimitExceededException;
+import org.jorlib.frameworks.columngeneration.master.MasterData;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 import org.jorlib.frameworks.columngeneration.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +36,9 @@ import org.slf4j.LoggerFactory;
  * @param <U> type of column
  * @param <V> type of pricing problem
  */
-public abstract class AbstractPricingProblemSolver<T, U extends AbstractColumn<T, V>,
-    V extends AbstractPricingProblem<T>>
-    implements Callable<Void>, BranchingDecisionListener
+public abstract class AbstractPricingProblemSolver<T extends ModelInterface, U extends AbstractColumn<T, V>,
+    V extends AbstractPricingProblem<T, U>>
+    implements Callable<Void>, BranchingDecisionListener<T, U>
 {
 
     /** Logger for this class **/
@@ -200,7 +202,7 @@ public abstract class AbstractPricingProblemSolver<T, U extends AbstractColumn<T
      * @param bd branching decision
      */
     @Override
-    public void branchingDecisionPerformed(BranchingDecision bd)
+    public void branchingDecisionPerformed(BranchingDecision<T, U> bd)
     {
     }
 
@@ -211,7 +213,7 @@ public abstract class AbstractPricingProblemSolver<T, U extends AbstractColumn<T
      * @param bd branching decision
      */
     @Override
-    public void branchingDecisionReversed(BranchingDecision bd)
+    public void branchingDecisionReversed(BranchingDecision<T, U> bd)
     {
     }
 

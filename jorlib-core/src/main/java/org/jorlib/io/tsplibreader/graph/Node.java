@@ -110,11 +110,8 @@ public class Node
             return false;
         }
 
-        if (!Arrays.equals(position, other.position)) {
-            return false;
-        }
+        return Arrays.equals(position, other.position);
 
-        return true;
     }
 
 }

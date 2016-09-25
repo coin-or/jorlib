@@ -17,8 +17,10 @@ import java.util.*;
 import org.jorlib.frameworks.columngeneration.branchandprice.eventhandling.CHListener;
 import org.jorlib.frameworks.columngeneration.branchandprice.eventhandling.FinishGeneratingCutsEvent;
 import org.jorlib.frameworks.columngeneration.branchandprice.eventhandling.StartGeneratingCutsEvent;
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
 import org.jorlib.frameworks.columngeneration.master.MasterData;
 import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 import org.jorlib.frameworks.columngeneration.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @version 13-4-2015
  *
  */
-public class CutHandler<T extends ModelInterface, W extends MasterData>
+public class CutHandler<T extends ModelInterface, W extends MasterData<T, ? extends AbstractColumn<T, ?>, ? extends AbstractPricingProblem<T, ?>, ? >>
 {
 
     /** Logger for this class **/
@@ -42,7 +44,7 @@ public class CutHandler<T extends ModelInterface, W extends MasterData>
     /** Set of CutGenerators **/
     protected Set<AbstractCutGenerator<T, W>> cutGenerators;
     /** Helper class which notifies CHListeners **/
-    CHNotifier notifier;
+    protected CHNotifier notifier;
 
     /** Creates a new CutHandler **/
     public CutHandler()

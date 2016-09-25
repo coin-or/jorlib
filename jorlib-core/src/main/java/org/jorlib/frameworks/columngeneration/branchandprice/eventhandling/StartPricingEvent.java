@@ -24,6 +24,8 @@ public class StartPricingEvent
     extends EventObject
 {
 
+    private static final long serialVersionUID = 4279447487909549369L;
+
     /** Indicates which iteration we are at in the column generation procedure **/
     public final int columnGenerationIteration;
 

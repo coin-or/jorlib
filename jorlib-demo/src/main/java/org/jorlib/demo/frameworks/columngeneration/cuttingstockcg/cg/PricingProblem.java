@@ -23,7 +23,7 @@ import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
  * @version 13-4-2015
  */
 public final class PricingProblem
-    extends AbstractPricingProblem<CuttingStock>
+    extends AbstractPricingProblem<CuttingStock, CuttingPattern>
 {
 
     public PricingProblem(CuttingStock modelData, String name)

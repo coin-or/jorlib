@@ -24,6 +24,8 @@ public class FinishMasterEvent
     extends EventObject
 {
 
+    private static final long serialVersionUID = 8616333803187638407L;
+
     /** Indicates which iteration we are at in the column generation procedure **/
     public final int columnGenerationIteration;
     /** Objective value of the master problem **/

@@ -13,6 +13,9 @@
 package org.jorlib.frameworks.columngeneration.branchandprice.eventhandling;
 
 import org.jorlib.frameworks.columngeneration.branchandprice.BAPNode;
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 
 import java.util.EventObject;
 
@@ -22,12 +25,14 @@ import java.util.EventObject;
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class FinishProcessingNodeEvent
+public class FinishProcessingNodeEvent<T extends ModelInterface, U extends AbstractColumn<T, ? extends AbstractPricingProblem<T,U>>>
     extends EventObject
 {
 
+    private static final long serialVersionUID = -2346015175467711177L;
+
     /** Node which has been solved **/
-    public final BAPNode node;
+    public final BAPNode<T, U> node;
     /** Bound on the node after it is solved **/
     public final double nodeBound;
     /** Objective value of the node **/
@@ -55,7 +60,7 @@ public class FinishProcessingNodeEvent
      * @param nrGeneratedColumns Total number of columns generated
      */
     public FinishProcessingNodeEvent(
-        Object source, BAPNode node, double nodeBound, double nodeValue, int numberOfCGIterations,
+        Object source, BAPNode<T,U> node, double nodeBound, double nodeValue, int numberOfCGIterations,
         long masterSolveTime, long pricingSolveTime, int nrGeneratedColumns)
     {
         super(source);

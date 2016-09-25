@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
 import org.jorlib.frameworks.columngeneration.io.TimeLimitExceededException;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 import org.jorlib.frameworks.columngeneration.util.Configuration;
 
 /**
@@ -38,8 +39,8 @@ import org.jorlib.frameworks.columngeneration.util.Configuration;
  * @param <V> type of pricing problem
  *
  */
-public class PricingProblemManager<T, U extends AbstractColumn<T, V>,
-    V extends AbstractPricingProblem<T>>
+public class PricingProblemManager<T extends ModelInterface, U extends AbstractColumn<T, V>,
+    V extends AbstractPricingProblem<T, U>>
 {
 
     /** Configuration file **/
@@ -57,7 +58,7 @@ public class PricingProblemManager<T, U extends AbstractColumn<T, V>,
     /**
      * Map of tasks which can be invoked in parallel to calculate bounds on the pricing problems
      * Every solver instance is mapped to a callable function which executes
-     * {@link AbstractPricingProblemSolver<T,U,V>.#getUpperBound() getUpperBound} on the solver.
+     * {@link AbstractPricingProblemSolver<>.getUpperBound getUpperBound} on the solver.
      */
     private final Map<AbstractPricingProblemSolver<T, U, V>, Callable<Double>> ppBoundTasks;
 

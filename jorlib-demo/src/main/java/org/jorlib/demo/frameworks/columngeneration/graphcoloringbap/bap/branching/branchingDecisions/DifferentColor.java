@@ -14,6 +14,7 @@ package org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.bap.branchi
 
 import org.jgrapht.util.VertexPair;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.cg.IndependentSet;
+import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.cg.master.ColoringMasterData;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.model.ColoringGraph;
 import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.BranchingDecision;
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequality;

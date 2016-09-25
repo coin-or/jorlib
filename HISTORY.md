@@ -7,8 +7,12 @@ Changes to jORLib in each version:
 	- Package names have been standardized to follow Java naming conventions: all package names are now in lower case. This unfortunately breaks backward compabitility for this release.
 	- Added code formatting rules using the Eclipse formatter, and added script to perform automated mass formatting. Code format is now the same throughout all files.
 	- Reformatted all file headers. Format is now consistent across all packages, concise and easier to maintain.
-	- Updated JGraphT to version 1.0.0; added dependencies on both jgrapht-core and jgrapht-ext.
+	- Updated JGraphT to version 1.0.0; added dependencies on both jgrapht-core and jgrapht-ext to pom.xml.
+	- Fixed bug in `EdgeWeightMatrix.load()`: possible fall through in switch-case statement.
+	- Fixed Raw use of parameterized classes warnings (issue reported by Rowan Hoogervorst)
+	- Added missing serialVersionUID
 	- Branch-and-Price Graph Coloring demo now uses the new `DimacsImporter` class from the jgrapht-ext package.
+
 
 - **version 1.1.1** (24-Jul-2016):
 	- Fixed a bug where the number of processed nodes in BAP was not calculated correctly (pruning nodes did not increment the nodes processed counter)

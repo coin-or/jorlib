@@ -35,6 +35,8 @@ public final class TSP
     implements ModelInterface
 {
 
+    private static final long serialVersionUID = -628843392675589854L;
+
     /** Number of vertices **/
     public final int N;
     /** TSP Lib instance **/

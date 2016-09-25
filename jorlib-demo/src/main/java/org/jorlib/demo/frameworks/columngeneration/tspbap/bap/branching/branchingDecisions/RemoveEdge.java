@@ -15,6 +15,7 @@ package org.jorlib.demo.frameworks.columngeneration.tspbap.bap.branching.branchi
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jorlib.demo.frameworks.columngeneration.tspbap.cg.Matching;
 import org.jorlib.demo.frameworks.columngeneration.tspbap.cg.PricingProblemByColor;
+import org.jorlib.demo.frameworks.columngeneration.tspbap.cg.master.TSPMasterData;
 import org.jorlib.demo.frameworks.columngeneration.tspbap.model.TSP;
 import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.BranchingDecision;
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequality;

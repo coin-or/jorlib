@@ -38,21 +38,21 @@ import org.slf4j.LoggerFactory;
  * @version 5-5-2015
  */
 public abstract class AbstractBranchAndPrice<T extends ModelInterface,
-    U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T>>
+    U extends AbstractColumn<T, V>, V extends AbstractPricingProblem<T, U>>
 {
     /** Logger attached to this class **/
     protected final Logger logger = LoggerFactory.getLogger(AbstractBranchAndPrice.class);
     /** Helper class which notifies BAPListeners **/
     protected final BAPNotifier notifier;
     /** Listeners for column generation events (CLListener) **/
-    protected final Set<CGListener> columnGenerationEventListeners;
+    protected final Set<CGListener<T,U>> columnGenerationEventListeners;
     /** Configuration file **/
     protected final Configuration config = Configuration.getConfiguration();
 
     /** Data model **/
     protected final T dataModel;
     /** Master problem **/
-    protected AbstractMaster<T, U, V, ? extends MasterData> master;
+    protected AbstractMaster<T, U, V, ? extends MasterData<T, U, V, ?>> master;
     /** Branch creators which determine how to branch **/
     protected final List<? extends AbstractBranchCreator<T, U, V>> branchCreators;
     /** Pricing problems **/
@@ -75,7 +75,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
     protected boolean isOptimal = false;
 
     /** Special class which manages the Branch-and-Price tree **/
-    protected GraphManipulator graphManipulator;
+    protected GraphManipulator<T,U> graphManipulator;
     /** Queue containing the unexplored nodes in the Branch-and-Price tree **/
     protected Queue<BAPNode<T, U>> queue;
     /**
@@ -116,7 +116,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * @param upperBoundOnObjective upper bound on the objective value
      */
     public AbstractBranchAndPrice(
-        T dataModel, AbstractMaster<T, U, V, ? extends MasterData> master, List<V> pricingProblems,
+        T dataModel, AbstractMaster<T, U, V, ? extends MasterData<T, U, V, ?>> master, List<V> pricingProblems,
         List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
         List<? extends AbstractBranchCreator<T, U, V>> branchCreators, double lowerBoundOnObjective,
         double upperBoundOnObjective)
@@ -127,7 +127,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
         this.branchCreators = branchCreators;
         this.pricingProblems = pricingProblems;
         this.solvers = solvers;
-        queue = new PriorityQueue<>(new DFSBapNodeComparator());
+        queue = new PriorityQueue<>(new DFSBapNodeComparator<T, U>());
         this.objectiveIncumbentSolution = (optimizationSenseMaster == OptimizationSense.MINIMIZE
             ? Integer.MAX_VALUE : -Integer.MAX_VALUE);
         this.lowerBoundOnObjective = lowerBoundOnObjective;
@@ -138,15 +138,13 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
         int nodeID = nodeCounter++;
         rootPath.add(nodeID);
         if (optimizationSenseMaster == OptimizationSense.MINIMIZE)
-            rootNode = new BAPNode<>(
-                nodeID, rootPath, new ArrayList<>(), new ArrayList<>(), lowerBoundOnObjective,
-                Collections.emptyList());
+            rootNode = new BAPNode<T, U>(nodeID, rootPath, new ArrayList<>(), new ArrayList<>(), lowerBoundOnObjective, Collections.emptyList());
         else
-            rootNode = new BAPNode<>(
+            rootNode = new BAPNode<T, U>(
                 nodeID, rootPath, new ArrayList<>(), new ArrayList<>(), upperBoundOnObjective,
                 Collections.emptyList());
         queue.add(rootNode);
-        graphManipulator = new GraphManipulator(rootNode);
+        graphManipulator = new GraphManipulator<>(rootNode);
 
         // Initialize pricing algorithms
         Map<Class<? extends AbstractPricingProblemSolver<T, U, V>>,
@@ -168,7 +166,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
         for (V pricingProblem : pricingProblems)
             this.addBranchingDecisionListener(pricingProblem);
         for (PricingProblemBundle<T, U, V> bunddle : pricingProblemBundles.values()) {
-            for (AbstractPricingProblemSolver solverInstance : bunddle.solverInstances)
+            for (AbstractPricingProblemSolver<T, U, V> solverInstance : bunddle.solverInstances)
                 this.addBranchingDecisionListener(solverInstance);
         }
 
@@ -195,7 +193,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * @param upperBoundOnObjective Upper bound on objective value
      */
     public AbstractBranchAndPrice(
-        T dataModel, AbstractMaster<T, U, V, ? extends MasterData> master, V pricingProblem,
+        T dataModel, AbstractMaster<T, U, V, ? extends MasterData<T, U, V, ?>> master, V pricingProblem,
         List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
         List<? extends AbstractBranchCreator<T, U, V>> branchCreators, double lowerBoundOnObjective,
         double upperBoundOnObjective)
@@ -338,12 +336,12 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
             this.isOptimal = false;
             if (optimizationSenseMaster == OptimizationSense.MINIMIZE) {
                 lowerBoundOnObjective = queue.peek().bound;
-                for (BAPNode bapNode : queue) {
+                for (BAPNode<T, U> bapNode : queue) {
                     lowerBoundOnObjective = Math.min(lowerBoundOnObjective, bapNode.bound);
                 }
             } else {
                 upperBoundOnObjective = queue.peek().bound;
-                for (BAPNode bapNode : queue) {
+                for (BAPNode<T, U> bapNode : queue) {
                     upperBoundOnObjective = Math.max(upperBoundOnObjective, bapNode.bound);
                 }
             }
@@ -368,7 +366,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
                 dataModel, master, pricingProblems, solvers, pricingProblemManager,
                 bapNode.initialColumns, objectiveIncumbentSolution, bapNode.getBound()); // Solve
                                                                                          // the node
-            for (CGListener listener : columnGenerationEventListeners)
+            for (CGListener<T,U> listener : columnGenerationEventListeners)
                 cg.addCGEventListener(listener);
             cg.solve(timeLimit);
         } finally {
@@ -542,6 +540,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * @return List of columns constituting the artificial solution
      * @deprecated use {@link #generateInitialFeasibleSolution(BAPNode node)} instead.
      */
+    @Deprecated
     protected List<U> generateArtificialSolution()
     {
         return Collections.emptyList();
@@ -630,7 +629,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * 
      * @param comparator comparator
      */
-    public void setNodeOrdering(Comparator<BAPNode> comparator)
+    public void setNodeOrdering(Comparator<BAPNode<T, U>> comparator)
     {
         Queue<BAPNode<T, U>> newQueue = new PriorityQueue<>(comparator);
         newQueue.addAll(queue);
@@ -654,7 +653,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * 
      * @param listener listener
      */
-    public void addBranchingDecisionListener(BranchingDecisionListener listener)
+    public void addBranchingDecisionListener(BranchingDecisionListener<T, U> listener)
     {
         graphManipulator.addBranchingDecisionListener(listener);
     }
@@ -664,7 +663,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * 
      * @param listener listener
      */
-    public void removeBranchingDecisionListener(BranchingDecisionListener listener)
+    public void removeBranchingDecisionListener(BranchingDecisionListener<T, U> listener)
     {
         graphManipulator.removeBranchingDecisionListener(listener);
     }
@@ -674,7 +673,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * 
      * @param listener listener
      */
-    public void addBranchAndPriceEventListener(BAPListener listener)
+    public void addBranchAndPriceEventListener(BAPListener<T,U> listener)
     {
         notifier.addListener(listener);
     }
@@ -684,7 +683,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * 
      * @param listener listener
      */
-    public void removeBranchAndPriceEventListener(BAPListener listener)
+    public void removeBranchAndPriceEventListener(BAPListener<T,U> listener)
     {
         notifier.removeListener(listener);
     }
@@ -694,7 +693,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * 
      * @param listener listener
      */
-    public void addColumnGenerationEventListener(CGListener listener)
+    public void addColumnGenerationEventListener(CGListener<T,U> listener)
     {
         this.columnGenerationEventListeners.add(listener);
     }
@@ -704,7 +703,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * 
      * @param listener listener
      */
-    public void removeColumnGenerationEventListener(CGListener listener)
+    public void removeColumnGenerationEventListener(CGListener<T,U> listener)
     {
         this.columnGenerationEventListeners.add(listener);
     }
@@ -715,7 +714,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
     protected class BAPNotifier
     {
         /** Listeners **/
-        private Set<BAPListener> listeners;
+        private Set<BAPListener<T,U>> listeners;
 
         /**
          * Creates a new BAPNotifier
@@ -730,7 +729,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
          * 
          * @param listener listener
          */
-        public void addListener(BAPListener listener)
+        public void addListener(BAPListener<T,U> listener)
         {
             this.listeners.add(listener);
         }
@@ -740,7 +739,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
          * 
          * @param listener listener
          */
-        public void removeListener(BAPListener listener)
+        public void removeListener(BAPListener<T,U> listener)
         {
             this.listeners.remove(listener);
         }
@@ -751,7 +750,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
         public void fireStartBAPEvent()
         {
             StartEvent startEvent = null;
-            for (BAPListener listener : listeners) {
+            for (BAPListener<T,U> listener : listeners) {
                 if (startEvent == null)
                     startEvent = new StartEvent(
                         AbstractBranchAndPrice.this, dataModel.getName(),
@@ -766,7 +765,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
         public void fireStopBAPEvent()
         {
             FinishEvent finishEvent = null;
-            for (BAPListener listener : listeners) {
+            for (BAPListener<T,U> listener : listeners) {
                 if (finishEvent == null)
                     finishEvent = new FinishEvent(AbstractBranchAndPrice.this);
                 listener.finishBAP(finishEvent);
@@ -780,12 +779,12 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
          * @param nodeBound Bound on the node
          * @param nodeValue Objective value of the node
          */
-        public void fireNodeIsFractionalEvent(BAPNode node, double nodeBound, double nodeValue)
+        public void fireNodeIsFractionalEvent(BAPNode<T, U> node, double nodeBound, double nodeValue)
         {
-            NodeIsFractionalEvent nodeIsFractionalEvent = null;
-            for (BAPListener listener : listeners) {
+            NodeIsFractionalEvent<T,U> nodeIsFractionalEvent = null;
+            for (BAPListener<T,U> listener : listeners) {
                 if (nodeIsFractionalEvent == null)
-                    nodeIsFractionalEvent = new NodeIsFractionalEvent(
+                    nodeIsFractionalEvent = new NodeIsFractionalEvent<>(
                         AbstractBranchAndPrice.this, node, nodeBound, nodeValue);
                 listener.nodeIsFractional(nodeIsFractionalEvent);
             }
@@ -798,12 +797,12 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
          * @param nodeBound Bound on the node
          * @param nodeValue Objective value of the node
          */
-        public void fireNodeIsIntegerEvent(BAPNode node, double nodeBound, int nodeValue)
+        public void fireNodeIsIntegerEvent(BAPNode<T, U> node, double nodeBound, int nodeValue)
         {
-            NodeIsIntegerEvent nodeIsIntegerEvent = null;
-            for (BAPListener listener : listeners) {
+            NodeIsIntegerEvent<T,U> nodeIsIntegerEvent = null;
+            for (BAPListener<T,U> listener : listeners) {
                 if (nodeIsIntegerEvent == null)
-                    nodeIsIntegerEvent = new NodeIsIntegerEvent(
+                    nodeIsIntegerEvent = new NodeIsIntegerEvent<>(
                         AbstractBranchAndPrice.this, node, nodeBound, nodeValue);
                 listener.nodeIsInteger(nodeIsIntegerEvent);
             }
@@ -814,13 +813,13 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
          * 
          * @param node Node which is infeasible
          */
-        public void fireNodeIsInfeasibleEvent(BAPNode node)
+        public void fireNodeIsInfeasibleEvent(BAPNode<T, U> node)
         {
-            NodeIsInfeasibleEvent nodeIsInfeasibleEvent = null;
-            for (BAPListener listener : listeners) {
+            NodeIsInfeasibleEvent<T,U> nodeIsInfeasibleEvent = null;
+            for (BAPListener<T,U> listener : listeners) {
                 if (nodeIsInfeasibleEvent == null)
                     nodeIsInfeasibleEvent =
-                        new NodeIsInfeasibleEvent(AbstractBranchAndPrice.this, node);
+                        new NodeIsInfeasibleEvent<>(AbstractBranchAndPrice.this, node);
                 listener.nodeIsInfeasible(nodeIsInfeasibleEvent);
             }
         }
@@ -831,12 +830,12 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
          * @param node Node being pruned
          * @param nodeBound Bound on the node
          */
-        public void firePruneNodeEvent(BAPNode node, double nodeBound)
+        public void firePruneNodeEvent(BAPNode<T, U> node, double nodeBound)
         {
-            PruneNodeEvent pruneNodeEvent = null;
-            for (BAPListener listener : listeners) {
+            PruneNodeEvent<T,U> pruneNodeEvent = null;
+            for (BAPListener<T,U> listener : listeners) {
                 if (pruneNodeEvent == null)
-                    pruneNodeEvent = new PruneNodeEvent(
+                    pruneNodeEvent = new PruneNodeEvent<>(
                         AbstractBranchAndPrice.this, node, nodeBound, objectiveIncumbentSolution);
                 listener.pruneNode(pruneNodeEvent);
             }
@@ -847,12 +846,12 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
          * 
          * @param node Node which will be processed
          */
-        public void fireNextNodeEvent(BAPNode node)
+        public void fireNextNodeEvent(BAPNode<T, U> node)
         {
-            ProcessingNextNodeEvent processingNextNodeEvent = null;
-            for (BAPListener listener : listeners) {
+            ProcessingNextNodeEvent<T,U> processingNextNodeEvent = null;
+            for (BAPListener<T,U> listener : listeners) {
                 if (processingNextNodeEvent == null)
-                    processingNextNodeEvent = new ProcessingNextNodeEvent(
+                    processingNextNodeEvent = new ProcessingNextNodeEvent<>(
                         AbstractBranchAndPrice.this, node, queue.size(),
                         objectiveIncumbentSolution);
                 listener.processNextNode(processingNextNodeEvent);
@@ -872,13 +871,13 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
          * @param nrGeneratedColumns Total number of columns generated for this node
          */
         public void fireFinishCGEvent(
-            BAPNode node, double nodeBound, double nodeValue, int numberOfCGIterations,
+            BAPNode<T, U> node, double nodeBound, double nodeValue, int numberOfCGIterations,
             long masterSolveTime, long pricingSolveTime, int nrGeneratedColumns)
         {
-            FinishProcessingNodeEvent finishProcessingNodeEvent = null;
-            for (BAPListener listener : listeners) {
+            FinishProcessingNodeEvent<T,U> finishProcessingNodeEvent = null;
+            for (BAPListener<T,U> listener : listeners) {
                 if (finishProcessingNodeEvent == null)
-                    finishProcessingNodeEvent = new FinishProcessingNodeEvent(
+                    finishProcessingNodeEvent = new FinishProcessingNodeEvent<>(
                         AbstractBranchAndPrice.this, node, nodeBound, nodeValue,
                         numberOfCGIterations, masterSolveTime, pricingSolveTime,
                         nrGeneratedColumns);
@@ -892,12 +891,12 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
          * @param parentNode Parent node
          * @param childNodes Child nodes spawned from the branching process
          */
-        public void fireBranchEvent(BAPNode parentNode, List<BAPNode> childNodes)
+        public void fireBranchEvent(BAPNode<T, U> parentNode, List<BAPNode<T, U>> childNodes)
         {
-            BranchEvent branchEvent = null;
-            for (BAPListener listener : listeners) {
+            BranchEvent<T, U> branchEvent = null;
+            for (BAPListener<T,U> listener : listeners) {
                 if (branchEvent == null)
-                    branchEvent = new BranchEvent(
+                    branchEvent = new BranchEvent<>(
                         AbstractBranchAndPrice.this, childNodes.size(), parentNode, childNodes);
                 listener.branchCreated(branchEvent);
             }
@@ -908,10 +907,10 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
          * 
          * @param node Node which was being processed when the event occurred
          */
-        public void fireTimeOutEvent(BAPNode node)
+        public void fireTimeOutEvent(BAPNode<T, U> node)
         {
             TimeLimitExceededEvent timeLimitExceededEvent = null;
-            for (BAPListener listener : listeners) {
+            for (BAPListener<T,U> listener : listeners) {
                 if (timeLimitExceededEvent == null)
                     timeLimitExceededEvent =
                         new TimeLimitExceededEvent(AbstractBranchAndPrice.this, node);

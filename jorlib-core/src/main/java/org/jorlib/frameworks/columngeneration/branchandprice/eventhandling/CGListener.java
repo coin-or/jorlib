@@ -12,6 +12,10 @@
  */
 package org.jorlib.frameworks.columngeneration.branchandprice.eventhandling;
 
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
+
 import java.util.EventListener;
 
 /**
@@ -20,7 +24,7 @@ import java.util.EventListener;
  * @author Joris Kinable
  * @version 20-5-2015
  */
-public interface CGListener
+public interface CGListener<T extends ModelInterface, U extends AbstractColumn<T, ? extends AbstractPricingProblem<T,U>>>
     extends EventListener
 {
 
@@ -65,7 +69,7 @@ public interface CGListener
      * 
      * @param finishPricingEvent finishPricingEvent
      */
-    void finishPricing(FinishPricingEvent finishPricingEvent);
+    void finishPricing(FinishPricingEvent<T,U> finishPricingEvent);
 
     /**
      * Method invoked when the column generation process is terminated due to a time out

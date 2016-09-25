@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @version 13-4-2015
  */
 public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
-    V extends AbstractPricingProblem<T>>
+    V extends AbstractPricingProblem<T, U>>
 {
 
     /** Logger for this class **/
@@ -56,7 +56,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
     protected final T dataModel;
 
     /** Master problem **/
-    protected final AbstractMaster<T, U, V, ? extends MasterData> master;
+    protected final AbstractMaster<T, U, V, ? extends MasterData<T, U, V, ?>> master;
     /** Pricing problems **/
     protected final List<V> pricingProblems;
     /** Solvers for the pricing problems **/
@@ -112,7 +112,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
      *        terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}.
      */
     public ColGen(
-        T dataModel, AbstractMaster<T, U, V, ? extends MasterData> master, List<V> pricingProblems,
+        T dataModel, AbstractMaster<T, U, V, ? extends MasterData<T, U, V, ?>> master, List<V> pricingProblems,
         List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers, List<U> initSolution,
         int cutoffValue, double boundOnMasterObjective)
     {
@@ -159,7 +159,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
      *        terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}.
      */
     public ColGen(
-        T dataModel, AbstractMaster<T, U, V, ? extends MasterData> master, V pricingProblem,
+        T dataModel, AbstractMaster<T, U, V, ? extends MasterData<T, U, V, ?>> master, V pricingProblem,
         List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers, List<U> initSolution,
         int cutoffValue, double boundOnMasterObjective)
     {
@@ -186,7 +186,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
      *        terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}.
      */
     public ColGen(
-        T dataModel, AbstractMaster<T, U, V, ? extends MasterData> master, List<V> pricingProblems,
+        T dataModel, AbstractMaster<T, U, V, ? extends MasterData<T, U, V, ?>> master, List<V> pricingProblems,
         List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
         PricingProblemManager<T, U, V> pricingProblemManager, List<U> initSolution, int cutoffValue,
         double boundOnMasterObjective)
@@ -537,7 +537,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
      * 
      * @param listener listener
      */
-    public void addCGEventListener(CGListener listener)
+    public void addCGEventListener(CGListener<T,U> listener)
     {
         notifier.addListener(listener);
     }
@@ -547,7 +547,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
      * 
      * @param listener listener
      */
-    public void removeCGEventListener(CGListener listener)
+    public void removeCGEventListener(CGListener<T,U> listener)
     {
         notifier.removeListener(listener);
     }
@@ -560,7 +560,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
         /**
          * Listeners
          */
-        private Set<CGListener> listeners;
+        private Set<CGListener<T,U>> listeners;
 
         /**
          * Creates a new BAPNotifier
@@ -575,7 +575,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
          * 
          * @param listener listener
          */
-        public void addListener(CGListener listener)
+        public void addListener(CGListener<T,U> listener)
         {
             this.listeners.add(listener);
         }
@@ -585,7 +585,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
          * 
          * @param listener listener
          */
-        public void removeListener(CGListener listener)
+        public void removeListener(CGListener<T,U> listener)
         {
             this.listeners.remove(listener);
         }
@@ -596,7 +596,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
         public void fireStartCGEvent()
         {
             StartEvent startEvent = null;
-            for (CGListener listener : listeners) {
+            for (CGListener<T,U> listener : listeners) {
                 if (startEvent == null)
                     startEvent = new StartEvent(ColGen.this, dataModel.getName(), cutoffValue);
                 listener.startCG(startEvent);
@@ -609,7 +609,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
         public void fireFinishCGEvent()
         {
             FinishEvent finishEvent = null;
-            for (CGListener listener : listeners) {
+            for (CGListener<T,U> listener : listeners) {
                 if (finishEvent == null)
                     finishEvent = new FinishEvent(ColGen.this);
                 listener.finishCG(finishEvent);
@@ -622,7 +622,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
         public void fireStartMasterEvent()
         {
             StartMasterEvent startMasterEvent = null;
-            for (CGListener listener : listeners) {
+            for (CGListener<T,U> listener : listeners) {
                 if (startMasterEvent == null)
                     startMasterEvent = new StartMasterEvent(ColGen.this, nrOfColGenIterations);
                 listener.startMaster(startMasterEvent);
@@ -635,7 +635,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
         public void fireFinishMasterEvent()
         {
             FinishMasterEvent finishMasterEvent = null;
-            for (CGListener listener : listeners) {
+            for (CGListener<T,U> listener : listeners) {
                 if (finishMasterEvent == null)
                     finishMasterEvent = new FinishMasterEvent(
                         ColGen.this, nrOfColGenIterations, objectiveMasterProblem, cutoffValue,
@@ -650,7 +650,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
         public void fireStartPricingEvent()
         {
             StartPricingEvent startPricingEvent = null;
-            for (CGListener listener : listeners) {
+            for (CGListener<T,U> listener : listeners) {
                 if (startPricingEvent == null)
                     startPricingEvent = new StartPricingEvent(ColGen.this, nrOfColGenIterations);
                 listener.startPricing(startPricingEvent);
@@ -664,10 +664,10 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
          */
         public void fireFinishPricingEvent(List<U> newColumns)
         {
-            FinishPricingEvent finishPricingEvent = null;
-            for (CGListener listener : listeners) {
+            FinishPricingEvent<T,U> finishPricingEvent = null;
+            for (CGListener<T,U> listener : listeners) {
                 if (finishPricingEvent == null)
-                    finishPricingEvent = new FinishPricingEvent(
+                    finishPricingEvent = new FinishPricingEvent<>(
                         ColGen.this, nrOfColGenIterations, Collections.unmodifiableList(newColumns),
                         objectiveMasterProblem, cutoffValue, boundOnMasterObjective);
                 listener.finishPricing(finishPricingEvent);
@@ -680,7 +680,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
         public void fireTimeLimitExceededEvent()
         {
             TimeLimitExceededEvent timeLimitExceededEvent = null;
-            for (CGListener listener : listeners) {
+            for (CGListener<T,U> listener : listeners) {
                 if (timeLimitExceededEvent == null)
                     timeLimitExceededEvent = new TimeLimitExceededEvent(ColGen.this);
                 listener.timeLimitExceeded(timeLimitExceededEvent);

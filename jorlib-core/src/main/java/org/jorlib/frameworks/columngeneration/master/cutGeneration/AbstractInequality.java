@@ -12,6 +12,11 @@
  */
 package org.jorlib.frameworks.columngeneration.master.cutGeneration;
 
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.master.MasterData;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
+
 /**
  * Class representing a valid inequality.
  *
@@ -26,7 +31,7 @@ public abstract class AbstractInequality
      * Reference to the AbstractCutGenerator which generates inequalities of the type that extends
      * this class
      **/
-    public final AbstractCutGenerator maintainingGenerator;
+    public final AbstractCutGenerator<? extends ModelInterface, ? extends MasterData<? extends ModelInterface, ? extends AbstractColumn<? extends ModelInterface, ?>, ? extends AbstractPricingProblem<? extends ModelInterface, ?>, ? >> maintainingGenerator;
 
     /**
      * Creates a new inequality
@@ -34,7 +39,7 @@ public abstract class AbstractInequality
      * @param maintainingGenerator Reference to the AbstractCutGenerator which generates
      *        inequalities of the type that extends this class
      */
-    public AbstractInequality(AbstractCutGenerator maintainingGenerator)
+    public AbstractInequality(AbstractCutGenerator<? extends ModelInterface, ? extends MasterData<? extends ModelInterface, ? extends AbstractColumn<? extends ModelInterface, ?>, ? extends AbstractPricingProblem<? extends ModelInterface, ?>, ? >> maintainingGenerator)
     {
         this.maintainingGenerator = maintainingGenerator;
     }

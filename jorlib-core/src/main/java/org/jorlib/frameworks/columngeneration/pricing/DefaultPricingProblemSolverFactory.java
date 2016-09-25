@@ -15,6 +15,7 @@ package org.jorlib.frameworks.columngeneration.pricing;
 import java.lang.reflect.InvocationTargetException;
 
 import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 
 /**
  * Factory class which produces a solver instances for a given pricing problem
@@ -23,8 +24,8 @@ import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
  * @version 13-4-2015
  *
  */
-public final class DefaultPricingProblemSolverFactory<T, U extends AbstractColumn<T, V>,
-    V extends AbstractPricingProblem<T>>
+public final class DefaultPricingProblemSolverFactory<T extends ModelInterface, U extends AbstractColumn<T, V>,
+    V extends AbstractPricingProblem<T, U>>
     implements PricingProblemSolverFactory<T, U, V>
 {
 
@@ -56,7 +57,7 @@ public final class DefaultPricingProblemSolverFactory<T, U extends AbstractColum
     public AbstractPricingProblemSolver<T, U, V> createSolverInstance(V pricingProblem)
     {
 
-        Class<?>[] cArg = new Class[2]; // Our constructor has 2 arguments
+        Class<?>[] cArg = new Class<?>[2]; // Our constructor has 2 arguments
         cArg[0] = dataModel.getClass(); // First argument is of type T
         cArg[1] = pricingProblem.getClass(); // Second argument has the type of the pricing problem
 

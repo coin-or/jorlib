@@ -14,8 +14,10 @@ package org.jorlib.frameworks.columngeneration.master.cutGeneration;
 
 import java.util.List;
 
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
 import org.jorlib.frameworks.columngeneration.master.MasterData;
 import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +33,8 @@ import org.slf4j.LoggerFactory;
  * @version 13-4-2015
  *
  * @param <T> Type of data model
- * @param <W> Type of MasterData
  */
-public abstract class AbstractCutGenerator<T extends ModelInterface, W extends MasterData>
+public abstract class AbstractCutGenerator<T extends ModelInterface, W extends MasterData<T, ? extends AbstractColumn<T, ?>, ? extends AbstractPricingProblem<T, ?>, ? >>
 {
 
     /** Logger for this class **/

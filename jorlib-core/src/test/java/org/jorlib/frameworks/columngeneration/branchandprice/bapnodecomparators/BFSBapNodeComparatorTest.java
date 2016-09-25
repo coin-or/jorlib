@@ -13,6 +13,9 @@
 package org.jorlib.frameworks.columngeneration.branchandprice.bapnodecomparators;
 
 import org.jorlib.frameworks.columngeneration.branchandprice.BAPNode;
+import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,14 +26,14 @@ public final class BFSBapNodeComparatorTest
 {
 
     @Test
-    public void testBFSNodeComparator()
+    public <T extends ModelInterface, U extends AbstractColumn<T,? extends AbstractPricingProblem<T, U>>> void testBFSNodeComparator()
     {
-        BAPNode bapNode0 = new BAPNode<>(0, null, null, null, 4, null); // Node with bound equal to
+        BAPNode<T,U> bapNode0 = new BAPNode<>(0, null, null, null, 4, null); // Node with bound equal to
                                                                         // 4
-        BAPNode bapNode1 = new BAPNode<>(1, null, null, null, 2, null); // Node with bound equal to
+        BAPNode<T,U> bapNode1 = new BAPNode<>(1, null, null, null, 2, null); // Node with bound equal to
                                                                         // 2
 
-        BFSBapNodeComparator comparator = new BFSBapNodeComparator();
+        BFSBapNodeComparator<T,U> comparator = new BFSBapNodeComparator<>();
 
         Assert.assertEquals(1, comparator.compare(bapNode1, bapNode0));
         Assert.assertEquals(-1, comparator.compare(bapNode0, bapNode1));

@@ -19,6 +19,8 @@ import java.util.List;
 import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.BranchingDecision;
 import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequality;
+import org.jorlib.frameworks.columngeneration.model.ModelInterface;
+import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 
 /**
  * Class which models a single node in the Branch-and-Price tree
@@ -26,7 +28,7 @@ import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequ
  * @author Joris Kinable
  * @version 5-5-2015
  */
-public class BAPNode<T, U extends AbstractColumn<T, ?>>
+public class BAPNode<T extends ModelInterface, U extends AbstractColumn<T, ? extends AbstractPricingProblem<T, U>>>
 {
 
     // Data before solving the node:
@@ -39,7 +41,7 @@ public class BAPNode<T, U extends AbstractColumn<T, ?>>
      **/
     protected final List<Integer> rootPath;
     /** List of branching decisions that lead to this node. **/
-    protected final List<BranchingDecision> branchingDecisions;
+    protected final List<BranchingDecision<T,U>> branchingDecisions;
     /** Columns used to initialize the master problem **/
     protected final List<U> initialColumns;
     /** Valid inequalities used to initialize the master problem of this node **/
@@ -79,7 +81,7 @@ public class BAPNode<T, U extends AbstractColumn<T, ?>>
     public BAPNode(
         int nodeID, List<Integer> rootPath, List<U> initialColumns,
         List<AbstractInequality> initialInequalities, double bound,
-        List<BranchingDecision> branchingDecisions)
+        List<BranchingDecision<T,U>> branchingDecisions)
     {
         this.nodeID = nodeID;
         this.initialColumns = initialColumns;
@@ -111,7 +113,7 @@ public class BAPNode<T, U extends AbstractColumn<T, ?>>
      * @return The branching decision that links this node to its parent, or null if this node is
      *         the root node
      */
-    public BranchingDecision getBranchingDecision()
+    public BranchingDecision<T,U> getBranchingDecision()
     {
         if (nodeID == 0)
             return null;
@@ -137,7 +139,7 @@ public class BAPNode<T, U extends AbstractColumn<T, ?>>
      * 
      * @param additionalInequalities columns to add to the initial solution.
      */
-    public void addInitialInequalities(List<AbstractInequality> additionalInequalities)
+    public void addInitialInequalities(List<? extends AbstractInequality> additionalInequalities)
     {
         inequalities.addAll(additionalInequalities);
     }
@@ -178,6 +180,8 @@ public class BAPNode<T, U extends AbstractColumn<T, ?>>
         this.bound = bound;
         this.solution = solution;
         this.inequalities = inequalities;
+//        this.inequalities = new ArrayList<>(); //Need to check whether I have to create a new list, or whether the old one can be cleared
+//        this.inequalities.addAll(inequalities);
     }
 
     /**

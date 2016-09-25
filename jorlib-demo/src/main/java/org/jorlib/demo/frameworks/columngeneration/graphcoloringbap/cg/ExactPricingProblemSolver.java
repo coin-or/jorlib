@@ -175,7 +175,7 @@ public final class ExactPricingProblemSolver
      * @param bd BranchingDecision
      */
     @Override
-    public void branchingDecisionPerformed(BranchingDecision bd)
+    public void branchingDecisionPerformed(BranchingDecision<ColoringGraph, IndependentSet> bd)
     {
         try {
             if (bd instanceof SameColor) { // Ensure that two vertices appear together in an
@@ -206,7 +206,7 @@ public final class ExactPricingProblemSolver
      * @param bd BranchingDecision
      */
     @Override
-    public void branchingDecisionReversed(BranchingDecision bd)
+    public void branchingDecisionReversed(BranchingDecision<ColoringGraph, IndependentSet> bd)
     {
         try {
             if (bd instanceof SameColor) {

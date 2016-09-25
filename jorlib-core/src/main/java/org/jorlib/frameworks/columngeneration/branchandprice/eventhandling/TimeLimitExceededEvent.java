@@ -26,8 +26,10 @@ public class TimeLimitExceededEvent
     extends EventObject
 {
 
+    private static final long serialVersionUID = 5478877882519700695L;
+
     /** Branch-and-Price Node which was being processed when TimeLimitExceededEvent occurred **/
-    public final BAPNode node;
+    public final BAPNode<?,?> node;
 
     /**
      * Event fired when a time out occurs due to a time limit
@@ -46,7 +48,7 @@ public class TimeLimitExceededEvent
      * @param source Generator of the event
      * @param node node which was being processed when the time out occurred.
      */
-    public TimeLimitExceededEvent(Object source, BAPNode node)
+    public TimeLimitExceededEvent(Object source, BAPNode<?,?> node)
     {
         super(source);
         this.node = node;
