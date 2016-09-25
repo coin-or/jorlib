@@ -13,7 +13,7 @@
 package org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.model;
 
 import org.jgrapht.UndirectedGraph;
-import org.jgrapht.VertexFactory;
+import org.jgrapht.ext.*;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.jorlib.frameworks.columngeneration.model.ModelInterface;
@@ -40,18 +40,21 @@ public final class ColoringGraph
      * Constructs a new graph coloring instance, based on a file specified in DIMACS format
      * 
      * @param instanceLocation input graph
-     * @throws IOException Throws IO exception when the instance cannot be found.
+     * @throws ImportException Throws ImportException exception when the instance cannot be found or when there is a parse error.
      */
     public ColoringGraph(String instanceLocation)
-        throws IOException
+        throws ImportException
     {
         super(DefaultEdge.class);
 
         File inputFile = new File(instanceLocation);
         this.instanceName = inputFile.getName();
-        BufferedReader in = new BufferedReader(new FileReader(inputFile));
-        DIMACSImporter<Integer, DefaultEdge> importer = new DIMACSImporter<>(in, 1);
-        importer.generateGraph(this, new IntegerVertexFactory(), null);
+
+        //Import the graph
+        VertexProvider<Integer> vp = (label, attributes) -> Integer.parseInt(label)-1;
+        EdgeProvider<Integer, DefaultEdge> ep = (from, to, label, attributes) -> ColoringGraph.this.getEdgeFactory().createEdge(from, to);
+        GraphImporter<Integer, DefaultEdge> importer = new DIMACSImporter<>(vp, ep);
+        importer.importGraph(this, inputFile);
 
     }
 
@@ -69,20 +72,5 @@ public final class ColoringGraph
     public String getName()
     {
         return instanceName;
-    }
-
-    /**
-     * Vertex factory used by the parser which processes the DIMACS input file
-     */
-    private static final class IntegerVertexFactory
-        implements VertexFactory<Integer>
-    {
-        int last = 0;
-
-        @Override
-        public Integer createVertex()
-        {
-            return last++;
-        }
     }
 }
