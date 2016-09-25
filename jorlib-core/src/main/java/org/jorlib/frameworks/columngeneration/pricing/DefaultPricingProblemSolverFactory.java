@@ -57,7 +57,7 @@ public final class DefaultPricingProblemSolverFactory<T extends ModelInterface, 
     public AbstractPricingProblemSolver<T, U, V> createSolverInstance(V pricingProblem)
     {
 
-        Class<?>[] cArg = new Class[2]; // Our constructor has 2 arguments
+        Class<?>[] cArg = new Class<?>[2]; // Our constructor has 2 arguments
         cArg[0] = dataModel.getClass(); // First argument is of type T
         cArg[1] = pricingProblem.getClass(); // Second argument has the type of the pricing problem
 

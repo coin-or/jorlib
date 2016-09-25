@@ -8,6 +8,9 @@ Changes to jORLib in each version:
 	- Added code formatting rules using the Eclipse formatter, and added script to perform automated mass formatting. Code format is now the same throughout all files.
 	- Reformatted all file headers. Format is now consistent across all packages, concise and easier to maintain.
 	- Updated JGraphT to version 1.0.0
+	- Fixed bug in `EdgeWeightMatrix.load()`: possible fall through in switch-case statement.
+	- Fixed Raw use of parameterized classes warnings (issue reported by Rowan Hoogervorst)
+	- Added missing serialVersionUID
 
 - **version 1.1.1** (24-Jul-2016):
 	- Fixed a bug where the number of processed nodes in BAP was not calculated correctly (pruning nodes did not increment the nodes processed counter)

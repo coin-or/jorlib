@@ -540,6 +540,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * @return List of columns constituting the artificial solution
      * @deprecated use {@link #generateInitialFeasibleSolution(BAPNode node)} instead.
      */
+    @Deprecated
     protected List<U> generateArtificialSolution()
     {
         return Collections.emptyList();

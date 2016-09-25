@@ -36,7 +36,7 @@ public final class TSP
 {
 
     private static final long serialVersionUID = 1208348679205976646L;
-    
+
     /** Number of vertices **/
     public final int N;
     /** TSP Lib instance **/
