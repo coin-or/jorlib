@@ -14,6 +14,7 @@ package org.jorlib.demo.frameworks.columngeneration.graphcoloringbap;
 
 import org.jgrapht.alg.BronKerboschCliqueFinder;
 import org.jgrapht.alg.ChromaticNumber;
+import org.jgrapht.ext.ImportException;
 import org.jgrapht.graph.DefaultEdge;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.bap.BranchAndPrice;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.bap.branching.BranchOnVertexPair;
@@ -117,11 +118,11 @@ public final class ChromaticNumberCalculator
     }
 
     public static void main(String[] args)
-        throws IOException
+        throws ImportException
     {
         ColoringGraph coloringGraph = new ColoringGraph("./data/graphColoring/myciel3.col"); // Optimal:
                                                                                              // 4
-        // ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel4.col");
+//         ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel4.col");
         // //Optimal: 5
         // ColoringGraph coloringGraph=new ColoringGraph("./data/graphColoring/myciel5.col");
         // //Optimal: 6
