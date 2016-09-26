@@ -36,16 +36,16 @@ public final class IndependentSet
      * Constructs a new column
      *
      * @param associatedPricingProblem Pricing problem to which this column belongs
-     * @param isArtificial Is this an artificial column?
+     * @param isVolatile Is this column volatile?
      * @param creator Who/What created this column?
      * @param vertices Vertices in the independent set
      * @param cost cost of the independent set
      */
     public IndependentSet(
-        ChromaticNumberPricingProblem associatedPricingProblem, boolean isArtificial,
+        ChromaticNumberPricingProblem associatedPricingProblem, boolean isVolatile,
         String creator, Set<Integer> vertices, int cost)
     {
-        super(associatedPricingProblem, isArtificial, creator);
+        super(associatedPricingProblem, isVolatile, creator);
         this.vertices = vertices;
         this.cost = cost;
     }
@@ -59,7 +59,7 @@ public final class IndependentSet
             return false;
         IndependentSet other = (IndependentSet) o;
         return this.vertices.equals(other.vertices)
-            && this.isArtificialColumn == other.isArtificialColumn;
+            && this.isVolatile == other.isVolatile;
     }
 
     @Override
@@ -71,7 +71,7 @@ public final class IndependentSet
     @Override
     public String toString()
     {
-        return "Value: " + this.value + " artificial: " + isArtificialColumn + " set: "
+        return "Value: " + this.value + " artificial: " + isVolatile + " set: "
             + vertices.toString();
     }
 

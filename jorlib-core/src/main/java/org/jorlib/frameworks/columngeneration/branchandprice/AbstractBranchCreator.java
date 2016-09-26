@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.BranchingDecision;
 import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
-import org.jorlib.frameworks.columngeneration.master.MasterData;
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
@@ -142,7 +141,7 @@ public abstract class AbstractBranchCreator<T extends ModelInterface, U extends 
         List<U> initSolution = solution
             .stream()
             .filter(
-                column -> !column.isArtificialColumn
+                column -> !column.isVolatile
                     && branchingDecision.columnIsCompatibleWithBranchingDecision(column))
             .collect(Collectors.toList());
         // Copy inequalities to the child node whenever applicable

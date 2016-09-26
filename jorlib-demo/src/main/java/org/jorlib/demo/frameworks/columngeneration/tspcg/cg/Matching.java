@@ -68,7 +68,7 @@ public class Matching
             return false;
         Matching other = (Matching) o;
         return Arrays.equals(this.succ, other.succ)
-            && this.isArtificialColumn == other.isArtificialColumn;
+            && this.isVolatile == other.isVolatile;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class Matching
     public String toString()
     {
         return "Value: " + this.value + " cost: " + this.cost + " color: "
-            + associatedPricingProblem.color + " artificial: " + isArtificialColumn + " edges: "
+            + associatedPricingProblem.color + " artificial: " + isVolatile + " edges: "
             + edges + " succ: " + Arrays.toString(succ);
     }
 

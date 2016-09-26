@@ -43,17 +43,17 @@ public final class Matching
      * Creates a new column (matching)
      * 
      * @param creator who created the matching
-     * @param isArtificial indicates whether its an artificial column
+     * @param isVolatile indicates whether column is volatile
      * @param associatedPricingProblem pricing problem for which the matching is created
      * @param edges edges in the matching
      * @param succ successor array
      * @param cost cost of matching (sum of edge lengths)
      */
     public Matching(
-        String creator, boolean isArtificial, PricingProblemByColor associatedPricingProblem,
+        String creator, boolean isVolatile, PricingProblemByColor associatedPricingProblem,
         Set<DefaultWeightedEdge> edges, int[] succ, int cost)
     {
-        super(associatedPricingProblem, isArtificial, creator);
+        super(associatedPricingProblem, isVolatile, creator);
         this.edges = edges;
         this.succ = succ;
         this.cost = cost;
@@ -68,7 +68,7 @@ public final class Matching
             return false;
         Matching other = (Matching) o;
         return Arrays.equals(this.succ, other.succ)
-            && this.isArtificialColumn == other.isArtificialColumn;
+            && this.isVolatile == other.isVolatile;
     }
 
     @Override
@@ -81,7 +81,7 @@ public final class Matching
     public String toString()
     {
         return "Value: " + this.value + " cost: " + this.cost + " color: "
-            + associatedPricingProblem.color + " artificial: " + isArtificialColumn + " edges: "
+            + associatedPricingProblem.color + " artificial: " + isVolatile + " edges: "
             + edges + " succ: " + Arrays.toString(succ);
     }
 

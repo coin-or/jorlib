@@ -279,7 +279,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
                 continue;
             }
 
-            // Check whether the node is infeasible, i.e. whether there are artifical columns in the
+            // Check whether the node is infeasible, i.e. whether there are volatile columns in the
             // solution. If so, ignore it and continue with the next node.
             if (this.isInfeasibleNode(bapNode)) {
                 notifier.fireNodeIsInfeasibleEvent(bapNode);
@@ -569,11 +569,11 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * automatically price artificial columns out. If however artificial columns do end up in the
      * final solution obtained when the Master problem terminates, we have a proof that the BAPNode
      * is infeasible. Finally note that artificial columns are volatile: they are never passed from
-     * a parent node to any of its children!
+     * a parent node to any of its children! Artificial columns must be declared volatile!
      *
      * Note 1: This function is not invoked at the root node whenever a
      * {@link #warmStart(int objectiveInitialSolution, List initialSolution) warmStart} is provided.
-     * Note 2: execution of this method is delayed as much as possible so safe computational effort.
+     * Note 2: execution of this method is delayed as much as possible so save computational effort.
      * 
      * @param node node
      * @return List of columns used to initialize the given BAPNode
@@ -603,7 +603,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
     }
 
     /**
-     * Tests whether a given node has a feasible solution, i.e. that it does not have artificial
+     * Tests whether a given node has a feasible solution, i.e. that it does not have volatile
      * columns
      * 
      * @param node node
@@ -612,7 +612,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
     protected boolean isInfeasibleNode(BAPNode<T, U> node)
     {
         for (U column : node.solution) {
-            if (column.isArtificialColumn)
+            if (column.isVolatile)
                 return true;
         }
         return false;
