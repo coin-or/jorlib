@@ -12,6 +12,7 @@ Changes to jORLib in each version:
 	- Fixed Raw use of parameterized classes warnings (issue reported by Rowan Hoogervorst)
 	- Added missing serialVersionUID
 	- Branch-and-Price Graph Coloring demo now uses the new `DimacsImporter` class from the jgrapht-ext package.
+	- Renamed artificial columns to volatile columns, to better reflect that these columns are not passed from one 	Branch-and-Price node to another.
 
 
 - **version 1.1.1** (24-Jul-2016):
