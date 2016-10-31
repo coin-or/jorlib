@@ -30,7 +30,7 @@ import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractCutGe
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequality;
 
 /**
- * Checks for violated subtour inequalities in the master problem. Any violated inqualities are
+ * Checks for violated subtour inequalities in the master problem. Any violated inequalities are
  * added to the master problem.
  *
  * @author Joris Kinable

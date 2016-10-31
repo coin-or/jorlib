@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Checks for violated subtour inequalities in the master problem. Any violated inqualities are
+ * Checks for violated subtour inequalities in the master problem. Any violated inequalities are
  * added to the master problem.
  *
  * @author Joris Kinable
@@ -133,9 +133,9 @@ public final class SubtourInequalityGenerator
     }
 
     /**
-     * Retuns a list of inequalities that have been generated.
+     * Returns a list of inequalities that have been generated.
      * 
-     * @return Retuns a list of inequalities that have been generated.
+     * @return Returns a list of inequalities that have been generated.
      */
     @Override
     public List<AbstractInequality> getCuts()

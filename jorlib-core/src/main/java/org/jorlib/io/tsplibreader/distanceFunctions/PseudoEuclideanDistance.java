@@ -13,7 +13,7 @@
 package org.jorlib.io.tsplibreader.distanceFunctions;
 
 /**
- * The psuedo-Euclidean distance function used by the {@code ATT} TSPLIB problem instances.
+ * The pseudo-Euclidean distance function used by the {@code ATT} TSPLIB problem instances.
  * 
  * @author David Hadka
  */

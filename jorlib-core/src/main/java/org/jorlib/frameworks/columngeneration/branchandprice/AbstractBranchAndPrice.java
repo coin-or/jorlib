@@ -557,7 +557,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * may have been filtered out (see
      * {@link org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.BranchingDecision#columnIsCompatibleWithBranchingDecision(AbstractColumn)}),
      * the subset of columns passed by the parent may not constitute a feasible solution. It is up
-     * to the developer to very this.
+     * to the developer to verify this.
      *
      * In general it is hard to come up with a feasible set of columns which satisfy all constraints
      * in the master problem, including potential branching decisions. A common technique is to add
@@ -573,7 +573,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      *
      * Note 1: This function is not invoked at the root node whenever a
      * {@link #warmStart(int objectiveInitialSolution, List initialSolution) warmStart} is provided.
-     * Note 2: execution of this method is delayed as much as possible so save computational effort.
+     * Note 2: execution of this method is delayed as much as possible to save computational effort.
      * 
      * @param node node
      * @return List of columns used to initialize the given BAPNode
@@ -589,7 +589,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
     protected abstract boolean isIntegerNode(BAPNode<T, U> node);
 
     /**
-     * Test whether the given node can be pruned based on this bounds
+     * Test whether the given node can be pruned based on the current bounds
      * 
      * @param node node
      * @return true if the node can be pruned
@@ -625,7 +625,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * will be reordered. As an example, one could prefer to process the first layers of the
      * Branch-and-Price tree in a Breath-First-Search manner, thereby improving the bound of the
      * nodes and then process the remaining nodes in a DFS manner. This example can also be achieved
-     * throuh a custom comparator.
+     * through a custom comparator.
      * 
      * @param comparator comparator
      */

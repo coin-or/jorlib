@@ -109,7 +109,7 @@ public abstract class AbstractPricingProblemSolver<T extends ModelInterface, U e
      * this method.
      * 
      * @return List of columns with negative reduced cost
-     * @throws TimeLimitExceededException thrown when timelimit is exceeded
+     * @throws TimeLimitExceededException thrown when timeLimit is exceeded
      */
     protected abstract List<U> generateNewColumns()
         throws TimeLimitExceededException;
@@ -148,7 +148,7 @@ public abstract class AbstractPricingProblemSolver<T extends ModelInterface, U e
 
     /**
      * Method which sets the objective of the Pricing Problem. This method is invoked directly
-     * *before* the generatenewColumns() method is solved. It allows the user to update the pricing
+     * *before* the generateNewColumns() method is solved. It allows the user to update the pricing
      * solver with fresh dual information coming from the master problem. Typically this information
      * is stored inside the PricingProblem objects.
      */

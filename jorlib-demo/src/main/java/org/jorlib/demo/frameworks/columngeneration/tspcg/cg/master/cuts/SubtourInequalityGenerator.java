@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Checks for violated subtour inequalities in the master problem. Any violated inqualities are
+ * Checks for violated subtour inequalities in the master problem. Any violated inequalities are
  * added to the master problem.
  *
  * @author Joris Kinable

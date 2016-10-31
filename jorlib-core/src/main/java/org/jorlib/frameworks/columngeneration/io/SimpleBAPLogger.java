@@ -53,7 +53,7 @@ public class SimpleBAPLogger<T extends ModelInterface, U extends AbstractColumn<
     /** Number of nodes currently in the queue **/
     protected int nodesInQueue;
 
-    // Colgen stats
+    // ColGen stats
     /** Number of column generation iterations **/
     protected int cgIterations;
 

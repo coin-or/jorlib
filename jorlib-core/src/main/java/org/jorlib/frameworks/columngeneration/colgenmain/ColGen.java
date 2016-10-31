@@ -33,8 +33,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Main class defining the Column Generation procedure. It keeps track of all the data structures.
  * Its {@link #solve(long timeLimit) solve} method is the core of this class. Assumptions: the
- * Master problem is a minimization problem. The optimal solution with non-fractional variable
- * values has an integer objectiveMasterProblem value.
+ * optimal solution with non-fractional variable values has an integer objectiveMasterProblem
+ * value.
  *
  * @param <T> The data model
  * @param <U> Type of column
@@ -71,7 +71,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
     /** Objective value of column generation procedure **/
     protected double objectiveMasterProblem;
     /**
-     * The Colgen procedure is terminated if the bound on the best attainable solution to the master
+     * The ColGen procedure is terminated if the bound on the best attainable solution to the master
      * problem is worse than the cutoffValue. If the master is a minimization problem, the Colgen
      * procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}. If the master
      * is a maximization problem, the Colgen procedure is terminated if
@@ -103,12 +103,12 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
      * @param pricingProblems pricing problems
      * @param solvers pricing problem solvers
      * @param initSolution initial solution
-     * @param cutoffValue cutoff Value. If the master is a minimization problem, the Colgen
+     * @param cutoffValue cutoff Value. If the master is a minimization problem, the ColGen
      *        procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}. If the
      *        master is a maximization problem, the Colgen procedure is terminated if
      *        {@code floor(boundOnMasterObjective) <= cutoffValue}.
      * @param boundOnMasterObjective Bound on the best attainable objective value from the master
-     *        problem. Assuming that the master is a minimization problem, the Colgen procedure is
+     *        problem. Assuming that the master is a minimization problem, the ColGen procedure is
      *        terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}.
      */
     public ColGen(
@@ -150,12 +150,12 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
      * @param pricingProblem pricing problem
      * @param solvers pricing problem solvers
      * @param initSolution initial solution
-     * @param cutoffValue cutoff Value. If the master is a minimization problem, the Colgen
+     * @param cutoffValue cutoff Value. If the master is a minimization problem, the ColGen
      *        procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}. If the
      *        master is a maximization problem, the Colgen procedure is terminated if
      *        {@code floor(boundOnMasterObjective) <= cutoffValue}.
      * @param boundOnMasterObjective Bound on the best attainable objective value from the master
-     *        problem. Assuming that the master is a minimization problem, the Colgen procedure is
+     *        problem. Assuming that the master is a minimization problem, the ColGen procedure is
      *        terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}.
      */
     public ColGen(
@@ -179,10 +179,10 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
      * @param initSolution initial solution
      * @param cutoffValue cutoff Value. If the master is a minimization problem, the Colgen
      *        procedure is terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}. If the
-     *        master is a maximization problem, the Colgen procedure is terminated if
+     *        master is a maximization problem, the ColGen procedure is terminated if
      *        {@code floor(boundOnMasterObjective) <= cutoffValue}.
      * @param boundOnMasterObjective Bound on the best attainable objective value from the master
-     *        problem. Assuming that the master is a minimization problem, the Colgen procedure is
+     *        problem. Assuming that the master is a minimization problem, the ColGen procedure is
      *        terminated if {@code ceil(boundOnMasterObjective) >= cutoffValue}.
      */
     public ColGen(
@@ -206,7 +206,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
     }
 
     /**
-     * Solve the Column Generation problem. First the master problem is solved. Next the pricing
+     * Solve the Column Generation problem. First, the master problem is solved. Next, the pricing
      * problems(s) is (are) solved. To solve the pricing problems, the pricing solvers are invoked
      * one by one in a hierarchical fashion. First the first solver is invoked to solve the pricing
      * problems. Any new columns generated are immediately returned. If it fails to find columns,
@@ -437,6 +437,8 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
     }
 
     /**
+     * Returns the number of column generation iterations performed
+     *
      * @return Returns the number of column generation iterations performed
      */
     public int getNumberOfIterations()
@@ -524,7 +526,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
     }
 
     /**
-     * Destroy both the master problem and pricing problems
+     * Destroys both the master problem and pricing problems
      */
     public void close()
     {
@@ -533,7 +535,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
     }
 
     /**
-     * Adds a CGlistener
+     * Adds a CGListener
      * 
      * @param listener listener
      */
