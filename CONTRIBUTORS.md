@@ -5,6 +5,7 @@ jORLib wouldn't be the library it is today without the source contributions and 
 - Joris Kinable (project founder & current administrator)
 - David Hadka
 - Frans Lelieveld
+- Rowan Hoogervorst
 
 (if we have missed your name on this list, please email us to get it fixed).
 
