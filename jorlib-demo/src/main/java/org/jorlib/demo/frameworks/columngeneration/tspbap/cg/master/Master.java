@@ -306,7 +306,7 @@ public final class Master
     /**
      * Checks whether there are any violated inequalities, thereby invoking the cut handler
      * 
-     * @return true if violated inqualities have been found (and added to the master problem)
+     * @return true if violated inequalities have been found (and added to the master problem)
      */
     @Override
     public boolean hasNewCuts()

@@ -31,7 +31,7 @@ public final class SmallestEnclosingCircleCalculatorDemo
         double[] yCors = { 0, 0, -1.8, -1.9 };
         double[] radii = { 1, 1, .8, .9 };
 
-        // Calculate the smallest enclosing circle (exaxt)
+        // Calculate the smallest enclosing circle (exact)
         SmallestEnclosingCircleCalculator cecc = new SmallestEnclosingCircleCalculator();
         cecc.calcExactContainer(xCors, yCors, radii);
 

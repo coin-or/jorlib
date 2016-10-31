@@ -35,7 +35,7 @@ public class FinishGeneratingCutsEvent
      * Creates a new FinishGeneratingCutsEvent
      * 
      * @param source Generator of the event
-     * @param separatedInequalities List of newly separated inqualities
+     * @param separatedInequalities List of newly separated inequalities
      */
     public FinishGeneratingCutsEvent(Object source, List<AbstractInequality> separatedInequalities)
     {

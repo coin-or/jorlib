@@ -112,7 +112,7 @@ public class BinaryKnapsack
         Integer[] itemOrder = new Integer[nrItems];
         for (int i = 0; i < nrItems; i++)
             itemOrder[i] = i;
-        // Sort the times in ascending order, based on their value/weigth ratio
+        // Sort the times in ascending order, based on their value/weight ratio
         Arrays.sort(itemOrder, new Comparator<Integer>()
         {
             @Override
@@ -157,7 +157,7 @@ public class BinaryKnapsack
                     }
                     queue.add(knCopy);
                 }
-                // Dont use item[kn.level]
+                // Don't use item[kn.level]
                 kn.bound =
                     calcBound(itemOrder, kn.level + 1, maxKnapsackWeight - kn.weight, kn.value);
                 queue.add(kn);
@@ -238,7 +238,7 @@ public class BinaryKnapsack
         public final boolean[] selectedItems; // Selected items
         public int level; // Depth of the knapsack node in the search tree; Each level of the search
                           // tree corresponds with a single item.
-        public double bound; // Bound on the optimum value atainable by this node
+        public double bound; // Bound on the optimum value attainable by this node
         public double value; // Total value of the items in this knapsack
         public int weight; // Total weight of the items in this knapsack
 

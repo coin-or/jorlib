@@ -69,7 +69,7 @@ public class Edge
      * 
      * @param id the identifier of the node
      * @return {@code true} if either endpoint of this edge is the specified node; {@code false}
-     *         otherwis
+     *         otherwise
      */
     public boolean hasEndpoint(int id)
     {

@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Algorthm implementation which solves the pricing problem to optimality. This solver is based on
+ * Algorithm implementation which solves the pricing problem to optimality. This solver is based on
  * an exact MIP implementation using Cplex.
  *
  * @author Joris Kinable

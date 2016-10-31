@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Main class represting the Master Problem.
+ * Main class representing the Master Problem.
  *
  * @author Joris Kinable
  * @version 13-4-2015
@@ -71,7 +71,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
      * 
      * @param dataModel data model
      * @param pricingProblems pricing problems
-     * @param optimizationSenseMaster indicates whether the Master Problem is a Minimiation or a
+     * @param optimizationSenseMaster indicates whether the Master Problem is a Minimization or a
      *        Maximization problem
      */
     public AbstractMaster(
@@ -95,7 +95,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
      * 
      * @param dataModel data model
      * @param pricingProblem pricing problem
-     * @param optimizationSenseMaster indicates whether the Master Problem is a Minimiation or a
+     * @param optimizationSenseMaster indicates whether the Master Problem is a Minimization or a
      *        Maximization problem
      */
     public AbstractMaster(T dataModel, V pricingProblem, OptimizationSense optimizationSenseMaster)
@@ -114,7 +114,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
      * @param dataModel data model
      * @param pricingProblems pricing problems
      * @param cutHandler Reference to a cut handler
-     * @param optimizationSenseMaster indicates whether the Master Problem is a Minimiation or a
+     * @param optimizationSenseMaster indicates whether the Master Problem is a Minimization or a
      *        Maximization problem
      */
     public AbstractMaster(
@@ -140,7 +140,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
      * @param dataModel data model
      * @param pricingProblem pricing problem
      * @param cutHandler Reference to a cut handler
-     * @param optimizationSenseMaster indicates whether the Master Problem is a Minimiation or a
+     * @param optimizationSenseMaster indicates whether the Master Problem is a Minimization or a
      *        Maximization problem
      */
     public AbstractMaster(
@@ -176,7 +176,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
      * Method implementing the solve procedure for the master problem
      * 
      * @param timeLimit Future point in time by which this method must be finished
-     * @return Returns true if successfull (and optimal)
+     * @return Returns true if successful (and optimal)
      * @throws TimeLimitExceededException if time limit is exceeded
      */
     protected abstract boolean solveMasterProblem(long timeLimit)
@@ -293,7 +293,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
      * Returns all columns generated for the given pricing problem.
      * 
      * @param pricingProblem Pricing problem
-     * @return Set ofcolumns
+     * @return Set of columns
      */
     public Set<U> getColumns(V pricingProblem)
     {

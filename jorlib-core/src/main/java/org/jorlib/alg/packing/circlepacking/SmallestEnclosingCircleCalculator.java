@@ -32,7 +32,7 @@ import org.jorlib.alg.packing.circlepacking.util.MathUtil;
  * The implementation of this class is based on:<br>
  * "A randomized incremental algorithm" in:<br>
  * Xu, S. Freund, R.M. Sun, J. Solution methodologies for the Smallest Enclosing Circle Problem.<br>
- * Computational Optimization and Applications, volumne 25, issue 1-3, pp283-292, 2003
+ * Computational Optimization and Applications, volume 25, issue 1-3, pp283-292, 2003
  * <p>
  * 
  * Calculating the exact size of the smallest enclosing circle can be computationally expensive.
