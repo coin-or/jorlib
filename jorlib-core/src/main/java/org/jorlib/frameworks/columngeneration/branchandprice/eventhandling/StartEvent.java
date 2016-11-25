@@ -33,7 +33,7 @@ public class StartEvent
      * Best available integer solution at the start of the Branch-and-Price or Column generation
      * procedure
      **/
-    public final int objectiveIncumbentSolution;
+    public final double objectiveIncumbentSolution;
 
     /**
      * Creates a new StartEvent
@@ -43,7 +43,7 @@ public class StartEvent
      * @param objectiveIncumbentSolution Best available integer solution at the start of the
      *        Branch-and-Price or Column generation procedure
      */
-    public StartEvent(Object source, String instanceName, int objectiveIncumbentSolution)
+    public StartEvent(Object source, String instanceName, double objectiveIncumbentSolution)
     {
         super(source);
         this.instanceName = instanceName;

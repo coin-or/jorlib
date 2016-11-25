@@ -65,7 +65,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
     protected final OptimizationSense optimizationSenseMaster;
 
     /** Stores the objective of the best (integer) solution **/
-    protected int objectiveIncumbentSolution;
+    protected double objectiveIncumbentSolution;
     /**
      * List containing the columns corresponding to the best integer solution (empty list when no
      * feasible solution has been found)
@@ -401,7 +401,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * 
      * @return the objective of the best integer solution found during the Branch-and-Price search
      */
-    public int getObjective()
+    public double getObjective()
     {
         return this.objectiveIncumbentSolution;
     }
@@ -596,10 +596,17 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      */
     protected boolean nodeCanBePruned(BAPNode<T, U> node)
     {
-        return (optimizationSenseMaster == OptimizationSense.MINIMIZE
-            && Math.ceil(node.bound - config.PRECISION) >= upperBoundOnObjective
-            || optimizationSenseMaster == OptimizationSense.MAXIMIZE
-                && Math.floor(node.bound + config.PRECISION) <= lowerBoundOnObjective);
+        if (config.INTEGER_OBJECTIVE) {
+            return (optimizationSenseMaster == OptimizationSense.MINIMIZE
+                    && Math.ceil(node.bound - config.PRECISION) >= upperBoundOnObjective
+                    || optimizationSenseMaster == OptimizationSense.MAXIMIZE
+                    && Math.floor(node.bound + config.PRECISION) <= lowerBoundOnObjective);
+        } else {
+            return optimizationSenseMaster == OptimizationSense.MINIMIZE
+                    && node.bound >= upperBoundOnObjective
+                    || optimizationSenseMaster == OptimizationSense.MAXIMIZE
+                    && node.bound <= lowerBoundOnObjective;          
+        }
     }
 
     /**

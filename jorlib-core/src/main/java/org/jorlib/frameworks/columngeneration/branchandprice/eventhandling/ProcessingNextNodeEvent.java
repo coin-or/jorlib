@@ -36,7 +36,7 @@ public class ProcessingNextNodeEvent<T extends ModelInterface, U extends Abstrac
     /** Number of nodes currently waiting in the queue **/
     public final int nodesInQueue;
     /** Best integer solution obtained thus far **/
-    public final int objectiveIncumbentSolution;
+    public final double objectiveIncumbentSolution;
 
     /**
      * Creates a new ProcessingNextNodeEvent
@@ -47,7 +47,7 @@ public class ProcessingNextNodeEvent<T extends ModelInterface, U extends Abstrac
      * @param objectiveIncumbentSolution Best integer solution found thus far
      */
     public ProcessingNextNodeEvent(
-        Object source, BAPNode<T,U> node, int nodesInQueue, int objectiveIncumbentSolution)
+        Object source, BAPNode<T,U> node, int nodesInQueue, double objectiveIncumbentSolution)
     {
         super(source);
         this.node = node;

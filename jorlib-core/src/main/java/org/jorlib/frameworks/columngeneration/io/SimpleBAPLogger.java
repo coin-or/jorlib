@@ -42,7 +42,7 @@ public class SimpleBAPLogger<T extends ModelInterface, U extends AbstractColumn<
     /** Parent node ID, -1 if root node **/
     protected int parentNodeID;
     /** Best integer solution **/
-    protected int objectiveIncumbentSolution;
+    protected double objectiveIncumbentSolution;
     /** Bound on the BAP node **/
     protected double nodeBound;
     /**

@@ -36,7 +36,7 @@ public class PruneNodeEvent<T extends ModelInterface, U extends AbstractColumn<T
     /** Bound on this node **/
     public final double nodeBound;
     /** Best integer solution discovered so far **/
-    public final int bestIntegerSolution;
+    public final double bestIntegerSolution;
 
     /**
      * Creates a new PruneNodeEvent
@@ -46,7 +46,7 @@ public class PruneNodeEvent<T extends ModelInterface, U extends AbstractColumn<T
      * @param nodeBound Bound on the node
      * @param bestIntegerSolution Best integer solution discovered thus far
      */
-    public PruneNodeEvent(Object source, BAPNode<T, U> node, double nodeBound, int bestIntegerSolution)
+    public PruneNodeEvent(Object source, BAPNode<T, U> node, double nodeBound, double bestIntegerSolution)
     {
         super(source);
         this.node = node;

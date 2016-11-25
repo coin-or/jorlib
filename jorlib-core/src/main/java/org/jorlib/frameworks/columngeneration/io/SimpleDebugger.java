@@ -55,7 +55,7 @@ public class SimpleDebugger<T extends ModelInterface, U extends AbstractColumn<T
     /** Name of the instance being solved **/
     protected String instanceName;
     /** Best integer solution obtained thus far **/
-    protected int bestIntegerSolution;
+    protected double bestIntegerSolution;
 
     /**
      * Creates a debugger for Column Generation instances

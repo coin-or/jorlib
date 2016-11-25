@@ -43,7 +43,7 @@ public class FinishPricingEvent<T extends ModelInterface, U extends AbstractColu
      * Cutoff value: Column Generation is terminated when the bound on the Master Objective is worse
      * than the cutoff value
      **/
-    public final int cutoffValue;
+    public final double cutoffValue;
     /** Best available bound on the master objective **/
     public final double boundOnMasterObjective;
 
@@ -60,7 +60,7 @@ public class FinishPricingEvent<T extends ModelInterface, U extends AbstractColu
      */
     public FinishPricingEvent(
         Object source, int columnGenerationIteration, List<U> columns, double objective,
-        int cutoffValue, double boundOnMasterObjective)
+        double cutoffValue, double boundOnMasterObjective)
     {
         super(source);
         this.columnGenerationIteration = columnGenerationIteration;

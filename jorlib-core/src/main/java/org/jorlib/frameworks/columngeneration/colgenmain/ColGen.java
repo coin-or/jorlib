@@ -77,7 +77,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
      * is a maximization problem, the Colgen procedure is terminated if
      * {@code floor(boundOnMasterObjective) <= cutoffValue}.
      **/
-    protected int cutoffValue;
+    protected double cutoffValue;
     /**
      * Bound on the best attainable objective value from the master problem. Assuming that the
      * master is a minimization problem, the Colgen procedure is terminated if
@@ -114,7 +114,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
     public ColGen(
         T dataModel, AbstractMaster<T, U, V, ? extends MasterData<T, U, V, ?>> master, List<V> pricingProblems,
         List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers, List<U> initSolution,
-        int cutoffValue, double boundOnMasterObjective)
+        double cutoffValue, double boundOnMasterObjective)
     {
         this.dataModel = dataModel;
         this.master = master;
@@ -161,7 +161,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
     public ColGen(
         T dataModel, AbstractMaster<T, U, V, ? extends MasterData<T, U, V, ?>> master, V pricingProblem,
         List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers, List<U> initSolution,
-        int cutoffValue, double boundOnMasterObjective)
+        double cutoffValue, double boundOnMasterObjective)
     {
         this(
             dataModel, master, Collections.singletonList(pricingProblem), solvers, initSolution,
@@ -188,7 +188,7 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
     public ColGen(
         T dataModel, AbstractMaster<T, U, V, ? extends MasterData<T, U, V, ?>> master, List<V> pricingProblems,
         List<Class<? extends AbstractPricingProblemSolver<T, U, V>>> solvers,
-        PricingProblemManager<T, U, V> pricingProblemManager, List<U> initSolution, int cutoffValue,
+        PricingProblemManager<T, U, V> pricingProblemManager, List<U> initSolution, double cutoffValue,
         double boundOnMasterObjective)
     {
         this.dataModel = dataModel;
@@ -519,10 +519,17 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
      */
     protected boolean boundOnMasterExceedsCutoffValue()
     {
-        if (optimizationSenseMaster == OptimizationSense.MINIMIZE)
-            return Math.ceil(boundOnMasterObjective - config.PRECISION) >= cutoffValue;
-        else
-            return Math.floor(boundOnMasterObjective + config.PRECISION) <= cutoffValue;
+        if (config.INTEGER_OBJECTIVE) {
+            if (optimizationSenseMaster == OptimizationSense.MINIMIZE)
+                return Math.ceil(boundOnMasterObjective - config.PRECISION) >= cutoffValue;
+            else
+                return Math.floor(boundOnMasterObjective + config.PRECISION) <= cutoffValue;
+        } else {
+            if (optimizationSenseMaster == OptimizationSense.MINIMIZE)
+                return boundOnMasterObjective >= cutoffValue;
+            else
+                return boundOnMasterObjective <= cutoffValue;
+        }
     }
 
     /**
