@@ -290,8 +290,10 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
             foundNewColumns = !newColumns.isEmpty();
 
             // Check whether the boundOnMasterObjective exceeds the cutoff value
-            if (boundOnMasterExceedsCutoffValue())
+            if (boundOnMasterExceedsCutoffValue()) {
+                status = SolverStatus.OPTIMAL;
                 break;
+            }
             else if (System.currentTimeMillis() >= timeLimit) { // Check whether we are still within
                                                                 // the timeLimit
                 notifier.fireTimeLimitExceededEvent();
