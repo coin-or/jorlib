@@ -28,6 +28,7 @@ import org.jorlib.frameworks.columngeneration.pricing.*;
 import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblemSolver;
 import org.jorlib.frameworks.columngeneration.util.Configuration;
 import org.jorlib.frameworks.columngeneration.util.MathProgrammingUtil;
+import org.jorlib.frameworks.columngeneration.util.SolverStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -361,6 +362,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
         throws TimeLimitExceededException
     {
         ColGen<T, U, V> cg = null;
+        SolverStatus status;
         try {
             cg = new ColGen<>(
                 dataModel, master, pricingProblems, solvers, pricingProblemManager,
@@ -368,7 +370,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
                                                                                          // the node
             for (CGListener<T,U> listener : columnGenerationEventListeners)
                 cg.addCGEventListener(listener);
-            cg.solve(timeLimit);
+            status = cg.solve(timeLimit);
         } finally {
             // Update statistics
             if (cg != null) {
@@ -381,7 +383,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
                     cg.getMasterSolveTime(), cg.getPricingSolveTime(), cg.getNrGeneratedColumns());
             }
         }
-        bapNode.storeSolution(cg.getObjective(), cg.getBound(), cg.getSolution(), cg.getCuts());
+        bapNode.storeSolution(status, cg.getObjective(), cg.getBound(), cg.getSolution(), cg.getCuts());
     }
 
     /**
@@ -611,6 +613,10 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      */
     protected boolean isInfeasibleNode(BAPNode<T, U> node)
     {
+        if (node.getStatus() == SolverStatus.INFEASIBLE) {
+            return true;
+        }
+        
         for (U column : node.solution) {
             if (column.isVolatile)
                 return true;

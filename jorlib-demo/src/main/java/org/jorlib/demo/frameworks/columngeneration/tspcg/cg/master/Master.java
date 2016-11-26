@@ -25,6 +25,7 @@ import org.jorlib.frameworks.columngeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columngeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columngeneration.util.OrderedBiMap;
+import org.jorlib.frameworks.columngeneration.util.SolverStatus;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -119,7 +120,7 @@ public class Master
      * @throws TimeLimitExceededException TimeLimitExceededException
      */
     @Override
-    protected boolean solveMasterProblem(long timeLimit)
+    protected SolverStatus solveMasterProblem(long timeLimit)
         throws TimeLimitExceededException
     {
         try {
@@ -151,7 +152,7 @@ public class Master
         } catch (IloException e) {
             e.printStackTrace();
         }
-        return true;
+        return SolverStatus.OPTIMAL;
     }
 
     /**

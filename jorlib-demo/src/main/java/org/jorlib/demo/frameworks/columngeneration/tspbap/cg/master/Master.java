@@ -35,6 +35,7 @@ import org.jorlib.frameworks.columngeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columngeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.CutHandler;
 import org.jorlib.frameworks.columngeneration.util.OrderedBiMap;
+import org.jorlib.frameworks.columngeneration.util.SolverStatus;
 
 /**
  * Defines the master problem: Select exactly 1 red and 1 blue matching which together form a
@@ -124,7 +125,7 @@ public final class Master
      * @throws TimeLimitExceededException TimeLimitExceededException
      */
     @Override
-    protected boolean solveMasterProblem(long timeLimit)
+    protected SolverStatus solveMasterProblem(long timeLimit)
         throws TimeLimitExceededException
     {
         try {
@@ -156,7 +157,7 @@ public final class Master
         } catch (IloException e) {
             e.printStackTrace();
         }
-        return true;
+        return SolverStatus.OPTIMAL;
     }
 
     /**

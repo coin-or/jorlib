@@ -16,6 +16,7 @@ import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
 import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 import org.jorlib.frameworks.columngeneration.util.OrderedBiMap;
+import org.jorlib.frameworks.columngeneration.util.SolverStatus;
 
 import java.util.*;
 
@@ -41,7 +42,7 @@ public class MasterData<T extends ModelInterface, U extends AbstractColumn<T, V>
     /** Number of times the master problem has been solved **/
     public int iterations = 0;
     /** Indicates whether the master problem has been solved to optimality **/
-    public boolean optimal = false;
+    public SolverStatus status = SolverStatus.UNDECIDED;
 
     /** Storage of the variables representing the columns in the master problem **/
     protected final Map<V, OrderedBiMap<U, X>> varMap;
