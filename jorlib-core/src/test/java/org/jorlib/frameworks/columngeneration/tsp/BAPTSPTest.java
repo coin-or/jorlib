@@ -26,6 +26,7 @@ import org.jorlib.frameworks.columngeneration.tsp.cg.master.TSPMasterData;
 import org.jorlib.frameworks.columngeneration.tsp.cg.master.cuts.SubtourInequalityGenerator;
 import org.jorlib.frameworks.columngeneration.tsp.model.MatchingColor;
 import org.jorlib.frameworks.columngeneration.tsp.model.TSP;
+import org.jorlib.frameworks.columngeneration.util.Configuration;
 import org.jorlib.io.tsplibreader.TSPLibTour;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -94,7 +95,7 @@ public final class BAPTSPTest
             TSP tsp = new TSP(inputStream);
             double solution = this.solveTSPInstance(tsp);
             System.out.println("Solution for : " + instance + " is: " + solution);
-            Assert.assertEquals(solution, instances.get(instance).intValue(), 0.000001);
+            Assert.assertEquals(solution, instances.get(instance).intValue(), Configuration.getConfiguration().PRECISION);
             inputStream.close();
         }
     }

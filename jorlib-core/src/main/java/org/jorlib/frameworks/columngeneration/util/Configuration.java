@@ -125,7 +125,10 @@ public class Configuration
     public final boolean EXPORT_MODEL;
     /** Define export directory for master models. Default: ./output/masterLP/ **/
     public final String EXPORT_MASTER_DIR;
-    /** Defines if an integer solution has an integer objective. Default = true */
+    /** Defines whether the objective value of any feasible solution is an integer value. More precisely, this value
+     *  should be set to true if all coefficients in the objective function are integer values, and all variables in 
+     *  the objective function are integer variables. This parameter influences the rounding and pruning behavior in 
+     *  a Branch-and-Price application. Default: true */
     public final boolean INTEGER_OBJECTIVE;
 
     /*

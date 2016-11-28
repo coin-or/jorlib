@@ -54,8 +54,8 @@ public class SimpleDebugger<T extends ModelInterface, U extends AbstractColumn<T
 
     /** Name of the instance being solved **/
     protected String instanceName;
-    /** Best integer solution obtained thus far **/
-    protected double bestIntegerSolution;
+    /** Objective value of best incumbent solution obtained thus far **/
+    protected double objectiveIncumbentSolution;
 
     /**
      * Creates a debugger for Column Generation instances
@@ -120,7 +120,7 @@ public class SimpleDebugger<T extends ModelInterface, U extends AbstractColumn<T
     public void startBAP(StartEvent startEvent)
     {
         instanceName = startEvent.instanceName;
-        bestIntegerSolution = startEvent.objectiveIncumbentSolution;
+        objectiveIncumbentSolution = startEvent.objectiveIncumbentSolution;
         logger.debug(
             "BAP solving {} - Initial solution: {}", instanceName,
             startEvent.objectiveIncumbentSolution);
@@ -138,7 +138,7 @@ public class SimpleDebugger<T extends ModelInterface, U extends AbstractColumn<T
         logger.debug(
             "Pruning node {}. Bound: {}, best integer solution: {}",
             new Object[] { pruneNodeEvent.node.nodeID, pruneNodeEvent.nodeBound,
-                pruneNodeEvent.bestIntegerSolution });
+                pruneNodeEvent.objectiveIncumbentSolution});
     }
 
     @Override
@@ -150,11 +150,11 @@ public class SimpleDebugger<T extends ModelInterface, U extends AbstractColumn<T
     @Override
     public void nodeIsInteger(NodeIsIntegerEvent<T,U> nodeIsIntegerEvent)
     {
-        this.bestIntegerSolution = Math.min(this.bestIntegerSolution, nodeIsIntegerEvent.nodeValue);
+        this.objectiveIncumbentSolution = Math.min(this.objectiveIncumbentSolution, nodeIsIntegerEvent.nodeValue);
         logger.debug(
             "Node {} is integer. Objective: {} (best integer solution: {})",
             new Object[] { nodeIsIntegerEvent.node.nodeID, nodeIsIntegerEvent.nodeValue,
-                bestIntegerSolution });
+                    objectiveIncumbentSolution});
     }
 
     @Override
@@ -185,7 +185,7 @@ public class SimpleDebugger<T extends ModelInterface, U extends AbstractColumn<T
     {
         if (colGen != null) {
             instanceName = startEvent.instanceName;
-            bestIntegerSolution = startEvent.objectiveIncumbentSolution;
+            objectiveIncumbentSolution = startEvent.objectiveIncumbentSolution;
             logger.debug(
                 "CG solving {} - Initial upper bound: {}", instanceName,
                 startEvent.objectiveIncumbentSolution);
