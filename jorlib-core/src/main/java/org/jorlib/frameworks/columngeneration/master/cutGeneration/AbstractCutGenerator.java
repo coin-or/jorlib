@@ -60,7 +60,10 @@ public abstract class AbstractCutGenerator<T extends ModelInterface, W extends M
     }
 
     /**
-     * Separate valid inequalities
+     * Separates valid inequalities, meaning that valid inequalities are identified and added to the model.
+     * <p>
+     * Note that this method should add the cuts to the master model, which can be achieved by calling the
+     * {@link #addCut(AbstractInequality)} method. 
      * 
      * @return returns a list of violated inequality which have been found
      */
