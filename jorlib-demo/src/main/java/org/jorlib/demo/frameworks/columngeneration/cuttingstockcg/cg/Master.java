@@ -29,6 +29,7 @@ import org.jorlib.frameworks.columngeneration.io.TimeLimitExceededException;
 import org.jorlib.frameworks.columngeneration.master.AbstractMaster;
 import org.jorlib.frameworks.columngeneration.master.OptimizationSense;
 import org.jorlib.frameworks.columngeneration.util.OrderedBiMap;
+import org.jorlib.frameworks.columngeneration.util.SolverStatus;
 
 /**
  * Implementation of the Master problem for the Cutting Stock problem The Master problem is an LP
@@ -93,7 +94,7 @@ public final class Master
      * Solve the cplex problem and return whether it was solved to optimality
      */
     @Override
-    protected boolean solveMasterProblem(long timeLimit)
+    protected SolverStatus solveMasterProblem(long timeLimit)
         throws TimeLimitExceededException
     {
         try {
@@ -120,7 +121,7 @@ public final class Master
             e.printStackTrace();
         }
 
-        return true;
+        return SolverStatus.OPTIMAL;
     }
 
     /**
