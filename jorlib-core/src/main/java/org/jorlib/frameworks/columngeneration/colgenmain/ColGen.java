@@ -275,11 +275,15 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
                     if (hasNewCuts)
                         continue;
                     else
+                    {
                         status = SolverStatus.OPTIMAL;
                         break;
+                    }
                 } else
+                {
                     status = SolverStatus.OPTIMAL;
                     break;
+                }
             }
 
             // Solve the pricing problem and possibly update the bound on the master problem
