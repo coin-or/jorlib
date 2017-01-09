@@ -224,6 +224,17 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
     }
 
     /**
+     * Returns true if the master problem has been solved to optimality
+     *
+     * @return Returns true if the master problem has been solved to optimality
+     * @deprecated use {@link #getStatus()} instead
+     */
+    @Deprecated
+    public boolean isOptimal() {
+        return masterData.status == SolverStatus.OPTIMAL;
+    }
+    
+    /**
      * Returns the current status of the master problem
      * 
      * @return the {@link SolverStatus} associated to the master problem
