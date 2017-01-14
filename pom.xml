@@ -78,7 +78,7 @@
 			<dependency>
 				<groupId>cplex</groupId>
 				<artifactId>cplex</artifactId>
-				<version>12.6.1</version>
+				<version>12.7</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
