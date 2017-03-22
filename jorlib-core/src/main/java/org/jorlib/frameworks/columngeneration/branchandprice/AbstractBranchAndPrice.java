@@ -289,19 +289,19 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
 
             // If solution is integral, check whether it is better than the current best solution
             if (this.isIntegerNode(bapNode)) {
-                int integerObjective = MathProgrammingUtil.doubleToInt(bapNode.objective);
-                notifier.fireNodeIsIntegerEvent(bapNode, bapNode.bound, integerObjective);
+                double objective = bapNode.objective;
+                notifier.fireNodeIsIntegerEvent(bapNode, bapNode.bound, objective);
                 if (optimizationSenseMaster == OptimizationSense.MINIMIZE
-                    && integerObjective < this.upperBoundOnObjective)
+                    && objective < this.upperBoundOnObjective)
                 {
-                    this.objectiveIncumbentSolution = integerObjective;
-                    this.upperBoundOnObjective = integerObjective;
+                    this.objectiveIncumbentSolution = objective;
+                    this.upperBoundOnObjective = objective;
                     this.incumbentSolution = bapNode.solution;
                 } else if (optimizationSenseMaster == OptimizationSense.MAXIMIZE
-                    && integerObjective > this.lowerBoundOnObjective)
+                    && objective > this.lowerBoundOnObjective)
                 {
-                    this.objectiveIncumbentSolution = integerObjective;
-                    this.lowerBoundOnObjective = integerObjective;
+                    this.objectiveIncumbentSolution = objective;
+                    this.lowerBoundOnObjective = objective;
                     this.incumbentSolution = bapNode.solution;
                 }
             } else { // We need to branch
@@ -804,7 +804,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
          * @param nodeBound Bound on the node
          * @param nodeValue Objective value of the node
          */
-        public void fireNodeIsIntegerEvent(BAPNode<T, U> node, double nodeBound, int nodeValue)
+        public void fireNodeIsIntegerEvent(BAPNode<T, U> node, double nodeBound, double nodeValue)
         {
             NodeIsIntegerEvent<T,U> nodeIsIntegerEvent = null;
             for (BAPListener<T,U> listener : listeners) {
