@@ -143,7 +143,7 @@ The Master Problem (MP) for Cutting stock is defined as:
 \begin{align}
 \label{eq:MP_CS.0} \mathit{MP:}\; min\; &\sum_{i\in I} z_i &\\
 \label{eq:MP_CS.1} \mbox{s.t. }&\sum_{i \in I} a_{ij}z_i\geq q_j & \forall j\in J\\
-\label{eq:MP_CS.2} &z_i\geq 0 &\forall i=1,\dots,n
+\label{eq:MP_CS.2} &z_i\geq 0 &\forall i \in I
 \end{align}
 Here, variable $z_i$ indicates how often pattern $i$ is used. The objective function \eqref{eq:MP_CS.0} states that we want to use as little raws as possible. Constraints \eqref{eq:MP_CS.1} state that sufficient finals of each width $j\in J$ are produced. The dual of the Master Problem (DMP) can be stated as:
 \begin{align}
@@ -210,7 +210,7 @@ public final class CuttingPattern extends AbstractColumn<CuttingStock, PricingPr
 The constructor of AbstractColumn takes 3 arguments:
 \begin{enumerate}[nolistsep]
  \item \code{String creator}: textual description denoting who created the column, i.e. some algorithm, initial solution etc. This is for debugging purposes to track the origin of the column.
- \item \code{boolean isArtificial} artificial columns may be added to create an initial feasible solution to the Master Problem. artificial columns can never constitute a real solution. 
+ \item \code{boolean isArtificial}: artificial columns may be added to create an initial feasible solution to the Master Problem. artificial columns can never constitute a real solution. 
  \item \code{PricingProblem pricingProblem}: the Pricing Problem to which this column belongs. 
 \end{enumerate}
 Finally, make sure you implement the \code{equals} and \code{hashCode} methods; failing to implement these correctly may result in undefined behavior.
