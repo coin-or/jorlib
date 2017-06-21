@@ -329,13 +329,13 @@ public class ColGen<T extends ModelInterface, U extends AbstractColumn<T, V>,
     }
 
     /**
-     * Invokes the solve methods of the algorithms which solve the Pricing Problem. In addition,
-     * after solving the Pricing Problems and before any new columns are added to the Master
-     * Problem, this method invokes the {@link #calculateBoundOnMasterObjective(Class solver)
-     * calculateBoundOnMasterObjective} method.
+     * Invokes the solve methods of the algorithms which solve the Pricing Problem and adds the found columns to the
+     * Master Problem. In addition, after solving the Pricing Problems and before any new columns are added to the
+     * Master Problem, this method invokes the {@link #calculateBoundOnMasterObjective(Class solver)
+     * calculateBoundOnMasterObjective} method. 
      * 
      * @param timeLimit Future point in time by which the Pricing Problem must be finished
-     * @return list of new columns which have to be added to the Master Problem, or an empty list if
+     * @return list of new columns which have been added to the Master Problem, or an empty list if
      *         no columns could be identified
      * @throws TimeLimitExceededException TimeLimitExceededException
      */
