@@ -29,8 +29,8 @@ import java.util.Map.Entry;
 import javax.swing.JPanel;
 
 import org.jorlib.io.tsplibreader.distanceFunctions.GeographicalDistance;
-import org.jorlib.io.tsplibreader.fieldTypesAndFormats.DisplayDataType;
-import org.jorlib.io.tsplibreader.fieldTypesAndFormats.EdgeWeightType;
+import org.jorlib.io.tsplibreader.fieldtypesandformats.DisplayDataType;
+import org.jorlib.io.tsplibreader.fieldtypesandformats.EdgeWeightType;
 import org.jorlib.io.tsplibreader.graph.Node;
 import org.jorlib.io.tsplibreader.graph.NodeCoordinates;
 

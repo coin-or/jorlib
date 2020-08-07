@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jorlib.io.tsplibreader.distanceFunctions.DistanceFunction;
-import org.jorlib.io.tsplibreader.fieldTypesAndFormats.EdgeWeightType;
-import org.jorlib.io.tsplibreader.fieldTypesAndFormats.NodeCoordType;
+import org.jorlib.io.tsplibreader.fieldtypesandformats.EdgeWeightType;
+import org.jorlib.io.tsplibreader.fieldtypesandformats.NodeCoordType;
 
 /**
  * Stores the nodes in a TSPLIB problem instance and provides methods for calculating the distances

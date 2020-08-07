@@ -16,12 +16,12 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jorlib.io.tsplibreader.fieldTypesAndFormats.DataType;
-import org.jorlib.io.tsplibreader.fieldTypesAndFormats.DisplayDataType;
-import org.jorlib.io.tsplibreader.fieldTypesAndFormats.EdgeDataFormat;
-import org.jorlib.io.tsplibreader.fieldTypesAndFormats.EdgeWeightFormat;
-import org.jorlib.io.tsplibreader.fieldTypesAndFormats.EdgeWeightType;
-import org.jorlib.io.tsplibreader.fieldTypesAndFormats.NodeCoordType;
+import org.jorlib.io.tsplibreader.fieldtypesandformats.DataType;
+import org.jorlib.io.tsplibreader.fieldtypesandformats.DisplayDataType;
+import org.jorlib.io.tsplibreader.fieldtypesandformats.EdgeDataFormat;
+import org.jorlib.io.tsplibreader.fieldtypesandformats.EdgeWeightFormat;
+import org.jorlib.io.tsplibreader.fieldtypesandformats.EdgeWeightType;
+import org.jorlib.io.tsplibreader.fieldtypesandformats.NodeCoordType;
 import org.jorlib.io.tsplibreader.graph.DistanceTable;
 import org.jorlib.io.tsplibreader.graph.EdgeData;
 import org.jorlib.io.tsplibreader.graph.EdgeWeightMatrix;

@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jorlib.io.tsplibreader.fieldTypesAndFormats.DataType;
+import org.jorlib.io.tsplibreader.fieldtypesandformats.DataType;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

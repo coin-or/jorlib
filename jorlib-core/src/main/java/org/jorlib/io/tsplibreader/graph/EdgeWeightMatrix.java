@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.jorlib.io.tsplibreader.fieldTypesAndFormats.EdgeWeightFormat;
+import org.jorlib.io.tsplibreader.fieldtypesandformats.EdgeWeightFormat;
 
 /**
  * Stores the edge weight matrix from a TSPLIB problem instance.

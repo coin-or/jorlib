@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import org.jorlib.io.tsplibreader.fieldTypesAndFormats.EdgeDataFormat;
+import org.jorlib.io.tsplibreader.fieldtypesandformats.EdgeDataFormat;
 
 /**
  * Stores the edges in a graph.

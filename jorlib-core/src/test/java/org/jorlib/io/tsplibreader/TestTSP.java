@@ -16,7 +16,7 @@ import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.jorlib.io.tsplibreader.fieldTypesAndFormats.DataType;
+import org.jorlib.io.tsplibreader.fieldtypesandformats.DataType;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
