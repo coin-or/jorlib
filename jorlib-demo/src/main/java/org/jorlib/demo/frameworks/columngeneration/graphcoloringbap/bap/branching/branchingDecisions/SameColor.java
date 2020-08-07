@@ -12,7 +12,7 @@
  */
 package org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.bap.branching.branchingDecisions;
 
-import org.jgrapht.util.VertexPair;
+import org.jgrapht.alg.util.*;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.cg.IndependentSet;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.cg.master.ColoringMasterData;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.model.ColoringGraph;
@@ -30,9 +30,9 @@ public final class SameColor
 {
 
     /** Vertices to be colored the same **/
-    public final VertexPair<Integer> vertexPair;
+    public final Pair<Integer,Integer> vertexPair;
 
-    public SameColor(VertexPair<Integer> vertexPair)
+    public SameColor(Pair<Integer,Integer> vertexPair)
     {
         this.vertexPair = vertexPair;
     }

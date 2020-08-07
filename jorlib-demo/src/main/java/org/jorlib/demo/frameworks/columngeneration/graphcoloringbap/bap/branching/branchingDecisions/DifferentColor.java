@@ -12,9 +12,8 @@
  */
 package org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.bap.branching.branchingDecisions;
 
-import org.jgrapht.util.VertexPair;
+import org.jgrapht.alg.util.*;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.cg.IndependentSet;
-import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.cg.master.ColoringMasterData;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.model.ColoringGraph;
 import org.jorlib.frameworks.columngeneration.branchandprice.branchingdecisions.BranchingDecision;
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequality;
@@ -30,9 +29,9 @@ public final class DifferentColor
 {
 
     /** Vertices to be colored differently **/
-    public final VertexPair<Integer> vertexPair;
+    public final Pair<Integer,Integer> vertexPair;
 
-    public DifferentColor(VertexPair<Integer> vertexPair)
+    public DifferentColor(Pair<Integer,Integer> vertexPair)
     {
         this.vertexPair = vertexPair;
     }

@@ -12,7 +12,7 @@
  */
 package org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.bap.branching;
 
-import org.jgrapht.util.VertexPair;
+import org.jgrapht.alg.util.*;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.bap.branching.branchingDecisions.DifferentColor;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.bap.branching.branchingDecisions.SameColor;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.cg.ChromaticNumberPricingProblem;
@@ -38,7 +38,7 @@ public final class BranchOnVertexPair
 {
 
     /** Pair of vertices to branch on **/
-    private VertexPair<Integer> candidateVertexPair = null;
+    private Pair<Integer,Integer> candidateVertexPair = null;
 
     public BranchOnVertexPair(ColoringGraph dataModel, ChromaticNumberPricingProblem pricingProblem)
     {
@@ -76,7 +76,7 @@ public final class BranchOnVertexPair
             }
         }
         if (foundPair)
-            candidateVertexPair = new VertexPair<>(v1, v2);
+            candidateVertexPair = new Pair<>(v1, v2);
         return foundPair;
     }
 

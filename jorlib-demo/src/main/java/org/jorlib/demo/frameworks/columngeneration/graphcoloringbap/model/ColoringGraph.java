@@ -12,10 +12,12 @@
  */
 package org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.model;
 
-import org.jgrapht.UndirectedGraph;
-import org.jgrapht.ext.*;
+import org.jgrapht.*;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.nio.*;
+import org.jgrapht.nio.dimacs.*;
+import org.jgrapht.util.*;
 import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 
 import java.io.*;
@@ -28,7 +30,7 @@ import java.io.*;
  */
 public final class ColoringGraph
     extends SimpleGraph<Integer, DefaultEdge>
-    implements ModelInterface, UndirectedGraph<Integer, DefaultEdge>
+    implements ModelInterface, Graph<Integer, DefaultEdge>
 {
 
     private static final long serialVersionUID = -3825616742007718078L;
@@ -45,15 +47,19 @@ public final class ColoringGraph
     public ColoringGraph(String instanceLocation)
         throws ImportException
     {
-        super(DefaultEdge.class);
+//        super(DefaultEdge.class);
+        super(SupplierUtil.createIntegerSupplier(), SupplierUtil.createSupplier(DefaultEdge.class),false);
 
         File inputFile = new File(instanceLocation);
         this.instanceName = inputFile.getName();
 
         //Import the graph
-        VertexProvider<Integer> vp = (label, attributes) -> Integer.parseInt(label)-1;
-        EdgeProvider<Integer, DefaultEdge> ep = (from, to, label, attributes) -> ColoringGraph.this.getEdgeFactory().createEdge(from, to);
-        GraphImporter<Integer, DefaultEdge> importer = new DIMACSImporter<>(vp, ep);
+//        VertexProvider<Integer> vp = (label, attributes) -> Integer.parseInt(label)-1;
+//        EdgeProvider<Integer, DefaultEdge> ep = (from, to, label, attributes) -> ColoringGraph.this.getEdgeFactory().createEdge(from, to);
+
+
+        DIMACSImporter<Integer, DefaultEdge> importer = new DIMACSImporter<>();
+        importer.setVertexFactory(id -> id - 1);
         importer.importGraph(this, inputFile);
 
     }

@@ -12,10 +12,11 @@
  */
 package org.jorlib.demo.frameworks.columngeneration.graphcoloringbap;
 
-import org.jgrapht.alg.BronKerboschCliqueFinder;
-import org.jgrapht.alg.ChromaticNumber;
-import org.jgrapht.ext.ImportException;
+import org.jgrapht.alg.clique.*;
+import org.jgrapht.alg.color.*;
+import org.jgrapht.alg.interfaces.*;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.nio.*;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.bap.BranchAndPrice;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.bap.branching.BranchOnVertexPair;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.cg.ChromaticNumberPricingProblem;
@@ -29,7 +30,6 @@ import org.jorlib.frameworks.columngeneration.io.SimpleDebugger;
 import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblemSolver;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -158,12 +158,12 @@ public final class ChromaticNumberCalculator
     private List<IndependentSet> getInitialSolution(ChromaticNumberPricingProblem pricingProblem)
     {
         List<IndependentSet> initialSolution = new ArrayList<>();
-        Map<Integer, Set<Integer>> coloredGroups =
-            ChromaticNumber.findGreedyColoredGroups(coloringGraph);
-        for (Integer color : coloredGroups.keySet()) {
+        VertexColoringAlgorithm<Integer> vertexColoringAlgorithm= new GreedyColoring<Integer,DefaultEdge>(coloringGraph);
+        VertexColoringAlgorithm.Coloring<Integer> coloring=vertexColoringAlgorithm.getColoring();
+        for (Set<Integer> colorClass : coloring.getColorClasses()) {
             initialSolution.add(
                 new IndependentSet(
-                    pricingProblem, false, "initialColumn", coloredGroups.get(color), 1));
+                    pricingProblem, false, "initialColumn", colorClass, 1));
         }
         return initialSolution;
     }
@@ -178,7 +178,6 @@ public final class ChromaticNumberCalculator
     {
         BronKerboschCliqueFinder<Integer, DefaultEdge> cliqueFinder =
             new BronKerboschCliqueFinder<>(coloringGraph);
-        Collection<Set<Integer>> cliques = cliqueFinder.getBiggestMaximalCliques();
-        return cliques.iterator().next().size();
+        return cliqueFinder.maximumIterator().next().size();
     }
 }

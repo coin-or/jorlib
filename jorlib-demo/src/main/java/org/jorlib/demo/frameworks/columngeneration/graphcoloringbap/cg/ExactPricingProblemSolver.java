@@ -14,8 +14,8 @@ package org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.cg;
 
 import ilog.concert.*;
 import ilog.cplex.IloCplex;
+import org.jgrapht.alg.util.*;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.util.VertexPair;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.bap.branching.branchingDecisions.DifferentColor;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.bap.branching.branchingDecisions.SameColor;
 import org.jorlib.demo.frameworks.columngeneration.graphcoloringbap.model.ColoringGraph;
@@ -43,7 +43,7 @@ public final class ExactPricingProblemSolver
     private IloCplex cplex; // Cplex instance.
     private IloObjective obj; // Objective function
     private IloIntVar[] vars; // Variables
-    private Map<VertexPair<Integer>, IloConstraint> branchingConstraints; // Constraints added to
+    private Map<Pair<Integer,Integer>, IloConstraint> branchingConstraints; // Constraints added to
                                                                           // enforce branching
                                                                           // decisions
 

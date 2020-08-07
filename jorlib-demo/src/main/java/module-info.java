@@ -35,6 +35,6 @@ module jorlib.demo {
     requires transitive jorlib.core;
     requires cplex;
     requires java.desktop;
-    requires jgrapht.ext;
-//    requires ilog.concert;
+    requires org.jgrapht.core;
+    requires org.jgrapht.io;
 }

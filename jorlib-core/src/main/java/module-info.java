@@ -22,6 +22,6 @@ module jorlib.core {
 
     requires transitive org.slf4j;
     requires transitive com.google.common;
-    requires transitive jgrapht.core;
     requires java.desktop;
+    requires org.jgrapht.core;
 }
