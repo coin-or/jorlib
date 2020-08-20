@@ -43,6 +43,7 @@ public class Configuration
         CUTSENABLED = true;
         EXPORT_MODEL = false;
         EXPORT_MASTER_DIR = "./output/masterLP/";
+        INTEGER_OBJECTIVE = true;
 
         // Cut handling
         QUICK_RETURN_AFTER_CUTS_FOUND = true;
@@ -70,6 +71,8 @@ public class Configuration
             ? Boolean.valueOf(properties.getProperty("EXPORT_MODEL")) : false);
         EXPORT_MASTER_DIR = (properties.containsKey("EXPORT_MODEL_DIR")
             ? properties.getProperty("EXPORT_MODEL_DIR") : "./output/masterLP/");
+        INTEGER_OBJECTIVE = (properties.containsKey("INTEGER_OBJECTIVE") 
+            ? Boolean.valueOf(properties.getProperty("INTEGER_OBJECTIVE")): true);
 
         // Cut handling
         QUICK_RETURN_AFTER_CUTS_FOUND = (properties.containsKey("QUICK_RETURN_AFTER_CUTS_FOUND")
@@ -122,6 +125,11 @@ public class Configuration
     public final boolean EXPORT_MODEL;
     /** Define export directory for master models. Default: ./output/masterLP/ **/
     public final String EXPORT_MASTER_DIR;
+    /** Defines whether the objective value of any feasible solution is an integer value. More precisely, this value
+     *  should be set to true if all coefficients in the objective function are integer values, and all variables in 
+     *  the objective function are integer variables. This parameter influences the rounding and pruning behavior in 
+     *  a Branch-and-Price application. Default: true */
+    public final boolean INTEGER_OBJECTIVE;
 
     /*
      * Cut handling

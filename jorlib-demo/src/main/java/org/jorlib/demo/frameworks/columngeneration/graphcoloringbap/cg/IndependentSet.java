@@ -30,7 +30,7 @@ public final class IndependentSet
     /** Vertices in the independent set **/
     public final Set<Integer> vertices;
     /** Cost of this column in the objective of the Master Problem **/
-    public final int cost;
+    public final double cost;
 
     /**
      * Constructs a new column
@@ -43,7 +43,7 @@ public final class IndependentSet
      */
     public IndependentSet(
         ChromaticNumberPricingProblem associatedPricingProblem, boolean isVolatile,
-        String creator, Set<Integer> vertices, int cost)
+        String creator, Set<Integer> vertices, double cost)
     {
         super(associatedPricingProblem, isVolatile, creator);
         this.vertices = vertices;

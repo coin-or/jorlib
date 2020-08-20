@@ -34,7 +34,7 @@ public class FinishMasterEvent
      * Cutoff value: Column Generation is terminated when the bound on the Master Objective is worse
      * than the cutoff value
      **/
-    public final int cutoffValue;
+    public final double cutoffValue;
     /** Best available bound on the master objective **/
     public final double boundOnMasterObjective;
 
@@ -49,7 +49,7 @@ public class FinishMasterEvent
      * @param boundOnMasterObjective best available bound on master problem
      */
     public FinishMasterEvent(
-        Object source, int columnGenerationIteration, double objective, int cutoffValue,
+        Object source, int columnGenerationIteration, double objective, double cutoffValue,
         double boundOnMasterObjective)
     {
         super(source);

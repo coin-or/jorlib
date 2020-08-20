@@ -49,7 +49,7 @@ public class SimpleCGLogger<T extends ModelInterface, U extends AbstractColumn<T
     /** Objective of master problem at the end of iteration it **/
     protected double objective;
     /** Cutoff value **/
-    protected int cutoffValue;
+    protected double cutoffValue;
     /** Bound on the objective at the end of iteration it **/
     protected double boundOnMasterObjective;
 

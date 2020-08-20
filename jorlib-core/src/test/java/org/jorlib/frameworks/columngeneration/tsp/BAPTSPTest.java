@@ -26,6 +26,7 @@ import org.jorlib.frameworks.columngeneration.tsp.cg.master.TSPMasterData;
 import org.jorlib.frameworks.columngeneration.tsp.cg.master.cuts.SubtourInequalityGenerator;
 import org.jorlib.frameworks.columngeneration.tsp.model.MatchingColor;
 import org.jorlib.frameworks.columngeneration.tsp.model.TSP;
+import org.jorlib.frameworks.columngeneration.util.Configuration;
 import org.jorlib.io.tsplibreader.TSPLibTour;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -92,14 +93,14 @@ public final class BAPTSPTest
             if (inputStream == null)
                 Assert.fail("Cannot find problem instance!");
             TSP tsp = new TSP(inputStream);
-            int solution = this.solveTSPInstance(tsp);
+            double solution = this.solveTSPInstance(tsp);
             System.out.println("Solution for : " + instance + " is: " + solution);
-            Assert.assertEquals(solution, instances.get(instance).intValue());
+            Assert.assertEquals(solution, instances.get(instance).intValue(), Configuration.getConfiguration().PRECISION);
             inputStream.close();
         }
     }
 
-    private int solveTSPInstance(TSP tsp)
+    private double solveTSPInstance(TSP tsp)
     {
         if (tsp.N % 2 == 1)
             throw new RuntimeException(
@@ -146,7 +147,7 @@ public final class BAPTSPTest
         bap.runBranchAndPrice(System.currentTimeMillis() + 8000000L);
 
         // Get the solution
-        int solution = -1;
+        double solution = -1;
         if (bap.hasSolution()) {
             assert (bap.isOptimal());
             solution = bap.getObjective();

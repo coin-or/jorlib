@@ -30,20 +30,20 @@ public class StartEvent
     public final String instanceName;
 
     /**
-     * Best available integer solution at the start of the Branch-and-Price or Column generation
+     * Objective value of best available incumbent solution at the start of the Branch-and-Price or Column generation
      * procedure
      **/
-    public final int objectiveIncumbentSolution;
+    public final double objectiveIncumbentSolution;
 
     /**
      * Creates a new StartEvent
      * 
      * @param source Generator of the event
      * @param instanceName Name of the instance being solved
-     * @param objectiveIncumbentSolution Best available integer solution at the start of the
+     * @param objectiveIncumbentSolution Objective value of best available incumbent solution at the start of the
      *        Branch-and-Price or Column generation procedure
      */
-    public StartEvent(Object source, String instanceName, int objectiveIncumbentSolution)
+    public StartEvent(Object source, String instanceName, double objectiveIncumbentSolution)
     {
         super(source);
         this.instanceName = instanceName;

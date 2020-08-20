@@ -37,7 +37,7 @@ public final class Matching
      **/
     public final int[] succ;
     /** Weighted cost of the matching **/
-    public final int cost;
+    public final double cost;
 
     /**
      * Creates a new column (matching)
@@ -51,7 +51,7 @@ public final class Matching
      */
     public Matching(
         String creator, boolean isVolatile, PricingProblemByColor associatedPricingProblem,
-        Set<DefaultWeightedEdge> edges, int[] succ, int cost)
+        Set<DefaultWeightedEdge> edges, int[] succ, double cost)
     {
         super(associatedPricingProblem, isVolatile, creator);
         this.edges = edges;

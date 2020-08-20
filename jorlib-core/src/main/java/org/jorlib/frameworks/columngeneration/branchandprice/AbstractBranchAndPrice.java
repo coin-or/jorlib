@@ -65,7 +65,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
     protected final OptimizationSense optimizationSenseMaster;
 
     /** Stores the objective of the best (integer) solution **/
-    protected int objectiveIncumbentSolution;
+    protected double objectiveIncumbentSolution;
     /**
      * List containing the columns corresponding to the best integer solution (empty list when no
      * feasible solution has been found)
@@ -289,19 +289,19 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
 
             // If solution is integral, check whether it is better than the current best solution
             if (this.isIntegerNode(bapNode)) {
-                int integerObjective = MathProgrammingUtil.doubleToInt(bapNode.objective);
-                notifier.fireNodeIsIntegerEvent(bapNode, bapNode.bound, integerObjective);
+                double objective = bapNode.objective;
+                notifier.fireNodeIsIntegerEvent(bapNode, bapNode.bound, objective);
                 if (optimizationSenseMaster == OptimizationSense.MINIMIZE
-                    && integerObjective < this.upperBoundOnObjective)
+                    && objective < this.upperBoundOnObjective)
                 {
-                    this.objectiveIncumbentSolution = integerObjective;
-                    this.upperBoundOnObjective = integerObjective;
+                    this.objectiveIncumbentSolution = objective;
+                    this.upperBoundOnObjective = objective;
                     this.incumbentSolution = bapNode.solution;
                 } else if (optimizationSenseMaster == OptimizationSense.MAXIMIZE
-                    && integerObjective > this.lowerBoundOnObjective)
+                    && objective > this.lowerBoundOnObjective)
                 {
-                    this.objectiveIncumbentSolution = integerObjective;
-                    this.lowerBoundOnObjective = integerObjective;
+                    this.objectiveIncumbentSolution = objective;
+                    this.lowerBoundOnObjective = objective;
                     this.incumbentSolution = bapNode.solution;
                 }
             } else { // We need to branch
@@ -401,7 +401,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      * 
      * @return the objective of the best integer solution found during the Branch-and-Price search
      */
-    public int getObjective()
+    public double getObjective()
     {
         return this.objectiveIncumbentSolution;
     }
@@ -596,10 +596,17 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
      */
     protected boolean nodeCanBePruned(BAPNode<T, U> node)
     {
-        return (optimizationSenseMaster == OptimizationSense.MINIMIZE
-            && Math.ceil(node.bound - config.PRECISION) >= upperBoundOnObjective
-            || optimizationSenseMaster == OptimizationSense.MAXIMIZE
-                && Math.floor(node.bound + config.PRECISION) <= lowerBoundOnObjective);
+        if (config.INTEGER_OBJECTIVE) {
+            return (optimizationSenseMaster == OptimizationSense.MINIMIZE
+                    && Math.ceil(node.bound - config.PRECISION) >= upperBoundOnObjective
+                    || optimizationSenseMaster == OptimizationSense.MAXIMIZE
+                    && Math.floor(node.bound + config.PRECISION) <= lowerBoundOnObjective);
+        } else {
+            return optimizationSenseMaster == OptimizationSense.MINIMIZE
+                    && node.bound >= upperBoundOnObjective
+                    || optimizationSenseMaster == OptimizationSense.MAXIMIZE
+                    && node.bound <= lowerBoundOnObjective;          
+        }
     }
 
     /**
@@ -797,7 +804,7 @@ public abstract class AbstractBranchAndPrice<T extends ModelInterface,
          * @param nodeBound Bound on the node
          * @param nodeValue Objective value of the node
          */
-        public void fireNodeIsIntegerEvent(BAPNode<T, U> node, double nodeBound, int nodeValue)
+        public void fireNodeIsIntegerEvent(BAPNode<T, U> node, double nodeBound, double nodeValue)
         {
             NodeIsIntegerEvent<T,U> nodeIsIntegerEvent = null;
             for (BAPListener<T,U> listener : listeners) {

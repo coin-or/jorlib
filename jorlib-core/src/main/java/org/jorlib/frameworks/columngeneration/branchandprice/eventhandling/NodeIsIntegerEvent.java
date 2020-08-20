@@ -36,7 +36,7 @@ public class NodeIsIntegerEvent<T extends ModelInterface, U extends AbstractColu
     /** Bound on this node **/
     public final double nodeBound;
     /** Objective value of this node **/
-    public final int nodeValue;
+    public final double nodeValue;
 
     /**
      * Creates a new NodeIsIntegerEvent
@@ -47,7 +47,7 @@ public class NodeIsIntegerEvent<T extends ModelInterface, U extends AbstractColu
      * @param nodeValue Objective value of the node. nodeBound and nodeValue are equal when the node
      *        is solved to optimality
      */
-    public NodeIsIntegerEvent(Object source, BAPNode<T,U> node, double nodeBound, int nodeValue)
+    public NodeIsIntegerEvent(Object source, BAPNode<T,U> node, double nodeBound, double nodeValue)
     {
         super(source);
         this.node = node;
