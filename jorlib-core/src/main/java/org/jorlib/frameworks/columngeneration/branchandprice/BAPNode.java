@@ -21,6 +21,7 @@ import org.jorlib.frameworks.columngeneration.colgenmain.AbstractColumn;
 import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequality;
 import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
+import org.jorlib.frameworks.columngeneration.util.SolverStatus;
 
 /**
  * Class which models a single node in the Branch-and-Price tree
@@ -48,6 +49,8 @@ public class BAPNode<T extends ModelInterface, U extends AbstractColumn<T, ? ext
     protected final List<AbstractInequality> initialInequalities;
 
     // Data after solving the node:
+    /** The status of solving the node. */
+    private SolverStatus status;
     /** Objective value of the master problem after solving this node. **/
     protected double objective;
     /**
@@ -167,15 +170,17 @@ public class BAPNode<T extends ModelInterface, U extends AbstractColumn<T, ? ext
 
     /**
      * After the node has been solved, this method is used to store the solution
-     * 
+     *
+     * @param status the status of solving this node
      * @param objective objective value of the node
      * @param bound bound on the objective value
      * @param solution columns constituting the solution
      * @param inequalities inequalities generated while solving this node
      */
     public void storeSolution(
-        double objective, double bound, List<U> solution, List<AbstractInequality> inequalities)
+            SolverStatus status, double objective, double bound, List<U> solution, List<AbstractInequality> inequalities)
     {
+        this.status = status;
         this.objective = objective;
         this.bound = bound;
         this.solution = solution;
@@ -270,5 +275,15 @@ public class BAPNode<T extends ModelInterface, U extends AbstractColumn<T, ? ext
     public String toString()
     {
         return "BAP node: " + nodeID;
+    }
+
+    /**
+     * Returns the status of solving the column generation in the current node.
+     *
+     * @return the {@link SolverStatus} associated to solving the current node.
+     */
+    public SolverStatus getStatus()
+    {
+        return status;
     }
 }

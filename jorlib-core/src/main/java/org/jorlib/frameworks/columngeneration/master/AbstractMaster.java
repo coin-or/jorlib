@@ -26,6 +26,7 @@ import org.jorlib.frameworks.columngeneration.master.cutGeneration.AbstractInequ
 import org.jorlib.frameworks.columngeneration.model.ModelInterface;
 import org.jorlib.frameworks.columngeneration.pricing.AbstractPricingProblem;
 import org.jorlib.frameworks.columngeneration.util.Configuration;
+import org.jorlib.frameworks.columngeneration.util.SolverStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -169,7 +170,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
         throws TimeLimitExceededException
     {
         masterData.iterations++;
-        masterData.optimal = this.solveMasterProblem(timeLimit);
+        masterData.status = this.solveMasterProblem(timeLimit);
     }
 
     /**
@@ -179,7 +180,7 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
      * @return Returns true if successful (and optimal)
      * @throws TimeLimitExceededException if time limit is exceeded
      */
-    protected abstract boolean solveMasterProblem(long timeLimit)
+    protected abstract SolverStatus solveMasterProblem(long timeLimit)
         throws TimeLimitExceededException;
 
     /**
@@ -224,12 +225,23 @@ public abstract class AbstractMaster<T extends ModelInterface, U extends Abstrac
 
     /**
      * Returns true if the master problem has been solved to optimality
-     * 
+     *
      * @return Returns true if the master problem has been solved to optimality
+     * @deprecated use {@link #getStatus()} instead
      */
-    public boolean isOptimal()
+    @Deprecated
+    public boolean isOptimal() {
+        return masterData.status == SolverStatus.OPTIMAL;
+    }
+    
+    /**
+     * Returns the current status of the master problem
+     * 
+     * @return the {@link SolverStatus} associated to the master problem
+     */
+    public SolverStatus getStatus()
     {
-        return masterData.optimal;
+        return masterData.status;
     }
 
     /**
